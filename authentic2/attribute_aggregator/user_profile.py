@@ -72,7 +72,7 @@ def get_attributes(user, definitions=None, source=None, **kwargs):
     attributes = dict()
     data = []
     try:
-        user_profile = user.get_profile()
+        user_profile = user
         field_names = set()
         field_names.update(user_profile._meta.get_all_field_names())
         field_names.update(user._meta.get_all_field_names())
