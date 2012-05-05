@@ -1,35 +1,68 @@
+import cStringIO
+import urllib2
+
+pycurl = None
+try:
+    import pycurl
+except ImportError:
+    pass
+M2Crypto = None
 try:
     import M2Crypto
 except ImportError:
-    M2Crypto = None
+    pass
 
-import urllib2
-from django.conf import settings
+from authentic2 import app_settings
 
-__SSL_CONTEXT = None
+def get_url_pycurl(url):
+    '''Use pycurl to retrieve an HTTPS URL, preferred to M2Crypto as it also
+       handles Server Name Indication (SNI).
+    '''
+    try:
+        buf = cStringIO.StringIO()
+        c = pycurl.Curl()
+        c.setopt(c.URL, str(url))
+        c.setopt(c.WRITEFUNCTION, buf.write)
+        c.setopt(pycurl.CAINFO, app_settings.CAFILE)
+        c.setopt(pycurl.CAPATH, app_settings.CAPATH)
+        c.setopt(pycurl.SSL_VERIFYHOST, 2)
+        c.setopt(pycurl.SSL_VERIFYPEER, 1)
+        c.perform()
+        r = buf.getvalue()
+        buf.close()
+        return r
+    except pycurl.error, e:
+        # Wrap error
+        raise urllib2.URLError('SSL access error %s' % e)
 
-def get_ssl_context():
-    global __SSL_CONTEXT
-    if __SSL_CONTEXT is None:
-        __SSL_CONTEXT = M2Crypto.SSL.Context()
-        cafile = getattr(settings, 'CAFILE', '/etc/ssl/certs/ca-certificates.crt')
-        capath = getattr(settings, 'CAPATH', '/etc/ssl/certs/')
-        __SSL_CONTEXT.load_verify_locations(cafile=cafile, capath=capath)
-    return __SSL_CONTEXT
+__M2CRYPTO_SSL_CONTEXT = None
+
+def get_m2crypto_ssl_context():
+    '''Create an SSL Context and cache it in global __M2CRYPTO_SSL_CONTEXT'''
+    global __M2CRYPTO_SSL_CONTEXT
+
+    if __M2CRYPTO_SSL_CONTEXT is None:
+        __M2CRYPTO_SSL_CONTEXT = M2Crypto.SSL.Context()
+        __M2CRYPTO_SSL_CONTEXT.load_verify_locations(cafile=app_settings.CAFILE, 
+                capath=app_settings.CAPATH)
+    return __M2CRYPTO_SSL_CONTEXT
+
+def get_url_m2crypto(url):
+    '''Use M2Crypto to retrieve an HTTPs URL'''
+    try:
+        return M2Crypto.m2urllib2.build_opener(get_m2crypto_ssl_context()).open(url).read()
+    except M2Crypto.SSL.Checker.SSLVerificationError, e:
+        # Wrap error
+        raise urllib2.URLError('SSL Verification error %s' % e)
 
 def get_url(url):
     '''Does a simple GET on an URL, if the URL uses TLS, M2Crypto is used to
        check the certificate'''
 
     if url.startswith('https'):
-        if not M2Crypto:
-            raise urllib2.URLError('https is unsupported without M2Crypto')
-        try:
-            return M2Crypto.m2urllib2.build_opener(get_ssl_context()).open(url).read()
-        except M2Crypto.SSL.Checker.SSLVerificationError, e:
-            # Wrap error
-            raise urllib2.URLError('SSL Verification error %s' % e)
+        if pycurl:
+            return get_url_pycurl(url)
+        if M2Crypto:
+            return get_url_m2crypto(url)
+        raise urllib2.URLError('https is unsupported without either pyCurl or M2Crypto')
     return urllib2.urlopen(url).read()
-
-if __name__ == '__main__':
-    print get_url('https://dev.entrouvert.org')
