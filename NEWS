@@ -1,6 +1,22 @@
 NEWS
 ====
 
+2.0.2 - May 11th 2012
+---------------------
+
+7 commits, 15 files changed, 920 insertions, 163 deletions
+
+Changes:
+* The setup script is based on setuptools and handle dependencies.
+* Prefer using pycurl instead of M2Crypto to retrieve HTTPs URLS as it
+supports server name indication
+
+Bugs:
+* Fix data files not installed with the setup
+
+Other:
+* Documentation updated.
+
 2.0.1 - April 27th 2012
 --------------------------
 
