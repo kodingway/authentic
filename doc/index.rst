@@ -33,9 +33,13 @@ Documentation content
 
    features
 
-   download
-
    installation
+
+   production
+
+   upgrading
+
+   change_db
 
    settings
 

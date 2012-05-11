@@ -4,124 +4,258 @@
 Installation
 ============
 
-Dependencies
-------------
+Authentic 2 installation script handles all the dependencies, except Lasso,
+relying on the Setuptools and the pypi repository.
 
-You must install the following packages to use Authentic
+To run Authentic 2 you need to install Lasso >=2.3.6. You can obtain Lasso
+from:
 
-- Python Lasso binding 2.3.6:
+- From sources: http://lasso.entrouvert.org/download
+- Debian based distribution: http://deb.entrouvert.org/
 
-   From sources: http://lasso.entrouvert.org/download
-   Debian based distribution: http://deb.entrouvert.org/
+The other Authentic 2 dependencies are:
 
-- Django 1.4:
+- django >= 1.3
+- django-profiles >= 0.2
+- south >= 0.7.3
+- django-authopenid >= 0.9.6
+- django-debug-toolbar >= 0.9.0
 
-   From sources: http://www.djangoproject.com/download/1.4/tarball/
+Their management depends on how you install Authentic 2:
 
-- Django-authopenid 0.9.6:
+- You can :ref:`install-pypi-ref`
+- You can :ref:`obtain-pypi-ref`
+- You can :ref:`obtain-git-ref`
 
-   From sources: http://bitbucket.org/benoitc/django-authopenid/downloads
+Lasso installation mock-up
+--------------------------
 
-- Django-south 0.7.3:
+Please see the Lasso website for installation details. This is a quick
+installation example.
 
-   From sources:: http://south.aeracode.org/docs/installation.html
+Install the following Lasso dependencies:
 
-- Django-profiles 0.2:
+- autoconf
+- automake
+- autotools-dev
+- libtool
+- gtk-doc-tools
+- zlib1g-dev
+- libglib2.0-dev
+- openssl-dev
+- libxml2-dev
+- libxmlsec1-dev
+- python2.6-dev
+- python-setuptools
 
-   From sources:: http://pypi.python.org/pypi/django-profiles
+Obtain Lasso::
 
-You install all the django libraries quickly using pip::
+  $wget https://dev.entrouvert.org/lasso/lasso-2.3.6.tar.gz
+  $tar xzvf lasso-2.3.6.tar.gz
+  $cd lasso-2.3.6
+  $./autogen.sh
 
-   pip install django django-profiles django-authopenid south
+Be sure that the Python bindings is selected as follows::
 
-or easy_install::
+    =============
+    Configuration
+    =============
 
-   easy_install django django-profiles django-authopenid south
+    Main
+    ----
 
-**Dependencies in DEBUG mode (Default mode)**
+    Compiler:                gcc
+    CFLAGS:
+    Install prefix:          /usr/local
+    Debugging:               no
+    Experimental ID-WSF:     no
 
-- Django Debug Toolbar:
+    Optionals builds
+    ----------------
 
-   From sources:: https://github.com/django-debug-toolbar/django-debug-toolbar
+    Available languages:    java(4.6.1) python(2.7) perl(5.12.4)
+
+    Java binding:           yes
+    Perl binding:           yes
+    PHP 5 binding:          no
+    Python binding:         yes
+
+    C API references:       yes
+    Tests suite:            no
+
+
+    Now type 'make install' to install lasso.
+
+As indicated, build and install::
+
+  $make install
+  $ldconfig
+
+Set the lasso python binding in you python path, e.g.::
+
+  $export PYTHONPATH="$PYTHONPATH:/usr/local/lib/python2.6/site-packages"
+
+Test trying to import Lasso::
+
+  $python
+  >>> import lasso
+
+.. _install-pypi-ref:
+
+Install Authentic directly from pypi
+------------------------------------
 
 Using pip::
 
-   pip install django-debug-toolbar
+   pip install authentic2
 
 or easy_install::
 
-   easy_install django-debug-toolbar
+   easy_install authentic2
 
-Quick Start
------------
+You can now run Authentic from the installation directory, e.g.::
 
-Then launch the following commands::
-
-  python manage.py syncdb --migrate
-  python manage.py collectstatic # Not necessary in DEBUG mode
-  python manage.py runserver
+   python /usr/local/lib/python2.6/site-packages/authentic2-x.y.z-py2.6.egg/authentic2/manage.py syncdb --migrate
+   python /usr/local/lib/python2.6/site-packages/authentic2-x.y.z-py2.6.egg/authentic2/manage.py runserver
 
 You should see the following output::
 
   Validating models...
   0 errors found
 
-  Django version 1.2, using settings 'authentic.settings'
+  Django version 1.4, using settings 'authentic.settings'
   Development server is running at http://127.0.0.1:8000/
   Quit the server with CONTROL-C.
 
   You can access the running application on http://127.0.0.1:8000/
 
+.. _obtain-pypi-ref:
 
-Specifying a different database
--------------------------------
+Obtain the last package archive from pypi
+-----------------------------------------
 
-This is done by modifying the DATABASES dictionary in your local_settings.py
-file (create it in Authentic project directory); for example::
+Download the archive on http://pypi.python.org/pypi/authentic2/.
 
- DATABASES['default'] = {
-   'ENGINE': 'django.db.backends.postgresql',
-   'NAME': 'authentic',
-   'USER': 'admindb',
-   'PASSWORD': 'foobar',
-   'HOST': 'db.example.com',
-   'PORT': '', # empty string means default value
- }
+Then, you can install it directly from the archive using pip::
 
-You should refer to the Django documentation on databases settings at
-http://docs.djangoproject.com/en/dev/ref/settings/#databases for all
-the details.
+   pip install authentic2-x.z.y.tar.gz
 
-How to upgrade to a new version of authentic ?
-----------------------------------------------
+or easy_install::
 
-Authentic stores all its data in a relational database as specified in its
-settings.py or local_settings.py file. So in order to upgrade to a new version
-of authentic you have to update your database schema using the
-migration command — you will need to have installed the dependency
-django-south, see the beginning of this README file.::
+   easy_install authentic2-x.z.y.tar.gz
 
-  python ./manage.py migrate
+You can now run Authentic from the installation directory, e.g.::
 
-Then you will need to create new tables if there are.::
+   python /usr/local/lib/python2.6/site-packages/authentic2-x.y.z-py2.6.egg/authentic2/manage.py syncdb --migrate
+   python /usr/local/lib/python2.6/site-packages/authentic2-x.y.z-py2.6.egg/authentic2/manage.py runserver
 
-  python ./manage.py syncdb
+You should see the following output::
 
-DEBUG Mode by default, static files and the Django debug toolbar dependency ?
------------------------------------------------------------------------------
+  Validating models...
+  0 errors found
 
-By default, Authentic 2 is in the DEBUG mode. As a matter of fact, static
-files are only served by the Django development server when the project is
-run in the DEBUG mode.
+  Django version 1.4, using settings 'authentic.settings'
+  Development server is running at http://127.0.0.1:8000/
+  Quit the server with CONTROL-C.
 
-Then, we made this temporary choice (DEBUG mode by default) because most
-of the users will begin with Authentic 2 using the Django development server
-and we want to avoid that people have a bad first impression because static
-files would not be served.
+  You can access the running application on http://127.0.0.1:8000/
 
-In production, the Django development server should not be used and a
-dedicated server should be used to serve the static files.
+You may not want to install the authentic2 package or you may want to manage the dependencies
+_____________________________________________________________________________________________
 
-In the DEBUG mode, the Django Debug Toolbar is used. Then, by default,
-Authentic 2 is also dependant of this module. Find more information on
-https://github.com/django-debug-toolbar/django-debug-toolbar#readme.
+Then, extract the archive::
+
+   tar xzvf authentic2-x.z.y.tar.gz
+   cd authentic2-x.z.y
+
+You can now install the dependencies by hands or use pypi to install them as
+follows, either::
+
+   pip install django django-profiles south django-authopenid django-debug-toolbar
+
+or using the dependencies version requirements::
+
+   python setup.py egg_info
+   pip install -r authentic2.egg-info/requires.txt
+
+Then run Authentic from the extracted directory::
+
+   python authentic2/manage.py syncdb --migrate
+   python authentic2/manage.py runserver
+
+You should see the following output::
+
+  Validating models...
+  0 errors found
+
+  Django version 1.4, using settings 'authentic.settings'
+  Development server is running at http://127.0.0.1:8000/
+  Quit the server with CONTROL-C.
+
+  You can access the running application on http://127.0.0.1:8000/
+
+.. _obtain-git-ref:
+
+Obtain the last sources from the Git repository
+-----------------------------------------------
+
+Clone the repository::
+
+   git clone http://repos.entrouvert.org/authentic.git
+
+Then, you can install it directly using pip::
+
+   pip install ./authentic
+
+or easy_install::
+
+   easy_install ./authentic
+
+You can now run Authentic from the installation directory, e.g.::
+
+   python /usr/local/lib/python2.6/site-packages/authentic2-x.y.z-py2.6.egg/authentic2/manage.py syncdb --migrate
+   python /usr/local/lib/python2.6/site-packages/authentic2-x.y.z-py2.6.egg/authentic2/manage.py runserver
+
+You should see the following output::
+
+  Validating models...
+  0 errors found
+
+  Django version 1.4, using settings 'authentic.settings'
+  Development server is running at http://127.0.0.1:8000/
+  Quit the server with CONTROL-C.
+
+  You can access the running application on http://127.0.0.1:8000/
+
+You may not want to install the authentic2 package or you may want to manage the dependencies
+_____________________________________________________________________________________________
+
+Then, extract the archive::
+
+   cd authentic
+
+You can now install the dependencies by hands or use pypi to install them as
+follows, either::
+
+   pip install django django-profiles south django-authopenid django-debug-toolbar
+
+or using the dependencies version requirements::
+
+   python setup.py egg_info
+   pip install -r authentic2.egg-info/requires.txt
+
+Then run Authentic::
+
+   python authentic2/manage.py syncdb --migrate
+   python authentic2/manage.py runserver
+
+You should see the following output::
+
+  Validating models...
+  0 errors found
+
+  Django version 1.4, using settings 'authentic.settings'
+  Development server is running at http://127.0.0.1:8000/
+  Quit the server with CONTROL-C.
+
+  You can access the running application on http://127.0.0.1:8000/
