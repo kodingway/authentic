@@ -12,4 +12,5 @@ include AUTHORS.txt
 include authentic2/vendor/oath/TODO
 include authentic2/vendor/totp_js/README.rst
 include diagnose.py
+include ez_setup.py
 include authentic2/auth2_auth/auth2_ssl/authentic_ssl.vhost
