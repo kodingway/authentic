@@ -11,6 +11,8 @@ Authentic 2 is under the GNU AGPL version 3 licence.
 It has support for SAMLv2 thanks to Lasso, a free (GNU GPL)
 implementation of the Liberty Alliance specifications.
 
+Full documentation available on http://packages.python.org/authentic2.
+
 Features
 --------
 
@@ -32,77 +34,194 @@ support.
 Installation
 ============
 
-Dependencies
-------------
+Authentic 2 installation script handles all the dependencies, except Lasso,
+relying on the Setuptools and the pypi repository.
 
-You must install the following packages to use Authentic
+To run Authentic 2 you need to install Lasso >=2.3.6. You can obtain Lasso
+from:
 
- * Python Lasso binding 2.3.6::
+- From sources: http://lasso.entrouvert.org/download
+- Debian based distribution: http://deb.entrouvert.org/
 
-   From sources: http://lasso.entrouvert.org/download
-   Debian based distribution: http://deb.entrouvert.org/
+The other Authentic 2 dependencies are:
 
- * Django 1.4::
+- django >= 1.3
+- django-profiles >= 0.2
+- south >= 0.7.3
+- django-authopenid >= 0.9.6
+- django-debug-toolbar >= 0.9.0
 
-   From sources: http://www.djangoproject.com/download/1.4/tarball/
-
- * Django-authopenid 0.9.6::
-
-   From sources: http://bitbucket.org/benoitc/django-authopenid/downloads
-
- * Django-south 0.7.3::
-
-   From sources:: http://south.aeracode.org/docs/installation.html
-
- * Django-profiles 0.2::
-
-   From sources:: http://pypi.python.org/pypi/django-profiles
-
-You install all the django libraries quickly using pip::
-
-   pip install django django-profiles django-authopenid south
-
-or easy_install::
-
-   easy_install django django-profiles django-authopenid south
-
-**Dependencies in DEBUG mode (Default mode)**
-
- * Django Debug Toolbar::
-
-   From sources:: https://github.com/django-debug-toolbar/django-debug-toolbar
+Install Authentic directly from pypi
+------------------------------------
 
 Using pip::
 
-   pip install django-debug-toolbar
+   pip install authentic2
 
 or easy_install::
 
-   easy_install django-debug-toolbar
+   easy_install authentic2
 
-Quick Start
------------
+You can now run Authentic from the installation directory, e.g.::
 
-Then launch the following commands::
-
-  python manage.py syncdb --migrate
-  python manage.py collectstatic # Not necessary in DEBUG mode
-  python manage.py runserver
+   python /usr/local/lib/python2.6/site-packages/authentic2-x.y.z-py2.6.egg/authentic2/manage.py syncdb --migrate
+   python /usr/local/lib/python2.6/site-packages/authentic2-x.y.z-py2.6.egg/authentic2/manage.py runserver
 
 You should see the following output::
 
   Validating models...
   0 errors found
 
-  Django version 1.3, using settings 'authentic.settings'
+  Django version 1.4, using settings 'authentic.settings'
   Development server is running at http://127.0.0.1:8000/
   Quit the server with CONTROL-C.
 
   You can access the running application on http://127.0.0.1:8000/
 
+Obtain the last package archive from pypi
+-----------------------------------------
+
+Download the archive on http://pypi.python.org/pypi/authentic2/.
+
+Then, you can install it directly from the archive using pip::
+
+   pip install authentic2-x.z.y.tar.gz
+
+or easy_install::
+
+   easy_install authentic2-x.z.y.tar.gz
+
+You can now run Authentic from the installation directory, e.g.::
+
+   python /usr/local/lib/python2.6/site-packages/authentic2-x.y.z-py2.6.egg/authentic2/manage.py syncdb --migrate
+   python /usr/local/lib/python2.6/site-packages/authentic2-x.y.z-py2.6.egg/authentic2/manage.py runserver
+
+You should see the following output::
+
+  Validating models...
+  0 errors found
+
+  Django version 1.4, using settings 'authentic.settings'
+  Development server is running at http://127.0.0.1:8000/
+  Quit the server with CONTROL-C.
+
+  You can access the running application on http://127.0.0.1:8000/
+
+You may not want to install the authentic2 package or you may want to manage the dependencies
+_____________________________________________________________________________________________
+
+Then, extract the archive::
+
+   tar xzvf authentic2-x.z.y.tar.gz
+   cd authentic2-x.z.y
+
+You can now install the dependencies by hands or use pypi to install them as
+follows, either::
+
+   pip install django django-profiles south django-authopenid django-debug-toolbar
+
+or using the dependencies version requirements::
+
+   python setup.py egg_info
+   pip install -r authentic2.egg-info/requires.txt
+
+Then run Authentic from the extracted directory::
+
+   python authentic2/manage.py syncdb --migrate
+   python authentic2/manage.py runserver
+
+You should see the following output::
+
+  Validating models...
+  0 errors found
+
+  Django version 1.4, using settings 'authentic.settings'
+  Development server is running at http://127.0.0.1:8000/
+  Quit the server with CONTROL-C.
+
+  You can access the running application on http://127.0.0.1:8000/
+
+Obtain the last sources from the Git repository
+-----------------------------------------------
+
+Clone the repository::
+
+   git clone http://repos.entrouvert.org/authentic.git
+
+Then, you can install it directly using pip::
+
+   pip install ./authentic
+
+or easy_install::
+
+   easy_install ./authentic
+
+You can now run Authentic from the installation directory, e.g.::
+
+   python /usr/local/lib/python2.6/site-packages/authentic2-x.y.z-py2.6.egg/authentic2/manage.py syncdb --migrate
+   python /usr/local/lib/python2.6/site-packages/authentic2-x.y.z-py2.6.egg/authentic2/manage.py runserver
+
+You should see the following output::
+
+  Validating models...
+  0 errors found
+
+  Django version 1.4, using settings 'authentic.settings'
+  Development server is running at http://127.0.0.1:8000/
+  Quit the server with CONTROL-C.
+
+  You can access the running application on http://127.0.0.1:8000/
+
+You may not want to install the authentic2 package or you may want to manage the dependencies
+_____________________________________________________________________________________________
+
+Then, extract the archive::
+
+   cd authentic
+
+You can now install the dependencies by hands or use pypi to install them as
+follows, either::
+
+   pip install django django-profiles south django-authopenid django-debug-toolbar
+
+or using the dependencies version requirements::
+
+   python setup.py egg_info
+   pip install -r authentic2.egg-info/requires.txt
+
+Then run Authentic::
+
+   python authentic2/manage.py syncdb --migrate
+   python authentic2/manage.py runserver
+
+You should see the following output::
+
+  Validating models...
+  0 errors found
+
+  Django version 1.4, using settings 'authentic.settings'
+  Development server is running at http://127.0.0.1:8000/
+  Quit the server with CONTROL-C.
+
+  You can access the running application on http://127.0.0.1:8000/
+
+How to upgrade to a new version of authentic ?
+==============================================
+
+Authentic store all its data in a relational database as specified in its
+settings.py or local_settings.py file. So in order to upgrade to a new version
+of authentic you have to update your database schema using the
+migration command — you will need to have installed the dependency django-south,
+see the beginning of this README file.::
+
+  python ./manage.py migrate
+
+Then you will need to create new tables if there are.::
+
+  python ./manage.py syncdb
 
 Specifying a different database
--------------------------------
+===============================
 
 This is done by modifying the DATABASES dictionary in your local_settings.py file
 (create it in Authentic project directory); for example::
@@ -119,21 +238,6 @@ This is done by modifying the DATABASES dictionary in your local_settings.py fil
 You should refer to the Django documentation on databases settings at
 http://docs.djangoproject.com/en/dev/ref/settings/#databases for all
 the details.
-
-How to upgrade to a new version of authentic ?
-----------------------------------------------
-
-Authentic store all its data in a relational database as specified in its
-settings.py or local_settings.py file. So in order to upgrade to a new version
-of authentic you have to update your database schema using the
-migration command — you will need to have installed the dependency django-south,
-see the beginning of this README file.::
-
-  python ./manage.py migrate
-
-Then you will need to create new tables if there are.::
-
-  python ./manage.py syncdb
 
 Using Authentic with an LDAP directory
 ======================================
