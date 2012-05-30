@@ -32,12 +32,13 @@ def load_one_entity(tree, options, sp_policy=None, idp_policy=None):
     entity_id = tree.get(ENTITY_ID)
     organization = tree.find(ORGANIZATION)
     name, org = None, None
-    if organization:
+    if organization is not None:
         organization_display_name = organization.find(ORGANIZATION_DISPLAY_NAME)
         organization_name = organization.find(ORGANIZATION_NAME)
-        org = organization_display_name or organization_name
-        if org is not None:
-            name = org.text
+        if organization_display_name is not None:
+            name = organization_display_name.text
+        elif organization_name is not None:
+            name = organization_name.text
     if not name:
         name = entity_id
     idp, sp = False, False
