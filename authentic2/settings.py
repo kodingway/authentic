@@ -128,6 +128,11 @@ INSTALLED_APPS = (
     'authentic2.attribute_aggregator',
 )
 
+DISCO_SERVICE_NAME = "http://www.identity-hub.com/disco_service/disco"
+DISCO_RETURN_ID_PARAM = "entityID"
+SHOW_DISCO_IN_MD = False
+USE_DISCO_SERVICE = False
+
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 LOGIN_URL = '/login'

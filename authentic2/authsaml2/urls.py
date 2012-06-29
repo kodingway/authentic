@@ -1,9 +1,12 @@
+import settings
+
 from django.conf.urls.defaults import patterns
 
 from authentic2.authsaml2.saml2_endpoints import metadata, sso, finish_federation, \
     singleSignOnArtifact, singleSignOnPost, sp_slo, logout, singleLogoutReturn, \
     singleLogoutSOAP, singleLogout, federationTermination, manageNameIdReturn, \
-    manageNameIdSOAP, manageNameId, delete_federation
+    manageNameIdSOAP, manageNameId, delete_federation, redirect_to_disco, \
+    disco_response
 
 urlpatterns = patterns('',
     (r'^metadata$', metadata),
@@ -33,3 +36,14 @@ urlpatterns = patterns('',
     # Receive request from Redirect IdP initiated
     (r'^delete_federation$', delete_federation),
 )
+
+try:
+    if settings.USE_DISCO_SERVICE:
+        urlpatterns += patterns('',
+            #Send idp discovery request
+            (r'^redirect_to_disco$', redirect_to_disco),
+            #receive idp discovery response
+            (r'^discoveryReturn$', disco_response),
+        )
+except:
+    pass

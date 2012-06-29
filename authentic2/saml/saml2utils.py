@@ -97,6 +97,10 @@ class Saml2Metadata(object):
     ASSERTION_CONSUMER_SERVICE = 'AssertionConsumerService'
     PROTOCOL_SUPPORT_ENUMERATION = 'protocolSupportEnumeration'
     KEY_DESCRIPTOR = 'KeyDescriptor'
+    EXTENSIONS = 'Extensions'
+    DISCOVERY_RESPONSE = 'DiscoveryResponse'
+    DISCOVERY_NS = 'urn:oasis:names:tc:SAML:profiles:SSO:idp-discovery-protocol'
+    DISCOVERY_BINDING = 'urn:oasis:names:tc:SAML:profiles:SSO:idp-discovery-protocol'
 
     sso_services = ( ARTIFACT_RESOLUTION_SERVICE, SINGLE_LOGOUT_SERVICE,
             MANAGE_NAME_ID_SERVICE )
@@ -162,6 +166,8 @@ class Saml2Metadata(object):
                 self.add_keyinfo(options['encryption_key'], 'encryption')
             if 'key' in options:
                 self.add_keyinfo(options['key'], None)
+            if 'disco' in options:
+                self.add_disco_extension(options['disco'])
         assertion_consumer_idx = 1
         for service in listing:
             selected = [ row for row in map if row[0] == service ]
@@ -218,6 +224,20 @@ class Saml2Metadata(object):
             self.tb.end(self.IDP_SSO_DESCRIPTOR)
         self.tb.end(self.ENTITY_DESCRIPTOR)
         return self.tb.close()
+
+    def add_disco_extension(self, disco_return_url):
+        self.tb.start(self.EXTENSIONS, {})
+        self.tb.pushNamespace(self.DISCOVERY_NS)
+        index = 1
+        for url in disco_return_url:
+            attrib = {'Binding': self.DISCOVERY_BINDING,
+                'Location': self.url_prefix + url,
+                'index': str(index)}
+            self.tb.start(self.DISCOVERY_RESPONSE, attrib)
+            self.tb.end(self.DISCOVERY_RESPONSE)
+            index += 1
+        self.tb.popNamespace()
+        self.tb.end(self.EXTENSIONS)
 
     def __str__(self):
         return '<?xml version="1.0"?>\n' + etree.tostring(self.root_element())

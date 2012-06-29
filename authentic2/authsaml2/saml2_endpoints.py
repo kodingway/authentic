@@ -2,6 +2,7 @@
 
 import datetime
 import logging
+import urlparse
 
 import lasso
 
@@ -20,6 +21,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils.translation import ugettext as _
+from django.utils.http import urlquote
 
 from authentic2.saml.common import get_idp_list, load_provider, \
     return_saml2_request, get_saml2_request_message, get_saml2_query_request, \
@@ -76,7 +78,11 @@ metadata_map = (
             '/manageNameId', '/manageNameIdReturn'),
 )
 metadata_options = {'key': settings.SAML_SIGNATURE_PUBLIC_KEY}
-
+try:
+    if settings.SHOW_DISCO_IN_MD:
+        metadata_options['disco'] = ('/discoveryReturn', )
+except:
+    pass
 
 @cache_and_validate(settings.LOCAL_METADATA_CACHE_TIMEOUT)
 def metadata(request):
@@ -84,6 +90,60 @@ def metadata(request):
     logger.info('metadata: return metadata')
     return HttpResponse(get_metadata(request, request.path),
             mimetype='text/xml')
+
+
+##############################################################
+#
+# Discovery service Requester
+# See Identity Provider Discovery Service Protocol and Profile
+# OASIS Committee Specification 01
+# 27 March 2008
+#
+##############################################################
+def build_discovery_url(request):
+    target = None
+    returnIDParam = None
+    try:
+        target = settings.DISCO_SERVICE_NAME
+        returnIDParam = settings.DISCO_RETURN_ID_PARAM
+    except:
+        logger.error('build_discovery_url: missing parameter in settings')
+        return None
+    _return = urlquote(request.build_absolute_uri(reverse(disco_response)))
+    query = 'entityID=%s&return=%s&returnIDParam=%s' \
+        % (urlquote(request.build_absolute_uri(reverse(metadata))),
+            _return, returnIDParam)
+    try:
+        scheme, netloc, path, params, _, fragment = urlparse.urlparse(target)
+        return urlparse.urlunparse((scheme, netloc, path, params, query,
+            fragment))
+    except Exception, e:
+        logger.error('build_discovery_url: Exception %s' % str(e))
+        return None
+
+
+def redirect_to_disco(request):
+    register_next_target(request)
+    url = build_discovery_url(request)
+    if not url:
+        return error_page(request,
+            _('redirect_to_disco: unable to build disco request'),
+                logger=logger)
+    return HttpResponseRedirect(url)
+
+
+def disco_response(request):
+    if not request.method == "GET":
+        message = _('disco_response: HTTP request not supported %s' \
+            % request.method)
+        return error_page(request, message, logger=logger)
+    provider = request.GET.get(settings.DISCO_RETURN_ID_PARAM, '')
+    if provider:
+        request.session['prefered_idp'] = provider
+        logger.info('disco_response: discovered %s' % provider)
+    else:
+        logger.warn('disco_response: No provider discovered')
+    return HttpResponseRedirect(get_registered_url(request))
 
 
 ###
