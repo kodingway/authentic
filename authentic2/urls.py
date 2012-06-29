@@ -63,3 +63,11 @@ if getattr(settings, 'IDP_OPENID', False):
 if 'authentic2.auth2_auth.auth2_oath' in settings.INSTALLED_APPS:
     urlpatterns += patterns('',
             (r'^oath/', include('authentic2.auth2_auth.auth2_oath.urls')))
+
+try:
+    if settings.DISCO_SERVICE:
+        urlpatterns += patterns('',
+            (r'^disco_service/', include('disco_service.disco_responder')),
+        )
+except:
+    pass

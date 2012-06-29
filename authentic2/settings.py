@@ -126,7 +126,11 @@ INSTALLED_APPS = (
     'authentic2.auth2_auth.auth2_ssl',
     'south',
     'authentic2.attribute_aggregator',
+    'authentic2.disco_service',
 )
+
+DISCO_SERVICE = True
+DISCO_USE_OF_METADATA = False
 
 DISCO_SERVICE_NAME = "http://www.identity-hub.com/disco_service/disco"
 DISCO_RETURN_ID_PARAM = "entityID"
