@@ -64,7 +64,7 @@ def get_disco_return_url_from_metadata(entity_id):
     try:
         liberty_provider = LibertyProvider.objects.get(entity_id=entity_id)
         liberty_provider.service_provider
-    except LibertyProvider.DoesNotExist:
+    except:
         logger.warn("get_disco_return_url_from_metadata: "
             "unknown service provider %s" \
                 % entity_id)
