@@ -99,8 +99,8 @@ def get_disco_return_url_from_metadata(entity_id):
     logger.debug("get_disco_return_url_from_metadata: "
         "found endpoint with index %s" \
             % str(value))
-    if 'Location' in endpoint.attributes.keys():
-        location = endpoint.attributes['Location'].value
+    if 'Location' in ep.attributes.keys():
+        location = ep.attributes['Location'].value
         logger.debug("get_disco_return_url_from_metadata: "
             "location is %s" \
                 % location)
