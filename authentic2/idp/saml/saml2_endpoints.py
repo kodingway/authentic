@@ -343,6 +343,7 @@ def sso(request):
             "query string")
     logger.debug('sso: processing sso request %r' % message)
     policy = None
+    signed = True
     while True:
         try:
             login.processAuthnRequestMsg(message)
@@ -386,10 +387,12 @@ def sso(request):
                         logger=logger)
                 logger.info('sso: provider %s loaded with success' \
                     % provider_id)
+            if provider_loaded.service_provider.policy.authn_request_signature_check_hint == lasso.PROFILE_SIGNATURE_VERIFY_HINT_IGNORE:
+                    signed = False
             login.setSignatureVerifyHint(
                     provider_loaded.service_provider.policy \
                             .authn_request_signature_check_hint)
-    if not check_destination(request, login.request):
+    if signed and not check_destination(request, login.request):
         logger.error('sso: wrong or absent destination')
         return return_login_error(request, login,
                 AUTHENTIC_STATUS_CODE_MISSING_DESTINATION)
