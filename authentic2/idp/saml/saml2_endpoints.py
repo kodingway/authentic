@@ -417,7 +417,7 @@ def sso(request):
             return finish_sso(request, login)
     else:
         logger.debug('sso: no nameID policy format')
-        nid_format = policy.default_name_id_format
+        nid_format = policy.default_name_id_format or 'transient'
         logger.debug('sso: set nameID policy format %s' % nid_format)
         name_id_policy.format = nidformat_to_saml2_urn(nid_format)
     return sso_after_process_request(request, login, nid_format=nid_format)
