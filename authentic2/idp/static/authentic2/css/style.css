@@ -299,3 +299,29 @@ h4 + div, div#profile {
 .actions form {
 	display: inline;
 }
+
+/* messages blocks */
+ul.messages > li {
+  display: block;
+  padding: 3px;
+  padding: 10px;
+  border: 1px solid black;
+  margin-top: 10px;
+  border-radius: 4px;
+  font-style: italic;
+}
+
+ul.messages > li.info {
+  background: #0044cc;
+  color: #ffffff;
+}
+
+ul.messages > li.warning {
+  background: #f89406;
+  color: black;
+}
+
+ul.messages >li.error {
+  background: #bd362f;
+  color: black;
+}
