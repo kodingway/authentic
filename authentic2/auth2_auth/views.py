@@ -17,6 +17,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.template.loader import render_to_string
+from django.views.generic.base import TemplateView
 
 from authentic2.saml.common import *
 from authentic2.auth2_auth import NONCE_FIELD_NAME
@@ -171,3 +172,8 @@ def redirect_to_login(request, next=None, nonce=None, keep_qs=False):
     if nonce is not None:
         qs.update({ NONCE_FIELD_NAME: nonce })
     return HttpResponseRedirect('/login?%s' % urlencode(qs))
+
+class SslErrorView(TemplateView):
+    template_name = 'error_ssl.html'
+
+ssl = SslErrorView.as_view()

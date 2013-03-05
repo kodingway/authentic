@@ -1,5 +1,4 @@
 from django.conf.urls.defaults import *
-from django.views.generic.simple import direct_to_template
 import saml.saml2_endpoints
 import saml.idff12_endpoints
 from django.conf import settings

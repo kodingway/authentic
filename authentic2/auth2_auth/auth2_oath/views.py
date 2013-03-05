@@ -4,8 +4,7 @@ import random
 import base64
 
 from django.contrib.auth.models import User
-from django.views.generic.simple import redirect_to
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, HttpResponseRedirect
 from django.template import RequestContext
 from django.template.loader import render_to_string
 
@@ -23,7 +22,7 @@ def new_totp_secret(request, next='/'):
     secret.key = key
     secret.save()
     next = request.REQUEST.get('next',next)
-    return redirect_to(request, next)
+    return HttpResponseRedirect(next_url)
 
 def delete_totp_secret(request, next='/'):
     if request.user is None or not hasattr(request.user, '_meta') \
@@ -34,7 +33,7 @@ def delete_totp_secret(request, next='/'):
     except models.OATHTOTPSecret.DoesNotExist:
         pass
     next = request.REQUEST.get('next',next)
-    return redirect_to(request, next)
+    return HttpResponseRedirect(next_url)
 
 def totp_profile(request, next='', template_name='oath/totp_profile.html'):
     if request.user is None or not hasattr(request.user, '_meta'):

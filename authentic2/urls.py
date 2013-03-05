@@ -1,7 +1,6 @@
 from django.conf.urls.defaults import *
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
-import profiles.views
 
 from authentic2.idp.decorators import prevent_access_to_transient_users
 
@@ -36,13 +35,9 @@ urlpatterns = patterns('',
     (r'^profile$',
         prevent_access_to_transient_users(authentic2.idp.views.profile), {},
         'account_management'),
-    url(r'^edit_profile$',
-        prevent_access_to_transient_users(profiles.views.edit_profile),
-        kwargs={'success_url': '/profile' },
+    url(r'^edit_profile$', 'authentic2.views.edit_profile',
         name='profiles_edit_profile'),
-    url(r'^create_profile$',
-        prevent_access_to_transient_users(profiles.views.create_profile),
-        kwargs={'success_url': '/profile' },
+    url(r'^create_profile$', 'authentic2.views.create_profile',
         name='profiles_create_profile'),
 )
 
