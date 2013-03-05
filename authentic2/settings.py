@@ -312,7 +312,7 @@ LOGGING = {
     },
     'root': {
             'handlers': ['console', 'local_file'],
-            'level': 'DEBUG',
+            'level': 'INFO',
     }
 }
 

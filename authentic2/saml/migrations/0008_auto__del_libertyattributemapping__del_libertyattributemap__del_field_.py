@@ -6,6 +6,9 @@ from django.db import models
 
 class Migration(SchemaMigration):
     
+    depends_on = (
+            ('idp', '0004_auto__add_attributepolicy__add_attributelist__add_attributeitem.py'),
+    )
     def forwards(self, orm):
         
         # Deleting model 'LibertyAttributeMapping'
