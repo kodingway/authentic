@@ -97,10 +97,10 @@ def inside(request):
 {% trans "Logout" %}
     <ul>
     <li>{% trans "Global Logout: " %}<a href="/authsaml2/logout/{{ provider_active_session.entity_id }}/">{{ provider_active_session.entity_id }}</a></li>
-    <li><p><a href="{% url auth_logout %}">{% trans "Local log out" %}</a></p></li>
+    <li><p><a href="{% url 'auth_logout' %}">{% trans "Local log out" %}</a></p></li>
     </ul>
 {% else %}
-<a href="{% url auth_logout %}">{% trans "Log out" %}</a>
+<a href="{% url 'auth_logout' %}">{% trans "Log out" %}</a>
 {% endif %}
 
 Now in idp/__init__.py

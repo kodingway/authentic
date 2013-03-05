@@ -48,7 +48,7 @@
 	{% endif %}
 
 	<div class="login">
-        <form name="fregister" action="{% url user_register %}" method="POST">
+        <form name="fregister" action="{% url 'user_register' %}" method="POST">
             {% csrf_token %}
             <input type="hidden" name="next" value="{{ next }}" />
 			<fieldset>
@@ -64,7 +64,7 @@
 
 
 	<div class="login">
-        <form name="fverify" action="{% url user_register %}" method="POST">
+        <form name="fverify" action="{% url 'user_register' %}" method="POST">
             {% csrf_token %}
             <input type="hidden" name="next" value="{{ next }}" />
 			<fieldset>

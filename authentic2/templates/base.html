@@ -29,7 +29,7 @@
           <p>{% blocktrans with request.user.username as username %}
              You are authenticated as {{ username }}.
              {% endblocktrans %}
-          <a id="logout" href="{% url auth_logout %}">{% trans "Logout" %}</a></p>
+          <a id="logout" href="{% url 'auth_logout' %}">{% trans "Logout" %}</a></p>
         </div>
         {% endif %}
         {% block content %}{% endblock %}

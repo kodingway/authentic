@@ -24,7 +24,7 @@
 <div class="login">
 
     <h2>{% trans "Dissociate OpenID URL" %}</h2>
-    <form name="fopenid" action="{% url user-dissociate %}" method="post">
+    <form name="fopenid" action="{% url 'user-dissociate' %}" method="post">
     {% csrf_token %}
     <input type="hidden" name="next" value="{{ next }}" />
 	{{ form.openid_url }}
