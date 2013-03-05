@@ -1,7 +1,9 @@
+import logging
+
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.generic.edit import CreateView, UpdateView
-import logging
+
 from authentic2.idp.models import UserProfile
 from authentic2.idp.decorators import prevent_access_to_transient_users
 

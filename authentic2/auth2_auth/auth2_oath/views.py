@@ -1,9 +1,7 @@
 import urllib
-import string
 import random
 import base64
 
-from django.contrib.auth.models import User
 from django.http import HttpResponseBadRequest, HttpResponseRedirect
 from django.template import RequestContext
 from django.template.loader import render_to_string
@@ -13,7 +11,7 @@ import authentic2.vendor.totp_js.totp_bookmarklet as totp_bookmarklet
 
 _hexachars = '0123456789abcdef'
 
-def new_totp_secret(request, next='/'):
+def new_totp_secret(request, next_url='/'):
     if request.user is None or not hasattr(request.user, '_meta') \
        or request.method != 'POST':
         return HttpResponseBadRequest()
@@ -21,10 +19,10 @@ def new_totp_secret(request, next='/'):
     secret, _ = models.OATHTOTPSecret.objects.get_or_create(user=request.user)
     secret.key = key
     secret.save()
-    next = request.REQUEST.get('next',next)
+    next_url = request.REQUEST.get('next', next_url)
     return HttpResponseRedirect(next_url)
 
-def delete_totp_secret(request, next='/'):
+def delete_totp_secret(request, next_url='/'):
     if request.user is None or not hasattr(request.user, '_meta') \
        or request.method != 'POST':
         return HttpResponseBadRequest()
@@ -32,14 +30,14 @@ def delete_totp_secret(request, next='/'):
         models.OATHTOTPSecret.objects.filter(user=request.user).delete()
     except models.OATHTOTPSecret.DoesNotExist:
         pass
-    next = request.REQUEST.get('next',next)
+    next_url = request.REQUEST.get('next', next_url)
     return HttpResponseRedirect(next_url)
 
-def totp_profile(request, next='', template_name='oath/totp_profile.html'):
+def totp_profile(request, next_url='', template_name='oath/totp_profile.html'):
     if request.user is None or not hasattr(request.user, '_meta'):
         return ''
-    if next:
-        next = '?next=%s' % urllib.quote(next)
+    if next_url:
+        next_url = '?next=%s' % urllib.quote(next_url)
     google_authenticator, key, bookmarklet = '', '', ''
     try:
         secret = models.OATHTOTPSecret.objects.get(user=request.user)
@@ -55,6 +53,6 @@ def totp_profile(request, next='', template_name='oath/totp_profile.html'):
             { 'key': key, 
               'bookmarklet': bookmarklet, 
               'google_authenticator': google_authenticator,
-              'next': next,
+              'next': next_url,
               'base': '/oath'},
             RequestContext(request))

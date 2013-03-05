@@ -5,7 +5,7 @@ from django_authopenid.forms import OpenidSigninForm
 from django_authopenid import DjangoOpenIDStore
 from django_authopenid.models import UserAssociation
 from django_authopenid.utils import *
-from django_authopenid.views import associate_failure, complete
+from django_authopenid.views import associate_failure
 from django_authopenid.views import _build_context, signin_failure, not_authenticated
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -17,7 +17,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.encoding import smart_unicode
-from django.views.decorators.csrf import csrf_exempt, csrf_protect
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 
 from openid.consumer.consumer import Consumer, SUCCESS, CANCEL, FAILURE, SETUP_NEEDED
@@ -327,7 +327,6 @@ def associate_success(request, identity_url, openid_response,
                 user_id=request.user.id
     )
     uassoc.save(send_email=send_email)
-    redirect_to = '/accounts/openid/associate'
     nb_associated_openids, associated_openids = get_associate_openid(request.user)
     msg = ["Your Openid has been added"]
     return render_to_response("authopenid/associate.html",{
