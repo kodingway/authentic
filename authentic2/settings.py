@@ -121,9 +121,6 @@ INSTALLED_APPS = (
     'authentic2.idp.saml',
     'registration',
     'authentic2.auth2_auth',
-    'authentic2.auth2_auth.auth2_openid',
-    'authentic2.auth2_auth.auth2_oath',
-    'authentic2.auth2_auth.auth2_ssl',
     'south',
     'authentic2.attribute_aggregator',
     'authentic2.disco_service',
@@ -345,14 +342,16 @@ if AUTH_SAML2:
     DISPLAY_MESSAGE_ERROR_PAGE = True
 
 if AUTH_OPENID:
-    INSTALLED_APPS += ('django_authopenid',)
+    INSTALLED_APPS += ('authentic2.auth2_auth.auth2_openid', 'django_authopenid',)
     AUTH_FRONTENDS += ('authentic2.auth2_auth.auth2_openid.backend.OpenIDFrontend',)
 
 if AUTH_SSL:
     AUTHENTICATION_BACKENDS += ('authentic2.auth2_auth.auth2_ssl.backend.SSLBackend',)
     AUTH_FRONTENDS += ('authentic2.auth2_auth.auth2_ssl.frontend.SSLFrontend',)
+    INSTALLED_APPS += ('authentic2.auth2_auth.auth2_ssl',)
 
 if AUTH_OATH:
+    INSTALLED_APPS += ('authentic2.auth2_auth.auth2_oath',)
     AUTHENTICATION_BACKENDS += ('authentic2.auth2_auth.auth2_oath.backend.OATHTOTPBackend',)
     AUTH_FRONTENDS += ('authentic2.auth2_auth.auth2_oath.frontend.OATHOTPFrontend',)
 
