@@ -16,6 +16,7 @@ handler500 = 'authentic2.views.server_error'
 urlpatterns = patterns('',
     (r'^', include('authentic2.auth2_auth.urls')),
     (r'^redirect/(.*)', 'authentic2.views.redirect'),
+    url(r'^accounts/password/change/done', 'authentic2.views.password_change_done'),
     url(r'^accounts/register/registration_success', 'authentic2.views.registration_success', name='registration_success'),
     url(r'^accounts/register',
        'registration.views.register',

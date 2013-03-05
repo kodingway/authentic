@@ -59,3 +59,8 @@ class CreateProfile(ProfileMixin, CreateView):
 
 edit_profile = prevent_access_to_transient_users(EditProfile.as_view())
 create_profile = prevent_access_to_transient_users(CreateProfile.as_view())
+
+def password_change_done(request):
+    '''Redirect user to homepage and display a success message'''
+    messages.info(request, _('Your password has been changed'))
+    return shortcuts_redirect('account_management')
