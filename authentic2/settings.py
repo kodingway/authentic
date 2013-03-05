@@ -165,17 +165,17 @@ AUTHENTICATION_BACKENDS = (
 # AUTHENTICATION_EVENT_EXPIRATION = 3600*24*7
 
 # SSL Authentication
-AUTH_SSL = True
+AUTH_SSL = False
 SSLAUTH_CREATE_USER = True
 
 # SAML2 Authentication
 AUTH_SAML2 = True
 
 # OpenID Authentication
-AUTH_OPENID = True
+AUTH_OPENID = False
 
 # OATH Authentication
-AUTH_OATH = True
+AUTH_OATH = False
 
 #############################
 # Identity Provider settings
