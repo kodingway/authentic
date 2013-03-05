@@ -328,8 +328,12 @@ except ImportError, e:
         pass
 
 if USE_DEBUG_TOOLBAR:
-    MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
-    INSTALLED_APPS += ('debug_toolbar',)
+    try:
+        import debug_toolbar
+        MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
+        INSTALLED_APPS += ('debug_toolbar',)
+    except ImportError:
+        print "Debug toolbar missing, not loaded"
 
 if AUTH_SAML2:
     INSTALLED_APPS += ('authentic2.authsaml2',)
