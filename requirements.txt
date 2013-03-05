@@ -1,2 +1,4 @@
 Django==1.5
-south
+south<0.8
+hg+https://bitbucket.org/LinnTroll/django-registration-1.5
+django-debug-toolbar<1.0.0
