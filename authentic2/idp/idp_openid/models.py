@@ -20,7 +20,7 @@ class TrustedRoot(models.Model):
         return unicode(self.trust_root)
 
 class Association(models.Model):
-    server_url = models.CharField(max_length=2047, blank=False)
+    server_url = models.CharField(max_length=768, blank=False)
     handle = models.CharField(max_length=255, blank=False)
     secret = PickledObjectField(editable=False)
     issued = models.DateTimeField(editable=False,
@@ -94,7 +94,7 @@ class NonceManager(models.Manager):
 
 class Nonce(models.Model):
     salt = models.CharField(max_length=40)
-    server_url = models.CharField(max_length=2047)
+    server_url = models.CharField(max_length=768)
     timestamp = models.IntegerField()
 
     objects = NonceManager()

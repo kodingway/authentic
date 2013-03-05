@@ -20,7 +20,7 @@ class Migration(SchemaMigration):
         # Adding model 'Association'
         db.create_table('idp_openid_association', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('server_url', self.gf('django.db.models.fields.CharField')(max_length=2047)),
+            ('server_url', self.gf('django.db.models.fields.CharField')(max_length=768)),
             ('handle', self.gf('django.db.models.fields.CharField')(max_length=255)),
             ('secret', self.gf('authentic2.saml.fields.PickledObjectField')()),
             ('issued', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
@@ -37,7 +37,7 @@ class Migration(SchemaMigration):
         db.create_table('idp_openid_nonce', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('salt', self.gf('django.db.models.fields.CharField')(max_length=40)),
-            ('server_url', self.gf('django.db.models.fields.CharField')(max_length=2047)),
+            ('server_url', self.gf('django.db.models.fields.CharField')(max_length=768)),
             ('timestamp', self.gf('django.db.models.fields.IntegerField')()),
         ))
         db.send_create_signal('idp_openid', ['Nonce'])
