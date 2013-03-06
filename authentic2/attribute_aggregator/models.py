@@ -26,6 +26,7 @@ from cPickle import loads, dumps
 from django.utils.translation import ugettext as _
 from django.db import models
 from django.contrib.auth.models import User
+from django.conf import settings
 try:
     import ldap
 except ImportError:
@@ -118,7 +119,7 @@ class UserAliasInSource(models.Model):
         max_length = 200)
     source = models.ForeignKey(AttributeSource,
         verbose_name = _('Attribute Source'))
-    user = models.ForeignKey(User,
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
         verbose_name = _("User"),
         related_name='user_alias_in_source')
 
@@ -255,8 +256,8 @@ class AttributeData:
 
 
 class UserAttributeProfile(models.Model):
-    user = models.OneToOneField(User, null=True, blank=True,
-        related_name='user_attribute_profile')
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, null=True,
+            blank=True, related_name='user_attribute_profile')
     data = models.TextField(null=True, blank=True)
 
     def add_data(self, data):

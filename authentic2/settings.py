@@ -115,6 +115,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.admin',
     'django.contrib.sites',
+    'authentic2',
     'authentic2.nonce',
     'authentic2.saml',
     'authentic2.idp',
@@ -159,6 +160,7 @@ AUTH_FRONTENDS = ( 'authentic2.auth2_auth.backend.LoginPasswordBackend',)
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
+AUTH_USER_MODEL = 'authentic2.User'
 
 # expiration in seconds of authentication events.
 # default: 1 week

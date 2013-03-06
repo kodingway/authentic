@@ -418,7 +418,7 @@ class LibertyIdentityDump(models.Model):
 
        Should be replaced in the future by direct reference to LassoFederation
        objects'''
-    user = models.ForeignKey(User, unique = True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, unique = True)
     identity_dump = models.TextField(blank = True)
 
 class SessionLinkedManager(models.Manager):
@@ -510,7 +510,7 @@ class LibertyAssertion(models.Model):
 class LibertyFederation(models.Model):
     """Store a federation, i.e. an identifier shared with another provider, be
        it IdP or SP"""
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
     idp_id = models.CharField(max_length=80)
     sp_id = models.CharField(max_length=80)
     name_id_qualifier = models.CharField(max_length = 150,

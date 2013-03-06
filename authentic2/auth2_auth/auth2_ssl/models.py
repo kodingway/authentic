@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 
 class DistinguishedName(models.Model):
     cn = models.CharField(max_length=255)
@@ -32,4 +32,4 @@ class ClientCertificate(models.Model):
     issuer = models.ForeignKey(DistinguishedName, related_name='issuer',
         blank=True, null=True)
     cert = models.TextField(blank=True)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)

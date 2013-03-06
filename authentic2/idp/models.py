@@ -1,10 +1,10 @@
 import lasso
 
 from django.db import models
-from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.utils.translation import ugettext as _
+from django.conf import settings
 
 
 from authentic2.attribute_aggregator.mapping import ATTRIBUTE_MAPPING, \
@@ -44,7 +44,7 @@ def get_user_consent_attributes(user, provider, attributes):
 
 
 class UserConsentAttributes(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     provider = generic.GenericForeignKey('content_type', 'object_id')
@@ -58,7 +58,7 @@ class UserConsentAttributes(models.Model):
 
 
 class UserProfile(models.Model):
-    user = models.ForeignKey(User, unique=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, unique=True)
     first_name = models.CharField(_('first name'),
             max_length=30,
             blank=True)
