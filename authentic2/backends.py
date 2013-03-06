@@ -81,7 +81,7 @@ class LDAPBackend():
 
                 try:
                     try:
-                        conn.simple_bind_s('cn=%s,%s' % (username, block['userdn']), password)
+                        conn.simple_bind_s('uid=%s,%s' % (username, block['userdn']), password)
 
                     except ldap.INVALID_CREDENTIALS:
                         log.debug('%s returned invalid credentials' % uri)
