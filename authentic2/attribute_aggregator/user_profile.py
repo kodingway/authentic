@@ -106,6 +106,8 @@ def get_attributes(user, definitions=None, source=None, **kwargs):
                 % (field_name, field.verbose_name))
             value = getattr(user_profile, field_name, None) or getattr(user, field_name, None)
             if value:
+                if callable(value):
+                    value = value()
                 logger.debug('get_attributes: found value %s' % value)
                 attr = {}
                 attr['definition'] = definition
