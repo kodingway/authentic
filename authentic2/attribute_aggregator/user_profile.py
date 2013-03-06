@@ -73,6 +73,9 @@ def get_attributes(user, definitions=None, source=None, **kwargs):
     data = []
     try:
         user_profile = user.get_profile()
+        field_names = set()
+        field_names.update(user_profile._meta.get_all_field_names())
+        field_names.update(user._meta.get_all_field_names())
         fields = []
         if definitions:
             for definition in definitions:
@@ -87,7 +90,7 @@ def get_attributes(user, definitions=None, source=None, **kwargs):
                     logger.debug('get_attributes: \
                         field name will be the definition')
                     field_name = definition
-                if field_name in user_profile._meta.get_all_field_names():
+                if field_name in field_names:
                     fields.append((field_name, definition))
                 else:
                     logger.debug('get_attributes: Field not found in profile')
@@ -95,13 +98,13 @@ def get_attributes(user, definitions=None, source=None, **kwargs):
             fields = [(field_name,
                         get_definition_from_profile_field_name(field_name)) \
                         for field_name \
-                            in user_profile._meta.get_all_field_names() \
+                            in field_names  \
                         if get_definition_from_profile_field_name(field_name)]
         for field_name, definition in fields:
             field = user_profile._meta.get_field_by_name(field_name)[0]
             logger.debug('get_attributes: found field %s aka %s' \
                 % (field_name, field.verbose_name))
-            value = getattr(user_profile, field_name)
+            value = getattr(user_profile, field_name, None) or getattr(user, field_name, None)
             if value:
                 logger.debug('get_attributes: found value %s' % value)
                 attr = {}
