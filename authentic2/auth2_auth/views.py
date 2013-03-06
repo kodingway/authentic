@@ -176,4 +176,4 @@ def redirect_to_login(request, next=None, nonce=None, keep_qs=False):
 class SslErrorView(TemplateView):
     template_name = 'error_ssl.html'
 
-ssl = SslErrorView.as_view()
+error_ssl = SslErrorView.as_view()

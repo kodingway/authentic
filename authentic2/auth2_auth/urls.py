@@ -25,5 +25,5 @@ if settings.AUTH_SSL:
         url(r'^sslauth/register/$',
             'authentic2.auth2_auth.auth2_ssl.views.register'),
         url(r'^error_ssl/$', 'authentic2.auth2_auth.views.error_ssl',
-            'error_ssl'),
+            name='error_ssl'),
     )
