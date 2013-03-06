@@ -7,7 +7,7 @@ import random
 log = logging.getLogger(__name__)
 
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 
 class LDAPBackendError(Exception):
@@ -81,7 +81,7 @@ class LDAPBackend():
 
                 try:
                     try:
-                        conn.simple_bind_s('uid=%s,%s' % (username, block['userdn']), password)
+                        conn.simple_bind_s('cn=%s,%s' % (username, block['userdn']), password)
 
                     except ldap.INVALID_CREDENTIALS:
                         log.debug('%s returned invalid credentials' % uri)
@@ -140,8 +140,8 @@ class LDAPBackend():
 
     def get_user(self, user_id):
         try:
-            return User.objects.get(pk=user_id)
-        except User.DoesNotExist:
+            return get_user_model().objects.get(pk=user_id)
+        except get_user_model().DoesNotExist:
             return None
 
 
@@ -162,10 +162,10 @@ class LDAPBackend():
 
     def _return_user(self, username, conn, block):
         try:
-            user = User.objects.get(username=username)
-        except User.DoesNotExist:
+            user = get_user_model().objects.get(username=username)
+        except get_user_model().DoesNotExist:
             log.info('User %s did not exist in Django database, creating' % username)
-            user = User(username=username, password='')
+            user = get_user_model()(username=username, password='')
             user.set_unusable_password()
             user.save()
 
