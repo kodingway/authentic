@@ -518,6 +518,7 @@ ATTRIBUTE_MAPPING = {
     "oid": "0.9.2342.19200300.100.1.1",
     "display_name": "uid userid",
     "alias": ['userid'],
+    "profile_field_name": 'get_short_name',
     "type": "http://www.w3.org/2001/XMLSchema#string",
     "syntax": "1.3.6.1.4.1.1466.115.121.1.15{256}",
 },
