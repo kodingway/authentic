@@ -221,6 +221,9 @@ class LDAPBackend():
                     if dn in result:
                         ldap_data[attr] = True
                         break
+        for key in ldap_data:
+            if isinstance(ldap_data[key], basestring):
+                ldap_data[key] = ldap_data[key].decode('utf-8')
         log.debug(str(ldap_data))
         for attr in ldap_data:
             if getattr(user, attr) != ldap_data[attr]:
@@ -232,10 +235,7 @@ class LDAPBackend():
         log.info('Data for user %s has changed, updating Django database' % username)
         log.debug('Setting attributes: %s' % str(ldap_data))
         for attr in ldap_data:
-            value = ldap_data[attr]
-            if isinstance(value, basestring):
-                value = value.decode('utf-8')
-            setattr(user, attr, value)
+            setattr(user, attr, ldap_data[attr])
         user.save()
         return user
 
