@@ -9,7 +9,11 @@ from django.core.mail import send_mail
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import (AbstractBaseUser, PermissionsMixin,
         BaseUserManager, SiteProfileNotAvailable)
+from django.contrib.auth import load_backend
 from django.utils.http import urlquote
+
+from idp.models import UserProfile
+
 
 class UserManager(BaseUserManager):
     def create_user(self, username, email=None, password=None, **extra_fields):
@@ -60,6 +64,8 @@ class AbstractUser(AbstractBaseUser, PermissionsMixin):
         help_text=_('Designates whether this user should be treated as '
                     'active. Unselect this instead of deleting accounts.'))
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+    backend = models.CharField(max_length=64, blank=True)
+    backend_id = models.CharField(max_length=256, blank=True)
 
     objects = UserManager()
 
@@ -122,6 +128,51 @@ class AbstractUser(AbstractBaseUser, PermissionsMixin):
             except (ImportError, ImproperlyConfigured):
                 raise SiteProfileNotAvailable
         return self._profile_cache
+
+    def get_backend(self):
+        return load_backend(self.backend)
+
+    def has_usable_password(self):
+        if self.backend:
+            backend = self.get_backend()
+            if hasattr(backend, 'has_usable_password'):
+                return backend.has_usable_password(self)
+        return super(AbstractUser, self).has_usable_password()
+
+    def set_password(self, raw_password):
+        if self.backend:
+            backend = self.get_backend()
+            if hasattr(backend, 'set_password'):
+                return backend.set_password(self, raw_password)
+        return super(AbstractUser, self).set_password(raw_password)
+
+    def check_password(self, raw_password):
+        if self.backend:
+            backend = self.get_backend()
+            if hasattr(backend, 'check_password'):
+                return backend.check_password(self, raw_password)
+        return super(AbstractUser, self).check_password(raw_password)
+
+    def save(self, *args, **kwargs):
+        if self.backend:
+            backend = self.get_backend()
+            if hasattr(backend, 'save'):
+                if backend.save(self, *args, **kwargs):
+                    return
+        super(AbstractUser, self).save(*args, **kwargs)
+        try:
+            profile, created = UserProfile.objects.get_or_create(user=self)
+            profile = self.get_profile()
+            if profile.first_name != self.first_name or \
+                profile.last_name != self.last_name or \
+                profile.email != self.email:
+                profile.first_name = self.first_name
+                profile.last_name = self.last_name
+                profile.email = self.email
+                profile.save()
+        except SiteProfileNotAvailable:
+            pass
+
 
 class User(AbstractUser):
     pass

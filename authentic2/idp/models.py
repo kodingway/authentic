@@ -75,13 +75,15 @@ class UserProfile(models.Model):
     postal_address = models.TextField(verbose_name=_("Postal address"),
             max_length=255, blank=True)
 
-    def save(self):
-        # Synchronize with user object
-        self.user.first_name = self.first_name
-        self.user.last_name = self.last_name
-        self.user.save()
-        # TODO: synchronize email
-        super(UserProfile, self).save()
+    def save(self, **kwargs):
+        super(UserProfile, self).save(**kwargs)
+        if  self.user.first_name != self.first_name or \
+            self.user.last_name != self.last_name or \
+            self.user.email != self.email:
+            self.user.first_name = self.first_name
+            self.user.last_name = self.last_name
+            self.user.email = self.email
+            self.user.save()
 
     def get_absolute_url(self):
         return ('profiles_profile_detail', (),

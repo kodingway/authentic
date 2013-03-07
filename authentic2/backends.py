@@ -1,4 +1,5 @@
 import ldap
+import ldap.modlist
 import logging
 import random
 
@@ -34,18 +35,21 @@ _REQUIRED = ('url', 'userdn')
 _TO_ITERABLE = ('url', 'group', 'groupsu', 'groupstaff', 'groupactive')
 
 class LDAPBackend():
-    def authenticate(self, username=None, password=None):
-        if username is None or password is None:
-            log.debug('Username or password is None, automatically returning None')
-            return None
-
+    def get_blocks(self):
         if isinstance(settings.LDAP_AUTH_SETTINGS[0], dict):
             log.debug('Using complex settings')
             blocks = settings.LDAP_AUTH_SETTINGS
         else:
             log.debug('Using simple settings')
             blocks = (self._parse_simple_config(),)
+        return blocks
 
+    def authenticate(self, username=None, password=None):
+        if username is None or password is None:
+            log.debug('Username or password is None, automatically returning None')
+            return None
+
+        blocks = self.get_blocks()
         # First get our configuration into a standard format
         for block in blocks:
             for r in _REQUIRED:
@@ -81,7 +85,8 @@ class LDAPBackend():
 
                 try:
                     try:
-                        conn.simple_bind_s('uid=%s,%s' % (username, block['userdn']), password)
+                        dn = 'uid=%s,%s' % (username, block['userdn'])
+                        conn.simple_bind_s(dn, password)
 
                     except ldap.INVALID_CREDENTIALS:
                         log.debug('%s returned invalid credentials' % uri)
@@ -95,7 +100,7 @@ class LDAPBackend():
 
                     if block['group'] is None:
                         log.info('%s authenticated successfully against %s' % (username, uri))
-                        return self._return_user(username, conn, block)
+                        return self._return_user(uri, dn, username, password, conn, block)
 
                     # If your directory is setup such that this user couldn't search (for whatever reason)
                     # switch to an account that can so we can check the group
@@ -127,7 +132,7 @@ class LDAPBackend():
                         result = result[0][1]['memberUid']
                         if username in result:
                             log.info('%s authenticated successfully against %s' % (username, uri))
-                            return self._return_user(username, conn, block)
+                            return self._return_user(uri, dn, username, password, conn, block)
 
                     if block['replicas'] is True:
                         break
@@ -159,14 +164,21 @@ class LDAPBackend():
         ret['groupdn'] = settings.LDAP_AUTH_SETTINGS[3]
         return ret
 
+    def backend_name(self):
+        return '%s.%s' % (__name__, self.__class__.__name__)
 
-    def _return_user(self, username, conn, block):
+    def _return_user(self, uri, dn, username, password, conn, block):
         try:
             user = get_user_model().objects.get(username=username)
         except get_user_model().DoesNotExist:
             log.info('User %s did not exist in Django database, creating' % username)
             user = get_user_model()(username=username, password='')
             user.set_unusable_password()
+            user.save()
+        backend_id = '%s!%s' % (uri, dn)
+        if user.backend != self.backend_name() or user.backend_id != backend_id:
+            user.backend = self.backend_name()
+            user.backend_id = backend_id
             user.save()
 
         if block['disable_update']:
@@ -179,8 +191,8 @@ class LDAPBackend():
             return user
 
         log.debug('Getting information for %s from LDAP' % username)
-        results = conn.search_s('uid=%s,%s' % (username, block['userdn']), ldap.SCOPE_SUBTREE,
-            '(objectclass=person)', [block['email_field'], block['fname_field'], block['lname_field']])
+        results = conn.search_s('uid=%s,%s' % (username, block['userdn']), ldap.SCOPE_BASE,
+            '(objectclass=*)', [block['email_field'], block['fname_field'], block['lname_field']])
         if not results:
             log.warning('Could not get user information for %s, returning possibly stale user object' % username)
             return user
@@ -208,7 +220,7 @@ class LDAPBackend():
                     if username in result:
                         ldap_data[attr] = True
                         break
-        log.debug(ldap_data)
+        log.debug(str(ldap_data))
         for attr in ldap_data:
             if getattr(user, attr) != ldap_data[attr]:
                 break
@@ -221,6 +233,70 @@ class LDAPBackend():
             setattr(user, attr, ldap_data[attr])
         user.save()
         return user
+
+    def has_usable_password(self, user):
+        return True
+
+    def get_user_connection(self, user):
+        blocks = self.get_blocks()
+        url, dn = user.backend_id.split('!', 1)
+        for block in blocks:
+            if url in block['url']:
+                break
+        else:
+            raise RuntimeError('Cannot find the backend for user %s' % user)
+        conn = ldap.initialize(url)
+        try:
+            conn.simple_bind_s('uid=%s,%s' % (block['bindname'], block['userdn']), block['bindpw'])
+        except ldap.LDAPError, e:
+            log.error('Error during rebind: %s' % str(e))
+            raise
+        return conn, block
+
+    def set_password(self, user, raw_password):
+        conn, block = self.get_user_connection(user)
+        url, dn = user.backend_id.split('!', 1)
+        results = conn.search_s(dn, ldap.SCOPE_BASE)
+        new_entry = results[0][1].copy()
+        new_entry['userPassword'] = [ raw_password.encode('utf-8') ]
+        conn.modify_s(dn, ldap.modlist.modifyModlist(
+            results[0][1], new_entry))
+        log.debug('Changed password of %s to %r' % (user, raw_password))
+
+    def check_password(self, user, raw_password):
+        conn, block = self.get_user_connection(user)
+        url, dn = user.backend_id.split('!', 1)
+        log.debug('Checking password of %s to %r' % (user, raw_password))
+        try:
+            conn.simple_bind_s(dn, raw_password)
+            user.password = raw_password
+            return True
+        except ldap.LDAPError:
+            return False
+
+    def save(self, user, *args, **kwargs):
+        conn, block = self.get_user_connection(user)
+        url, dn = user.backend_id.split('!', 1)
+        if block['use_for_data']:
+            results = conn.search_s(dn, ldap.SCOPE_BASE)
+            new_entry = results[0][1].copy()
+            fields = (
+                    ('email_field', 'email'),
+                    ('fname_field', 'first_name'),
+                    ('lname_field', 'last_name'))
+            for field, attribute in fields:
+                ldap_attribute = block.get(field)
+                if ldap_attribute is None:
+                    continue
+                content = getattr(user, attribute, None)
+                if content:
+                    new_entry[ldap_attribute] = [ content.encode('utf-8') ]
+                else:
+                    new_entry.pop(ldap_attribute, None)
+            log.debug('Change attribute of %s to %r' % (user, new_entry))
+            conn.modify_s(dn, ldap.modlist.modifyModlist(results[0][1], new_entry))
+        return False
+
 
 # LDAP_AUTH_SETTINGS = ('ldap://10.0.44.2', 'cn=users,dc=example,dc=com')
 # 
@@ -266,6 +342,11 @@ class LDAPBackend():
 #                                                               holds the user's first name
 #       'lname_field': 'sn'                                 --> The LDAP attribute of the person object that
 #                                                               holds the user's last name
+#       'attribute_map': {
+#           'givenName': 'first_name',
+#           'sn': 'last_name',
+#           'mail': 'email',
+#       }
 #       }
 #   # Can repeat with totally different set of authentication servers/settings
 #   # Useful for a situation where you have multiple masters with multiple replicas that are all possibly
