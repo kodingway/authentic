@@ -54,9 +54,6 @@ class AbstractUser(AbstractBaseUser, PermissionsMixin):
         validators=[
             validators.RegexValidator(re.compile('^[\w.@+-]+$'), _('Enter a valid username.'), 'invalid')
         ])
-    first_name = models.CharField(_('first name'), max_length=30, blank=True)
-    last_name = models.CharField(_('last name'), max_length=30, blank=True)
-    email = models.EmailField(_('email address'), blank=True)
     is_staff = models.BooleanField(_('staff status'), default=False,
         help_text=_('Designates whether the user can log into this admin '
                     'site.'))
@@ -154,25 +151,24 @@ class AbstractUser(AbstractBaseUser, PermissionsMixin):
         return super(AbstractUser, self).check_password(raw_password)
 
     def save(self, *args, **kwargs):
-        if self.backend:
+        no_backend = kwargs.pop('no_backend', False)
+        if self.backend and not no_backend:
             backend = self.get_backend()
             if hasattr(backend, 'save'):
                 if backend.save(self, *args, **kwargs):
                     return
         super(AbstractUser, self).save(*args, **kwargs)
-        try:
-            profile, created = UserProfile.objects.get_or_create(user=self)
-            profile = self.get_profile()
-            if profile.first_name != self.first_name or \
-                profile.last_name != self.last_name or \
-                profile.email != self.email:
-                profile.first_name = self.first_name
-                profile.last_name = self.last_name
-                profile.email = self.email
-                profile.save()
-        except SiteProfileNotAvailable:
-            pass
 
 
 class User(AbstractUser):
-    pass
+    first_name = models.CharField(_('first name'), max_length=30, blank=True)
+    last_name = models.CharField(_('last name'), max_length=30, blank=True)
+    email = models.EmailField(_('e-mail address'), blank=True)
+    nickname = models.CharField(_('nickname'), max_length=50, blank=True)
+    url = models.URLField(_('Website'), blank=True)
+    company = models.CharField(verbose_name=_("Company"),
+            max_length=50, blank=True)
+    phone = models.CharField(verbose_name=_("Phone"),
+            max_length=50, blank=True)
+    postal_address = models.TextField(verbose_name=_("Postal address"),
+            max_length=255, blank=True)

@@ -77,7 +77,7 @@ class UserProfile(models.Model):
 
     def save(self, **kwargs):
         super(UserProfile, self).save(**kwargs)
-        if  self.user.first_name != self.first_name or \
+        if self.user.first_name != self.first_name or \
             self.user.last_name != self.last_name or \
             self.user.email != self.email:
             self.user.first_name = self.first_name
