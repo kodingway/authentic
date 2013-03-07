@@ -174,20 +174,20 @@ class LDAPBackend():
             log.info('User %s did not exist in Django database, creating' % username)
             user = get_user_model()(username=username, password='')
             user.set_unusable_password()
-            user.save()
         backend_id = '%s!%s' % (uri, dn)
         if user.backend != self.backend_name() or user.backend_id != backend_id:
             user.backend = self.backend_name()
             user.backend_id = backend_id
-            user.save()
 
         if block['disable_update']:
+            user.save()
             return user
 
         for p in ('fname_field', 'lname_field', 'email_field', 'groupsu', 'groupstaff', 'groupactive'):
             if block[p] is not None:
                 break
         else:
+            user.save()
             return user
 
         log.debug('Getting information for %s from LDAP' % username)
@@ -195,6 +195,7 @@ class LDAPBackend():
             '(objectclass=*)', [block['email_field'], block['fname_field'], block['lname_field']])
         if not results:
             log.warning('Could not get user information for %s, returning possibly stale user object' % username)
+            user.save()
             return user
         results = results[0][1]
 
@@ -225,6 +226,7 @@ class LDAPBackend():
             if getattr(user, attr) != ldap_data[attr]:
                 break
         else:
+            user.save()
             return user
 
         log.info('Data for user %s has changed, updating Django database' % username)
