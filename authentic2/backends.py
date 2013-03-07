@@ -232,7 +232,10 @@ class LDAPBackend():
         log.info('Data for user %s has changed, updating Django database' % username)
         log.debug('Setting attributes: %s' % str(ldap_data))
         for attr in ldap_data:
-            setattr(user, attr, ldap_data[attr])
+            value = ldap_data[attr]
+            if isinstance(value, basestring):
+                value = value.decode('utf-8')
+            setattr(user, attr, value)
         user.save()
         return user
 
