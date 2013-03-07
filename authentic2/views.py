@@ -5,6 +5,7 @@ from django.shortcuts import render_to_response, redirect as shortcuts_redirect
 from django.template import RequestContext
 from django.views.generic.edit import CreateView, UpdateView
 from django.contrib import messages
+from django.core.exceptions import ObjectDoesNotExist
 
 
 from authentic2.idp.models import UserProfile
@@ -52,13 +53,12 @@ class ProfileMixin(object):
 
 class EditProfile(ProfileMixin, UpdateView):
     def get_object(self):
-        return self.request.user.get_profile()
-
-class CreateProfile(ProfileMixin, CreateView):
-    template_name = 'profiles/create_profile.html'
+        try:
+            return self.request.user.get_profile()
+        except ObjectDoesNotExist:
+            return None
 
 edit_profile = prevent_access_to_transient_users(EditProfile.as_view())
-create_profile = prevent_access_to_transient_users(CreateProfile.as_view())
 
 def password_change_done(request):
     '''Redirect user to homepage and display a success message'''

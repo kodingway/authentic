@@ -35,10 +35,8 @@ urlpatterns = patterns('',
     (r'^profile$',
         prevent_access_to_transient_users(authentic2.idp.views.profile), {},
         'account_management'),
-    url(r'^edit_profile$', 'authentic2.views.edit_profile',
-        name='profiles_edit_profile'),
-    url(r'^create_profile$', 'authentic2.views.create_profile',
-        name='profiles_create_profile'),
+    url(r'^profile/edit/$', 'authentic2.views.edit_profile',
+        name='profile_edit'),
 )
 
 urlpatterns += patterns('',
