@@ -212,13 +212,13 @@ class LDAPBackend():
                 ldap_data[attr] = False
                 for group in block[g]:
                     result = conn.search_s('cn=%s,%s' % (group, block['groupdn']), ldap.SCOPE_SUBTREE,
-                        '(objectclass=*)', ['memberuid'])
+                        '(objectclass=*)', ['member'])
 
-                    if not result or 'memberUid' not in result[0][1]:
+                    if not result or 'member' not in result[0][1]:
                         continue
 
-                    result = result[0][1]['memberUid']
-                    if username in result:
+                    result = result[0][1]['member']
+                    if dn in result:
                         ldap_data[attr] = True
                         break
         log.debug(str(ldap_data))
