@@ -29,6 +29,14 @@ class PickledObject(str):
        then it must [well, should] be a pickled one)."""
     pass
 
+try:
+    # make PickledObject compatible with Postgres
+    import psycopg2.extensions
+    psycopg2.extensions.register_adapter(PickledObject, psycopg2.extensions.QuotedString)
+except ImportError:
+    pass
+
+
 class PickledObjectField(models.Field):
     __metaclass__ = models.SubfieldBase
 
