@@ -73,7 +73,8 @@ def get_attributes(user, definitions=None, source=None, **kwargs):
     data = []
     try:
         field_names = set()
-        field_names.update(user._meta.get_all_field_names())
+        field_names.update(getattr(user, 'USER_PROFILE', []) \
+                or user._meta.get_all_field_names())
         fields = []
         if definitions:
             for definition in definitions:
@@ -99,9 +100,8 @@ def get_attributes(user, definitions=None, source=None, **kwargs):
                             in field_names  \
                         if get_definition_from_profile_field_name(field_name)]
         for field_name, definition in fields:
-            field = user._meta.get_field_by_name(field_name)[0]
-            logger.debug('get_attributes: found field %s aka %s' \
-                % (field_name, field.verbose_name))
+            logger.debug('get_attributes: found field %s' \
+                % (field_name,))
             value = getattr(user, field_name, None)
             if value:
                 if callable(value):
