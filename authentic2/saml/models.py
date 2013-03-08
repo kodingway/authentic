@@ -589,7 +589,7 @@ class LibertySessionSP(models.Model):
     federation = models.ForeignKey(LibertyFederation)
 
 class KeyValue(models.Model):
-    key = models.CharField(max_length=40, primary_key=True)
+    key = models.CharField(max_length=128, primary_key=True)
     value = PickledObjectField()
 
     def __unicode__(self):
