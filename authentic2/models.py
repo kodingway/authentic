@@ -159,6 +159,11 @@ class AbstractUser(AbstractBaseUser, PermissionsMixin):
                     return
         super(AbstractUser, self).save(*args, **kwargs)
 
+    def get_roles(self):
+        return [group.name for group in self.groups.all()]
+
+    roles = property(get_roles)
+
 
 class User(AbstractUser):
     first_name = models.CharField(_('first name'), max_length=30, blank=True)

@@ -109,7 +109,10 @@ def get_attributes(user, definitions=None, source=None, **kwargs):
                 logger.debug('get_attributes: found value %s' % value)
                 attr = {}
                 attr['definition'] = definition
-                attr['values'] = [value]
+                if hasattr(value, '__iter__'):
+                    attr['values'] = list(value)
+                else:
+                    attr['values'] = [value]
                 data.append(attr)
             else:
                 logger.debug('get_attributes: no value found')
