@@ -547,16 +547,16 @@ class LibertySession(models.Model):
     """Store the link between a Django session and a Liberty session"""
     django_session_key = models.CharField(max_length = 40)
     session_index = models.CharField(max_length = 80)
-    provider_id = models.CharField(max_length = 80)
+    provider_id = models.CharField(max_length = 256)
     federation = models.ForeignKey(LibertyFederation, null = True)
     assertion = models.ForeignKey(LibertyAssertion, null = True)
-    name_id_qualifier = models.CharField(max_length = 150,
+    name_id_qualifier = models.CharField(max_length = 256,
             verbose_name = _("Qualifier"), null = True)
     name_id_format = models.CharField(max_length = 100,
             verbose_name = _("NameIDFormat"), null = True)
     name_id_content = models.CharField(max_length = 100,
             verbose_name = _("NameID"))
-    name_id_sp_name_qualifier = models.CharField(max_length = 100,
+    name_id_sp_name_qualifier = models.CharField(max_length = 256,
             verbose_name = _("SPNameQualifier"), null = True)
     creation = models.DateTimeField(auto_now_add=True)
 
