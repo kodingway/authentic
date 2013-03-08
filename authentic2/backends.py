@@ -9,6 +9,7 @@ log = logging.getLogger(__name__)
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 try:
     import lasso
 except ImportError:
@@ -183,17 +184,6 @@ class LDAPBackend():
             user.backend = self.backend_name()
             user.backend_id = backend_id
 
-        if block['disable_update']:
-            user.save()
-            return user
-
-        for p in ('fname_field', 'lname_field', 'email_field', 'groupsu', 'groupstaff', 'groupactive'):
-            if block[p] is not None:
-                break
-        else:
-            user.save()
-            return user
-
         log.debug('Getting information for %s from LDAP' % username)
         results = conn.search_s('uid=%s,%s' % (username, block['userdn']), ldap.SCOPE_BASE,
             '(objectclass=*)', [block['email_field'], block['fname_field'], block['lname_field']])
@@ -215,9 +205,11 @@ class LDAPBackend():
             if block[g] is not None:
                 ldap_data[attr] = False
                 for group in block[g]:
-                    result = conn.search_s('cn=%s,%s' % (group, block['groupdn']), ldap.SCOPE_SUBTREE,
-                        '(objectclass=*)', ['member'])
-
+                    try:
+                        result = conn.search_s('cn=%s,%s' % (group, block['groupdn']), ldap.SCOPE_BASE,
+                            '(objectclass=*)', ['member'])
+                    except ldap.NO_SUCH_OBJECT:
+                        continue
                     if not result or 'member' not in result[0][1]:
                         continue
 
@@ -229,18 +221,34 @@ class LDAPBackend():
             if isinstance(ldap_data[key], basestring):
                 ldap_data[key] = ldap_data[key].decode('utf-8')
         log.debug(str(ldap_data))
-        for attr in ldap_data:
-            if getattr(user, attr) != ldap_data[attr]:
-                break
-        else:
-            user.save()
-            return user
-
         log.info('Data for user %s has changed, updating Django database' % username)
         log.debug('Setting attributes: %s' % str(ldap_data))
         for attr in ldap_data:
             setattr(user, attr, ldap_data[attr])
         user.save()
+        try:
+            if block['group_mapping']:
+                mapping = block['group_mapping']
+                try:
+                    results = conn.search_s(block['groupdn'], ldap.SCOPE_SUBTREE,
+                        '(&(objectclass=groupOfNames)(member=%s))' % dn, ['cn'])
+                except ldap.NO_SUCH_OBJECT:
+                    results = []
+                used = set()
+                for dn , attributes in results:
+                    cn = attributes['cn'][0]
+                    group_name = mapping.get(cn)
+                    if group_name:
+                        group, created = Group.objects.get_or_create(name=group_name)
+                        user.groups.add(cn)
+                        used.add(group)
+                for cn in mapping:
+                    if cn not in used:
+                        group_name = mapping.get(cn)
+                        group, created = Group.objects.get_or_create(name=group_name)
+                        user.groups.remove(group)
+        except:
+            log.exception('coin')
         return user
 
     def has_usable_password(self, user):
