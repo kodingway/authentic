@@ -35,6 +35,7 @@ from django.contrib.auth import BACKEND_SESSION_KEY
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils.encoding import smart_unicode
+from django.contrib.auth import load_backend
 
 import authentic2.idp as idp
 import authentic2.idp.views as idp_views
@@ -255,7 +256,11 @@ def build_assertion(request, login, nid_format='transient', attributes=None):
                 'authentic2.auth2_auth.auth2_oath.backend.OATHTOTPBackend':
             authn_context = lasso.SAML2_AUTHN_CONTEXT_TIME_SYNC_TOKEN
         else:
-            raise Exception('unknown backend: ' + backend)
+            backend = load_backend(backend)
+            if hasattr(backend, 'get_saml2_authn_context'):
+                authn_context = backend.get_saml2_authn_context(request)
+            else:
+                raise Exception('backend unsupported: ' + backend)
     else:
         try:
             auth_event = AuthenticationEvent.objects.\

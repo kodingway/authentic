@@ -9,6 +9,10 @@ log = logging.getLogger(__name__)
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
+try:
+    import lasso
+except ImportError:
+    pass
 
 
 class LDAPBackendError(Exception):
@@ -302,6 +306,12 @@ class LDAPBackend():
             conn.modify_s(dn, ldap.modlist.modifyModlist(results[0][1], new_entry))
         return False
 
+    def get_saml2_authn_context(self, request):
+        ssl = 'HTTPS' in request.environ
+        if ssl:
+            return lasso.SAML2_AUTHN_CONTEXT_PASSWORD_PROTECTED_TRANSPORT
+        else:
+            return lasso.SAML2_AUTHN_CONTEXT_PASSWORD
 
 # LDAP_AUTH_SETTINGS = ('ldap://10.0.44.2', 'cn=users,dc=example,dc=com')
 # 
