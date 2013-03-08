@@ -55,18 +55,20 @@ def profile(request):
                         request.session.delete_test_cookie()
                     return frontend.post(request, form, None, '/profile')
     # User attributes management
+    profile = []
     try:
-        user_profile = request.user.get_profile()
-        profile = []
-        for field_name in user_profile._meta.get_all_field_names():
-            if field_name in ('id', 'user'):
+        for field_name, title in getattr(request.user, 'USER_PROFILE', []):
+            value = getattr(request.user, field_name, None)
+            if not value:
                 continue
-            field = user_profile._meta.get_field_by_name(field_name)[0]
-            value = getattr(user_profile, field_name)
-            if value:
-                profile.append((field.verbose_name, value))
+            if callable(value):
+                value = value()
+            if not isinstance(value, basestring) and hasattr(value, '__iter__'):
+                profile.append((title, map(unicode, value)))
+            else:
+                profile.append((title, [unicode(value)]))
     except (SiteProfileNotAvailable, ObjectDoesNotExist):
-        profile = ()
+        pass
     # Credentials management
     blocks = [ frontend.profile(request, next='/profile') for frontend in frontends \
             if hasattr(frontend, 'profile') ]

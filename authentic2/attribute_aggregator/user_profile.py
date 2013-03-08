@@ -65,15 +65,15 @@ def get_attributes(user, definitions=None, source=None, **kwargs):
             Profile source not configured')
         return None
     if source and source.name != SOURCE_NAME:
-        logger.debug('get_attributes: \
-            The required source %s is not user profile' % source)
+        logger.debug('get_attributes: '
+                'The required source %s is not user profile' % source)
         return None
 
     attributes = dict()
     data = []
     try:
         field_names = set()
-        field_names.update(getattr(user, 'USER_PROFILE', []) \
+        field_names.update([a[0] for a in getattr(user, 'USER_PROFILE', [])] \
                 or user._meta.get_all_field_names())
         fields = []
         if definitions:
@@ -86,8 +86,8 @@ def get_attributes(user, definitions=None, source=None, **kwargs):
                         mapping file if the attribute name is the same as the
                         definition
                     '''
-                    logger.debug('get_attributes: \
-                        field name will be the definition')
+                    logger.debug('get_attributes: '
+                            'Field name will be the definition')
                     field_name = definition
                 if field_name in field_names:
                     fields.append((field_name, definition))
@@ -100,8 +100,7 @@ def get_attributes(user, definitions=None, source=None, **kwargs):
                             in field_names  \
                         if get_definition_from_profile_field_name(field_name)]
         for field_name, definition in fields:
-            logger.debug('get_attributes: found field %s' \
-                % (field_name,))
+            logger.debug('get_attributes: found field %s' % (field_name,))
             value = getattr(user, field_name, None)
             if value:
                 if callable(value):
@@ -109,10 +108,11 @@ def get_attributes(user, definitions=None, source=None, **kwargs):
                 logger.debug('get_attributes: found value %s' % value)
                 attr = {}
                 attr['definition'] = definition
-                if hasattr(value, '__iter__'):
-                    attr['values'] = list(value)
+                if not isinstance(value, basestring) and hasattr(value,
+                        '__iter__'):
+                    attr['values'] = map(unicode, value)
                 else:
-                    attr['values'] = [value]
+                    attr['values'] = [unicode(value)]
                 data.append(attr)
             else:
                 logger.debug('get_attributes: no value found')

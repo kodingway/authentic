@@ -161,7 +161,6 @@ class AbstractUser(AbstractBaseUser, PermissionsMixin):
 
     def get_roles(self):
         return [group.name for group in self.groups.all()]
-
     roles = property(get_roles)
 
 
@@ -178,4 +177,13 @@ class User(AbstractUser):
     postal_address = models.TextField(verbose_name=_("Postal address"),
             max_length=255, blank=True)
 
-    USER_PROFILE = ['username', 'first_name', 'last_name', 'email', 'nickname', 'url', 'phone', 'roles']
+    USER_PROFILE = (
+            ('username', _('Username')),
+            ('first_name', _('First name')),
+            ('last_name', _('Last name')),
+            ('email', _('Mail')),
+            ('nickname', _('Nickname')),
+            ('url', _('Homepage')),
+            ('phone', _('Phone')),
+            ('roles', _('Roles')),
+    )
