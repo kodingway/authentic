@@ -21,6 +21,8 @@ import logging
 import urllib
 import xml.etree.cElementTree as ctree
 import hashlib
+import random
+import string
 
 import lasso
 from django.conf.urls.defaults import patterns
@@ -74,6 +76,10 @@ from authentic2.authsaml2.models import SAML2TransientUser
 from authentic2.utils import cache_and_validate
 
 logger = logging.getLogger('authentic2.idp.saml')
+
+def get_nonce():
+    alphabet = string.letters+string.digit
+    return '_'+''.join(random.choice(alphabet) for i in xrange(20))
 
 metadata_map = (
         (saml2utils.Saml2Metadata.SINGLE_SIGN_ON_SERVICE,
@@ -432,7 +438,7 @@ def need_login(request, login, save, nid_format):
     """Redirect to the login page with a nonce parameter to verify later that
        the login form was submitted
     """
-    nonce = login.request.id
+    nonce = login.request.id or get_nonce()
     save_key_values(nonce, login.dump(), False, save, nid_format)
     url = reverse(continue_sso) + '?%s=%s' % (NONCE_FIELD_NAME, nonce)
     logger.debug('need_login: redirect to login page with next url %s' % url)
@@ -446,7 +452,7 @@ def get_url_with_nonce(request, function, nonce):
 
 
 def need_consent_for_federation(request, login, save, nid_format):
-    nonce = login.request.id
+    nonce = login.request.id or get_nonce()
     save_key_values(nonce, login.dump(), False, save, nid_format)
     url = '%s?%s=%s&next=%s&provider_id=%s' \
         % (reverse(consent_federation), NONCE_FIELD_NAME,
@@ -458,7 +464,7 @@ def need_consent_for_federation(request, login, save, nid_format):
 
 def need_consent_for_attributes(request, login, consent_obtained, save,
         nid_format):
-    nonce = login.request.id
+    nonce = login.request.id or get_nonce()
     save_key_values(nonce, login.dump(), consent_obtained, save, nid_format)
     url = '%s?%s=%s&next=%s&provider_id=%s' \
         % (reverse(consent_attributes), NONCE_FIELD_NAME,
