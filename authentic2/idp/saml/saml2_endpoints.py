@@ -78,7 +78,7 @@ from authentic2.utils import cache_and_validate
 logger = logging.getLogger('authentic2.idp.saml')
 
 def get_nonce():
-    alphabet = string.letters+string.digit
+    alphabet = string.letters+string.digits
     return '_'+''.join(random.choice(alphabet) for i in xrange(20))
 
 metadata_map = (
