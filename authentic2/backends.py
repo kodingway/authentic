@@ -240,8 +240,8 @@ class LDAPBackend():
                     group_name = mapping.get(cn)
                     if group_name:
                         group, created = Group.objects.get_or_create(name=group_name)
-                        user.groups.add(cn)
-                        used.add(group)
+                        user.groups.add(group)
+                        used.add(cn)
                 for cn in mapping:
                     if cn not in used:
                         group_name = mapping.get(cn)
