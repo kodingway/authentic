@@ -464,8 +464,6 @@ def need_consent_for_federation(request, login, save, nid_format):
 
 def need_consent_for_attributes(request, login, consent_obtained, save,
         nid_format):
-    import pdb
-    pdb.set_trace()
     nonce = login.request.id or get_nonce()
     save_key_values(nonce, login.dump(), consent_obtained, save, nid_format)
     url = '%s?%s=%s&next=%s&provider_id=%s' \
@@ -489,8 +487,6 @@ def continue_sso(request):
         consent_attribute_answer = \
             request.GET.get('consent_attribute_answer', '')
         if consent_attribute_answer:
-            import pdb
-            pdb.set_trace()
             logger.info("continue_sso: back from the consent page for "
                 "attributes %s" % consent_attribute_answer)
     nonce = request.REQUEST.get(NONCE_FIELD_NAME, '')
