@@ -256,6 +256,8 @@ IDP_CAS = False
 # expiration time in seconds of the cas tickets
 # CAS_TICKET_EXPIRATION = 240
 
+PUSH_PROFILE_UPDATES = False
+
 # Logging settings
 
 LOGGING = {
