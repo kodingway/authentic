@@ -248,7 +248,8 @@ SAML_METADATA_ROOT = 'metadata'
 SAML_METADATA_AUTOLOAD = 'none'
 
 # OpenID settings
-IDP_OPENID = True
+# Requires python-openid
+IDP_OPENID = False
 
 # CAS settings
 IDP_CAS = False
