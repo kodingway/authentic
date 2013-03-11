@@ -511,17 +511,17 @@ class LibertyFederation(models.Model):
     """Store a federation, i.e. an identifier shared with another provider, be
        it IdP or SP"""
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
-    idp_id = models.CharField(max_length=80)
-    sp_id = models.CharField(max_length=80)
-    name_id_qualifier = models.CharField(max_length = 150,
+    idp_id = models.CharField(max_length=256)
+    sp_id = models.CharField(max_length=256)
+    name_id_qualifier = models.CharField(max_length = 256,
             verbose_name = "NameQualifier", blank=True, null=True)
     name_id_format = models.CharField(max_length = 100,
             verbose_name = "NameIDFormat", blank=True, null=True)
     name_id_content = models.CharField(max_length = 100,
             verbose_name = "NameID")
-    name_id_sp_name_qualifier = models.CharField(max_length = 100,
+    name_id_sp_name_qualifier = models.CharField(max_length = 256,
             verbose_name = "SPNameQualifier", blank=True, null=True)
-    name_id_sp_provided_id = models.CharField(max_length=100,
+    name_id_sp_provided_id = models.CharField(max_length=256,
             verbose_name="SPProvidedID", blank=True, null=True)
 
     def __init__(self, *args, **kwargs):
