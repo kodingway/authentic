@@ -1,5 +1,9 @@
 import logging
+import urllib
+import urllib2
+import lasso
 
+from django.conf import settings
 from django.utils.translation import ugettext as _
 from django.shortcuts import render_to_response, redirect as shortcuts_redirect
 from django.template import RequestContext
@@ -7,8 +11,9 @@ from django.views.generic.edit import UpdateView
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 
-
 from authentic2.idp.decorators import prevent_access_to_transient_users
+from authentic2.idp.saml import saml2_endpoints
+from authentic2.saml import models
 
 import forms
 
@@ -43,10 +48,35 @@ class EditProfile(UpdateView):
     model = get_user_model()
     form_class = forms.UserProfileForm
     template_name = 'profiles/edit_profile.html'
-    success_url = '/profile'
 
     def get_object(self):
         return self.request.user
+
+    def get_success_url(self):
+        if settings.PUSH_PROFILE_UPDATES:
+            # Push attributes to SP
+            # Policy must not require user consent
+            service_providers = \
+                models.LibertyServiceProvider.objects.filter(enabled = True)
+            for service_provider in service_providers:
+                liberty_provider = service_provider.liberty_provider
+                login = saml2_endpoints.idp_sso(self.request,
+                    liberty_provider.entity_id, return_profile=True)
+                if login.msgBody:
+                    # Only with SP supporting SSO IdP-initiated by POST
+                    url = login.msgUrl
+                    method = 'POST'
+                    headers = \
+                        {"Content-type": "application/x-www-form-urlencoded",
+                        "Accept": "text/plain"}
+                    data = urllib.urlencode(\
+                        {lasso.SAML2_FIELD_RESPONSE: login.msgBody, })
+                    try:
+                        urllib2.urlopen(urllib2.Request(url, data, headers))
+                    except Exception, e:
+                        pass
+
+        return '/profile'
 
 edit_profile = prevent_access_to_transient_users(EditProfile.as_view())
 
