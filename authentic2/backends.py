@@ -39,6 +39,15 @@ _DEFAULTS = {
 _REQUIRED = ('url', 'userdn')
 _TO_ITERABLE = ('url', 'group', 'groupsu', 'groupstaff', 'groupactive')
 
+def log_exception(func):
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except:
+            log.exception('exception in authenticate')
+            raise
+    return wrapper
+
 class LDAPBackend():
     def get_blocks(self):
         if isinstance(settings.LDAP_AUTH_SETTINGS[0], dict):
@@ -49,6 +58,7 @@ class LDAPBackend():
             blocks = (self._parse_simple_config(),)
         return blocks
 
+    @log_exception
     def authenticate(self, username=None, password=None):
         if username is None or password is None:
             log.debug('Username or password is None, automatically returning None')
@@ -226,29 +236,33 @@ class LDAPBackend():
         for attr in ldap_data:
             setattr(user, attr, ldap_data[attr])
         user.save()
-        try:
-            if block['group_mapping']:
-                mapping = block['group_mapping']
-                try:
-                    results = conn.search_s(block['groupdn'], ldap.SCOPE_SUBTREE,
-                        '(&(objectclass=groupOfNames)(member=%s))' % dn, ['cn'])
-                except ldap.NO_SUCH_OBJECT:
-                    results = []
-                used = set()
-                for dn , attributes in results:
-                    cn = attributes['cn'][0]
+        if block.get('group_mapping'):
+            mapping = block['group_mapping']
+            try:
+                results = conn.search_s(block['groupdn'], ldap.SCOPE_SUBTREE,
+                    '(&(objectclass=groupOfNames)(member=%s))' % dn, ['cn'])
+            except ldap.NO_SUCH_OBJECT:
+                results = []
+            used = set()
+            for dn , attributes in results:
+                cn = attributes['cn'][0]
+                group_name = mapping.get(cn)
+                if group_name:
+                    group, created = Group.objects.get_or_create(name=group_name)
+                    user.groups.add(group)
+                    used.add(cn)
+            for cn in mapping:
+                if cn not in used:
                     group_name = mapping.get(cn)
-                    if group_name:
-                        group, created = Group.objects.get_or_create(name=group_name)
-                        user.groups.add(group)
-                        used.add(cn)
-                for cn in mapping:
-                    if cn not in used:
-                        group_name = mapping.get(cn)
-                        group, created = Group.objects.get_or_create(name=group_name)
-                        user.groups.remove(group)
-        except:
-            log.exception('coin')
+                    group, created = Group.objects.get_or_create(name=group_name)
+                    user.groups.remove(group)
+        if block.get('set_mandatory_groups'):
+            group_names = block['set_mandatory_groups']
+            for group_name in group_names:
+                if not group_name:
+                    continue
+                group, created = Group.objects.get_or_create(name=group_name)
+                user.groups.add(group)
         return user
 
     def has_usable_password(self, user):
