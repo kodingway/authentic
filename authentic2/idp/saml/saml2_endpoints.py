@@ -531,7 +531,7 @@ def continue_sso(request):
 
 def sso_after_process_request(request, login, consent_obtained=False,
         consent_attribute_answer=False, user=None, save=True,
-        nid_format='transient'):
+        nid_format='transient', return_profile=False):
     """Common path for sso and idp_initiated_sso.
 
        consent_obtained: whether the user has given his consent to this
@@ -793,7 +793,7 @@ def sso_after_process_request(request, login, consent_obtained=False,
 
     build_assertion(request, login, nid_format=nid_format,
         attributes=attributes)
-    return finish_sso(request, login, user=user, save=save)
+    return finish_sso(request, login, user=user, save=save, return_profile=return_profile)
 
 
 def return_login_error(request, login, error):
@@ -824,7 +824,7 @@ def return_login_response(request, login):
         title=_('Authentication response'))
 
 
-def finish_sso(request, login, user=None, save=False):
+def finish_sso(request, login, user=None, save=False, return_profile=False):
     logger.info('finish_sso: finishing sso...')
     if user is None:
         logger.debug('finish_sso: user is None')
@@ -836,6 +836,8 @@ def finish_sso(request, login, user=None, save=False):
         save_session(request, login)
         logger.debug('finish_sso: session saved')
     logger.info('finish_sso: sso treatment ended, send response')
+    if return_profile:
+        return login
     return response
 
 
@@ -904,14 +906,15 @@ def check_delegated_authentication_permission(request):
 
 
 @login_required
-def idp_sso(request, provider_id, user_id=None, nid_format=None):
+def idp_sso(request, provider_id=None, user_id=None, nid_format=None, return_profile=False):
     '''Initiate an SSO toward provider_id without a prior AuthnRequest
     '''
     if request.method == 'GET':
         logger.info('idp_sso: to initiate a sso we need a post form')
         return error_page(request,
             _('Error trying to initiate a single sign on'), logger=logger)
-    provider_id = request.POST.get('provider_id')
+    if not provider_id:
+        provider_id = request.POST.get('provider_id')
     if not provider_id:
         logger.info('idp_sso: to initiate a sso we need a provider_id')
         return error_page(request,
@@ -954,9 +957,9 @@ def idp_sso(request, provider_id, user_id=None, nid_format=None):
     if binding == 'meta':
         pass
     elif binding == 'art':
-        login.request.protocolProfile = lasso.SAML2_METADATA_BINDING_ARTIFACT
+        login.request.protocolBinding = lasso.SAML2_METADATA_BINDING_ARTIFACT
     elif binding == 'post':
-        login.request.protocolProfile = lasso.SAML2_METADATA_BINDING_POST
+        login.request.protocolBinding = lasso.SAML2_METADATA_BINDING_POST
     else:
         logger.error('idp_sso: unsupported protocol binding %r' % binding)
         return error_page(request, _('Server error'), logger=logger)
@@ -979,7 +982,7 @@ def idp_sso(request, provider_id, user_id=None, nid_format=None):
 
     return sso_after_process_request(request, login,
             consent_obtained=True, user=user, save=False,
-            nid_format=nid_format)
+            nid_format=nid_format, return_profile=return_profile)
 
 
 def finish_slo(request):
