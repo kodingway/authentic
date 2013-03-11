@@ -4,7 +4,6 @@ import logging
 import lasso
 
 from django.db import transaction
-from django.contrib.auth.models import User, UserManager
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 
@@ -13,6 +12,7 @@ from authentic2.saml.common import \
     get_idp_options_policy
 from authentic2.saml.models import LIBERTY_SESSION_DUMP_KIND_SP, \
     LibertySessionDump, LibertyProvider
+from authentic2.models import User, UserManager
 from authentic2.authsaml2.models import SAML2TransientUser
 
 logger = logging.getLogger('authentic2.authsaml2.backends')
