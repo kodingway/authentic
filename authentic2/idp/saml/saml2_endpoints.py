@@ -1042,6 +1042,10 @@ def process_logout_request(request, message, binding):
                 return logout, return_logout_error(request, logout,
                         AUTHENTIC_STATUS_CODE_UNKNOWN_PROVIDER)
             logout.processRequestMsg(message)
+            # we do not verify authn request, why verify logout requests...
+            logout.setSignatureVerifyHint(
+                    p.service_provider.policy \
+                            .authn_request_signature_check_hint)
     except lasso.DsError:
         logger.error('process_logout_request: '
             'slo signature error on request %s' % message)
