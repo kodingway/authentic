@@ -1048,7 +1048,7 @@ def process_logout_request(request, message, binding):
         return logout, return_logout_error(request, logout,
                 lasso.LIB_STATUS_CODE_INVALID_SIGNATURE)
     except Exception:
-        logger.error('process_logout_request: '
+        logger.exception('process_logout_request: '
             'slo unknown error when processing a request %s' % message)
         return logout, HttpResponseBadRequest('Invalid logout request')
     if binding != 'SOAP' and not check_destination(request, logout.request):
