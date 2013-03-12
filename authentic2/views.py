@@ -1,5 +1,6 @@
 import logging
 import lasso
+import thread
 
 import requests
 
@@ -54,31 +55,33 @@ class EditProfile(UpdateView):
     def get_object(self):
         return self.request.user
 
+    def push_attributes(self):
+        # Push attributes to SP
+        # Policy must not require user consent
+        service_providers = \
+            models.LibertyServiceProvider.objects.filter(enabled = True)
+        for service_provider in service_providers:
+            liberty_provider = service_provider.liberty_provider
+            login = saml2_endpoints.idp_sso(self.request,
+                liberty_provider.entity_id, return_profile=True)
+            if login.msgBody:
+                # Only with SP supporting SSO IdP-initiated by POST
+                url = login.msgUrl
+                data = { lasso.SAML2_FIELD_RESPONSE: login.msgBody }
+                try:
+                    session = requests.Session()
+                    session.post(url, data=data, allow_redirects=True, timeout=5)
+                except:
+                    logger.exception('exception when pushing attributes '
+                            'of %s to %s', self.request.user,
+                            liberty_provider.entity_id)
+                else:
+                    logger.info('pushing attributes of %s to %s',
+                            self.request.user, liberty_provider.entity_id)
+
     def get_success_url(self):
         if settings.PUSH_PROFILE_UPDATES:
-            # Push attributes to SP
-            # Policy must not require user consent
-            service_providers = \
-                models.LibertyServiceProvider.objects.filter(enabled = True)
-            for service_provider in service_providers:
-                liberty_provider = service_provider.liberty_provider
-                login = saml2_endpoints.idp_sso(self.request,
-                    liberty_provider.entity_id, return_profile=True)
-                if login.msgBody:
-                    # Only with SP supporting SSO IdP-initiated by POST
-                    url = login.msgUrl
-                    data = { lasso.SAML2_FIELD_RESPONSE: login.msgBody }
-                    try:
-                        session = requests.Session()
-                        session.post(url, data=data, allow_redirects=True, timeout=5)
-                    except:
-                        logger.exception('exception when pushing attributes '
-                                'of %s to %s', self.request.user,
-                                liberty_provider.entity_id)
-                    else:
-                        logger.info('pushing attributes of %s to %s',
-                                self.request.user, liberty_provider.entity_id)
-
+            thread.start_new_thread(self.push_attributes, ())
         return '/profile'
 
 edit_profile = prevent_access_to_transient_users(EditProfile.as_view())
