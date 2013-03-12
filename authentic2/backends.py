@@ -121,10 +121,15 @@ class LDAPBackend():
                         try:
                             conn.simple_bind_s(block['binddn'], block['bindpw'])
                         except ldap.INVALID_CREDENTIALS:
-                            log.error('%s returned invalid credentials for %s' % (uri, block['binddn']))
-                            if block['replicas'] is True:
-                                raise LDAPBackendError('unable to bind')
-                            return None
+                            log.error('%s returned invalid credentials for admin user %s' % (uri, block['binddn']))
+                            if block['replicas']:
+                                return None
+                            continue
+                        except ldap.LDAPError:
+                            log.exception('unable to do an admin bind on %s', uri)
+                            if block['replicas']:
+                                return None
+                            continue
                     try:
                         user_basedn = block.get('user_basedn', block['basedn'])
                         results = conn.search_s(user_basedn,
@@ -132,7 +137,14 @@ class LDAPBackend():
                                 block['user_filter'].format(username=username))
                     except ldap.NO_SUCH_OBJECT:
                         log.error('user basedn %s not found', user_basedn)
-                        return None
+                        if block['replicas']:
+                            return None
+                        continue
+                    except ldap.LDAPError:
+                        log.exception('unable to lookup user %r', username)
+                        if block['replicas']:
+                            return None
+                        continue
                     if len(results) == 0:
                         log.debug('user %r not found on server %s', username, uri)
                         return None
@@ -144,9 +156,9 @@ class LDAPBackend():
                     conn.simple_bind_s(dn, password)
                 except ldap.INVALID_CREDENTIALS:
                     log.debug('%s returned invalid credentials' % uri)
-                    if block['replicas'] is True:
-                        raise LDAPBackendError('unable to bind')
-                    return None
+                    if block['replicas']:
+                        return None
+                    continue
                 except ldap.LDAPError, e:
                     log.error('Got error from LDAP library: %s' % str(e))
                     return None
