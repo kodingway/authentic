@@ -21,10 +21,13 @@ class LDAPBackendError(Exception):
 
 
 _DEFAULTS = {
-    'bindname': None,
+    'binddn': None,
     'bindpw': None,
+    'user_dn_template': None,
+    'user_filter': 'uid={username}',
+    'group_dn_template': None,
+    'group_filter': '(&(member={user_dn})(objectClass=groupOfNames))',
     'group': None,
-    'groupdn': None,
     'groupsu': None,
     'groupstaff': None,
     'groupactive': None,
@@ -36,8 +39,8 @@ _DEFAULTS = {
     'disable_update': False
 }
 
-_REQUIRED = ('url', 'userdn')
-_TO_ITERABLE = ('url', 'group', 'groupsu', 'groupstaff', 'groupactive')
+_REQUIRED = ('url', 'basedn')
+_TO_ITERABLE = ('url', 'groupsu', 'groupstaff', 'groupactive')
 
 def log_exception(func):
     def wrapper(*args, **kwargs):
@@ -47,6 +50,9 @@ def log_exception(func):
             log.exception('exception in authenticate')
             raise
     return wrapper
+
+class LDAPBackendError(RuntimeError):
+    pass
 
 class LDAPBackend():
     def get_blocks(self):
@@ -76,7 +82,7 @@ class LDAPBackend():
                     block[d] = _DEFAULTS[d]
 
             for i in _TO_ITERABLE:
-                if isinstance(block[i], str):
+                if isinstance(block[i], basestring):
                     block[i] = (block[i],)
 
             # Want to randomize our access, otherwise what's the point of having multiple servers?
@@ -85,78 +91,69 @@ class LDAPBackend():
 
         # Now we can try to authenticate
         for block in blocks:
-            log.debug('Processing block, settings: %s' % str(block))
-            for opt in ('NETWORK_TIMEOUT', 'TIMELIMIT', 'TIMEOUT'):
-                ldap.set_option(getattr(ldap, 'OPT_%s' % opt), block['timeout'])
+            user = self.authenticate_block(block, username, password)
+            if user is not None:
+                break
+        if user is None:
+            log.info('User %s could not be authenticated' % username)
+        return user
+
+    def authenticate_block(self, block, username, password):
+        log.debug('Processing block, settings: %s' % str(block))
+        for opt in ('NETWORK_TIMEOUT', 'TIMELIMIT', 'TIMEOUT'):
+            ldap.set_option(getattr(ldap, 'OPT_%s' % opt), block['timeout'])
 
 
-            for uri in block['url']:
-                log.debug('Attempting to authenticate to %s' % uri)
-                conn = ldap.initialize(uri)
+        for uri in block['url']:
+            log.debug('Attempting to authenticate to %s' % uri)
+            conn = ldap.initialize(uri)
 
-                if not conn:
-                    log.error('Could not initialize connection to %s' % uri)
-                    continue
+            if not conn:
+                log.error('Could not initialize connection to %s' % uri)
+                continue
 
-                try:
-                    try:
-                        dn = 'uid=%s,%s' % (username, block['userdn'])
-                        conn.simple_bind_s(dn, password)
-
-                    except ldap.INVALID_CREDENTIALS:
-                        log.debug('%s returned invalid credentials' % uri)
-                        if block['replicas'] is True:
-                            return None
-                        break
-
-                    except ldap.LDAPError, e:
-                        log.error('Got error from LDAP library: %s' % str(e))
-                        break
-
-                    if block['group'] is None:
-                        log.info('%s authenticated successfully against %s' % (username, uri))
-                        return self._return_user(uri, dn, username, password, conn, block)
-
-                    # If your directory is setup such that this user couldn't search (for whatever reason)
-                    # switch to an account that can so we can check the group
-                    if block['bindname'] is not None:
-                        log.debug('Rebinding to check group membership')
-                        conn.unbind()
-                        del conn
-                        conn = ldap.initialize(uri)
+            try:
+                if block['user_dn_template']:
+                    dn = block['user_dn_template'].format(username=username)
+                else:
+                    # if necessary bind as admin
+                    if block['binddn'] is not None:
                         try:
-                            conn.simple_bind_s('uid=%s,%s' % (block['bindname'], block['userdn']), block['bindpw'])
-                        except ldap.LDAPError, e:
-                            log.error('Error during rebind: %s' % str(e))
-                            break
-
-                    for group in block['group']:
-                        log.debug('Checking if %s is a member of %s' % (username, group))
-                        result = conn.search_s('cn=%s,%s' % (group, block['groupdn']), ldap.SCOPE_SUBTREE,
-                            '(objectclass=*)', ['memberuid'])
-
-                        # If there's more than one result, it gets ignored (there shouldn't be more than one
-                        # group with the same name anyway)
-                        if not result:
-                            log.debug('No group found with name %s' % group)
-                            continue
-                        if 'memberUid' not in result[0][1]:
-                            log.debug('No memberUid in group %s' % group)
-                            continue
-
-                        result = result[0][1]['memberUid']
-                        if username in result:
-                            log.info('%s authenticated successfully against %s' % (username, uri))
-                            return self._return_user(uri, dn, username, password, conn, block)
-
+                            conn.simple_bind_s(block['binddn'], block['bindpw'])
+                        except ldap.INVALID_CREDENTIALS:
+                            log.error('%s returned invalid credentials for %s' % (uri, block['binddn']))
+                            if block['replicas'] is True:
+                                raise LDAPBackendError('unable to bind')
+                            return None
+                    try:
+                        user_basedn = block.get('user_basedn', block['basedn'])
+                        results = conn.search_s(user_basedn,
+                                ldap.SCOPE_SUBTREE,
+                                block['user_filter'].format(username=username))
+                    except ldap.NO_SUCH_OBJECT:
+                        log.error('user basedn %s not found', user_basedn)
+                        return None
+                    if len(results) == 0:
+                        log.debug('user %r not found on server %s', username, uri)
+                        return None
+                    elif len(results) > 1:
+                        log.debug('user %r returned too much records on server %s', username, uri)
+                        return None
+                    dn = results[0][0]
+                try:
+                    conn.simple_bind_s(dn, password)
+                except ldap.INVALID_CREDENTIALS:
+                    log.debug('%s returned invalid credentials' % uri)
                     if block['replicas'] is True:
-                        break
-                finally:
-                    del conn
-
-        log.info('User %s could not be authenticated' % username)
+                        raise LDAPBackendError('unable to bind')
+                    return None
+                except ldap.LDAPError, e:
+                    log.error('Got error from LDAP library: %s' % str(e))
+                    return None
+                return self._return_user(uri, dn, username, password, conn, block)
+            finally:
+                del conn
         return None
-
 
     def get_user(self, user_id):
         try:
@@ -164,20 +161,10 @@ class LDAPBackend():
         except get_user_model().DoesNotExist:
             return None
 
-
     def _parse_simple_config(self):
         if len(settings.LDAP_AUTH_SETTINGS) < 2:
             raise LDAPBackendError('In a minimal configuration, you must at least specify url and user DN')
-        ret = {'url': settings.LDAP_AUTH_SETTINGS[0], 'userdn': settings.LDAP_AUTH_SETTINGS[1]}
-
-        if len(settings.LDAP_AUTH_SETTINGS) < 3:
-            return ret
-
-        if len(settings.LDAP_AUTH_SETTINGS) < 4:
-            raise LDAPBackendError('If you specify a required group, you must specify the group DN as well')
-        ret['group'] = settings.LDAP_AUTH_SETTINGS[2]
-        ret['groupdn'] = settings.LDAP_AUTH_SETTINGS[3]
-        return ret
+        return {'url': settings.LDAP_AUTH_SETTINGS[0], 'basedn': settings.LDAP_AUTH_SETTINGS[1]}
 
     def backend_name(self):
         return '%s.%s' % (__name__, self.__class__.__name__)
@@ -195,14 +182,18 @@ class LDAPBackend():
             user.backend_id = backend_id
 
         log.debug('Getting information for %s from LDAP' % username)
-        results = conn.search_s('uid=%s,%s' % (username, block['userdn']), ldap.SCOPE_BASE,
-            '(objectclass=*)', [block['email_field'], block['fname_field'], block['lname_field']])
-        if not results:
-            log.warning('Could not get user information for %s, returning possibly stale user object' % username)
+        try:
+            results = conn.search_s(dn, ldap.SCOPE_BASE, '(objectclass=*)',
+                    [block['email_field'], block['fname_field'],
+                        block['lname_field']])
+        except ldap.LDAPError, e:
+            log.warning('Could not get user information for %r, returning possibly stale user object' % username)
             user.save()
             return user
+        if len(results) > 1:
+            log.warning('Too much records returned for user %r on %s, not updating attributes.', username, uri)
+            return user
         results = results[0][1]
-
         ldap_data = {}
         if block['email_field'] is not None:
             ldap_data['email'] =  results[block['email_field']][0] if block['email_field'] in results else ''
@@ -211,22 +202,30 @@ class LDAPBackend():
         if block['lname_field'] is not None:
             ldap_data['last_name'] = results[block['lname_field']][0] if block['lname_field'] in results else ''
 
+        if block['binddn'] is not None:
+            try:
+                conn.simple_bind_s(block['binddn'], block['bindpw'])
+            except ldap.INVALID_CREDENTIALS:
+                log.error('%s returned invalid credentials for %s' % (uri, block['binddn']))
+                if block['replicas'] is True:
+                    raise LDAPBackendError('unable to bind')
+                return user
+        group_basedn = block.get('group_basedn', block['basedn'])
+        try:
+            results = conn.search_s(group_basedn, ldap.SCOPE_SUBTREE,
+                    block['group_filter'].format(user_dn=dn), ['cn'])
+        except ldap.NO_SUCH_OBJECT:
+            results = []
+        groups_cn = filter(None, (result[1].get('cn', [None])[0] for result in results))
+        log.info('found groups %s for user %r', groups_cn, username)
         for g, attr in (('groupsu', 'is_superuser'), ('groupstaff', 'is_staff'), ('groupactive', 'is_active')):
-            if block[g] is not None:
-                ldap_data[attr] = False
-                for group in block[g]:
-                    try:
-                        result = conn.search_s('cn=%s,%s' % (group, block['groupdn']), ldap.SCOPE_BASE,
-                            '(objectclass=*)', ['member'])
-                    except ldap.NO_SUCH_OBJECT:
-                        continue
-                    if not result or 'member' not in result[0][1]:
-                        continue
-
-                    result = result[0][1]['member']
-                    if dn in result:
-                        ldap_data[attr] = True
-                        break
+            if block[g] is None:
+                continue
+            ldap_data[attr] = False
+            for group in block[g]:
+                if group in groups_cn:
+                    ldap_data[attr] = True
+                    break
         for key in ldap_data:
             if isinstance(ldap_data[key], basestring):
                 ldap_data[key] = ldap_data[key].decode('utf-8')
@@ -238,30 +237,20 @@ class LDAPBackend():
         user.save()
         if block.get('group_mapping'):
             mapping = block['group_mapping']
-            try:
-                results = conn.search_s(block['groupdn'], ldap.SCOPE_SUBTREE,
-                    '(&(objectclass=groupOfNames)(member=%s))' % dn, ['cn'])
-            except ldap.NO_SUCH_OBJECT:
-                results = []
-            used = set()
-            for dn , attributes in results:
-                cn = attributes['cn'][0]
-                group_name = mapping.get(cn)
-                if group_name:
-                    group, created = Group.objects.get_or_create(name=group_name)
-                    user.groups.add(group)
-                    used.add(cn)
-            for cn in mapping:
-                if cn not in used:
-                    group_name = mapping.get(cn)
-                    group, created = Group.objects.get_or_create(name=group_name)
-                    user.groups.remove(group)
+            for cn, django_groups in mapping.iteritems():
+                add = cn in groups_cn
+                for django_group in django_groups:
+                    group, created = Group.objects.get_or_create(name=django_group)
+                    if add:
+                        user.groups.add(group)
+                    else:
+                        user.groups.remove(group)
         if block.get('set_mandatory_groups'):
-            group_names = block['set_mandatory_groups']
-            for group_name in group_names:
-                if not group_name:
+            django_groups = block['set_mandatory_groups']
+            for django_group in django_groups:
+                if not django_group:
                     continue
-                group, created = Group.objects.get_or_create(name=group_name)
+                group, created = Group.objects.get_or_create(name=django_group)
                 user.groups.add(group)
         return user
 
@@ -278,7 +267,7 @@ class LDAPBackend():
             raise RuntimeError('Cannot find the backend for user %s' % user)
         conn = ldap.initialize(url)
         try:
-            conn.simple_bind_s('uid=%s,%s' % (block['bindname'], block['userdn']), block['bindpw'])
+            conn.simple_bind_s(block['binddn'], block['bindpw'])
         except ldap.LDAPError, e:
             log.error('Error during rebind: %s' % str(e))
             raise
@@ -348,8 +337,8 @@ class LDAPBackend():
 # LDAP_AUTH_SETTINGS = (
 #   {'url': ('ldap://10.0.44.2', 'ldaps://10.0.44.200'),    -*> can be string or iterable of strings
 #       'userdn': 'cn=users,dc=example,dc=com',             -*> ldap subtree in which users are stored
-#       'bindname': 'diradmin',                             --> admin name if users are not allowed to search
-#       'bindpw': 'supersecret',                            --> password for bindname
+#       'binddn': 'diradmin',                             --> admin name if users are not allowed to search
+#       'bindpw': 'supersecret',                            --> password for binddn
 #       'group': ('django_users', 'web_users', 'staff'),    --> can be None, string, or iterable of group names
 #                                                               if set, user must be in one of these groups
 #                                                               also, must set groupdn
