@@ -1,7 +1,7 @@
 import logging
-import urllib
-import urllib2
 import lasso
+
+import requests
 
 from django.conf import settings
 from django.utils.translation import ugettext as _
@@ -16,6 +16,8 @@ from authentic2.idp.saml import saml2_endpoints
 from authentic2.saml import models
 
 import forms
+
+logger = logging.getLogger(__name__)
 
 def redirect(request, next, template_name='redirect.html'):
     '''Show a simple page which does a javascript redirect, closing any popup
@@ -65,16 +67,17 @@ class EditProfile(UpdateView):
                 if login.msgBody:
                     # Only with SP supporting SSO IdP-initiated by POST
                     url = login.msgUrl
-                    method = 'POST'
-                    headers = \
-                        {"Content-type": "application/x-www-form-urlencoded",
-                        "Accept": "text/plain"}
-                    data = urllib.urlencode(\
-                        {lasso.SAML2_FIELD_RESPONSE: login.msgBody, })
+                    data = { lasso.SAML2_FIELD_RESPONSE: login.msgBody }
                     try:
-                        urllib2.urlopen(urllib2.Request(url, data, headers))
-                    except Exception, e:
-                        pass
+                        session = requests.Session()
+                        session.post(url, data=data, allow_redirects=True, timeout=5)
+                    except:
+                        logger.exception('exception when pushing attributes '
+                                'of %s to %s', self.request.user,
+                                liberty_provider.entity_id)
+                    else:
+                        logger.info('pushing attributes of %s to %s',
+                                self.request.user, liberty_provider.entity_id)
 
         return '/profile'
 
