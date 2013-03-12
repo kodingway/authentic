@@ -472,20 +472,3 @@ def provide_attributes_at_sso(request, user, audience, **kwargs):
 
     dic['attributes'] = attributes
     return dic
-
-
-def provide_attributes_of_user_profile(request, **kwargs):
-    attributes = {}
-    for field_name, title in getattr(request.user,
-            'USER_PROFILE', []):
-        value = getattr(request.user, field_name, None)
-        if not value:
-            continue
-        if callable(value):
-            value = value()
-        if not isinstance(value, basestring) and hasattr(value, '__iter__'):
-            value = map(unicode, value)
-        else:
-            value = [unicode(value)]
-        attributes[title] = value
-    return {'attributes': attributes}
