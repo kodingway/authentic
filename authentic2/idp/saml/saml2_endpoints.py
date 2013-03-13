@@ -1519,6 +1519,11 @@ def slo_return(request):
     server = create_server(request)
     logout = lasso.Logout.newFromDump(server, logout_dump)
     provider_id = logout.remoteProviderId
+    # forced to reset signature_verify_hint as it is not saved in the dump
+    provider = load_provider(request, provider_id, server=server)
+    policy = provider.service_provider.get_policy()
+    # FIXME: should use a logout_request_signature_check_hint
+    logout.setSignatureVerifyHint(policy.authn_request_signature_check_hint)
     if not load_provider(request, provider_id, server=logout.server):
         logger.error('slo_return: slo failed to load provider')
     return process_logout_response(request, logout,
