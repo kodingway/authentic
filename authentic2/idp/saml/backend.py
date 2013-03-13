@@ -57,7 +57,7 @@ class SamlBackend(object):
             try:
                 provider = models.LibertyProvider.objects.get(entity_id=provider_id)
                 name = provider.name
-            except LibertyProvider.DoesNotExist:
+            except models.LibertyProvider.DoesNotExist:
                 logger.error('logout_list: session found for unknown provider %s' \
                     % provider_id)
             else:
