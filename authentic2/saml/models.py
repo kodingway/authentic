@@ -374,6 +374,20 @@ class LibertyProvider(models.Model):
         if not self.protocol_conformance:
             self.protocol_conformance = p.protocolConformance
 
+def get_all_custom_or_default(instance, name):
+    model = instance._meta.get_field_by_name(name)[0].rel.to
+    try:
+        return model.objects.get(name='All')
+    except ObjectDoesNotExist:
+        pass
+    custom = getattr(instance, name, None)
+    if custom is not None:
+        return custom
+    try:
+        return models.objects.get(name='Default')
+    except ObjectDoesNotExist:
+        raise RuntimeError('Default %s is missing' % model)
+
 # TODO: The IdP must look to the preferred binding order for sso in the SP metadata (AssertionConsumerService)
 # expect if the protocol for response is defined in the request (ProtocolBinding attribute)
 class LibertyServiceProvider(models.Model):
