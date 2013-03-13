@@ -1492,12 +1492,13 @@ def process_logout_response(request, logout, soap_response, next):
         logger.exception('process_logout_response: \
             slo error with soap response %s and logout dump %s' \
                 % (soap_response, logout.dump()))
-        return redirect_next(request, next) or ko_icon(request)
     else:
         LibertySession.objects.filter(
                     django_session_key=request.session.session_key,
                     provider_id=logout.remoteProviderId).delete()
-        return redirect_next(request, next) or ok_icon(request)
+        logger.info('process_logout_response: deleted session to %s',
+                logout.remoteProviderId)
+    return redirect_next(request, next) or ok_icon(request)
 
 
 def slo_return(request):
