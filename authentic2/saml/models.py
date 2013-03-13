@@ -405,6 +405,9 @@ class LibertyServiceProvider(models.Model):
              related_name = "attribute_policy",
             verbose_name=_("Attribute policy"), null=True, blank=True)
 
+    def get_policy(self):
+        return get_all_custom_or_default(self, 'policy')
+
 
 # TODO: The choice for requests must be restricted by the IdP metadata
 # The SP then chooses the binding in this list.
