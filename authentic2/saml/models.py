@@ -462,7 +462,7 @@ class LibertySessionDump(models.Model):
 
        Should be replaced in the future by direct references to known
        assertions through the LibertySession object'''
-    django_session_key = models.CharField(max_length = 40)
+    django_session_key = models.CharField(max_length = 128)
     session_dump = models.TextField(blank = True)
     kind = models.IntegerField(choices = LIBERTY_SESSION_DUMP_KIND.items())
 
@@ -473,7 +473,7 @@ class LibertyManageDump(models.Model):
 
        Should be replaced in the future by direct reference to ?
        objects'''
-    django_session_key = models.CharField(max_length = 40)
+    django_session_key = models.CharField(max_length = 128)
     manage_dump = models.TextField(blank = True)
 
     objects = SessionLinkedManager()
@@ -488,10 +488,10 @@ class LibertyArtifactManager(models.Manager):
 class LibertyArtifact(models.Model):
     """Store an artifact and the associated XML content"""
     creation = models.DateTimeField(auto_now_add=True)
-    artifact = models.CharField(max_length = 40, primary_key = True)
+    artifact = models.CharField(max_length = 128, primary_key = True)
     content = models.TextField()
-    django_session_key = models.CharField(max_length = 40)
-    provider_id = models.CharField(max_length = 80)
+    django_session_key = models.CharField(max_length = 128)
+    provider_id = models.CharField(max_length = 256)
 
     objects = LibertyArtifactManager()
 
@@ -509,9 +509,9 @@ class LibertyAssertionManager(models.Manager):
         self.filter(creation__lt=before).delete()
 
 class LibertyAssertion(models.Model):
-    assertion_id = models.CharField(max_length = 50)
-    provider_id = models.CharField(max_length = 80)
-    session_index = models.CharField(max_length = 80, )
+    assertion_id = models.CharField(max_length = 128)
+    provider_id = models.CharField(max_length = 256)
+    session_index = models.CharField(max_length = 128, )
     assertion = models.TextField()
     creation = models.DateTimeField(auto_now_add=True)
 
@@ -562,7 +562,7 @@ class LibertyFederation(models.Model):
 
 class LibertySession(models.Model):
     """Store the link between a Django session and a Liberty session"""
-    django_session_key = models.CharField(max_length = 40)
+    django_session_key = models.CharField(max_length = 128)
     session_index = models.CharField(max_length = 80)
     provider_id = models.CharField(max_length = 256)
     federation = models.ForeignKey(LibertyFederation, null = True)
@@ -601,7 +601,7 @@ class LibertySession(models.Model):
 
 class LibertySessionSP(models.Model):
     """Store the link between a Django session and a Liberty session on the SP"""
-    django_session_key = models.CharField(max_length = 40)
+    django_session_key = models.CharField(max_length = 128)
     session_index =  models.CharField(max_length = 80, )
     federation = models.ForeignKey(LibertyFederation)
 
