@@ -9,7 +9,7 @@
 {% load i18n %}
 <div id="consent">
 <form method="post" action="">
-
+  {% csrf_token %}
 <p>
 {% trans "Choose attributes to send to " %} <strong>{{ provider_id }}</strong> ?
 

@@ -27,6 +27,7 @@
 {% endif %}
 </p>
 <form method="post" action="">
+{% csrf_token %}
 <input type="hidden" name="next" value="{{ next }}" />
 <input type="hidden" name="nonce" value="{{ nonce }}" />
 <input type="submit" name="accept" value="{% trans 'Accept' %}"/>
