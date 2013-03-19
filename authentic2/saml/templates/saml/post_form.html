@@ -2,12 +2,12 @@
 {% load i18n %}
 
 {% block title %} {{ title }} {% endblock %}
-{% block bodyargs %}onload="document.forms[0].submit()"{% endblock %}
+{% block bodyargs %}onload="document.forms["saml"].submit()"{% endblock %}
 
 {% block content %}
 <div class="post-redirect">
 <h2>{{ title }}</h2>
-<form action="{{url}}" method="post">
+<form action="{{url}}" method="post" name="saml">
    <p>{% trans "You should be automatically redirected to the identity provider." %}</p>
    <p>{% trans "If this page is still visible after a few seconds, press the Send button below." %}</p>
    <input type="hidden" name="{{ fieldname }}" value="{{ body }}" />
