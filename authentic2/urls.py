@@ -14,6 +14,9 @@ handler500 = 'authentic2.views.server_error'
 
 
 urlpatterns = patterns('',
+    (r'^$', login_required(authentic2.idp.views.homepage), {}, 'index'))
+
+not_homepage_patterns = patterns('',
     (r'^', include('authentic2.auth2_auth.urls')),
     (r'^redirect/(.*)', 'authentic2.views.redirect'),
     url(r'^accounts/password/change/done', 'authentic2.views.password_change_done'),
@@ -31,13 +34,14 @@ urlpatterns = patterns('',
     (r'^admin/', include(admin.site.urls)),
     (r'^idp/', include('authentic2.idp.urls')),
     (r'^logout$', 'authentic2.idp.views.logout'),
-    (r'^$', login_required(authentic2.idp.views.homepage), {}, 'index'),
     (r'^profile/$',
         prevent_access_to_transient_users(authentic2.idp.views.profile), {},
         'account_management'),
     url(r'^profile/edit/$', 'authentic2.views.edit_profile',
         name='profile_edit'),
 )
+
+urlpatterns += not_homepage_patterns
 
 urlpatterns += patterns('',
     (r'^authsaml2/', include('authentic2.authsaml2.urls')),
