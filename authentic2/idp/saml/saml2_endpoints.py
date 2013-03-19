@@ -905,6 +905,7 @@ def check_delegated_authentication_permission(request):
     return request.user.is_superuser()
 
 
+@csrf_exempt
 @login_required
 def idp_sso(request, provider_id=None, user_id=None, nid_format=None, return_profile=False):
     '''Initiate an SSO toward provider_id without a prior AuthnRequest
@@ -1403,6 +1404,7 @@ def ok_icon(request):
         % settings.STATIC_URL)
 
 
+@csrf_exempt
 @login_required
 def idp_slo(request, provider_id=None):
     """Send a single logout request to a SP, if given a next parameter, return
