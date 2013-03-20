@@ -907,7 +907,8 @@ def check_delegated_authentication_permission(request):
 
 @csrf_exempt
 @login_required
-def idp_sso(request, provider_id=None, user_id=None, nid_format=None, return_profile=False):
+def idp_sso(request, provider_id=None, user_id=None, nid_format=None,
+        save=True, return_profile=False):
     '''Initiate an SSO toward provider_id without a prior AuthnRequest
     '''
     if request.method == 'GET':
@@ -982,7 +983,7 @@ def idp_sso(request, provider_id=None, user_id=None, nid_format=None, return_pro
     login.processAuthnRequestMsg(None)
 
     return sso_after_process_request(request, login,
-            consent_obtained=True, user=user, save=False,
+            consent_obtained=True, user=user, save=save,
             nid_format=nid_format, return_profile=return_profile)
 
 

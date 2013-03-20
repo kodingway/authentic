@@ -63,7 +63,7 @@ class EditProfile(UpdateView):
         for service_provider in service_providers:
             liberty_provider = service_provider.liberty_provider
             login = saml2_endpoints.idp_sso(self.request,
-                liberty_provider.entity_id, return_profile=True)
+                liberty_provider.entity_id, save=False, return_profile=True)
             if login.msgBody:
                 # Only with SP supporting SSO IdP-initiated by POST
                 url = login.msgUrl
