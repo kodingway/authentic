@@ -90,12 +90,13 @@ def logout(request, next_page='/', redirect_field_name=REDIRECT_FIELD_NAME,
     next_page = request.REQUEST.get(redirect_field_name, next_page)
     if l and not do_local:
         # Full logout
-        next_page = '?local=ok&next=%s' % urllib.quote(next_page)
+        ok_icon_url = '%s/authentic2/images/ok.png' % settings.STATIC_URL
+        next_is_ok = '?local=ok&next=%s' % urllib.quote(ok_icon_url)
         code = '<div>'
         code += _('Local logout...')
         code += '<iframe src="/logout%s" marginwidth="0" marginheight="0" \
-            scrolling="no" style="border: none" width="0" height="0"> \
-            </iframe></div>' % next_page
+            scrolling="no" style="border: none" width="16" height="16"> \
+            </iframe></div>' % next_is_ok
         l += [code]
         context['logout_list'] = l
         logger.debug('logout: %s' % str(context['logout_list']))
