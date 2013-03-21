@@ -14,7 +14,7 @@ class UserFederations(object):
         d = defaultdict(lambda:[])
         for key, value in links:
             d[key.replace('-','_')].append(value)
-        return d
+        return dict(d)
 
 def federations_processor(request):
     return {'federations': UserFederations(request) }
