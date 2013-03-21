@@ -1,9 +1,8 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth import get_user_model
 
 from registration.forms import RegistrationForm
-
-from authentic2.idp.models import UserProfile
 
 attrs_dict = { 'class': 'required' }
 
@@ -27,5 +26,5 @@ class UserProfileForm(forms.ModelForm):
         return instance
 
     class Meta:
-        exclude = ('user',)
-        model = UserProfile
+        model = get_user_model()
+        include = [field_name for field_name, title in model.USER_PROFILE]
