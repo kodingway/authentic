@@ -99,7 +99,7 @@ def logout(request, next_page='/', redirect_field_name=REDIRECT_FIELD_NAME,
             </iframe></div>' % next_is_ok
         l += [code]
         context['logout_list'] = l
-        logger.debug('logout: %s' % str(context['logout_list']))
+        logger.debug('logout: %r' % unicode(context['logout_list']))
         context['next_page'] = next_page
         context['message'] = _('Logging out from all your services')
         return render_to_response(template, context_instance = context)
