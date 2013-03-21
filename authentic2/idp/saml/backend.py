@@ -47,9 +47,9 @@ class SamlBackend(object):
     def logout_list(self, request):
         all_sessions = models.LibertySession.objects.filter(
                 django_session_key=request.session.session_key)
-        logger.debug("logout_list: all_sessions %s" % str(all_sessions))
+        logger.debug("logout_list: all_sessions %r" % all_sessions)
         provider_ids = set([s.provider_id for s in all_sessions])
-        logger.debug("logout_list: provider_ids %s" % str(provider_ids))
+        logger.debug("logout_list: provider_ids %r" % provider_ids)
         result = []
         for provider_id in provider_ids:
             name = provider_id
@@ -73,7 +73,7 @@ class SamlBackend(object):
                     code += '<iframe src="%s?provider_id=%s" marginwidth="0" marginheight="0" \
         scrolling="no" style="border: none" width="16" height="16"></iframe></div>' % \
                             (reverse(saml2_endpoints.idp_slo, args=[provider_id]), provider_id)
-                    logger.debug("logout_list: code %s" % str(code))
+                    logger.debug("logout_list: code %r" % code)
                     result.append(code)
         return result
 
