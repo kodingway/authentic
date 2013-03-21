@@ -62,10 +62,14 @@ or easy_install::
 
    easy_install authentic2
 
-You can now run Authentic from the installation directory, e.g.::
+On first run you must create the database schema::
 
-   python /usr/local/lib/python2.6/site-packages/authentic2-x.y.z-py2.6.egg/authentic2/manage.py syncdb --migrate
-   python /usr/local/lib/python2.6/site-packages/authentic2-x.y.z-py2.6.egg/authentic2/manage.py runserver
+   python authentic2/manage.py syncdb --all
+   python authentic2/manage.py migrate --fake
+
+Then you can launch authentic::
+
+   python authentic2/manage.py runserver
 
 You should see the following output::
 
@@ -125,9 +129,13 @@ or using the dependencies version requirements::
    python setup.py egg_info
    pip install -r authentic2.egg-info/requires.txt
 
-Then run Authentic from the extracted directory::
+On first run you must create the database schema::
 
-   python authentic2/manage.py syncdb --migrate
+   python authentic2/manage.py syncdb --all
+   python authentic2/manage.py migrate --fake
+
+Then you can launch authentic::
+
    python authentic2/manage.py runserver
 
 You should see the following output::
@@ -156,9 +164,13 @@ or easy_install::
 
    easy_install ./authentic
 
-You can now run Authentic from the installation directory, e.g.::
+On first run you must create the database schema::
 
-   python /usr/local/lib/python2.6/site-packages/authentic2-x.y.z-py2.6.egg/authentic2/manage.py syncdb --migrate
+   python authentic2/manage.py syncdb --all
+   python authentic2/manage.py migrate --fake
+
+Then you can launch authentic::
+
    python /usr/local/lib/python2.6/site-packages/authentic2-x.y.z-py2.6.egg/authentic2/manage.py runserver
 
 You should see the following output::
