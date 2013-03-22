@@ -265,19 +265,36 @@ def return_idff12_request(request, profile, title = ''):
 # LassoSession) holding all the datas, to manipulate them at row Level with
 # LibertyFederation and LibertyAssertion objects.
 
+START_IDENTITY_DUMP = '''<Identity xmlns="http://www.entrouvert.org/namespaces/lasso/0.0" Version="2">
+'''
+MIDDLE_IDENTITY_DUMP = '''<lasso:Federation xmlns:lasso="http://www.entrouvert.org/namespaces/lasso/0.0" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" RemoteProviderID="{sp_id}" FederationDumpVersion="2">
+    <lasso:LocalNameIdentifier>
+        <saml:NameID Format="{format}" NameQualifier="{idp_id}" SPNameQualifier="{sp_id}">{content}</saml:NameID>
+    </lasso:LocalNameIdentifier>
+</lasso:Federation>
+'''
+END_IDENTITY_DUMP = '''</Identity>'''
+
+
+def federations_to_identity_dump(federations):
+    l = [ START_IDENTITY_DUMP ]
+    for federation in federations:
+        l.append(MIDDLE_IDENTITY_DUMP.format(content=federation.name_id_content,
+            format=federation.name_id_format,
+            sp_id=federation.sp_id,
+            idp_id=federation.idp_id))
+    l.append(END_IDENTITY_DUMP)
+    return ''.join(l)
+
 def load_federation(request, login, user = None):
     '''Load an identity dump from the database'''
     if not user:
         user = request.user
     logger.debug('load_federation: user is %s' %user.username)
-    try:
-        q = LibertyIdentityDump.objects.get(user = user)
-        logger.debug('load_federation: identity dump found %s' %q.identity_dump.encode('utf8'))
-    except ObjectDoesNotExist:
-        pass
-    else:
-        login.setIdentityFromDump(q.identity_dump.encode('utf8'))
-        logger.debug('load_federation: set identity from dump done %s' %login.identity.dump())
+    identity_dump = federations_to_identity_dump(
+            LibertyFederation.objects.filter(user=user))
+    login.setIdentityFromDump(identity_dump)
+    logger.debug('load_federation: set identity from dump done %s' % login.identity.dump())
 
 def load_session(request, login, session_key = None,
         kind=LIBERTY_SESSION_DUMP_KIND_IDP):
