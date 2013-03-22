@@ -6,6 +6,7 @@ from django.contrib.auth import hashers
 from django.utils.crypto import constant_time_compare
 from django.utils.datastructures import SortedDict
 from django.utils.translation import ugettext_noop as _
+from django.utils.encoding import force_bytes
 
 class Drupal7PasswordHasher(hashers.BasePasswordHasher):
     """
@@ -61,6 +62,7 @@ class Drupal7PasswordHasher(hashers.BasePasswordHasher):
         assert password
         assert salt and '$' not in salt
         h = salt
+        password = force_bytes(password)
         for i in xrange(iterations+1):
             h = self.digest(h + password).digest()
         return "%s$%d$%s$%s" % (self.algorithm, iterations, salt, self.b64encode(h)[:43])
