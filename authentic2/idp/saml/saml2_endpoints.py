@@ -454,10 +454,19 @@ def get_url_with_nonce(request, function, nonce):
 def need_consent_for_federation(request, login, save, nid_format):
     nonce = login.request.id or get_nonce()
     save_key_values(nonce, login.dump(), False, save, nid_format)
+    display_name = None
+    try:
+        provider = \
+            LibertyProvider.objects.get(entity_id=login.request.issuer.content)
+        display_name = provider.name
+    except:
+        pass
+    if not display_name:
+        display_name = urllib.quote(login.request.issuer.content)
     url = '%s?%s=%s&next=%s&provider_id=%s' \
         % (reverse(consent_federation), NONCE_FIELD_NAME,
             nonce, get_url_with_nonce(request, continue_sso, nonce),
-            urllib.quote(login.request.issuer.content))
+            display_name)
     logger.debug('need_consent_for_federation: redirect to url %s' % url)
     return HttpResponseRedirect(url)
 
@@ -466,10 +475,19 @@ def need_consent_for_attributes(request, login, consent_obtained, save,
         nid_format):
     nonce = login.request.id or get_nonce()
     save_key_values(nonce, login.dump(), consent_obtained, save, nid_format)
+    display_name = None
+    try:
+        provider = \
+            LibertyProvider.objects.get(entity_id=login.request.issuer.content)
+        display_name = provider.name
+    except:
+        pass
+    if not display_name:
+        display_name = urllib.quote(login.request.issuer.content)
     url = '%s?%s=%s&next=%s&provider_id=%s' \
         % (reverse(consent_attributes), NONCE_FIELD_NAME,
             nonce, get_url_with_nonce(request, continue_sso, nonce),
-            urllib.quote(login.request.issuer.content))
+            display_name)
     logger.debug('need_consent_for_attributes: redirect to url %s' % url)
     return HttpResponseRedirect(url)
 
@@ -983,7 +1001,7 @@ def idp_sso(request, provider_id=None, user_id=None, nid_format=None,
     login.processAuthnRequestMsg(None)
 
     return sso_after_process_request(request, login,
-            consent_obtained=True, user=user, save=save,
+            consent_obtained=False, user=user, save=save,
             nid_format=nid_format, return_profile=return_profile)
 
 
