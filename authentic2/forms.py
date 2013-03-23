@@ -39,4 +39,3 @@ class UserProfileForm(forms.ModelForm):
 
     class Meta:
         model = get_user_model()
-        include = [field_name for field_name, title in model.USER_PROFILE]
