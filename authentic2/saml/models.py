@@ -263,12 +263,12 @@ class SPOptionsIdPPolicy(models.Model):
             verbose_name = _("Allow IdP initiated SSO"))
     # XXX: format in the metadata file, should be suffixed with a star to mark
     # them as special
-    default_name_id_format = models.CharField(max_length = 200,
+    default_name_id_format = models.CharField(max_length = 256,
             default = DEFAULT_NAME_ID_FORMAT,
             choices = NAME_ID_FORMATS_CHOICES)
     accepted_name_id_format = MultiSelectField(
             verbose_name = _("NameID formats accepted"),
-            max_length=ACCEPTED_NAME_ID_FORMAT_LENGTH,
+            max_length=1024,
             blank=True, choices=NAME_ID_FORMATS_CHOICES)
     # TODO: add clean method which checks that the LassoProvider we can create
     # with the metadata file support the SP role
