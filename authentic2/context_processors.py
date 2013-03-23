@@ -1,6 +1,3 @@
-import logging
-
-from collections import defaultdict
 from idp.views import accumulate_from_backends
 
 class UserFederations(object):
@@ -8,13 +5,22 @@ class UserFederations(object):
     def __init__(self, request):
         self.request = request
 
-    def links(self):
-        links = accumulate_from_backends(self.request, 'links')
-        logging.debug('federations: %s', links)
-        d = defaultdict(lambda:[])
-        for key, value in links:
-            d[key.replace('-','_')].append(value)
-        return dict(d)
+    def __getattr__(self, name):
+        d = { 'provider': None, 'links': [] }
+        if name.startswith('service_'):
+            try:
+                provider_id = int(name.split('_', 1)[1])
+            except ValueError:
+                pass
+            else:
+                links = accumulate_from_backends(self.request, 'links')
+                for provider, link in links:
+                    if provider.id != provider_id:
+                        continue
+                    d['provider'] = provider
+                    d['links'].append(link)
+            return d
+        return super(UserFederations, self).__getattr__(name)
 
 def federations_processor(request):
     return {'federations': UserFederations(request) }
