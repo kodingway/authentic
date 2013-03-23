@@ -167,7 +167,7 @@ class AbstractUser(AbstractBaseUser, PermissionsMixin):
 class User(AbstractUser):
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
-    email = models.EmailField(_('e-mail address'), blank=True)
+    email = models.EmailField(_('e-mail address'), max_length=128, blank=True)
     nickname = models.CharField(_('nickname'), max_length=50, blank=True)
     url = models.URLField(_('Website'), blank=True)
     company = models.CharField(verbose_name=_("Company"),
