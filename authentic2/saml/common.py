@@ -294,7 +294,7 @@ def load_federation(request, login, user = None):
     identity_dump = federations_to_identity_dump(
             LibertyFederation.objects.filter(user=user))
     login.setIdentityFromDump(identity_dump)
-    logger.debug('load_federation: set identity from dump done %s' % login.identity.dump())
+    logger.debug('load_federation: set identity from dump done %s' % identity_dump)
 
 def load_session(request, login, session_key = None,
         kind=LIBERTY_SESSION_DUMP_KIND_IDP):
