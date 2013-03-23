@@ -13,6 +13,18 @@ class AuthenticRegistrationForm(RegistrationForm):
                                 label=_(u'username'),
                                 error_messages = {'invalid': _(u'your username must contain only letters, numbers and no spaces')})
 
+    def clean_username(self):
+        """
+        Validate that the username is alphanumeric and is not already
+        in use.
+
+        """
+        existing = get_user_model().objects.filter(username__iexact=self.cleaned_data['username'])
+        if existing.exists():
+            raise forms.ValidationError(_("A user with that username already exists."))
+        else:
+            return self.cleaned_data['username']
+
 class UserProfileForm(forms.ModelForm):
     def __init__(self, user=None, *args, **kwargs):
         self.user = user
