@@ -24,7 +24,7 @@ setup(name="authentic2",
       install_requires=['django < 1.6',
         'south<0.8.0',
         'requests',
-        'django-registration==0.8',
+        'django-registration==0.8.1',
         'django-debug-toolbar<1.0.0'],
       zip_safe=False,
       classifiers=[
@@ -44,6 +44,6 @@ setup(name="authentic2",
           "Topic :: System :: Systems Administration :: Authentication/Directory",
       ],
       dependency_links = [
-          'https://bitbucket.org/bdauvergne/django-registration-1.5/get/tip.tar.gz#egg=django-registration-0.8',
+          'https://bitbucket.org/bdauvergne/django-registration-1.5/get/tip.tar.gz#egg=django-registration-0.8.1',
       ],
 )
