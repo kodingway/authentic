@@ -24,7 +24,7 @@ setup(name="authentic2",
       install_requires=['django < 1.6',
         'south<0.8.0',
         'requests',
-        'django-registration',
+        'django-registration==0.8.0',
         'django-debug-toolbar<1.0.0'],
       zip_safe=False,
       classifiers=[
