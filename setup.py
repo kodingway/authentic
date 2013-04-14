@@ -9,6 +9,41 @@ from ez_setup import use_setuptools
 use_setuptools()
 
 from setuptools import setup, find_packages
+from setuptools.command.install_lib import install_lib as _install_lib
+from distutils.command.build import build as _build
+from distutils.command.sdist import sdist  as _sdist
+from distutils.cmd import Command
+
+class compile_translations(Command):
+    description = 'compile message catalogs to MO files via django compilemessages'
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        import os
+        import sys
+        from django.core.management.commands.compilemessages import \
+            compile_messages
+        curdir = os.getcwd()
+        os.chdir(os.path.realpath('authentic2'))
+        compile_messages(stderr=sys.stderr)
+        os.chdir(curdir)
+
+class build(_build):
+    sub_commands = [('compile_translations', None)] + _build.sub_commands
+
+class sdist(_sdist):
+    sub_commands = [('compile_translations', None)] + _sdist.sub_commands
+
+class install_lib(_install_lib):
+    def run(self):
+        self.run_command('compile_translations')
+        _install_lib.run(self)
 
 setup(name="authentic2",
       version=authentic2.VERSION,
@@ -46,4 +81,7 @@ setup(name="authentic2",
       dependency_links = [
           'https://bitbucket.org/bdauvergne/django-registration-1.5/get/tip.tar.gz#egg=django-registration-0.8.1',
       ],
+      cmdclass={'build': build, 'install_lib': install_lib,
+          'compile_translations': compile_translations,
+          'sdist': sdist},
 )

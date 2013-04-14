@@ -64,12 +64,12 @@ or easy_install::
 
 On first run you must create the database schema::
 
-   python authentic2/manage.py syncdb --all
-   python authentic2/manage.py migrate --fake
+   authentic2-ctl syncdb --all
+   authentic2-ctl migrate --fake
 
 Then you can launch authentic::
 
-   python authentic2/manage.py runserver
+   authentic2-ctl runserver
 
 You should see the following output::
 
@@ -97,8 +97,8 @@ or easy_install::
 
 You can now run Authentic from the installation directory, e.g.::
 
-   python /usr/local/lib/python2.6/site-packages/authentic2-x.y.z-py2.6.egg/authentic2/manage.py syncdb --migrate
-   python /usr/local/lib/python2.6/site-packages/authentic2-x.y.z-py2.6.egg/authentic2/manage.py runserver
+   authentic2-ctl syncdb --migrate
+   authentic2-ctl runserver
 
 You should see the following output::
 
@@ -131,12 +131,12 @@ or using the dependencies version requirements::
 
 On first run you must create the database schema::
 
-   python authentic2/manage.py syncdb --all
-   python authentic2/manage.py migrate --fake
+   ./authentic2-ctl syncdb --all
+   ./authentic2-ctl migrate --fake
 
 Then you can launch authentic::
 
-   python authentic2/manage.py runserver
+   ./authentic2-ctl runserver
 
 You should see the following output::
 
@@ -166,12 +166,12 @@ or easy_install::
 
 On first run you must create the database schema::
 
-   python authentic2/manage.py syncdb --all
-   python authentic2/manage.py migrate --fake
+   authentic2-ctl syncdb --all
+   authentic2-ctl migrate --fake
 
 Then you can launch authentic::
 
-   python /usr/local/lib/python2.6/site-packages/authentic2-x.y.z-py2.6.egg/authentic2/manage.py runserver
+   authentic2-ctl runserver
 
 You should see the following output::
 
@@ -203,8 +203,8 @@ or using the dependencies version requirements::
 
 Then run Authentic::
 
-   python authentic2/manage.py syncdb --migrate
-   python authentic2/manage.py runserver
+   python authentic2-ctl syncdb --migrate
+   python authentic2-ctl runserver
 
 You should see the following output::
 
@@ -226,17 +226,13 @@ of authentic you have to update your database schema using the
 migration command — you will need to have installed the dependency django-south,
 see the beginning of this README file.::
 
-  python ./manage.py migrate
-
-Then you will need to create new tables if there are.::
-
-  python ./manage.py syncdb
+  authentic2-ctl syncdb --migrate
 
 Specifying a different database
 ===============================
 
 This is done by modifying the DATABASES dictionary in your local_settings.py file
-(create it in Authentic project directory); for example::
+(create it in Authentic project directory); for example to use PostgreSQL::
 
  DATABASES['default'] = {
    'ENGINE': 'django.db.backends.postgresql',
@@ -334,13 +330,14 @@ CAS
 How to use Authentic 2 as a CAS 1.0 or CAS 2.0 identity provider ?
 -----------------------------------------------------------------
 
-1. Activate CAS IdP support in settings.py::
+1. Activate CAS IdP support in your local_settings.py::
 
  IDP_CAS = True
 
 2. Then create the database table to hold CAS service tickets::
 
- python authentic2/manage.py syncdb --migrate
+ python authentic2-ctl syncdb --all
+ python authentic2-ctl migrate --fake
 
 2. Also configure authentic2 to authenticate against your LDAP directory (see
    above) if your want your user attributes to be accessible from your service,
