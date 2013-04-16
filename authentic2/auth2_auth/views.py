@@ -1,13 +1,11 @@
-import logging
 import urllib
 
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth import login as auth_login
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django import forms
 from django.http import HttpResponseRedirect
-from django.views.decorators.csrf import csrf_exempt, csrf_protect
+from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
 from django.utils.http import urlencode
 from django.contrib.sites.models import Site, RequestSite
@@ -19,7 +17,6 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.views.generic.base import TemplateView
 
-from authentic2.saml.common import *
 from authentic2.auth2_auth import NONCE_FIELD_NAME
 from authentic2.idp import get_backends
 import models
