@@ -39,3 +39,6 @@ class UserProfileForm(forms.ModelForm):
 
     class Meta:
         model = get_user_model()
+        fields = [ field_name
+                for field_name in get_user_model().USER_PROFILE
+                if field_name in get_user_model()._meta.get_all_field_names()]

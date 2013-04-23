@@ -177,13 +177,5 @@ class User(AbstractUser):
     postal_address = models.TextField(verbose_name=_("Postal address"),
             max_length=255, blank=True)
 
-    USER_PROFILE = (
-            ('username', _('Username')),
-            ('first_name', _('First name')),
-            ('last_name', _('Last name')),
-            ('email', _('Mail')),
-            ('nickname', _('Nickname')),
-            ('url', _('Homepage')),
-            ('phone', _('Phone')),
-            ('roles', _('Roles')),
-    )
+    USER_PROFILE = ( 'username', 'first_name', 'last_name', 'email',
+            'nickname', 'url', 'phone', ('roles', _('roles')),)

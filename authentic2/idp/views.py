@@ -57,7 +57,13 @@ def profile(request):
     # User attributes management
     profile = []
     try:
-        for field_name, title in getattr(request.user, 'USER_PROFILE', []):
+        for field_name in getattr(request.user, 'USER_PROFILE', []):
+            if isinstance(field_name, tuple):
+                field_name, title = field_name
+            elif isinstance(field_name, str):
+                title = request.user._meta.get_field(field_name).verbose_name
+            else:
+                raise TypeError('USER_PROFILE must contain string or tuple')
             value = getattr(request.user, field_name, None)
             if not value:
                 continue
