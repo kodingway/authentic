@@ -51,6 +51,7 @@ class EditProfile(UpdateView):
     model = get_user_model()
     form_class = forms.UserProfileForm
     template_name = 'profiles/edit_profile.html'
+    success_url = '../'
 
     def get_object(self):
         return self.request.user
@@ -79,10 +80,10 @@ class EditProfile(UpdateView):
                     logger.info('pushing attributes of %s to %s',
                             self.request.user, sp_id)
 
-    def get_success_url(self):
+    def form_valid(self, form):
         if settings.PUSH_PROFILE_UPDATES:
             thread.start_new_thread(self.push_attributes, ())
-        return '/profile'
+        return super(EditProfile, self).form_valid(form)
 
 edit_profile = prevent_access_to_transient_users(EditProfile.as_view())
 
