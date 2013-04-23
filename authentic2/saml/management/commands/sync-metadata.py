@@ -161,7 +161,7 @@ existing providers with the same tag will be removed if they do not exist\
                     except:
                         print 'SAML2 service provider options policy with name %s not found' % sp_policy_name
                 else:
-                        print 'No SAML2 service provider options policy provided'
+                    print 'No SAML2 service provider options policy provided'
                 idp_policy = None
                 if 'idp_policy' in options and options['idp_policy']:
                     idp_policy_name = options['idp_policy']
@@ -172,7 +172,7 @@ existing providers with the same tag will be removed if they do not exist\
                     except:
                         print 'SAML2 identity provider options policy with name %s not found' % idp_policy_name
                 else:
-                        print 'No SAML2 identity provider options policy provided'
+                    print 'No SAML2 identity provider options policy provided'
                 loaded = []
                 for entity_descriptor in doc.getroot().findall(ENTITY_DESCRIPTOR_TN):
                     try:
@@ -182,7 +182,7 @@ existing providers with the same tag will be removed if they do not exist\
                         raise
                         entity_id = entity_descriptor.get(ENTITY_ID)
                         if options['ignore-errors']:
-                            print >>sys.stderr, 'Unable to load EntityDescriptor for %s: %s' % (entity_id, str(e))
+                            print >> sys.stderr, 'Unable to load EntityDescriptor for %s: %s' % (entity_id, str(e))
                         else:
                             raise CommandError('EntityDescriptor loading: %s' % str(e))
                 if options['source']:
