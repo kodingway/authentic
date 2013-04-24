@@ -5,6 +5,7 @@ import base64
 import binascii
 import re
 import datetime
+import time
 
 
 def filter_attribute_private_key(message):
@@ -244,6 +245,16 @@ class Saml2Metadata(object):
     def __str__(self):
         return '<?xml version="1.0"?>\n' + etree.tostring(self.root_element())
 
+def iso8601_to_datetime(date_string):
+    '''Convert a string formatted as an ISO8601 date into a time_t value.
+
+       This function ignores the sub-second resolution'''
+    m = re.match(r'(\d+-\d+-\d+T\d+:\d+:\d+)(?:\.\d+)?Z$', date_string)
+    if not m:
+        raise ValueError('Invalid ISO8601 date')
+    tm = time.strptime(m.group(1)+'Z', "%Y-%m-%dT%H:%M:%SZ")
+    return datetime.datetime.fromtimestamp(time.mktime(tm))
+
 def authnresponse_checking(login, subject_confirmation, logger, saml_request_id=None):
     logger.debug('authnresponse_checking: beginning...')
     # If there is no inResponseTo: IDP initiated
@@ -285,7 +296,9 @@ def authnresponse_checking(login, subject_confirmation, logger, saml_request_id=
                 subjectConfirmation.subjectConfirmationData.recipient != \
                 subject_confirmation:
             logger.error('authnresponse_checking: SubjectConfirmation \
-                Recipient Mismatch')
+                Recipient Mismatch, %s is not %s' % (assertion.subject. \
+                subjectConfirmation.subjectConfirmationData.recipient,
+                subject_confirmation))
             return False
     except:
         logger.error('authnresponse_checking: Error checking \
@@ -308,7 +321,7 @@ def authnresponse_checking(login, subject_confirmation, logger, saml_request_id=
     except:
         logger.error('authnresponse_checking: Error checking AudienceRestriction')
         return False
-    logger.debug('authnresponse_checking: audience restriction repected')
+    logger.debug('authnresponse_checking: audience restriction respected')
 
     # Check: notBefore, notOnOrAfter
     now = datetime.datetime.utcnow()
@@ -321,10 +334,7 @@ def authnresponse_checking(login, subject_confirmation, logger, saml_request_id=
 
     not_on_or_after = assertion.subject.subjectConfirmation. \
         subjectConfirmationData.notOnOrAfter
-    print assertion.subject.subjectConfirmation. \
-        subjectConfirmationData.notOnOrAfter
 
-    from authentic2.saml.common import iso8601_to_datetime
     if irt:
         if not_before is not None:
             logger.error('authnresponse_checking: assertion in response to an AuthnRequest, \
@@ -334,7 +344,7 @@ def authnresponse_checking(login, subject_confirmation, logger, saml_request_id=
         logger.error('authnresponse_checking: invalid notBefore value ' + not_before)
         return False
     if not_on_or_after is None or not not_on_or_after.endswith('Z'):
-        logger.error('authnresponse_checking: invalid notOnOrAfter value')
+        logger.error('authnresponse_checking: invalid notOnOrAfter format')
         return False
     try:
         if not_before and now < iso8601_to_datetime(not_before):

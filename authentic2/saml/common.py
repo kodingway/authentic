@@ -5,7 +5,6 @@ import httplib
 import logging
 import re
 import datetime
-import time
 
 import lasso
 from django.template import RequestContext
@@ -186,7 +185,7 @@ def check_id_and_issue_instant(request_response_or_assertion, now=None):
         now = datetime.datetime.utcnow()
     try:
         issue_instant = request_response_or_assertion.issueInstant
-        issue_instant = iso8601_to_datetime(issue_instant)
+        issue_instant = saml2utils.iso8601_to_datetime(issue_instant)
         delta = datetime.timedelta(seconds=NONCE_TIMEOUT)
         if not (now - delta <= issue_instant < now + delta):
             logger.warning('IssueInstant %s not in the interval [%s, %s[',
@@ -706,16 +705,6 @@ def soap_fault(request, faultcode='soap:Client', faultstring=None):
 </soap:Envelope>''' % locals()
     return HttpResponse(content, mimetype = "text/xml")
 
-def iso8601_to_datetime(date_string):
-    '''Convert a string formatted as an ISO8601 date into a time_t value.
-
-       This function ignores the sub-second resolution'''
-    m = re.match(r'(\d+-\d+-\d+T\d+:\d+:\d+)(?:\.\d+)?Z$', date_string)
-    if not m:
-        raise ValueError('Invalid ISO8601 date')
-    tm = time.strptime(m.group(1)+'Z', "%Y-%m-%dT%H:%M:%SZ")
-    return datetime.datetime.fromtimestamp(time.mktime(tm))
-
 def get_idp_options_policy(provider):
     try:
         return IdPOptionsSPPolicy.objects.get(name='All', enabled=True)
@@ -799,7 +788,7 @@ def get_session_not_on_or_after(assertion):
             if authn_statement.sessionNotOnOrAfter:
                 value = authn_statement.sessionNotOnOrAfter
                 try:
-                    session_not_on_or_afters.append(iso8601_to_datetime(value))
+                    session_not_on_or_afters.append(saml2utils.iso8601_to_datetime(value))
                 except ValueError:
                     logging.getLogger(__name__).error('unable to parse SessionNotOnOrAfter value %s, will use default value for session length.', value)
     if session_not_on_or_afters:
