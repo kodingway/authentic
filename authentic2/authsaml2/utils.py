@@ -64,12 +64,6 @@ def get_registered_url(request):
 def register_request_id(request, request_id):
     request.session['saml_request_id'] = request_id
 
-def check_response_id(request, login):
-    if 'saml_request_id' in request.session and \
-        request.session['saml_request_id'] == login.response.inResponseTo:
-        return True
-    return False
-
 # Used for account linking
 def save_federation_temp(request, login, attributes=None):
     if login and login.identity:

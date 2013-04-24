@@ -4,6 +4,8 @@ import x509utils
 import base64
 import binascii
 import re
+import datetime
+
 
 def filter_attribute_private_key(message):
     return re.sub(r' (\w+:)?(PrivateKey=")([&#;\w/ +-=])+(")', '', message)
@@ -241,6 +243,162 @@ class Saml2Metadata(object):
 
     def __str__(self):
         return '<?xml version="1.0"?>\n' + etree.tostring(self.root_element())
+
+def authnresponse_checking(login, subject_confirmation, logger, saml_request_id=None):
+    logger.debug('authnresponse_checking: beginning...')
+    # If there is no inResponseTo: IDP initiated
+    # else, check that the response id is the same
+    assertion = login.assertion
+    if not assertion:
+        logger.error('authnresponse_checking: Assertion missing')
+        return False
+    logger.debug('authnresponse_checking: assertion %s' % assertion.dump())
+
+    irt = None
+    try:
+        irt = assertion.subject. \
+            subjectConfirmation.subjectConfirmationData.inResponseTo
+    except:
+        pass
+    logger.debug('authnresponse_checking: inResponseTo: %s' % irt)
+
+    if irt and (not saml_request_id or saml_request_id != irt):
+        logger.error('authnresponse_checking: Request and Response ID do not match')
+        return False
+
+    # Check: SubjectConfirmation
+    try:
+        if assertion.subject.subjectConfirmation.method != \
+                'urn:oasis:names:tc:SAML:2.0:cm:bearer':
+            logger.error('authnresponse_checking: Unknown \
+                SubjectConfirmation Method')
+            return False
+    except:
+        logger.error('authnresponse_checking: Error checking \
+            SubjectConfirmation Method')
+        return False
+    logger.debug('authnresponse_checking: subjectConfirmation method known')
+
+    # Check: Check that the url is the same as in the assertion
+    try:
+        if assertion.subject. \
+                subjectConfirmation.subjectConfirmationData.recipient != \
+                subject_confirmation:
+            logger.error('authnresponse_checking: SubjectConfirmation \
+                Recipient Mismatch')
+            return False
+    except:
+        logger.error('authnresponse_checking: Error checking \
+            SubjectConfirmation Recipient')
+        return False
+    logger.debug('authnresponse_checking: \
+        the url is the same as in the assertion')
+
+    # Check: AudienceRestriction
+    try:
+        audience_ok = False
+        for audience_restriction in assertion.conditions.audienceRestriction:
+            if audience_restriction.audience != login.server.providerId:
+                logger.error('authnresponse_checking: Incorrect AudienceRestriction')
+                return False
+            audience_ok = True
+        if not audience_ok:
+            logger.error('authnresponse_checking: Incorrect AudienceRestriction')
+            return False
+    except:
+        logger.error('authnresponse_checking: Error checking AudienceRestriction')
+        return False
+    logger.debug('authnresponse_checking: audience restriction repected')
+
+    # Check: notBefore, notOnOrAfter
+    now = datetime.datetime.utcnow()
+    try:
+        not_before = assertion.subject. \
+            subjectConfirmation.subjectConfirmationData.notBefore
+    except:
+        logger.error('authnresponse_checking: missing subjectConfirmationData')
+        return False
+
+    not_on_or_after = assertion.subject.subjectConfirmation. \
+        subjectConfirmationData.notOnOrAfter
+    print assertion.subject.subjectConfirmation. \
+        subjectConfirmationData.notOnOrAfter
+
+    from authentic2.saml.common import iso8601_to_datetime
+    if irt:
+        if not_before is not None:
+            logger.error('authnresponse_checking: assertion in response to an AuthnRequest, \
+                notBefore MUST not be present in SubjectConfirmationData')
+            return False
+    elif not_before is not None and not not_before.endswith('Z'):
+        logger.error('authnresponse_checking: invalid notBefore value ' + not_before)
+        return False
+    if not_on_or_after is None or not not_on_or_after.endswith('Z'):
+        logger.error('authnresponse_checking: invalid notOnOrAfter value')
+        return False
+    try:
+        if not_before and now < iso8601_to_datetime(not_before):
+            logger.error('authnresponse_checking: Assertion received too early')
+            return False
+    except:
+        logger.error('authnresponse_checking: invalid notBefore value ' + not_before)
+        return False
+    try:
+        if not_on_or_after and now > iso8601_to_datetime(not_on_or_after):
+            logger.error('authnresponse_checking: Assertion expired')
+            return False
+    except:
+        logger.error('authnresponse_checking: invalid notOnOrAfter value')
+        return False
+
+    logger.debug('authnresponse_checking: assertion validity timeslice respected \
+        %s <= %s < %s ' % (not_before, str(now), not_on_or_after))
+
+    return True
+
+def get_attributes_from_assertion(assertion, logger):
+    attributes = dict()
+    if not assertion:
+        return attributes
+    for att_statement in assertion.attributeStatement:
+        for attribute in att_statement.attribute:
+            name = None
+            format = lasso.SAML2_ATTRIBUTE_NAME_FORMAT_BASIC
+            nickname = None
+            try:
+                name = attribute.name.decode('ascii')
+            except:
+                logger.warning('get_attributes_from_assertion: error decoding name of \
+                    attribute %s' % attribute.dump())
+            else:
+                try:
+                    if attribute.nameFormat:
+                        format = attribute.nameFormat.decode('ascii')
+                    if attribute.friendlyName:
+                        nickname = attribute.friendlyName
+                except Exception, e:
+                    message = 'get_attributes_from_assertion: name or format of an \
+                        attribute failed to decode as ascii: %s due to %s'
+                    logger.warning(message % (attribute.dump(), str(e)))
+                try:
+                    values = attribute.attributeValue
+                    if values:
+                        attributes[(name, format)] = []
+                        if nickname:
+                            attributes[nickname] = attributes[(name, format)]
+                    for value in values:
+                        content = [any.exportToXml() for any in value.any]
+                        content = ''.join(content)
+                        attributes[(name, format)].append(content.\
+                            decode('utf8'))
+                except Exception, e:
+                    message = 'get_attributes_from_assertion: value of an \
+                        attribute failed to decode as ascii: %s due to %s'
+                    logger.warning(message % (attribute.dump(), str(e)))
+    attributes['__issuer'] = assertion.issuer.content
+    attributes['__nameid'] = assertion.subject.nameID.content
+    return attributes
+
 
 if __name__ == '__main__':
     pkey, _ = x509utils.generate_rsa_keypair()

@@ -25,7 +25,7 @@ from django.utils.http import urlquote
 
 from authentic2.saml.common import get_idp_list, load_provider, \
     return_saml2_request, get_saml2_request_message, get_saml2_query_request, \
-    get_saml2_post_response, soap_call, iso8601_to_datetime, \
+    get_saml2_post_response, soap_call, \
     lookup_federation_by_name_identifier, get_authorization_policy, \
     get_idp_options_policy, save_session, \
     add_federation, load_session, send_soap_request, \
@@ -45,17 +45,19 @@ from authentic2.saml.common import get_idp_list, load_provider, \
 from authentic2.saml.models import LibertyProvider, LibertyFederation, \
     LibertySessionSP, LibertySessionDump, LIBERTY_SESSION_DUMP_KIND_SP, \
     save_key_values, NAME_ID_FORMATS, LibertySession
+from authentic2.saml.saml2utils import authnresponse_checking, \
+    get_attributes_from_assertion
 from authentic2.idp.saml.saml2_endpoints import return_logout_error
 from authentic2.authsaml2.utils import error_page, register_next_target, \
-    register_request_id, get_registered_url, \
-    check_response_id, save_federation_temp, load_federation_temp
+    register_request_id, get_registered_url, save_federation_temp, \
+    load_federation_temp
 from authentic2.authsaml2 import signals
 from authentic2.authsaml2.backends import AuthSAML2PersistentBackend
 from authentic2.utils import cache_and_validate
 
 __logout_redirection_timeout = getattr(settings, 'IDP_LOGOUT_TIMEOUT', 600)
 
-logger = logging.getLogger('authentic2.authsaml2')
+logger = logging.getLogger(__name__)
 
 metadata_map = (
     ('AssertionConsumerService',
@@ -434,133 +436,13 @@ def singleSignOnPost(request):
  ###
 def sso_after_response(request, login, relay_state=None, provider=None):
     logger.info('sso_after_response: Authnresponse processing begins...')
-    # If there is no inResponseTo: IDP initiated
-    # else, check that the response id is the same
-    irt = None
-    try:
-        irt = login.response.assertion[0].subject. \
-            subjectConfirmation.subjectConfirmationData.inResponseTo
-    except:
-        return error_page(request,
-            _('sso_after_response: No Response ID'), logger=logger)
-    logger.debug('sso_after_response: inResponseTo: %s' % irt)
 
-    if irt and not check_response_id(request, login):
+    subject_confirmation = request.build_absolute_uri().partition('?')[0]
+    saml_request_id = request.session.get('saml_request_id')
+    check = authnresponse_checking(login, subject_confirmation, logger, saml_request_id=saml_request_id)
+    if not check:
         return error_page(request,
-            _('sso_after_response: Request and Response ID do not match'),
-            logger=logger)
-    logger.debug('sso_after_response: ID checked')
-
-    logger.info('sso_after_response: Authnresponse processing terminated')
-    logger.info('sso_after_response: Assertion processing begins...')
-
-    #TODO: Register assertion and check for replay
-    # Add LibertyAssertion()
-    assertion = login.response.assertion[0]
-    if not assertion:
-        return error_page(request,
-            _('sso_after_response: Assertion missing'), logger=logger)
-    logger.debug('sso_after_response: assertion %s' % assertion.dump())
-
-    # Check: Check that the url is the same as in the assertion
-    try:
-        if assertion.subject. \
-                subjectConfirmation.subjectConfirmationData.recipient != \
-                request.build_absolute_uri().partition('?')[0]:
-            return error_page(request,
-                _('sso_after_response: SubjectConfirmation \
-                Recipient Mismatch'),
-                logger=logger)
-    except:
-        return error_page(request,
-            _('sso_after_response: Errot checking \
-            SubjectConfirmation Recipient'),
-            logger=logger)
-    logger.debug('sso_after_response: \
-        the url is the same as in the assertion')
-
-    # Check: SubjectConfirmation
-    try:
-        if assertion.subject.subjectConfirmation.method != \
-                'urn:oasis:names:tc:SAML:2.0:cm:bearer':
-            return error_page(request,
-                _('sso_after_response: Unknown \
-                SubjectConfirmation Method'),
-                logger=logger)
-    except:
-        return error_page(request,
-            _('sso_after_response: Error checking \
-            SubjectConfirmation Method'),
-            logger=logger)
-    logger.debug('sso_after_response: subjectConfirmation method known')
-
-    # Check: AudienceRestriction
-    try:
-        audience_ok = False
-        for audience_restriction in assertion.conditions.audienceRestriction:
-            if audience_restriction.audience != login.server.providerId:
-                return error_page(request,
-                    _('sso_after_response: Incorrect AudienceRestriction'),
-                    logger=logger)
-            audience_ok = True
-        if not audience_ok:
-            return error_page(request,
-                _('sso_after_response: Incorrect AudienceRestriction'),
-                logger=logger)
-    except:
-        return error_page(request,
-            _('sso_after_response: Error checking AudienceRestriction'),
-            logger=logger)
-    logger.debug('sso_after_response: audience restriction repected')
-
-    # Check: notBefore, notOnOrAfter
-    now = datetime.datetime.utcnow()
-    try:
-        not_before = assertion.subject. \
-            subjectConfirmation.subjectConfirmationData.notBefore
-    except:
-        return error_page(request,
-            _('sso_after_response: missing subjectConfirmationData'),
-            logger=logger)
-
-    not_on_or_after = assertion.subject.subjectConfirmation. \
-        subjectConfirmationData.notOnOrAfter
-
-    if irt:
-        if not_before is not None:
-            return error_page(request,
-                _('sso_after_response: \
-                assertion in response to an AuthnRequest, \
-                notBefore MUST not be present in SubjectConfirmationData'),
-                logger=logger)
-    elif not_before is not None and not not_before.endswith('Z'):
-        return error_page(request,
-            _('sso_after_response: \
-            invalid notBefore value ' + not_before), logger=logger)
-    if not_on_or_after is None or not not_on_or_after.endswith('Z'):
-        return error_page(request,
-            _('sso_after_response: invalid notOnOrAfter value'),
-            logger=logger)
-    try:
-        if not_before and now < iso8601_to_datetime(not_before):
-            return error_page(request,
-                _('sso_after_response: Assertion received too early'),
-                logger=logger)
-    except:
-        return error_page(request,
-            _('sso_after_response: invalid notBefore value ' + not_before),
-            logger=logger)
-    try:
-        if not_on_or_after and now > iso8601_to_datetime(not_on_or_after):
-            return error_page(request,
-            _('sso_after_response: Assertion expired'), logger=logger)
-    except:
-        return error_page(request,
-            _('sso_after_response: invalid notOnOrAfter value'),
-            logger=logger)
-
-    logger.debug('sso_after_response: assertion validity timeslice respected \
-        %s <= %s < %s ' % (not_before, str(now), not_on_or_after))
+            _('sso_after_response: error checking authn response'), logger=logger)
 
     try:
         login.acceptSso()
@@ -572,48 +454,7 @@ def sso_after_response(request, login, relay_state=None, provider=None):
     logger.info('sso_after_response: \
         Assertion processing terminated with success')
 
-    attributes = {}
-
-    for att_statement in login.assertion.attributeStatement:
-        for attribute in att_statement.attribute:
-            name = None
-            format = lasso.SAML2_ATTRIBUTE_NAME_FORMAT_BASIC
-            nickname = None
-            try:
-                name = attribute.name.decode('ascii')
-            except:
-                logger.warning('sso_after_response: error decoding name of \
-                    attribute %s' % attribute.dump())
-            else:
-                try:
-                    if attribute.nameFormat:
-                        format = attribute.nameFormat.decode('ascii')
-                    if attribute.friendlyName:
-                        nickname = attribute.friendlyName
-                except Exception, e:
-                    message = 'sso_after_response: name or format of an \
-                        attribute failed to decode as ascii: %s due to %s'
-                    logger.warning(message % (attribute.dump(), str(e)))
-                try:
-                    values = attribute.attributeValue
-                    if values:
-                        attributes[(name, format)] = []
-                        if nickname:
-                            attributes[nickname] = attributes[(name, format)]
-                    for value in values:
-                        content = [any.exportToXml() for any in value.any]
-                        content = ''.join(content)
-                        attributes[(name, format)].append(content.\
-                            decode('utf8'))
-                except Exception, e:
-                    message = 'sso_after_response: value of an \
-                        attribute failed to decode as ascii: %s due to %s'
-                    logger.warning(message % (attribute.dump(), str(e)))
-
-    # Keep the issuer
-    attributes['__issuer'] = login.assertion.issuer.content
-    attributes['__nameid'] = login.assertion.subject.nameID.content
-
+    attributes = get_attributes_from_assertion(login.assertion, logger)
     # Register attributes in session for other applications
     request.session['attributes'] = attributes
 
