@@ -317,11 +317,11 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': False,
         },
+        '': {
+                'handlers': ['console', 'local_file'],
+                'level': 'INFO',
+        }
     },
-    'root': {
-            'handlers': ['console', 'local_file'],
-            'level': 'INFO',
-    }
 }
 
 # local_settings.py can be used to override environment-specific settings
