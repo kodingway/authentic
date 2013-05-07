@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-12-23 19:15+0100\n"
-"PO-Revision-Date: 2010-06-01 11:03+0200\n"
+"PO-Revision-Date: 2013-05-07 23:27+0200\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
 "Language: fr\n"
@@ -1783,7 +1783,7 @@ msgstr "Courriel"
 
 #: vendor/registration/forms.py:43
 msgid "Password (again)"
-msgstr "Mot de passe (a nouveau)"
+msgstr "Mot de passe (à nouveau)"
 
 #: vendor/registration/forms.py:55
 msgid "A user with that username already exists."
