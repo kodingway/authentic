@@ -1752,7 +1752,7 @@ msgstr "Réinitialisation du mot de passe sur %(site_name)s"
 
 #: templates/registration/registration_complete.html:5
 msgid "Successful registration"
-msgstr "Inscription reussie"
+msgstr "Inscription réussie"
 
 #: templates/registration/registration_complete.html:9
 msgid "You are now registered. Activation email sent."
