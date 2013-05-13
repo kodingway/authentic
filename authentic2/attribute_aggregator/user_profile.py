@@ -73,8 +73,14 @@ def get_attributes(user, definitions=None, source=None, **kwargs):
     data = []
     try:
         field_names = set()
-        field_names.update(getattr(user, 'USER_PROFILE', []) \
-                or user._meta.get_all_field_names())
+        user_profile_fields = getattr(user, 'USER_PROFILE', [])
+        if not user_profile_fields:
+            user_profile_fields = user._meta.get_all_field_names()
+        for field in user_profile_fields:
+            if isinstance(field, (tuple, list)):
+                field_names.add(field[0])
+            else:
+                field_names.add(field)
         fields = []
         if definitions:
             for definition in definitions:
