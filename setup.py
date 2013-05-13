@@ -8,11 +8,13 @@ import authentic2
 from ez_setup import use_setuptools
 use_setuptools()
 
+
 from setuptools import setup, find_packages
 from setuptools.command.install_lib import install_lib as _install_lib
 from distutils.command.build import build as _build
 from distutils.command.sdist import sdist  as _sdist
 from distutils.cmd import Command
+
 
 class compile_translations(Command):
     description = 'compile message catalogs to MO files via django compilemessages'
@@ -34,19 +36,54 @@ class compile_translations(Command):
         compile_messages(stderr=sys.stderr)
         os.chdir(curdir)
 
+
 class build(_build):
     sub_commands = [('compile_translations', None)] + _build.sub_commands
 
+
 class sdist(_sdist):
     sub_commands = [('compile_translations', None)] + _sdist.sub_commands
+
 
 class install_lib(_install_lib):
     def run(self):
         self.run_command('compile_translations')
         _install_lib.run(self)
 
+
+def get_version():
+    import glob
+    import re
+    import os
+
+    version = None
+    for d in glob.glob('*'):
+        if not os.path.isdir(d):
+            continue
+        module_file = os.path.join(d, '__init__.py')
+        if not os.path.exists(module_file):
+            continue
+        for v in re.findall("""__version__ *= *['"](.*)['"]""",
+                open(module_file).read()):
+            assert version is None
+            version = v
+        if version:
+            break
+    assert version is not None
+    if os.path.exists('.git'):
+        import subprocess
+        p = subprocess.Popen(['git','describe'],
+                stdout=subprocess.PIPE)
+        result = p.communicate()[0]
+        assert p.returncode == 0, 'git returned non-zero'
+        new_version = result.split()[0]
+        assert new_version.split('-')[0] == version, '__version__ must match the last git annotated tag'
+        version = new_version.replace('-', '.')
+    return version
+
+
 setup(name="authentic2",
-      version=authentic2.VERSION,
+      version=get_version(),
       license="AGPLv3+",
       description="Authentic 2, a versatile identity management server",
       url="http://dev.entrouvert.org/projects/authentic/",
@@ -60,7 +97,7 @@ setup(name="authentic2",
       install_requires=['django < 1.6',
         'south<0.8.0',
         'requests',
-        'django-registration==0.8.1',
+        'django-registration==0.8.0final',
         'django-debug-toolbar<1.0.0'],
       zip_safe=False,
       classifiers=[
@@ -80,7 +117,7 @@ setup(name="authentic2",
           "Topic :: System :: Systems Administration :: Authentication/Directory",
       ],
       dependency_links = [
-          'https://bitbucket.org/bdauvergne/django-registration-1.5/get/tip.tar.gz#egg=django-registration-0.8.1',
+          'https://bitbucket.org/bdauvergne/django-registration-1.5/get/tip.tar.gz#egg=django-registration-0.8.0final',
       ],
       cmdclass={'build': build, 'install_lib': install_lib,
           'compile_translations': compile_translations,
