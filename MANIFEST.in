@@ -15,3 +15,4 @@ include requirements.txt
 include authentic2/vendor/dpam/LICENSE
 include authentic2/nonce/README.rst
 include doc/conf.py doc/Makefile doc/README.rst.bak 
+include local_settings.py.example
