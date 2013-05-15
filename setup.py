@@ -72,11 +72,12 @@ def get_version():
     assert version is not None
     if os.path.exists('.git'):
         import subprocess
-        p = subprocess.Popen(['git','describe'],
+        p = subprocess.Popen(['git','describe','--dirty','--match=v*'],
                 stdout=subprocess.PIPE)
         result = p.communicate()[0]
         assert p.returncode == 0, 'git returned non-zero'
-        new_version = result.split()[0]
+        new_version = result.split()[0][1:]
+        assert not new_version.endswith('-dirty'), 'git workdir is not clean'
         assert new_version.split('-')[0] == version, '__version__ must match the last git annotated tag'
         version = new_version.replace('-', '.')
     return version
