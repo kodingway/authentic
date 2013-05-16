@@ -412,6 +412,9 @@ class LibertyServiceProvider(models.Model):
     def get_policy(self):
         return get_all_custom_or_default(self, 'policy')
 
+    def __unicode__(self):
+        return unicode(self.liberty_provider)
+
 
 # TODO: The choice for requests must be restricted by the IdP metadata
 # The SP then chooses the binding in this list.
@@ -431,6 +434,9 @@ class LibertyIdentityProvider(models.Model):
     # TODO: add clean method which checks that the LassoProvider we can create
     # with the metadata file support the IDP role
     # i.e. provider.roles & lasso.PROVIDER_ROLE_IDP != 0
+
+    def __unicode__(self):
+        return unicode(self.liberty_provider)
 
 
 # Transactional models
@@ -500,8 +506,7 @@ class LibertyArtifact(models.Model):
     objects = LibertyArtifactManager()
 
 def nameid2kwargs(name_id):
-    return { 'name_id_qualifier': name_id.nameQualifier,
-        'name_id_sp_name_qualifier': name_id.spNameQualifier,
+    return {
         'name_id_content': name_id.content,
         'name_id_format': name_id.format }
 
@@ -532,18 +537,12 @@ class LibertyFederation(models.Model):
     """Store a federation, i.e. an identifier shared with another provider, be
        it IdP or SP"""
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
-    idp_id = models.CharField(max_length=256)
-    sp_id = models.CharField(max_length=256)
-    name_id_qualifier = models.CharField(max_length = 256,
-            verbose_name = "NameQualifier", blank=True, null=True)
+    idp = models.ForeignKey('LibertyIdentityProvider', null=True)
+    sp = models.ForeignKey('LibertyServiceProvider', null=True)
     name_id_format = models.CharField(max_length = 100,
             verbose_name = "NameIDFormat", blank=True, null=True)
     name_id_content = models.CharField(max_length = 100,
             verbose_name = "NameID")
-    name_id_sp_name_qualifier = models.CharField(max_length = 256,
-            verbose_name = "SPNameQualifier", blank=True, null=True)
-    name_id_sp_provided_id = models.CharField(max_length=256,
-            verbose_name="SPProvidedID", blank=True, null=True)
 
     def __init__(self, *args, **kwargs):
         saml2_assertion = kwargs.pop('saml2_assertion', None)
@@ -555,13 +554,12 @@ class LibertyFederation(models.Model):
     class Meta:
         verbose_name = _("Liberty federation")
         verbose_name_plural = _("Liberty federations")
-        # XXX: To allow shared-federation (multiple-user with the same
-        # federation), add user to this list
-        unique_together = (("name_id_qualifier", "name_id_format",
-            "name_id_content", "name_id_sp_name_qualifier"))
+        unique_together = (('user', 'idp', 'name_id_format'),
+                           ('user', 'sp',  'name_id_format'))
 
     def __unicode__(self):
-        return '<LibertyFederation %s>' % self.__dict__
+        if self.idp:
+            return u'<LibertyFederation for user {user} with  >'
 
 
 class LibertySession(models.Model):

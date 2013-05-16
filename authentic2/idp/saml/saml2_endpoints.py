@@ -38,6 +38,7 @@ from django.conf import settings
 from django.utils.encoding import smart_unicode
 from django.contrib.auth import load_backend
 
+
 from authentic2.compat import get_user_model
 import authentic2.idp as idp
 import authentic2.idp.views as idp_views
@@ -46,7 +47,7 @@ from authentic2.saml.models import LibertyAssertion, LibertyArtifact, \
     LibertySession, LibertyFederation, LibertySessionDump, \
     nameid2kwargs, saml2_urn_to_nidformat, LIBERTY_SESSION_DUMP_KIND_SP, \
     nidformat_to_saml2_urn, save_key_values, get_and_delete_key_values, \
-    LibertyProvider
+    LibertyProvider, LibertyServiceProvider
 from authentic2.saml.common import redirect_next, asynchronous_bindings, \
     soap_bindings, load_provider, get_saml2_request_message, \
     error_page, set_saml2_response_responder_status_code, \
@@ -62,7 +63,8 @@ from authentic2.saml.common import redirect_next, asynchronous_bindings, \
     AUTHENTIC_STATUS_CODE_UNAUTHORIZED, \
     send_soap_request, get_saml2_query_request, \
     get_saml2_request_message_async_binding, create_saml2_server, \
-    get_saml2_metadata, get_sp_options_policy, get_idp_options_policy
+    get_saml2_metadata, get_sp_options_policy, get_idp_options_policy, \
+    get_entity_id
 import authentic2.saml.saml2utils as saml2utils
 from authentic2.auth2_auth.models import AuthenticationEvent
 from common import redirect_to_login, kill_django_sessions
@@ -306,9 +308,10 @@ def build_assertion(request, login, nid_format='transient', attributes=None):
         logger.debug("build_assertion: nameID persistent, get or create "
             "federation")
         kwargs = nameid2kwargs(login.assertion.subject.nameID)
+        service_provider = LibertyServiceProvider.objects \
+                .get(liberty_provider__entity_id=login.remoteProviderId)
         federation, new = LibertyFederation.objects.get_or_create(
-                idp_id=login.server.providerId,
-                sp_id=login.remoteProviderId,
+                sp=service_provider,
                 user=request.user, **kwargs)
         if new:
             logger.info("build_assertion: nameID persistent, new federation")
@@ -724,8 +727,9 @@ def sso_after_process_request(request, login, consent_obtained=False,
             consent_value = 'urn:oasis:names:tc:SAML:2.0:consent:unspecified'
 
     try:
-        LibertyFederation.objects.get(user=request.user,
-            sp_id=login.remoteProviderId)
+        LibertyFederation.objects.get(
+                user=request.user,
+                sp__provider__entity_id=login.remoteProviderId)
         logger.debug('sso_after_process_request: consent already '
             'given (existing federation) for %s' % login.remoteProviderId)
         consent_obtained = True
@@ -782,7 +786,7 @@ def sso_after_process_request(request, login, consent_obtained=False,
     try:
         if not transient:
             logger.debug('sso_after_process_request: load identity dump')
-            load_federation(request, login, user)
+            load_federation(request, get_entity_id(request, reverse(metadata)), login, user)
         load_session(request, login)
         logger.debug('sso_after_process_request: load session')
         login.validateRequestMsg(not user.is_anonymous(), consent_obtained)
@@ -962,7 +966,7 @@ def idp_sso(request, provider_id=None, user_id=None, nid_format=None,
     else:
         user = request.user
         logger.info('idp_sso: sso by %r' % user.username)
-    load_federation(request, login, user)
+    load_federation(request, get_entity_id(request, reverse(metadata)), login, user)
     logger.debug('idp_sso: federation loaded')
     login.initIdpInitiatedAuthnRequest(provider_id)
     # Control assertion consumer binding

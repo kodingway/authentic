@@ -22,6 +22,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.utils.http import urlquote
+from django.contrib.sites.models import get_current_site
 
 from authentic2.saml.common import get_idp_list, load_provider, \
     return_saml2_request, get_saml2_request_message, get_saml2_query_request, \
@@ -41,7 +42,7 @@ from authentic2.saml.common import get_idp_list, load_provider, \
     AUTHENTIC_STATUS_CODE_UNKNOWN_SESSION, \
     AUTHENTIC_STATUS_CODE_INTERNAL_SERVER_ERROR, \
     AUTHENTIC_STATUS_CODE_UNAUTHORIZED, \
-    get_sp_options_policy
+    get_sp_options_policy, get_entity_id
 from authentic2.saml.models import LibertyProvider, LibertyFederation, \
     LibertySessionSP, LibertySessionDump, LIBERTY_SESSION_DUMP_KIND_SP, \
     save_key_values, NAME_ID_FORMATS, LibertySession
@@ -759,7 +760,7 @@ def finish_federation(request):
                     Unable to create Login object'), logger=logger)
 
             s = load_session(request, login, kind=LIBERTY_SESSION_DUMP_KIND_SP)
-            load_federation_temp(request, login)
+            load_federation_temp(request, get_entity_id(request, reverse(metadata)), login)
             if not login.session:
                 return error_page(request,
                     _('finish_federation: Error loading session.'),
@@ -1496,7 +1497,7 @@ def federationTermination(request):
     manage = lasso.NameIdManagement(server)
 
     load_session(request, manage, kind=LIBERTY_SESSION_DUMP_KIND_SP)
-    load_federation(request, manage)
+    load_federation(request, get_entity_id(request, reverse(metadata)), manage)
     fed = lookup_federation_by_user(request.user, p.entity_id)
     if not fed:
         return error_page(request,
@@ -1619,7 +1620,7 @@ def manageNameIdReturn(request):
         return error_page(request,
             _('fedTerm/SP Redirect: Defederation failed'), logger=logger)
 
-    load_federation(request, manage)
+    load_federation(request, get_entity_id(request, reverse(metadata)), manage)
     message = get_saml2_request_message(request)
     return manage_name_id_return(request, manage, message)
 
@@ -1712,7 +1713,7 @@ def manageNameIdSOAP(request):
             return http_response_forbidden_request(message)
 
     fed = lookup_federation_by_name_identifier(profile=manage)
-    load_federation(request, manage, fed.user)
+    load_federation(request, get_entity_id(request, reverse(metadata)), manage, fed.user)
     try:
         manage.validateRequest()
     except lasso.Error, error:
@@ -1763,7 +1764,7 @@ def manageNameId(request):
         return http_response_forbidden_request(message)
 
     fed = lookup_federation_by_name_identifier(profile=manage)
-    load_federation(request, manage, fed.user)
+    load_federation(request, get_entity_id(request, reverse(metadata)), manage, fed.user)
     try:
         manage.validateRequest()
     except lasso.Error, error:
@@ -1863,16 +1864,9 @@ def view_profile(request, next='', template_name='profile.html'):
     logger.info('view_profile: View profile of user %s' % str(request.user))
 
     #Add creation date
-    federations = []
-    for federation in LibertyFederation.objects.\
-            filter(user=request.user):
-        logger.debug('view_profile: federation found %s' % str(federation))
-        try:
-            provider = LibertyProvider.objects.get(entity_id=federation.idp_id)
-            logger.debug('view_profile: provider found %s' % str(provider))
-            federations.append(provider.name)
-        except Exception, e:
-            logger.error('view_profile: Exception %s' % str(e))
+    federations = LibertyProvider.objects \
+            .filter(libertyfederation__user=request.user) \
+            .value_list('name', flat=True)
 
     from frontend import AuthSAML2Frontend
     form = AuthSAML2Frontend().form()()
@@ -1891,27 +1885,18 @@ def view_profile(request, next='', template_name='profile.html'):
 
 @login_required
 @csrf_exempt
-def delete_federation(request):
-    if 'next' in request.POST:
-        next = request.POST['next']
-    else:
-        next = '/'
+def delete_federation(request, next_url='/'):
+    next = request.REQUEST.get('next', next_url)
     logger.info('delete_federation: federation deletion requested')
     if request.method == "POST":
-        if 'fed' in request.POST:
-            try:
-                p = LibertyProvider.objects.get(name=request.POST['fed'])
-                LibertyFederation.objects. \
-                    get(user=request.user, idp_id=p.entity_id).delete()
-                logger.info('delete_federation: federation %s deleted' \
-                    % request.POST['fed'])
-                messages.add_message(request, messages.INFO,
+        provider_name = request.POST.get('fed')
+        if provider_name:
+            LibertyFederation.objects.filter(
+                    user=request.user,
+                    idp__name=provider_name).delete()
+            logger.info('delete_federation: federation %s deleted',
+                    provider_name)
+            messages.add_message(request, messages.INFO,
                 _('Successful federation deletion.'))
-                return HttpResponseRedirect(next)
-            except:
-                pass
-
-    logger.error('[authsaml2]: Failed to delete federation')
-    messages.add_message(request, messages.INFO,
-        _('Federation deletion failure.'))
+            return HttpResponseRedirect(next)
     return HttpResponseRedirect(next)

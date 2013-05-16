@@ -17,7 +17,7 @@ from authentic2.saml.models import LibertyArtifact
 from authentic2.saml.common import get_idff12_metadata, create_idff12_server, \
     load_provider, load_federation, load_session, save_federation, \
     save_session, return_idff12_response, get_idff12_request_message, \
-    get_soap_message, return_saml_soap_response
+    get_soap_message, return_saml_soap_response, get_entity_id
 from authentic2.utils import cache_and_validate
 
 def fill_assertion(request, saml_request, assertion, provider_id):
@@ -162,7 +162,7 @@ def sso_after_process_request(request, login,
         do_federation = True
     # 5. Lookup the federations
     if do_federation:
-        load_federation(request, login, user)
+        load_federation(request, get_entity_id(request, reverse(metadata)), login, user)
         load_session(request, login)
         # 3. Build and assertion, fill attributes
         build_assertion(request, login)
@@ -271,7 +271,7 @@ def idp_sso(request, provider_id, user_id = None):
             return HttpResponseForbidden('You must be superuser to log as another user')
     else:
         user = request.user
-    load_federation(request, login, user)
+    load_federation(request, get_entity_id(request, reverse(metadata)), login, user)
     if not liberty_provider:
         message = _('ID-FFv1.2: provider %r unknown') % provider_id
         logging.warning('ID-FFv1.2: provider %r unknown' % provider_id)

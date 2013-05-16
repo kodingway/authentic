@@ -275,23 +275,31 @@ MIDDLE_IDENTITY_DUMP = '''<lasso:Federation xmlns:lasso="http://www.entrouvert.o
 END_IDENTITY_DUMP = '''</Identity>'''
 
 
-def federations_to_identity_dump(federations):
+def federations_to_identity_dump(self_entity_id, federations):
     l = [ START_IDENTITY_DUMP ]
     for federation in federations:
-        l.append(MIDDLE_IDENTITY_DUMP.format(content=federation.name_id_content,
+        if federation.sp:
+            sp_id = federation.sp.liberty_provider.entity_id
+            idp_id = self_entity_id
+        elif federation.idp:
+            idp_id = federation.idp.liberty_provider.entity_id
+            sp_id = self_entity_id
+        l.append(MIDDLE_IDENTITY_DUMP.format(
+            content=federation.name_id_content,
             format=federation.name_id_format,
-            sp_id=federation.sp_id,
-            idp_id=federation.idp_id))
+            sp_id=sp_id,
+            idp_id=idp_id))
     l.append(END_IDENTITY_DUMP)
     return ''.join(l)
 
-def load_federation(request, login, user = None):
+def load_federation(request, entity_id, login, user = None):
     '''Load an identity dump from the database'''
     if not user:
         user = request.user
     logger.debug('load_federation: user is %s' %user.username)
-    identity_dump = federations_to_identity_dump(
+    identity_dump = federations_to_identity_dump(entity_id,
             LibertyFederation.objects.filter(user=user))
+    print identity_dump
     login.setIdentityFromDump(identity_dump)
     logger.debug('load_federation: set identity from dump done %s' % identity_dump)
 
