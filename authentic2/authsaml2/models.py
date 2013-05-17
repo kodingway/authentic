@@ -1,5 +1,5 @@
 from django.db import models
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from django.db.models.manager import EmptyManager
 from django.contrib.auth.models import _user_get_all_permissions, _user_has_perm, _user_has_module_perms
 
