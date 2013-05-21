@@ -92,7 +92,7 @@ class CommonPasswordHasher(hashers.BasePasswordHasher):
 
     def encode(self, password, salt):
         assert password
-        assert salt and '$' not in salt
+        assert '$' not in salt
         hash = self.digest(force_bytes(salt + password)).hexdigest()
         return "%s$%s$%s" % (self.algorithm, salt, hash)
 
