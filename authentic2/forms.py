@@ -29,6 +29,8 @@ class UserProfileForm(forms.ModelForm):
     def __init__(self, user=None, *args, **kwargs):
         self.user = user
         super(UserProfileForm, self).__init__(**kwargs)
+        for field in get_user_model().REQUIRED_FIELDS:
+            self.fields[field].required = True
 
     def save(self, commit=True):
         instance = super(UserProfileForm, self).save(commit=False)
