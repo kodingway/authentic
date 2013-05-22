@@ -26,6 +26,9 @@ class AuthenticRegistrationForm(RegistrationForm):
             return self.cleaned_data['username']
 
 class UserProfileForm(forms.ModelForm):
+    error_css_class = 'error'
+    required_css_class = 'required'
+
     def __init__(self, user=None, *args, **kwargs):
         self.user = user
         super(UserProfileForm, self).__init__(**kwargs)
