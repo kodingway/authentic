@@ -141,9 +141,10 @@ class LibertyProviderPolicy(models.Model):
             verbose_name=_("How to verify signatures Authentication Request ?"),
             choices=SIGNATURE_VERIFY_HINT.items(),
             default=lasso.PROFILE_SIGNATURE_VERIFY_HINT_MAYBE)
+
     def __unicode__(self):
         options = []
-        options.append('AuthnRequest signature: ' + SIGNATURE_VERIFY_HINT[self.authn_request_signature_check_hint])
+        options.append(u'AuthnRequest signature: %s' % SIGNATURE_VERIFY_HINT[self.authn_request_signature_check_hint])
         return self.name + ' (%s)' % ', '.join(options)
 
 
