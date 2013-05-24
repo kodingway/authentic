@@ -7,11 +7,19 @@ from registration.forms import RegistrationForm
 attrs_dict = { 'class': 'required' }
 
 class AuthenticRegistrationForm(RegistrationForm):
+    error_css_class = 'form-field-error'
+    required_css_class = 'form-field-required'
+
     username = forms.RegexField(regex=r'^\w+$',
                                 max_length=30,
                                 widget=forms.TextInput(attrs=attrs_dict),
                                 label=_(u'username'),
                                 error_messages = {'invalid': _(u'your username must contain only letters, numbers and no spaces')})
+
+    def __init__(self, *args, **kwargs):
+        super(AuthenticRegistrationForm, self).__init__(*args, **kwargs)
+        for field in get_user_model().REQUIRED_FIELDS:
+            self.fields[field].required = True
 
     def clean_username(self):
         """
@@ -26,8 +34,8 @@ class AuthenticRegistrationForm(RegistrationForm):
             return self.cleaned_data['username']
 
 class UserProfileForm(forms.ModelForm):
-    error_css_class = 'error'
-    required_css_class = 'required'
+    error_css_class = 'form-field-error'
+    required_css_class = 'form-field-required'
 
     def __init__(self, user=None, *args, **kwargs):
         self.user = user
