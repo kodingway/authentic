@@ -11,8 +11,7 @@ from django.contrib.auth.models import (AbstractBaseUser, PermissionsMixin,
         BaseUserManager, SiteProfileNotAvailable)
 from django.contrib.auth import load_backend
 from django.utils.http import urlquote
-
-from idp.models import UserProfile
+from django.conf import settings
 
 
 class UserManager(BaseUserManager):
@@ -48,7 +47,7 @@ class AbstractUser(AbstractBaseUser, PermissionsMixin):
 
     Username, password and email are required. Other fields are optional.
     """
-    username = models.CharField(_('username'), max_length=30, unique=True,
+    username = models.CharField(_('username'), max_length=256, unique=True,
         help_text=_('Required. 30 characters or fewer. Letters, numbers and '
                     '@/./+/-/_ characters'),
         validators=[
@@ -164,18 +163,19 @@ class AbstractUser(AbstractBaseUser, PermissionsMixin):
     roles = property(get_roles)
 
 
-class User(AbstractUser):
-    first_name = models.CharField(_('first name'), max_length=30, blank=True)
-    last_name = models.CharField(_('last name'), max_length=30, blank=True)
-    email = models.EmailField(_('e-mail address'), max_length=128, blank=True)
-    nickname = models.CharField(_('nickname'), max_length=50, blank=True)
-    url = models.URLField(_('Website'), blank=True)
-    company = models.CharField(verbose_name=_("Company"),
-            max_length=50, blank=True)
-    phone = models.CharField(verbose_name=_("Phone"),
-            max_length=50, blank=True)
-    postal_address = models.TextField(verbose_name=_("Postal address"),
-            max_length=255, blank=True)
+if settings.AUTH_USER_MODEL == 'authentic2.User':
+    class User(AbstractUser):
+        first_name = models.CharField(_('first name'), max_length=30, blank=True)
+        last_name = models.CharField(_('last name'), max_length=30, blank=True)
+        email = models.EmailField(_('e-mail address'), max_length=128, blank=True)
+        nickname = models.CharField(_('nickname'), max_length=50, blank=True)
+        url = models.URLField(_('Website'), blank=True)
+        company = models.CharField(verbose_name=_("Company"),
+                max_length=50, blank=True)
+        phone = models.CharField(verbose_name=_("Phone"),
+                max_length=50, blank=True)
+        postal_address = models.TextField(verbose_name=_("Postal address"),
+                max_length=255, blank=True)
 
-    USER_PROFILE = ( 'username', 'first_name', 'last_name', 'email',
-            'nickname', 'url', 'phone', ('roles', _('roles')),)
+        USER_PROFILE = ( 'username', 'first_name', 'last_name', 'email',
+                'nickname', 'url', 'phone', ('roles', _('roles')),)

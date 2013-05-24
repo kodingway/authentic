@@ -7,12 +7,12 @@ from django.db import transaction
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 
+from authentic2.compat import get_user_model
 from authentic2.saml.common import \
     lookup_federation_by_name_id_and_provider_id, add_federation, \
     get_idp_options_policy
 from authentic2.saml.models import LIBERTY_SESSION_DUMP_KIND_SP, \
     LibertySessionDump, LibertyProvider
-from authentic2.models import User, UserManager
 from authentic2.authsaml2.models import SAML2TransientUser
 
 logger = logging.getLogger('authentic2.authsaml2.backends')
@@ -88,6 +88,7 @@ class AuthSAML2PersistentBackend:
         return fed.user
 
     def get_user(self, user_id):
+        User = get_user_model()
         try:
             return User.objects.get(id=user_id)
         except User.DoesNotExist:
@@ -105,9 +106,11 @@ class AuthSAML2PersistentBackend:
             # FIXME: maybe keep more information in the forged username
             username = 'saml2-%s' % ''. \
                 join([random.choice(string.letters) for x in range(10)])
+        User = get_user_model()
         user = User()
-        user.username=username
-        user.password=UserManager().make_random_password()
+        user.username = username
+        if hasattr(User, 'set_unusable_password'):
+            user.set_unusable_password()
         user.is_active = True
         user.save()
         add_federation(user, name_id=name_id, provider_id=provider_id)

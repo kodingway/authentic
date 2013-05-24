@@ -34,11 +34,11 @@ from django.http import HttpResponse, HttpResponseRedirect, \
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import BACKEND_SESSION_KEY
-from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils.encoding import smart_unicode
 from django.contrib.auth import load_backend
 
+from authentic2.compat import get_user_model
 import authentic2.idp as idp
 import authentic2.idp.views as idp_views
 from authentic2.idp.models import get_attribute_policy
@@ -929,6 +929,7 @@ def idp_sso(request, provider_id=None, user_id=None, nid_format=None,
         save=True, return_profile=False):
     '''Initiate an SSO toward provider_id without a prior AuthnRequest
     '''
+    User = get_user_model()
     if request.method == 'GET':
         logger.info('idp_sso: to initiate a sso we need a post form')
         return error_page(request,
@@ -951,7 +952,6 @@ def idp_sso(request, provider_id=None, user_id=None, nid_format=None,
         logger.info('idp_sso: sso for an unknown provider %s' % provider_id)
         return error_page(request, _('Provider %s is unknown') % provider_id,
             logger=logger)
-    service_provider = liberty_provider.service_provider
     if user_id:
         user = User.get(id=user_id)
         if not check_delegated_authentication_permission(request):

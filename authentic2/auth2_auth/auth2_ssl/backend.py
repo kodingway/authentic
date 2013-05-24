@@ -1,8 +1,8 @@
 from django.db.models import Q
 from django.db import transaction
-from django.contrib.auth.models import User, UserManager
 import logging
 
+from authentic2.compat import get_user_model
 from util import settings_get
 from models import ClientCertificate, DistinguishedName
 
@@ -33,6 +33,7 @@ class SSLBackend:
         simply return the user object. That way, we only need top look-up the
         certificate once, when loggin in
         """
+        User = get_user_model()
         try:
             return User.objects.get(id=user_id)
         except User.DoesNotExist:
@@ -84,6 +85,7 @@ settings')
         just a subject for the ClientCertificate.
         """
         # auto creation only created a DN for the subject, not the issuer
+        User = get_user_model()
         subject = DistinguishedName()
         for attr,val in ssl_info.get_subject().iteritems():
             if not val: val = ''
@@ -127,7 +129,7 @@ settings')
         just a subject for the ClientCertificate.
         """
         if not user:
-            return none
+            return None
 
         # auto creation only created a DN for the subject, not the issuer
         subject = DistinguishedName()
@@ -135,12 +137,6 @@ settings')
             if not val: val = ''
             subject.__setattr__(attr.replace('subject_',''), val)
         subject.save()
-
-        # get username and check if the user exists already
-        if settings_get('SSLAUTH_CREATE_USERNAME_CALLBACK'):
-            build_username = settings_get('SSLAUTH_CREATE_USERNAME_CALLBACK')
-        else:
-            build_username = self.build_username
 
         # create the certificate record and save
         cert = ClientCertificate()
@@ -170,13 +166,13 @@ settings')
         newly created certificate record. This method can be "overwritten" by
         using the SSLAUTH_CREATE_USER_CALLBACK setting.
         """
-        name_parts = ssl_info.subject_cn.split()
+        User = get_user_model()
         user = User()
-        user.username=username
-        user.password=UserManager().make_random_password()
-        user.first_name = " ".join(name_parts[:-1])
-        user.last_name = name_parts[-1]
-        user.email = ssl_info.subject_email
+        setattr(user, User.USERNAME_FIELD, username)
+        if hasattr(User, 'set_unusable_password'):
+            user.set_unusable_password()
+        if hasattr(User, 'email'):
+            user.email = ssl_info.subject_email
         user.is_active = True
         user.save()
         return user

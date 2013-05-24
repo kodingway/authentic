@@ -1,9 +1,9 @@
 import django.forms as forms
-from django.contrib.auth.models import User
 from django.contrib.auth import login
 from django.utils.translation import ugettext_lazy as _
 
-from models import ClientCertificate, DistinguishedName
+from authentic2.compat import get_user_model
+from models import ClientCertificate
 from util import SSLInfo
 
 # I put this on all required fields, because it's easier to pick up
@@ -44,8 +44,9 @@ class RegistrationForm(forms.Form):
         in use.
         
         """
+        User = get_user_model()
         try:
-            user = User.objects. \
+            User.objects. \
                 get(username__iexact=self.cleaned_data['username'])
         except User.DoesNotExist:
             return self.cleaned_data['username']
@@ -64,6 +65,7 @@ class RegistrationForm(forms.Form):
         supplied.
         
         """
+        User = get_user_model()
         ssl_info = SSLInfo(self.request)
         if not ssl_info.cert:
             raise ValueError('Missing cert')

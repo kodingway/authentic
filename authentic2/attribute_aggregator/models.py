@@ -25,7 +25,6 @@ from cPickle import loads, dumps
 
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
-from django.contrib.auth.models import User
 from django.conf import settings
 try:
     import ldap

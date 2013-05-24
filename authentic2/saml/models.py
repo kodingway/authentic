@@ -7,7 +7,6 @@ import datetime
 import lasso
 from django.db import models
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ObjectDoesNotExist

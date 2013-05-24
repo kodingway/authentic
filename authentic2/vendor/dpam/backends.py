@@ -1,10 +1,14 @@
 import pam
 
 from django.conf import settings
-from django.contrib.auth.models import User
+
+
+from authentic2.compat import get_user_model
+
 
 class PAMBackend:
     def authenticate(self, username=None, password=None):
+        User = get_user_model()
         service = getattr(settings, 'PAM_SERVICE', 'login')
         if pam.authenticate(username, password, service=service):
             try:
@@ -23,6 +27,7 @@ class PAMBackend:
         return None
 
     def get_user(self, user_id):
+        User = get_user_model()
         try:
             return User.objects.get(pk=user_id)
         except User.DoesNotExist:

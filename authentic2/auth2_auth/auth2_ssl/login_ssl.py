@@ -1,31 +1,26 @@
 import logging
 import urllib
 
-import django.forms
 import authentic2.auth2_auth.models as auth_models
-import views
 
 
 from django.conf import settings
 from django.utils.translation import ugettext as _
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
-from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.contrib import messages
-from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.views import redirect_to_login
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import authenticate, login, logout, get_user
+from django.contrib.auth import authenticate, login
 from django.contrib.auth import REDIRECT_FIELD_NAME
 
 from authentic2.auth2_auth import NONCE_FIELD_NAME
-from authentic2.saml.common import error_page
 
-from models import ClientCertificate, DistinguishedName
-from util import SSLInfo, settings_get
+from models import ClientCertificate
+from util import SSLInfo
 
 logger = logging.getLogger('authentic2.auth2_auth.auth2_ssl')
 
@@ -226,7 +221,6 @@ def delete_certificate(request, next='/'):
             _('No certificate name provided for deletion.'))
         return HttpResponseRedirect(next)
 
-    certificates = []
     try:
         certs = ClientCertificate.objects.filter(user=request.user)
         for c in certs:

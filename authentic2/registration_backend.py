@@ -3,11 +3,9 @@ from django.contrib.auth import login
 from registration.backends.simple import SimpleBackend as OldSimpleBackend
 from registration import signals
 
-try:
-    from django.contrib.auth import get_user_model
-except ImportError: # django < 1.5
-    from django.contrib.auth.models import User
-    get_user_model = lambda: User
+
+from authentic2.compat import get_user_model
+
 
 class SimpleBackend(OldSimpleBackend):
     def register(self, request, **kwargs):

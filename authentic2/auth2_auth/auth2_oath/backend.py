@@ -1,9 +1,9 @@
 import logging
 
-from django.contrib.auth.models import User
 from django.db import transaction
 from django.conf import settings
 
+from authentic2.compat import get_user_model
 import authentic2.vendor.oath.hotp as hotp
 from authentic2.nonce import accept_nonce
 import models
@@ -21,6 +21,7 @@ class OATHTOTPBackend:
         '''Lookup the TOTP or HOTP secret for the user and try to authenticate
            the proposed OTP using it.
         '''
+        User = get_user_model()
         try:
             secret = models.OATHTOTPSecret.objects.get(user__username=username)
         except models.OATHTOTPSecret.DoesNotExist:
@@ -46,6 +47,7 @@ class OATHTOTPBackend:
         simply return the user object. That way, we only need top look-up the 
         certificate once, when loggin in
         """
+        User = get_user_model()
         try:
             return User.objects.get(id=user_id)
         except User.DoesNotExist:

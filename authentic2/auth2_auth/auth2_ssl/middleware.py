@@ -1,19 +1,18 @@
 from django.contrib.auth import authenticate, login, get_user
 from django.contrib.auth.models import AnonymousUser
-from django.conf import settings
+
 
 from util import SSLInfo, settings_get
 
-from django.contrib.auth.middleware import AuthenticationMiddleware
 
 class SSLAuthMiddleware(object):
     """
     attempts to find a valid user based on the client certificate info
     """
     def process_request(self, request):
-        
+
         USE_COOKIE = settings_get('SSLAUTH_USE_COOKIE')
-        
+
         if USE_COOKIE:
             request.user = get_user(request)
             if request.user.is_authenticated():

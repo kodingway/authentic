@@ -10,9 +10,9 @@ from django.http import HttpResponse, HttpResponseForbidden, \
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_exempt
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import User
 from django.conf import settings
 
+from authentic2.compat import get_user_model
 from authentic2.saml.models import LibertyArtifact
 from authentic2.saml.common import get_idff12_metadata, create_idff12_server, \
     load_provider, load_federation, load_session, save_federation, \
@@ -255,6 +255,7 @@ def check_delegated_authentication_permission(request):
 def idp_sso(request, provider_id, user_id = None):
     '''Initiate an SSO toward provider_id without a prior AuthnRequest
     '''
+    User = get_user_model()
     assert provider_id, 'You must call idp_initiated_sso with a provider_id parameter'
     server = create_idff12_server(request, reverse(metadata))
     login = lasso.Login(server)
