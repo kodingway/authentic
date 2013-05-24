@@ -1,4 +1,5 @@
 import urllib
+import re
 
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.forms import PasswordChangeForm
