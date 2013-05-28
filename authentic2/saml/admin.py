@@ -11,8 +11,7 @@ from django.contrib import messages
 from authentic2.saml.models import LibertyProvider, LibertyServiceProvider
 from authentic2.saml.models import LibertyIdentityProvider, IdPOptionsSPPolicy
 from authentic2.saml.models import SPOptionsIdPPolicy
-from authentic2.saml.models import AuthorizationSPPolicy, AuthorizationAttributeMap
-from authentic2.saml.models import AuthorizationAttributeMapping, LibertyProviderPolicy
+from authentic2.saml.models import LibertyProviderPolicy
 from authentic2.saml.models import LibertySessionDump, LibertyIdentityDump, LibertyFederation
 from authentic2.saml.models import LibertyAssertion, LibertySessionSP, KeyValue
 from authentic2.saml.models import LibertySession

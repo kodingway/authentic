@@ -1,6 +1,5 @@
 import logging
 
-from django.template.defaultfilters import slugify
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 

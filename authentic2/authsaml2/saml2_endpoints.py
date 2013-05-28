@@ -1,6 +1,5 @@
 """SAML2.0 SP implementation"""
 
-import datetime
 import logging
 import urlparse
 
@@ -22,7 +21,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.utils.http import urlquote
-from django.contrib.sites.models import get_current_site
 
 from authentic2.saml.common import get_idp_list, load_provider, \
     return_saml2_request, get_saml2_request_message, get_saml2_query_request, \
@@ -37,9 +35,6 @@ from authentic2.saml.common import get_idp_list, load_provider, \
     maintain_liberty_session_on_service_provider, \
     get_session_not_on_or_after, \
     AUTHENTIC_STATUS_CODE_UNKNOWN_PROVIDER, \
-    AUTHENTIC_STATUS_CODE_MISSING_NAMEID, \
-    AUTHENTIC_STATUS_CODE_MISSING_SESSION_INDEX, \
-    AUTHENTIC_STATUS_CODE_UNKNOWN_SESSION, \
     AUTHENTIC_STATUS_CODE_INTERNAL_SERVER_ERROR, \
     AUTHENTIC_STATUS_CODE_UNAUTHORIZED, \
     get_sp_options_policy, get_entity_id
@@ -117,7 +112,7 @@ def build_discovery_url(request):
         % (urlquote(request.build_absolute_uri(reverse(metadata))),
             _return, returnIDParam)
     try:
-        scheme, netloc, path, params, _, fragment = urlparse.urlparse(target)
+        scheme, netloc, path, params, query, fragment = urlparse.urlparse(target)
         return urlparse.urlunparse((scheme, netloc, path, params, query,
             fragment))
     except Exception, e:
