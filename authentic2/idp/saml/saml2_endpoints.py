@@ -1509,6 +1509,9 @@ def process_logout_response(request, logout, soap_response, next):
     logger.info('idp_slo: soap_response is %s' % str(soap_response))
     try:
         logout.processResponseMsg(soap_response)
+    except lasso.ProfileRequestDeniedError:
+        logger.warning('idp_slo: logout request was denied')
+        return redirect_next(request, next) or ko_icon(request)
     except:
         logger.exception('process_logout_response: \
             slo error with soap response %s and logout dump %s' \
