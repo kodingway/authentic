@@ -4,7 +4,7 @@ import urllib
 import lasso
 
 from django.contrib.auth.views import redirect_to_login
-from django.conf.urls.defaults import patterns
+from django.conf.urls import patterns
 from django.http import HttpResponse, HttpResponseForbidden, \
     HttpResponseRedirect
 from django.utils.translation import ugettext as _

@@ -9,7 +9,7 @@ from django.http import HttpResponseRedirect, HttpResponseBadRequest, \
 from django.core.urlresolvers import reverse
 from django.contrib.auth.views import redirect_to_login, logout
 from django.utils.http import urlquote, urlencode
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls import patterns, url
 from django.conf import settings
 
 from models import CasTicket

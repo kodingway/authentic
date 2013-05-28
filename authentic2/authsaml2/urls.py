@@ -1,6 +1,6 @@
 from django.conf import settings
 
-from django.conf.urls.defaults import patterns
+from django.conf.urls import patterns
 
 from authentic2.authsaml2.saml2_endpoints import metadata, sso, finish_federation, \
     singleSignOnArtifact, singleSignOnPost, sp_slo, logout, singleLogoutReturn, \

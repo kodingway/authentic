@@ -25,7 +25,7 @@ import random
 import string
 
 import lasso
-from django.conf.urls.defaults import patterns
+from django.conf.urls import patterns
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist

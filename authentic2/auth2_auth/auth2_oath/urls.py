@@ -1,5 +1,4 @@
-from django.conf.urls.defaults import *
-from django.contrib.auth.decorators import login_required
+from django.conf.urls import patterns
 import views
 
 urlpatterns = patterns('',

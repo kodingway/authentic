@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, include
 import django_authopenid.views
 
 import authentic2.auth2_auth.auth2_openid.views as v

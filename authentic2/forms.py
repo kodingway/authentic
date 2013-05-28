@@ -10,11 +10,6 @@ class AuthenticRegistrationForm(RegistrationForm):
     error_css_class = 'form-field-error'
     required_css_class = 'form-field-required'
 
-    username = forms.RegexField(regex=r'^\w+$',
-                                max_length=30,
-                                widget=forms.TextInput(attrs=attrs_dict),
-                                label=_(u'username'),
-                                error_messages = {'invalid': _(u'your username must contain only letters, numbers and no spaces')})
 
     def __init__(self, *args, **kwargs):
         super(AuthenticRegistrationForm, self).__init__(*args, **kwargs)
@@ -27,6 +22,8 @@ class AuthenticRegistrationForm(RegistrationForm):
         in use.
 
         """
+        import ipdb
+        ipdb.set_trace()
         existing = get_user_model().objects.filter(username__iexact=self.cleaned_data['username'])
         if existing.exists():
             raise forms.ValidationError(_("A user with that username already exists."))

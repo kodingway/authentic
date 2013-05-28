@@ -1,6 +1,6 @@
 # vim: set ts=4 sw=4 : */
 
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls import patterns, url
 
 urlpatterns = patterns('authentic2.idp.idp_openid.views',
     url(r'^$', 'openid_server', name='openid-provider-root'),
