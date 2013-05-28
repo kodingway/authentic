@@ -47,12 +47,6 @@ urlpatterns += patterns('',
     (r'^authsaml2/', include('authentic2.authsaml2.urls')),
 )
 
-if settings.STATIC_SERVE:
-    print 'static server'
-    urlpatterns += patterns('django.contrib.staticfiles.views',
-        url(r'^static/(?P<path>.*)$', 'serve'),
-    )
-
 if getattr(settings, 'IDP_OPENID', False):
     urlpatterns += patterns('',
             (r'^openid/', include('authentic2.idp.idp_openid.urls')))
