@@ -1,10 +1,10 @@
 from django.contrib.auth.decorators import login_required
 from django.conf.urls.defaults import patterns, url, include
+from django.conf import settings
 
 from authentic2.idp.decorators import prevent_access_to_transient_users
 
 import authentic2.idp.views
-import settings
 from forms import AuthenticRegistrationForm
 
 from .admin import admin
