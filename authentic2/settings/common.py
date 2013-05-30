@@ -7,7 +7,7 @@ gettext_noop = lambda s: s
 DEBUG = False
 USE_DEBUG_TOOLBAR = False
 TEMPLATE_DEBUG = DEBUG
-_PROJECT_PATH = os.path.join(os.path.dirname(__file__), '..')
+_PROJECT_PATH = os.path.join(os.path.dirname(__file__), '..', '..')
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
