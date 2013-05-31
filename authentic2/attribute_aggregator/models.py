@@ -368,8 +368,7 @@ class UserAttributeProfile(models.Model):
             Else, definition is searched by 'name' and 'namespece' keys.
         '''
         if not dictionnary:
-            logger.error('load_by_dic: \
-                Missing profile or dictionnary')
+            logger.info('load_by_dic: empty dictionnary provided')
             return -1
         for source_name in dictionnary:
             logger.debug('load_by_dic: loading from source with name: %s' \
@@ -456,9 +455,12 @@ class UserAttributeProfile(models.Model):
                 logger.info('load_greedy: \
                     attributes_call connected to function %s' % \
                     attrs[0].__name__)
-                logger.info('load_greedy: \
-                    attributes provided are %s' %str(attrs[1]))
-                self.load_by_dic(attrs[1])
+                if attrs[1]:
+                    logger.info('load_greedy: \
+                        attributes provided are %s' %str(attrs[1]))
+                    self.load_by_dic(attrs[1])
+                else:
+                    logger.info('load_greedy: no attributes provided')
 
     def load_listed_attributes(self, definitions):
         '''
@@ -486,9 +488,13 @@ class UserAttributeProfile(models.Model):
                     logger.info('load_listed_attributes: \
                         attributes_call connected to function %s' % \
                         attrs[0].__name__)
-                    logger.info('load_listed_attributes: \
-                        attributes provided are %s' %str(attrs[1]))
-                    self.load_by_dic(attrs[1])
+                    if attrs[1]:
+                        logger.info('load_listed_attributes: \
+                            attributes provided are %s' %str(attrs[1]))
+                        self.load_by_dic(attrs[1])
+                    else:
+                        logger.info('load_listed_attributes: \
+                            no attributes provided')
             else:
                 logger.info('load_listed_attributes: no definitions \
                     of attributes to load with %s' % str(definitions))
@@ -510,18 +516,22 @@ class UserAttributeProfile(models.Model):
                         if df:
                             defs.append(df)
             if defs:
-                logger.info('load_listed_attributes: \
+                logger.info('load_listed_attributes_with_source: \
                     attributes required are %s from %s' % (defs, source))
                 attributes_provided = \
                     listed_attributes_with_source_call.send(sender=None,
                         user=self.user, definitions=defs, source=source)
                 for attrs in attributes_provided:
-                    logger.info('load_listed_attributes: \
+                    logger.info('load_listed_attributes_with_source: \
                         attributes_call connected to function %s' % \
                         attrs[0].__name__)
-                    logger.info('load_listed_attributes: \
-                        attributes provided are %s' %str(attrs[1]))
-                    self.load_by_dic(attrs[1])
+                    if attrs[1]:
+                        logger.info('load_listed_attributes_with_source: \
+                            attributes provided are %s' %str(attrs[1]))
+                        self.load_by_dic(attrs[1])
+                    else:
+                        logger.info('load_listed_attributes_with_source: \
+                            no attributes provided')
             else:
                 logger.info('load_listed_attributes: no definitions \
                     of attributes to load with %s' % str(definitions))
