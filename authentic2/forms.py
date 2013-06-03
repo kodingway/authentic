@@ -50,4 +50,4 @@ class UserProfileForm(forms.ModelForm):
         fields = [ field_name
                 for field_name in get_user_model().USER_PROFILE
                 if field_name in get_user_model()._meta.get_all_field_names()
-                    and not field_name == get_user_model().USERNAME ]
+                    and not field_name == get_user_model().USERNAME_FIELD ]
