@@ -110,6 +110,10 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
+    'admin_tools',
+    'admin_tools.theming',
+    'admin_tools.menu',
+    'admin_tools.dashboard',
     'django.contrib.staticfiles',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -324,3 +328,7 @@ LOGGING = {
 }
 
 SOUTH_TESTS_MIGRATE = False
+
+# Admin tools
+ADMIN_TOOLS_INDEX_DASHBOARD = 'authentic2.dashboard.CustomIndexDashboard'
+ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'authentic2.dashboard.CustomAppIndexDashboard'
