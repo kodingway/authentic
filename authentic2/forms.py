@@ -22,8 +22,6 @@ class AuthenticRegistrationForm(RegistrationForm):
         in use.
 
         """
-        import ipdb
-        ipdb.set_trace()
         existing = get_user_model().objects.filter(username__iexact=self.cleaned_data['username'])
         if existing.exists():
             raise forms.ValidationError(_("A user with that username already exists."))
