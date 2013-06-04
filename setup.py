@@ -100,6 +100,7 @@ setup(name="authentic2",
         'requests',
         'django-registration==0.8.0final',
         'django-debug-toolbar<1.0.0'],
+      setup_requires=['django>=1.4'],
       zip_safe=False,
       classifiers=[
           "Development Status :: 5 - Production/Stable",
