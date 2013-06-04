@@ -332,3 +332,4 @@ SOUTH_TESTS_MIGRATE = False
 # Admin tools
 ADMIN_TOOLS_INDEX_DASHBOARD = 'authentic2.dashboard.CustomIndexDashboard'
 ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'authentic2.dashboard.CustomAppIndexDashboard'
+ADMIN_TOOLS_MENU = 'authentic2.menu.CustomMenu'
