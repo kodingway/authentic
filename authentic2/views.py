@@ -11,6 +11,9 @@ from django.template import RequestContext
 from django.views.generic.edit import UpdateView
 from django.contrib import messages
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
+from django.contrib.auth import SESSION_KEY
+from django import http
 
 from authentic2.idp.decorators import prevent_access_to_transient_users
 from authentic2.idp.saml import saml2_endpoints
@@ -91,3 +94,17 @@ def password_change_done(request):
     '''Redirect user to homepage and display a success message'''
     messages.info(request, _('Your password has been changed'))
     return shortcuts_redirect('account_management')
+
+def su(request, username, redirect_url='/'):
+    '''To use this view add:
+       
+       url(r'^su/(?P<username>.*)/$', 'authentic2.views.su', {'redirect_url': '/'}),
+    '''
+    if request.user.is_superuser or request.session.get('has_superuser_power'):
+        su_user = get_object_or_404(get_user_model(), username=username)
+        if su_user.is_active:
+            request.session[SESSION_KEY] = su_user.id
+            request.session['has_superuser_power'] = True
+            return http.HttpResponseRedirect(redirect_url)
+    else:
+        return http.HttpResponseRedirect('/')
