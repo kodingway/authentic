@@ -374,6 +374,10 @@ class LibertyProvider(models.Model):
         if not self.protocol_conformance:
             self.protocol_conformance = p.protocolConformance
 
+    class Meta:
+        ordering = ('name',)
+        verbose_name = _('liberty provider')
+
 def get_all_custom_or_default(instance, name):
     model = instance._meta.get_field_by_name(name)[0].rel.to
     try:
