@@ -1893,7 +1893,7 @@ def delete_federation(request, next_url='/'):
         if provider_name:
             LibertyFederation.objects.filter(
                     user=request.user,
-                    idp__name=provider_name).delete()
+                    idp__name=provider_name).update(user=None)
             logger.info('delete_federation: federation %s deleted',
                     provider_name)
             messages.add_message(request, messages.INFO,
