@@ -536,7 +536,8 @@ class LibertyAssertion(models.Model):
 class LibertyFederation(models.Model):
     """Store a federation, i.e. an identifier shared with another provider, be
        it IdP or SP"""
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True,
+            on_delete=models.SET_NULL)
     idp = models.ForeignKey('LibertyIdentityProvider', null=True)
     sp = models.ForeignKey('LibertyServiceProvider', null=True)
     name_id_format = models.CharField(max_length = 100,
