@@ -543,6 +543,8 @@ class LibertyFederation(models.Model):
             verbose_name = "NameIDFormat", blank=True, null=True)
     name_id_content = models.CharField(max_length = 100,
             verbose_name = "NameID")
+    creation = models.DateTimeField(auto_now_add=True)
+    last_modification = models.DateTimeField(auto_now=True)
 
     def __init__(self, *args, **kwargs):
         saml2_assertion = kwargs.pop('saml2_assertion', None)
