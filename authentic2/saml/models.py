@@ -544,6 +544,7 @@ class LibertyFederation(models.Model):
             verbose_name = "NameIDFormat", blank=True, null=True)
     name_id_content = models.CharField(max_length = 100,
             verbose_name = "NameID")
+    termination_notified = models.BooleanField(blank=True, default=False)
     creation = models.DateTimeField(auto_now_add=True)
     last_modification = models.DateTimeField(auto_now=True)
 
