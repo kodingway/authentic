@@ -1,2 +1,3 @@
 etc/authentic2
-usr/share/authentic2
+usr/share/authentic2/static
+var/lib/authentic2/media

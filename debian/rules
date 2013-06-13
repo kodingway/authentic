@@ -3,14 +3,18 @@
 d=$(CURDIR)/debian/authentic2
 
 %:
-	dh --with quilt --with python-central $@
+	dh $@
 
-override_dh_install:
-	dh_install
+# FIXME: remove this overrides when we will have a clean upstream branch
+override_dh_auto_clean:
+	git status
+	dh_auto_clean
 
-override_dh_pycentral:
-	dh_pycentral
-	touch $(d)/etc/authentic2/local_settings.py
-	cp $(CURDIR)/debian/apache2.conf $(d)/usr/share/authentic/
-	cp $(CURDIR)/debian/authentic.wsgi $(d)/usr/share/authentic/
+override_dh_auto_build:
+	git status
+	dh_auto_build
+
+override_dh_auto_install:
+	git status
+	dh_auto_install
 

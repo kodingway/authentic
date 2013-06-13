@@ -25,9 +25,16 @@ case "$1" in
             echo "..done"
         fi
 
-        mkdir -p /var/lib/authentic2
-        chmod 755 /var/lib/authentic2
         chown $AUTHENTIC_USER:$AUTHENTIC_GROUP /var/lib/authentic2
+
+        /usr/bin/authentic2-ctl collectstatic --noinput --link
+        /usr/bin/authentic2-ctl compilemessages
+
+        ;;
+
+    reconfigure)
+        /usr/bin/authentic2-ctl collectstatic --noinput --link
+        /usr/bin/authentic2-ctl compilemessages
 
         ;;
 
@@ -39,14 +46,6 @@ case "$1" in
         exit 1
         ;;
 esac
-
-rm -f /var/lib/pycentral/authentic2.pkgremove
-if which pycentral >/dev/null 2>&1; then
-	pycentral pkginstall authentic2
-	if grep -qs '^authentic2$' /var/lib/pycentral/delayed-pkgs; then
-		sed -i '/^authentic2$/d' /var/lib/pycentral/delayed-pkgs
-	fi
-fi
 
 case "$1" in
     configure)

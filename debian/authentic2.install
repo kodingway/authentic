@@ -1,0 +1,2 @@
+debian/local_settings.py           /etc/authentic2/
+debian/apache-example              /etc/authentic2/
