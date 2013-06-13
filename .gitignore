@@ -7,6 +7,6 @@ dist/
 static/
 doc/_build
 authentic.egg-info
-local_settings.py
+./local_settings.py
 log.log
 authentic2/locale/fr/LC_MESSAGES/django.mo

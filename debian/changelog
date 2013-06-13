@@ -1,3 +1,10 @@
+authentic2 (2.0.2.199.g5ddda2a-1) unstable; urgency=low
+
+  * debian: add mission local_config.py
+  * fix setup.py
+
+ -- Jérôme Schneider <jschneider@entrouvert.com>  Thu, 13 Jun 2013 20:33:09 +0200
+
 authentic2 (2.0.2.196.g8409882-1) unstable; urgency=low
 
   * debian: port to squeeze
