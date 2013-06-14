@@ -562,8 +562,7 @@ class LibertyFederation(models.Model):
                            ('user', 'sp',  'name_id_format'))
 
     def __unicode__(self):
-        if self.idp:
-            return u'<LibertyFederation for user {user} with  >'
+        return self.name_id_content
 
 
 class LibertySession(models.Model):
