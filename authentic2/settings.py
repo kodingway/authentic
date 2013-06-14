@@ -297,7 +297,7 @@ LOGGING = {
             'level':'DEBUG',
             'class':'logging.FileHandler',
             'formatter': 'verbose',
-            'filename': os.path.join(_PROJECT_PATH, 'log.log'),
+            'filename': os.environ.get('LOG_ROOT', os.path.join(_PROJECT_PATH, 'log.log')),
             'filters': ['cleaning'],
         },
         'syslog': {

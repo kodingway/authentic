@@ -1,8 +1,0 @@
-Setting up an Authentic server
-==============================
-
-You need to create an empty database and you should add a
-super user, using the following command::
-
-  su authentic -p -c "authentic2-ctl syncdb"
-
