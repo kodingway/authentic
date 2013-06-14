@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if [ "$(whoami)" != "authentic" ]; then
+    echo "You must run this script with authentic user"
+    exit 1
+fi
+
+if [ -f /etc/authentic2/authentic.conf ]; then
+    . /etc/authentic2/authentic.conf
+fi
+
+/var/lib/authentic2/manage.py $*
