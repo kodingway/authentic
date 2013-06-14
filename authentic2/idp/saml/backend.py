@@ -88,7 +88,7 @@ class SamlBackend(object):
                         sp__isnull=False) \
                 .select_related('sp')
         for federation in qs:
-            links.append((d[federation.sp.entity_id], federation.name_id_content))
+            links.append((d[federation.sp.liberty_provider.entity_id], federation.name_id_content))
         return links
 
     def can_synchronous_logout(self, django_sessions_keys):
