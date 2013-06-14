@@ -8,7 +8,8 @@ DEBUG_PROPAGATE_EXCEPTIONS = 'DEBUG_PROPAGATE_EXCEPTIONS' in os.environ
 USE_DEBUG_TOOLBAR = 'USE_DEBUG_TOOLBAR' in os.environ
 TEMPLATE_DEBUG = DEBUG
 
-_PROJECT_PATH = os.path.join(os.path.dirname(__file__), '..')
+PROJECT_PATH = os.path.join(os.path.dirname(__file__), '..')
+PROJECT_NAME = 'authentic2'
 
 ADMINS = ()
 if 'ADMINS' in os.environ:
@@ -23,7 +24,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': os.environ.get('DATABASE_ENGINE', 'django.db.backends.sqlite3'),
-        'NAME': os.environ.get('DATABASE_NAME', os.path.join(_PROJECT_PATH, 'authentic.db')),
+        'NAME': os.environ.get('DATABASE_NAME', os.path.join(PROJECT_PATH, PROJECT_NAME + '.db')),
     }
 }
 
@@ -41,12 +42,12 @@ USE_L10N = True
 
 # Static files
 
-STATIC_ROOT = os.environ.get('STATIC_ROOT', '/var/lib/authentic2/static')
+STATIC_ROOT = os.environ.get('STATIC_ROOT', '/var/lib/%s/static' % PROJECT_NAME)
 STATIC_URL = os.environ.get('STATIC_URL', '/static/')
 if 'STATICFILES_DIRS' in os.environ:
     STATICFILES_DIRS = os.environ['STATICFILES_DIRS'].split(':')
 else:
-    STATICFILES_DIRS = ('/var/lib/authentic2/extra-static/',)
+    STATICFILES_DIRS = ('/var/lib/%s/extra-static/' % PROJECT_NAME,)
 
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
@@ -81,7 +82,7 @@ ROOT_URLCONF = 'authentic2.urls'
 if os.environ.get('TEMPLATE_DIRS'):
     TEMPLATE_DIRS = os.environ['TEMPLATE_DIRS'].split(':')
 else:
-    TEMPLATE_DIRS = ('/var/lib/authentic2/templates',)
+    TEMPLATE_DIRS = ('/var/lib/%s/templates' % PROJECT_NAME,)
 
 
 INSTALLED_APPS = (
@@ -90,6 +91,9 @@ INSTALLED_APPS = (
     'authentic2.saml',
     'authentic2.idp',
     'authentic2.idp.saml',
+    'authentic2.auth2_auth',
+    'authentic2.attribute_aggregator',
+    'authentic2.disco_service',
     'admin_tools',
     'admin_tools.theming',
     'admin_tools.menu',
@@ -102,18 +106,22 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.sites',
     'registration',
-    'authentic2.auth2_auth',
     'south',
-    'authentic2.attribute_aggregator',
-    'authentic2.disco_service',
 )
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 
+
 # Registration settings
 ACCOUNT_ACTIVATION_DAYS = int(os.environ.get('ACCOUNT_ACTIVATION_DAYS', 3))
 PASSWORD_RESET_TIMEOUT_DAYS = int(os.environ.get('PASSWORD_RESET_TIMEOUT_DAYS', 3))
+
+# authentication
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+)
+AUTH_USER_MODEL = 'authentic2.User'
 
 # sessions
 SESSION_EXPIRE_AT_BROWSER_CLOSE =  'SESSION_EXPIRE_AT_BROWSER_CLOSE' in os.environ
@@ -134,7 +142,7 @@ DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'webmaster@localhost')
 
 # web & network settings
 if 'ALLOWED_HOSTS' in os.environ:
-    ALLOWED_HOSTS = os.environg['ALLOWED_HOSTS'].split(':')
+    ALLOWED_HOSTS = os.environ['ALLOWED_HOSTS'].split(':')
 USE_X_FORWARDED_HOST = 'USE_X_FORWARDED_HOST' in os.environ
 LOGIN_REDIRECT_URL = os.environ.get('LOGIN_REDIRECT_URL', '/')
 LOGIN_URL = os.environ.get('LOGIN_URL', '/login')
@@ -165,28 +173,8 @@ USE_DISCO_SERVICE = 'USE_DISCO_SERVICE' in os.environ
 
 # Only RSA private keys are currently supported
 AUTH_FRONTENDS = ( 'authentic2.auth2_auth.backend.LoginPasswordBackend',)
-
-AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-)
-AUTH_USER_MODEL = 'authentic2.User'
-
-# expiration in seconds of authentication events.
-# default: 1 week
-# AUTHENTICATION_EVENT_EXPIRATION = 3600*24*7
-
-# SSL Authentication
-AUTH_SSL = False
-SSLAUTH_CREATE_USER = True
-
-# SAML2 Authentication
-AUTH_SAML2 = True
-
-# OpenID Authentication
-AUTH_OPENID = False
-
-# OATH Authentication
-AUTH_OATH = False
+SSLAUTH_CREATE_USER = 'SSLAUTH_CREATE_USER' in os.environ
+AUTHENTICATION_EVENT_EXPIRATION = int(os.environ.get('AUTHENTICATION_EVENT_EXPIRATION', 3600*24*7))
 
 #############################
 # Identity Provider settings
@@ -196,12 +184,9 @@ AUTH_OATH = False
 # of user, and to handle SLO for each protocols
 IDP_BACKENDS = [ ]
 
-# SAML2 IDP
-IDP_SAML2 = True
-
 # You MUST changes these keys, they are just for testing !
-LOCAL_METADATA_CACHE_TIMEOUT = 600
-SAML_SIGNATURE_PUBLIC_KEY = '''-----BEGIN CERTIFICATE-----
+LOCAL_METADATA_CACHE_TIMEOUT = int(os.environ.get('LOCAL_METADATA_CACHE_TIMEOUT', 600))
+SAML_SIGNATURE_PUBLIC_KEY = os.environ.get('SAML_SIGNATURE_PUBLIC_KEY', '''-----BEGIN CERTIFICATE-----
 MIIDIzCCAgugAwIBAgIJANUBoick1pDpMA0GCSqGSIb3DQEBBQUAMBUxEzARBgNV
 BAoTCkVudHJvdXZlcnQwHhcNMTAxMjE0MTUzMzAyWhcNMTEwMTEzMTUzMzAyWjAV
 MRMwEQYDVQQKEwpFbnRyb3V2ZXJ0MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB
@@ -219,9 +204,9 @@ fEEhkqnM45b2MH1S5uxp4i8UilPG6kmQiXU2rEUBdRk9xnRWos7epVivTSIv1Ncp
 lG6l41SXp6YgIb2ToT+rOKdIGIQuGDlzeR88fDxWEU0vEujZv/v1PE1YOV0xKjTT
 JumlBc6IViKhJeo1wiBBrVRIIkKKevHKQzteK8pWm9CYWculxT26TZ4VWzGbo06j
 o2zbumirrLLqnt1gmBDvDvlOwC/zAAyL4chbz66eQHTiIYZZvYgy
------END CERTIFICATE-----'''
+-----END CERTIFICATE-----''')
 
-SAML_SIGNATURE_PRIVATE_KEY = '''-----BEGIN RSA PRIVATE KEY-----
+SAML_SIGNATURE_PRIVATE_KEY = os.environ.get('SAML_SIGNATURE_PRIVATE_KEY', '''-----BEGIN RSA PRIVATE KEY-----
 MIIEpAIBAAKCAQEAvxFkfPdndlGgQPDZgFGXbrNAc/79PULZBuNdWFHDD9P5hNhZ
 n9Kqm4Cp06Pe/A6u+g5wLnYvbZQcFCgfQAEzziJtb3J55OOlB7iMEI/T2AX2WzrU
 H8QT8NGhABONKU2Gg4XiyeXNhH5R7zdHlUwcWq3ZwNbtbY0TVc+n665EbrfV/59x
@@ -247,24 +232,15 @@ ldMoDvZ8/R/MexTA/1204u/mBecMJiO/jPw3GdIJ5phv2omHe1MSuSNsDfN8Sbap
 gmsgaiMCgYB/nrTk89Fp7050VKCNnIt1mHAcO9cBwDV8qrJ5O3rIVmrg1T6vn0aY
 wRiVcNacaP+BivkrMjr4BlsUM6yH4MOBsNhLURiiCL+tLJV7U0DWlCse/doWij4U
 TKX6tp6oI+7MIJE6ySZ0cBqOiydAkBePZhu57j6ToBkTa0dbHjn1WA==
------END RSA PRIVATE KEY-----'''
+-----END RSA PRIVATE KEY-----''')
 
-SAML_METADATA_ROOT = 'metadata'
 # Whether to autoload SAML 2.0 identity providers and services metadata
 # Only https URLS are accepted.
 # Can be none, sp, idp or both
-SAML_METADATA_AUTOLOAD = 'none'
+SAML_METADATA_AUTOLOAD = os.environ.get('SAML_METADATA_AUTOLOAD', 'none')
 
-# OpenID settings
-# Requires python-openid
-IDP_OPENID = False
+PUSH_PROFILE_UPDATES = 'PUSH_PROFILE_UPDATES' in os.environ
 
-# CAS settings
-IDP_CAS = False
-# expiration time in seconds of the cas tickets
-# CAS_TICKET_EXPIRATION = 240
-
-PUSH_PROFILE_UPDATES = False
 
 # Logging settings
 
@@ -297,7 +273,7 @@ LOGGING = {
             'level':'DEBUG',
             'class':'logging.FileHandler',
             'formatter': 'verbose',
-            'filename': os.environ.get('LOG_ROOT', os.path.join(_PROJECT_PATH, 'log.log')),
+            'filename': os.environ.get('LOG_ROOT', os.path.join(PROJECT_PATH, 'log.log')),
             'filters': ['cleaning'],
         },
         'syslog': {
