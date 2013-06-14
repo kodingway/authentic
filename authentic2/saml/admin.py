@@ -178,19 +178,26 @@ class LibertyProviderPolicyAdmin(admin.ModelAdmin):
             LibertyServiceProviderInline,
     ]
 
+class LibertyFederationAdmin(admin.ModelAdmin):
+    search_fields = ('name_id_content', 'user__username')
+    list_display = ('user', 'creation', 'last_modification', 'name_id_content', 'format', 'idp', 'sp')
+    list_filter = ('name_id_format', 'idp', 'sp')
+
+    def format(self, obj):
+        name_id_format = obj.name_id_format
+        if name_id_format > 15:
+            name_id_format = u'\u2026' + name_id_format[-12:]
+        return name_id_format
 
 admin.site.register(IdPOptionsSPPolicy, IdPOptionsSPPolicyAdmin)
 admin.site.register(SPOptionsIdPPolicy)
-#admin.site.register(AuthorizationSPPolicy, AuthorizationSPPolicyAdmin)
-#admin.site.register(AuthorizationAttributeMap, AuthorizationAttributeMapAdmin)
-#admin.site.register(AuthorizationAttributeMapping, AuthorizationAttributeMappingAdmin)
 admin.site.register(LibertyProvider, LibertyProviderAdmin)
 admin.site.register(LibertyProviderPolicy, LibertyProviderPolicyAdmin)
 
 if settings.DEBUG:
     admin.site.register(LibertySessionDump)
     admin.site.register(LibertyIdentityDump)
-    admin.site.register(LibertyFederation)
+    admin.site.register(LibertyFederation, LibertyFederationAdmin)
     admin.site.register(LibertySession)
     admin.site.register(LibertyAssertion)
     admin.site.register(LibertySessionSP)
