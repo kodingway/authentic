@@ -1,3 +1,10 @@
+authentic2 (2.0.2.212.g41b7e09-2) unstable; urgency=low
+
+  * debian: add adduser dependency
+  * debian: fix postinst
+
+ -- Jérôme Schneider <jschneider@entrouvert.com>  Fri, 14 Jun 2013 22:14:38 +0200
+
 authentic2 (2.0.2.212.g41b7e09-1) stable; urgency=low
 
   * using environment variables for the configuration
