@@ -1,0 +1,6 @@
+etc/authentic2
+var/lib/authentic2/media
+var/lib/authentic2/static
+var/lib/authentic2/extra-static
+var/run/authentic2
+var/log/authentic2

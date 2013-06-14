@@ -1,0 +1,3 @@
+debian/authentic.conf           /etc/authentic2
+debian/apache-example.conf      /etc/authentic2
+debian/authentic2-ctl           /usr/bin
