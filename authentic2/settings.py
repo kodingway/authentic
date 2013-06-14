@@ -1,82 +1,56 @@
 # Django settings for authentic project.
-
 import os
 
 gettext_noop = lambda s: s
 
-DEBUG = False
-USE_DEBUG_TOOLBAR = False
+DEBUG = 'DEBUG' in os.environ
+DEBUG_PROPAGATE_EXCEPTIONS = 'DEBUG_PROPAGATE_EXCEPTIONS' in os.environ
+USE_DEBUG_TOOLBAR = 'USE_DEBUG_TOOLBAR' in os.environ
 TEMPLATE_DEBUG = DEBUG
-_PROJECT_PATH = os.path.join(os.path.dirname(__file__), '..', '..')
 
-ADMINS = (
-    # ('Your Name', 'your_email@domain.com'),
-)
+_PROJECT_PATH = os.path.join(os.path.dirname(__file__), '..')
+
+ADMINS = ()
+if 'ADMINS' in os.environ:
+    ADMINS = filter(None, os.environ.get('ADMINS').split(':'))
+    ADMINS = [ admin.split(';') for admin in ADMINS ]
+    for admin in ADMINS:
+        assert len(admin) == 2, 'ADMINS setting must be a colon separated list of name and emails separated by a semi-colon'
+        assert '@' in admin[1], 'ADMINS setting pairs second value must be emails'
 
 MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(_PROJECT_PATH, 'authentic.db')
+        'ENGINE': os.environ.get('DATABASE_ENGINE', 'django.db.backends.sqlite3'),
+        'NAME': os.environ.get('DATABASE_NAME', os.path.join(_PROJECT_PATH, 'authentic.db')),
     }
 }
 
-#session cookie parameters
-SESSION_EXPIRE_AT_BROWSER_CLOSE =  True
-SESSION_COOKIE_AGE = 36000 # one day of work
-
-# Local time zone for this installation. Choices can be found here:
-# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
-# although not all choices may be available on all operating systems.
-# On Unix systems, a value of None will cause Django to use the same
-# timezone as the operating system.
-# If running in a Windows environment this must be set to the same as your
-# system time zone.
+# Hey Entr'ouvert is in France !!
 TIME_ZONE = 'Europe/Paris'
-
-# Language code for this installation. All choices can be found here:
-# http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'fr'
-
 SITE_ID = 1
-
-# If you set this to False, Django will make some optimizations so as not
-# to load the internationalization machinery.
 USE_I18N = True
 
 LANGUAGES = (
     ('en', gettext_noop('English')),
     ('fr', gettext_noop('French')),
 )
-
-LOCALE_PATHS = (
-    os.path.join(_PROJECT_PATH, 'authentic2/locale'),
-)
-
-# If you set this to False, Django will not format dates, numbers and
-# calendars according to the current locale
 USE_L10N = True
 
-# Absolute path to the directory that holds media.
-# Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = os.path.join(_PROJECT_PATH, 'media')
+# Static files
 
-# URL that handles the media served from MEDIA_ROOT. Make sure to use a
-# trailing slash if there is a path component (optional in other cases).
-# Examples: "http://media.lawrence.com", "http://example.com/media/"
+STATIC_ROOT = os.environ.get('STATIC_ROOT', '/var/lib/authentic2/static')
+STATIC_URL = os.environ.get('STATIC_URL', '/static/')
+if 'STATICFILES_DIRS' in os.environ:
+    STATICFILES_DIRS = os.environ['STATICFILES_DIRS'].split(':')
+else:
+    STATICFILES_DIRS = ('/var/lib/authentic2/extra-static/',)
 
-STATIC_ROOT = os.path.join(_PROJECT_PATH, 'static')
-STATIC_URL = '/static/'
-
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = '0!=(1kc6kri-ui+tmj@mr+*0bvj!(p*r0duu2n=)7@!p=pvf9n'
-
-# List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -104,12 +78,18 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'authentic2.urls'
 
-TEMPLATE_DIRS = (
-    # authentic2/templates
-    os.path.join(os.path.dirname(__file__), 'templates'),
-)
+if os.environ.get('TEMPLATE_DIRS'):
+    TEMPLATE_DIRS = os.environ['TEMPLATE_DIRS'].split(':')
+else:
+    TEMPLATE_DIRS = ('/var/lib/authentic2/templates',)
+
 
 INSTALLED_APPS = (
+    'authentic2',
+    'authentic2.nonce',
+    'authentic2.saml',
+    'authentic2.idp',
+    'authentic2.idp.saml',
     'admin_tools',
     'admin_tools.theming',
     'admin_tools.menu',
@@ -121,11 +101,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.admin',
     'django.contrib.sites',
-    'authentic2',
-    'authentic2.nonce',
-    'authentic2.saml',
-    'authentic2.idp',
-    'authentic2.idp.saml',
     'registration',
     'authentic2.auth2_auth',
     'south',
@@ -133,28 +108,56 @@ INSTALLED_APPS = (
     'authentic2.disco_service',
 )
 
-DISCO_SERVICE = True
-DISCO_USE_OF_METADATA = False
-
-DISCO_SERVICE_NAME = "http://www.identity-hub.com/disco_service/disco"
-DISCO_RETURN_ID_PARAM = "entityID"
-SHOW_DISCO_IN_MD = False
-USE_DISCO_SERVICE = False
-
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
-LOGIN_URL = '/login'
 
 # Registration settings
-ACCOUNT_ACTIVATION_DAYS = 2
-EMAIL_HOST = 'localhost'
-DEFAULT_FROM_EMAIL = 'webmaster@localhost'
-LOGIN_REDIRECT_URL = '/'
-# Default profile class
-AUTH_PROFILE_MODULE = 'idp.UserProfile'
+ACCOUNT_ACTIVATION_DAYS = int(os.environ.get('ACCOUNT_ACTIVATION_DAYS', 3))
+PASSWORD_RESET_TIMEOUT_DAYS = int(os.environ.get('PASSWORD_RESET_TIMEOUT_DAYS', 3))
 
-INTERNAL_IPS = ('127.0.0.1',)
+# sessions
+SESSION_EXPIRE_AT_BROWSER_CLOSE =  'SESSION_EXPIRE_AT_BROWSER_CLOSE' in os.environ
+SESSION_COOKIE_AGE = int(os.environ.get('SESSION_COOKIE_AGE', 36000)) # one day of work
+SESSION_COOKIE_NAME = os.environ.get('SESSION_COOKIE_NAME', 'sessionid')
+SESSION_COOKIE_PATH = os.environ.get('SESSION_COOKIE_PATH', '/')
+SESSION_COOKIE_SECURE = 'SESSION_COOKIE_SECURE' in os.environ
+
+# email settings
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'localhost')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 25))
+EMAIL_SUBJECT_PREFIX = os.environ.get('EMAIL_SUBJECT_PREFIX', '[Authentic]')
+EMAIL_USE_TLS = 'EMAIL_USE_TLS' in os.environ
+SERVER_EMAIL = os.environ.get('SERVER_EMAIL', 'root@localhost')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'webmaster@localhost')
+
+# web & network settings
+if 'ALLOWED_HOSTS' in os.environ:
+    ALLOWED_HOSTS = os.environg['ALLOWED_HOSTS'].split(':')
+USE_X_FORWARDED_HOST = 'USE_X_FORWARDED_HOST' in os.environ
+LOGIN_REDIRECT_URL = os.environ.get('LOGIN_REDIRECT_URL', '/')
+LOGIN_URL = os.environ.get('LOGIN_URL', '/login')
+LOGOUT_URL = os.environ.get('LOGOUT_URL', '/accounts/logout')
+
+if 'INTERNAL_IPS' in os.environ:
+    INTERNAL_IPS = os.environ['INTERNAL_IPS'].split(':')
+else:
+    INTERNAL_IPS = ('127.0.0.1',)
+
+# misc
+SECRET_KEY = os.environ.get('SECRET_KEY', '0!=(1kc6kri-ui+tmj@mr+*0bvj!(p*r0duu2n=)7@!p=pvf9n')
 DEBUG_TOOLBAR_CONFIG = {'INTERCEPT_REDIRECTS': False}
+
+# Authentic2 settings
+
+DISCO_SERVICE = 'DISCO_SERVICE' in os.environ
+DISCO_USE_OF_METADATA = 'DISCO_USE_OF_METADATA' in os.environ
+
+DISCO_SERVICE_NAME = os.environ.get('DISCO_SERVICE_NAME', "http://www.identity-hub.com/disco_service/disco")
+DISCO_RETURN_ID_PARAM = "entityID"
+SHOW_DISCO_IN_MD = 'SHOW_DISCO_IN_MD' in os.environ
+USE_DISCO_SERVICE = 'USE_DISCO_SERVICE' in os.environ
 
 ###########################
 # Authentication settings
@@ -321,7 +324,7 @@ LOGGING = {
             'propagate': False,
         },
         '': {
-                'handlers': ['console', 'local_file'],
+                'handlers': ['local_file'] + (['console'] if DEBUG else []),
                 'level': 'INFO',
         }
     },
@@ -333,3 +336,58 @@ SOUTH_TESTS_MIGRATE = False
 ADMIN_TOOLS_INDEX_DASHBOARD = 'authentic2.dashboard.CustomIndexDashboard'
 ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'authentic2.dashboard.CustomAppIndexDashboard'
 ADMIN_TOOLS_MENU = 'authentic2.menu.CustomMenu'
+
+AUTH_SAML2 = 'AUTH_SAML2' in os.environ
+AUTH_OPENID = 'AUTH_OPENID' in os.environ
+AUTH_SSL = 'AUTH_SSL' in os.environ
+AUTH_OATH = 'AUTH_OATH' in os.environ
+IDP_SAML2 = 'IDP_SAML2' in os.environ
+IDP_OPENID = 'IDP_OPENID' in os.environ
+IDP_CAS = 'IDP_CAS' in os.environ
+
+try:
+    from local_settings import *
+except ImportError, e:
+    if 'local_settings' in e.args[0]:
+        pass
+
+if USE_DEBUG_TOOLBAR:
+    try:
+        import debug_toolbar
+        MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
+        INSTALLED_APPS += ('debug_toolbar',)
+    except ImportError:
+        print "Debug toolbar missing, not loaded"
+
+if AUTH_SAML2:
+    INSTALLED_APPS += ('authentic2.authsaml2',)
+    AUTHENTICATION_BACKENDS += (
+            'authentic2.authsaml2.backends.AuthSAML2PersistentBackend',
+            'authentic2.authsaml2.backends.AuthSAML2TransientBackend')
+    AUTH_FRONTENDS += ('authentic2.authsaml2.frontend.AuthSAML2Frontend',)
+    IDP_BACKENDS += ('authentic2.authsaml2.backends.AuthSAML2Backend',)
+    DISPLAY_MESSAGE_ERROR_PAGE = True
+
+if AUTH_OPENID:
+    INSTALLED_APPS += ('authentic2.auth2_auth.auth2_openid', 'django_authopenid',)
+    AUTH_FRONTENDS += ('authentic2.auth2_auth.auth2_openid.backend.OpenIDFrontend',)
+
+if AUTH_SSL:
+    AUTHENTICATION_BACKENDS += ('authentic2.auth2_auth.auth2_ssl.backend.SSLBackend',)
+    AUTH_FRONTENDS += ('authentic2.auth2_auth.auth2_ssl.frontend.SSLFrontend',)
+    INSTALLED_APPS += ('authentic2.auth2_auth.auth2_ssl',)
+
+if AUTH_OATH:
+    INSTALLED_APPS += ('authentic2.auth2_auth.auth2_oath',)
+    AUTHENTICATION_BACKENDS += ('authentic2.auth2_auth.auth2_oath.backend.OATHTOTPBackend',)
+    AUTH_FRONTENDS += ('authentic2.auth2_auth.auth2_oath.frontend.OATHOTPFrontend',)
+
+if IDP_SAML2:
+    IDP_BACKENDS += ('authentic2.idp.saml.backend.SamlBackend',)
+
+if IDP_OPENID:
+    INSTALLED_APPS += ('authentic2.idp.idp_openid',)
+    TEMPLATE_CONTEXT_PROCESSORS += ('authentic2.idp.idp_openid.context_processors.openid_meta',)
+
+if IDP_CAS:
+    INSTALLED_APPS += ('authentic2.idp.idp_cas',)
