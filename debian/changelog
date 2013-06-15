@@ -1,3 +1,9 @@
+authentic2 (2.0.2.214.g4e64a8e-1) unstable; urgency=low
+
+  * update to last upstream commit
+
+ -- Jérôme Schneider <jschneider@entrouvert.com>  Sat, 15 Jun 2013 09:57:51 +0200
+
 authentic2 (2.0.2.212.g41b7e09-3) unstable; urgency=low
 
   * debian: fix postinst
