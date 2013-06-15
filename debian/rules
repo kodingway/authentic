@@ -1,6 +1,7 @@
 #!/usr/bin/make -f
 
-d=$(CURDIR)/debian/authentic2
+authentic2=$(CURDIR)/debian/authentic2
+pythonauthentic2=$(CURDIR)/debian/python-authentic2
 
 %:
 	dh $@ --with python2
@@ -17,6 +18,5 @@ override_dh_auto_build:
 override_dh_auto_install:
 	git status
 	dh_auto_install
-	install -m 0755 -d $(d)/var/lib/authentic2
-	mv $(d)/usr/bin/authentic2-ctl $(d)/var/lib/authentic2/manage.py
+	mv $(CURDIR)/debian/tmp/usr/bin/authentic2-ctl $(authentic2)/var/lib/authentic2/manage.py
 

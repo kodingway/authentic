@@ -1,3 +1,10 @@
+authentic2 (2.0.2.214.g4e64a8e-2) unstable; urgency=low
+
+  * Split into two packages : authentic2 and python-authentic2
+  * Add authentic2 postrm to delete authentic user
+
+ -- Jérôme Schneider <jschneider@entrouvert.com>  Sat, 15 Jun 2013 16:09:37 +0200
+
 authentic2 (2.0.2.214.g4e64a8e-1) unstable; urgency=low
 
   * update to last upstream commit

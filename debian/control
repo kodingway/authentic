@@ -8,12 +8,12 @@ Standards-Version: 3.8.3
 Homepage: http://authentic.labs.libre-entreprise.org
 X-Python-Version: >= 2.6
 
-Package: authentic2
+Package: python-authentic2
 Architecture: all
 Pre-Depends: python-django (>= 1.5)
 Depends: ${misc:Depends}, ${python:Depends},
     python-django-registration (>= 0.8),
-    python-requests, adduser,
+    python-requests,
     python-django-south (>= 0.7), python-django-south (<< 0.8),
     python-django-admin-tools, python-lasso
 Description: Versatile identity server
@@ -23,3 +23,17 @@ Description: Versatile identity server
  .
  It has support for ID-FF and SAMLv2 thanks to Lasso, a free (GNU GPL)
  implementation of the Liberty Alliance specifications.
+
+Package: authentic2
+Architecture: all
+Pre-Depends: python-django (>= 1.5)
+Depends: ${misc:Depends}, adduser,
+    python-authentic2
+Description: Versatile identity server Python module
+ Authentic is a versatile identity provider aiming to address a broad
+ range of needs, from simple to complex setups; it has support for many
+ protocols and can bridge between them.
+ .
+ It has support for ID-FF and SAMLv2 thanks to Lasso, a free (GNU GPL)
+ implementation of the Liberty Alliance specifications.
+
