@@ -1,0 +1,14 @@
+#!/bin/sh
+# postrm script for passerelle
+#
+# see: dh_installdeb(1)
+
+set -e
+
+case "$1" in purge)
+    deluser --quiet --system authentic > /dev/null || true
+    ;;
+
+esac
+
+exit 0
