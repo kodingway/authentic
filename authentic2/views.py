@@ -26,6 +26,7 @@ from authentic2.saml import models as saml_models
 
 import forms
 import models
+import app_settings
 
 
 logger = logging.getLogger(__name__)
@@ -127,7 +128,7 @@ def su(request, username, redirect_url='/'):
 @login_required
 def delete_account(request, next_url='/'):
     next_url = request.build_absolute_uri(request.META.get('HTTP_REFERER') or next_url)
-    if not settings.AUTHENTIC2_ALLOW_ACCOUNT_DELETION:
+    if not app_settings.ALLOW_ACCOUNT_DELETION:
         return shortcuts_redirect(next_url)
     if request.method == 'POST':
         if 'submit' in request.POST:

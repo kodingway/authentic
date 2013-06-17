@@ -34,3 +34,6 @@ CAPATH = setting(('AUTHENTIC2_CAPATH', 'CAPATH'), default='/etc/ssl/certs/',
         definition='Directory containing PEM certificates named'
         ' using OpenSSL certificate directory convention. '
         'See http://www.openssl.org/docs/apps/verify.html#item__CApath')
+
+ALLOW_ACCOUNT_DELETION = setting(('AUTHENTIC2_ALLOW_ACCOUNT_DELETION',), default=True,
+        definition='Can user self delete their account and all their data')
