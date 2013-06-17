@@ -78,8 +78,12 @@ def profile(request):
     # Credentials management
     blocks = [ frontend.profile(request, next='/profile') for frontend in frontends \
             if hasattr(frontend, 'profile') ]
-    return render_to_response('idp/account_management.html', { 'frontends_block': blocks, 'profile': profile },
-            RequestContext(request))
+    return render_to_response('idp/account_management.html', { 
+        'frontends_block': blocks, 
+        'profile': profile,
+        'allow_account_deletion': settings.AUTHENTIC2_ALLOW_ACCOUNT_DELETION,
+        },
+        RequestContext(request))
 
 def logout_list(request):
     '''Return logout links from idp backends'''

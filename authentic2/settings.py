@@ -116,6 +116,7 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 # Registration settings
 ACCOUNT_ACTIVATION_DAYS = int(os.environ.get('ACCOUNT_ACTIVATION_DAYS', 3))
 PASSWORD_RESET_TIMEOUT_DAYS = int(os.environ.get('PASSWORD_RESET_TIMEOUT_DAYS', 3))
+AUTHENTIC2_ALLOW_ACCOUNT_DELETION = True
 
 # authentication
 AUTHENTICATION_BACKENDS = (
