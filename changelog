@@ -1,3 +1,9 @@
+authentic2 (2.0.2.214.g4e64a8e-4) stable; urgency=low
+
+  * authentic.conf: replace ENGINE by DATABASE_ENGINE
+
+ -- Jérôme Schneider <jschneider@entrouvert.com>  Tue, 18 Jun 2013 16:21:52 +0200
+
 authentic2 (2.0.2.214.g4e64a8e-3) unstable; urgency=low
 
   * change south dependency
