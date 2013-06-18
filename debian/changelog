@@ -1,3 +1,11 @@
+authentic2 (2.0.2.220.gcde5387-1) stable; urgency=low
+
+  * update to last master commit
+  * move manage.py to /usr/lib/authentic2 to follow :
+    http://wiki.debian.org/DjangoPackagingDraft
+
+ -- Jérôme Schneider <jschneider@entrouvert.com>  Tue, 18 Jun 2013 18:02:30 +0200
+
 authentic2 (2.0.2.214.g4e64a8e-4) stable; urgency=low
 
   * authentic.conf: replace ENGINE by DATABASE_ENGINE
