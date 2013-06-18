@@ -15,6 +15,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from authentic2.idp import get_backends
 from authentic2.authsaml2.models import SAML2TransientUser
 
+from authentic2 import app_settings
+
 logger = logging.getLogger('authentic2.idp.views')
 
 __logout_redirection_timeout = getattr(settings, 'IDP_LOGOUT_TIMEOUT', 600)
@@ -78,8 +80,12 @@ def profile(request):
     # Credentials management
     blocks = [ frontend.profile(request, next='/profile') for frontend in frontends \
             if hasattr(frontend, 'profile') ]
-    return render_to_response('idp/account_management.html', { 'frontends_block': blocks, 'profile': profile },
-            RequestContext(request))
+    return render_to_response('idp/account_management.html', { 
+        'frontends_block': blocks, 
+        'profile': profile,
+        'allow_account_deletion': app_settings.ALLOW_ACCOUNT_DELETION,
+        },
+        RequestContext(request))
 
 def logout_list(request):
     '''Return logout links from idp backends'''

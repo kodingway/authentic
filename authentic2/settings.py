@@ -116,6 +116,14 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 # Registration settings
 ACCOUNT_ACTIVATION_DAYS = int(os.environ.get('ACCOUNT_ACTIVATION_DAYS', 3))
 PASSWORD_RESET_TIMEOUT_DAYS = int(os.environ.get('PASSWORD_RESET_TIMEOUT_DAYS', 3))
+if 'AUTHENTIC2_ALLOW_ACCOUNT_DELETION' in os.environ:
+    AUTHENTIC2_ALLOW_ACCOUNT_DELETION = True
+
+# authentication
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+)
+AUTH_USER_MODEL = 'authentic2.User'
 
 # authentication
 AUTHENTICATION_BACKENDS = (
@@ -254,7 +262,7 @@ LOGGING = {
     },
     'formatters': {
         'verbose': {
-            'format': '[%(asctime)s] %(levelname)-8s %(name)s.%(message)s',
+            'format': '[%(asctime)s] %(levelname)s %(name)s: %(message)s',
             'datefmt': '%Y-%m-%d %a %H:%M:%S'
         },
     },

@@ -14,6 +14,9 @@ from django.utils.http import urlquote
 from django.conf import settings
 
 
+import managers
+
+
 class UserManager(BaseUserManager):
     def create_user(self, username, email=None, password=None, **extra_fields):
         """
@@ -161,6 +164,19 @@ class AbstractUser(AbstractBaseUser, PermissionsMixin):
     def get_roles(self):
         return [group.name for group in self.groups.all()]
     roles = property(get_roles)
+
+
+class DeletedUser(models.Model):
+    '''Record users to delete'''
+
+    objects = managers.DeletedUserManager()
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    creation = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = _('user to delete')
+        verbose_name_plural = _('users to delete')
 
 
 if settings.AUTH_USER_MODEL == 'authentic2.User':

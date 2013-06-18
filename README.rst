@@ -376,6 +376,15 @@ object is created.  By default this new ``User`` has both ``is_staff`` and
 The default PAM service used is ``login`` but you can change it by setting the
 ``PAM_SERVICE`` variable in your ``settings.py`` file.
 
+Cronjobs
+========
+
+The following cronjob must be run to clean deleted accounts and temporary objects::
+
+   5 0 * * * athentic2-ctl cleanup
+
+It's made to run every day at 00:05.
+
 Roadmap
 =======
 

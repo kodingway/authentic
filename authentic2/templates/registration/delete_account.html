@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}
+{% trans "Delete account" %}
+{% endblock %}
+
+
+{% block content %}
+<form method="post">
+  {% csrf_token %}
+  <p>{% trans "Delete my account and all my personal datas ?" %}</p>
+  <input type="submit" name="submit" value="{% trans "Yes" %}"/>
+  <input type="submit" name="cancel" value="{% trans "No" %}"/>
+</form>
+{% endblock %}
