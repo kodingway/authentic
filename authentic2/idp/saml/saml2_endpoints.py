@@ -867,7 +867,6 @@ def save_artifact(request, login):
     '''Remember an artifact message for later retrieving'''
     LibertyArtifact(artifact=login.artifact,
             content=login.artifactMessage.decode('utf-8'),
-            django_session_key=request.session.session_key,
             provider_id=login.remoteProviderId).save()
     logger.debug('save_artifact: artifact saved')
 

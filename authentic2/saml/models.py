@@ -481,7 +481,6 @@ class LibertyManageDump(models.Model):
 
 class LibertyArtifactManager(models.Manager):
     def cleanup(self):
-        # keep artifacts 10 minutes
         expire = getattr(settings, 'SAML2_ARTIFACT_EXPIRATION', 600)
         before = datetime.datetime.now()-datetime.timedelta(seconds=expire)
         self.filter(creation__lt=before).delete()
@@ -491,7 +490,6 @@ class LibertyArtifact(models.Model):
     creation = models.DateTimeField(auto_now_add=True)
     artifact = models.CharField(max_length = 128, primary_key = True)
     content = models.TextField()
-    django_session_key = models.CharField(max_length = 128)
     provider_id = models.CharField(max_length = 256)
 
     objects = LibertyArtifactManager()
