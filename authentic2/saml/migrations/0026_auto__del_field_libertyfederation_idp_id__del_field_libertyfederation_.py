@@ -228,7 +228,7 @@ class Migration(SchemaMigration):
             'session_index': ('django.db.models.fields.CharField', [], {'max_length': '128'})
         },
         u'saml.libertyfederation': {
-            'Meta': {'unique_together': "(('user', 'sp', 'name_id_content'),('user', 'idp', 'name_id_content'),)", 'object_name': 'LibertyFederation'},
+            'Meta': {'unique_together': "(('user', 'sp', 'name_id_format'),('user', 'idp', 'name_id_format'),)", 'object_name': 'LibertyFederation'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'idp': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['saml.LibertyIdentityProvider']", 'null': 'True'}),
             'name_id_content': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
