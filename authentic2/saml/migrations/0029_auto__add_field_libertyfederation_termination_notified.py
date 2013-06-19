@@ -179,7 +179,6 @@ class Migration(SchemaMigration):
             'last_modification': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
             'name_id_content': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name_id_format': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-            'site': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['sites.Site']", 'null': 'True', 'on_delete': 'models.SET_NULL', 'blank': 'True'}),
             'sp': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['saml.LibertyServiceProvider']", 'null': 'True'}),
             'termination_notified': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['%s']" % user_model_label, 'null': 'True', 'on_delete': 'models.SET_NULL', 'blank': 'True'})

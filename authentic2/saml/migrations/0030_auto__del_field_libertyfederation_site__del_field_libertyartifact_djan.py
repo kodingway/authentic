@@ -8,19 +8,11 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Deleting field 'LibertyFederation.site'
-        db.delete_column(u'saml_libertyfederation', 'site_id')
-
         # Deleting field 'LibertyArtifact.django_session_key'
         db.delete_column(u'saml_libertyartifact', 'django_session_key')
 
 
     def backwards(self, orm):
-        # Adding field 'LibertyFederation.site'
-        db.add_column(u'saml_libertyfederation', 'site',
-                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['sites.Site'], null=True, on_delete=models.SET_NULL, blank=True),
-                      keep_default=False)
-
         # Adding field 'LibertyArtifact.django_session_key'
         db.add_column(u'saml_libertyartifact', 'django_session_key',
                       self.gf('django.db.models.fields.CharField')(default='xxx', max_length=128),
