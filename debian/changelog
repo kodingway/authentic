@@ -2,7 +2,6 @@ authentic2 (2.0.2.220.gcde5387-2) stable; urgency=low
 
   * complete configuration file
   * complete apache example
-  * generate automatically Djnago secret_key
 
  -- Jérôme Schneider <jschneider@entrouvert.com>  Wed, 19 Jun 2013 11:20:20 +0200
 
