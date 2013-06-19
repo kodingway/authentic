@@ -83,17 +83,13 @@ DEFAULT_NAME_ID_FORMAT = 'none'
 # Supported name id formats
 NAME_ID_FORMATS = {
         'none': { 'caption': _('None'),
-            'samlv2': None,
-            'idff12': None },
+            'samlv2': None,},
         'persistent': { 'caption': _('Persistent'),
-            'samlv2': lasso.SAML2_NAME_IDENTIFIER_FORMAT_PERSISTENT,
-            'idff12': lasso.LIB_NAMEID_POLICY_TYPE_FEDERATED },
+            'samlv2': lasso.SAML2_NAME_IDENTIFIER_FORMAT_PERSISTENT,},
         'transient': { 'caption': _("Transient"),
-            'samlv2': lasso.SAML2_NAME_IDENTIFIER_FORMAT_TRANSIENT,
-            'idff12': lasso.LIB_NAMEID_POLICY_TYPE_ONE_TIME },
+            'samlv2': lasso.SAML2_NAME_IDENTIFIER_FORMAT_TRANSIENT,},
         'email': { 'caption': _("Email (only supported by SAMLv2)"),
-            'samlv2': lasso.SAML2_NAME_IDENTIFIER_FORMAT_EMAIL,
-            'idff12': None }}
+            'samlv2': lasso.SAML2_NAME_IDENTIFIER_FORMAT_EMAIL,}}
 
 NAME_ID_FORMATS_CHOICES = \
         tuple([(x, y['caption']) for x, y in NAME_ID_FORMATS.iteritems()])
@@ -110,9 +106,6 @@ def saml2_urn_to_nidformat(urn):
 
 def nidformat_to_saml2_urn(key):
     return NAME_ID_FORMATS.get(key, {}).get('samlv2')
-
-def nidformat_to_idff12_urn(key):
-    return NAME_ID_FORMATS.get(key, {}).get('idff12')
 
 # According to: saml-profiles-2.0-os
 # The HTTP Redirect binding MUST NOT be used, as the response will typically exceed the URL length permitted by most user agents.
@@ -330,10 +323,7 @@ class LibertyProvider(models.Model):
             help_text = _("Internal nickname for the service provider"),
             blank = True)
     protocol_conformance = models.IntegerField(max_length = 10,
-            choices = ((0, 'SAML 1.0'),
-                       (1, 'SAML 1.1'),
-                       (2, 'SAML 1.2'),
-                       (3, 'SAML 2.0')))
+            choices = ((lasso.PROTOCOL_SAML_2_0, 'SAML 2.0'),))
     metadata = models.TextField(validators = [ metadata_validator ])
     # All following field must be PEM formatted textual data
     public_key = models.TextField(blank=True)
@@ -371,8 +361,9 @@ class LibertyProvider(models.Model):
         self.entity_id = p.providerId
         if not self.name:
             self.name = organization_name(p)
-        if not self.protocol_conformance:
-            self.protocol_conformance = p.protocolConformance
+        self.protocol_conformance = p.protocolConformance
+        if self.protocol_conformance != lasso.PROTOCOL_SAML_2_0:
+            raise ValidationError(_('Protocol other than SAML 2.0 are unsupported'))
 
     class Meta:
         ordering = ('name',)
