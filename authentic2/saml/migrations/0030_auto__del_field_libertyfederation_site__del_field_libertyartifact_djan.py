@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
 
+from authentic2.compat import user_model_label
 
 class Migration(SchemaMigration):
 
@@ -39,8 +38,8 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
         },
-        u'authentic2.user': {
-            'Meta': {'object_name': 'User'},
+        user_model_label: {
+            'Meta': {'object_name': user_model_label.split('.')[-1]},
             'backend': ('django.db.models.fields.CharField', [], {'max_length': '64', 'blank': 'True'}),
             'backend_id': ('django.db.models.fields.CharField', [], {'max_length': '256', 'blank': 'True'}),
             'company': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
@@ -180,13 +179,13 @@ class Migration(SchemaMigration):
             'name_id_format': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'sp': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['saml.LibertyServiceProvider']", 'null': 'True'}),
             'termination_notified': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['authentic2.User']", 'null': 'True', 'on_delete': 'models.SET_NULL', 'blank': 'True'})
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['%s']" % user_model_label, 'null': 'True', 'on_delete': 'models.SET_NULL', 'blank': 'True'})
         },
         u'saml.libertyidentitydump': {
             'Meta': {'object_name': 'LibertyIdentityDump'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'identity_dump': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['authentic2.User']", 'unique': 'True'})
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['%s']" % user_model_label, 'unique': 'True'})
         },
         u'saml.libertyidentityprovider': {
             'Meta': {'object_name': 'LibertyIdentityProvider'},
