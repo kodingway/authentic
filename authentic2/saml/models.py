@@ -430,15 +430,6 @@ class LibertyIdentityProvider(models.Model):
         return unicode(self.liberty_provider)
 
 
-# Transactional models
-class LibertyIdentityDump(models.Model):
-    '''Store lasso identity dump
-
-       Should be replaced in the future by direct reference to LassoFederation
-       objects'''
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, unique = True)
-    identity_dump = models.TextField(blank = True)
-
 class SessionLinkedManager(models.Manager):
     def cleanup(self):
         engine = import_module(settings.SESSION_ENGINE)

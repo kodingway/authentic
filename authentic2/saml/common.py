@@ -16,7 +16,7 @@ from django.db import transaction
 from django.core.exceptions import ValidationError
 from django.core.exceptions import ObjectDoesNotExist
 
-from authentic2.saml.models import LibertyFederation, LibertyIdentityDump, LibertyProvider, \
+from authentic2.saml.models import LibertyFederation, LibertyProvider, \
     LibertyManageDump, LibertySessionDump, LibertyServiceProvider, \
     LibertyIdentityProvider, LibertySessionSP, IdPOptionsSPPolicy, \
     SPOptionsIdPPolicy, \
@@ -264,18 +264,6 @@ def load_session(request, login, session_key = None,
         logger.debug('load_session: set session from dump done %s' %login.session.dump())
     except ObjectDoesNotExist:
         pass
-
-def save_federation(request, login, user = None):
-    '''Save identity dump to database'''
-    if not user:
-        user = request.user
-    if login.isIdentityDirty:
-        q, creation = LibertyIdentityDump.objects.get_or_create(user = user)
-        if login.identity:
-            q.identity_dump = login.identity.dump()
-        else:
-            q.identity_dump = None
-        q.save()
 
 def save_session(request, login, session_key=None,
         kind=LIBERTY_SESSION_DUMP_KIND_IDP):

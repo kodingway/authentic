@@ -53,7 +53,7 @@ from authentic2.saml.common import redirect_next, asynchronous_bindings, \
     error_page, set_saml2_response_responder_status_code, \
     AUTHENTIC_STATUS_CODE_MISSING_DESTINATION, \
     load_federation, load_session, \
-    return_saml2_response, save_federation, save_session, \
+    return_saml2_response, save_session, \
     get_soap_message, soap_fault, return_saml_soap_response, \
     AUTHENTIC_STATUS_CODE_UNKNOWN_PROVIDER, \
     AUTHENTIC_STATUS_CODE_MISSING_NAMEID, \
@@ -853,8 +853,6 @@ def finish_sso(request, login, user=None, save=False, return_profile=False):
         user = request.user
     response = return_login_response(request, login)
     if save:
-        save_federation(request, login)
-        logger.debug('finish_sso: federation saved')
         save_session(request, login)
         logger.debug('finish_sso: session saved')
     logger.info('finish_sso: sso treatment ended, send response')
