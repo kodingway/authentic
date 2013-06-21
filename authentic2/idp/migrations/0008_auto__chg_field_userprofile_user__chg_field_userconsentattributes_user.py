@@ -6,9 +6,6 @@ from django.db import models
 
 
 class Migration(SchemaMigration):
-    depends_on = (
-            ('authentic2', '0003_auto__add_user'),
-    )
 
     def forwards(self, orm):
 
