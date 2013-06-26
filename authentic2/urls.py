@@ -5,9 +5,9 @@ from django.conf import settings
 from authentic2.idp.decorators import prevent_access_to_transient_users
 
 import authentic2.idp.views
-from forms import AuthenticRegistrationForm
 
 from .admin import admin
+from . import app_settings
 
 admin.autodiscover()
 handler500 = 'authentic2.views.server_error'
@@ -19,17 +19,7 @@ urlpatterns = patterns('',
 not_homepage_patterns = patterns('',
     url(r'^', include('authentic2.auth2_auth.urls')),
     url(r'^redirect/(.*)', 'authentic2.views.redirect'),
-    url(r'^accounts/delete/', 'authentic2.views.delete_account', name='delete_account'),
-    url(r'^accounts/password/change/done/', 'authentic2.views.password_change_done'),
-    url(r'^accounts/register/complete/', 'authentic2.views.registration_success', name='registration_complete'),
-    url(r'^accounts/register/',
-       'registration.views.register',
-       {'backend':'authentic2.registration_backend.SimpleBackend',
-        'success_url' : '/',
-        'form_class': AuthenticRegistrationForm },
-       name='registration_register',
-       ),
-    url(r'^accounts/', include('registration.backends.simple.urls')),
+    url(r'^accounts/', include(app_settings.A2_REGISTRATION_URLCONF)),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^admin_tools/', include('admin_tools.urls')),
     url(r'^idp/', include('authentic2.idp.urls')),
