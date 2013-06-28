@@ -16,7 +16,7 @@ from django.db import transaction
 from django.core.exceptions import ValidationError
 from django.core.exceptions import ObjectDoesNotExist
 
-from authentic2.saml.models import LibertyFederation, LibertyIdentityDump, LibertyProvider, \
+from authentic2.saml.models import LibertyFederation, LibertyProvider, \
     LibertyManageDump, LibertySessionDump, LibertyServiceProvider, \
     LibertyIdentityProvider, LibertySessionSP, IdPOptionsSPPolicy, \
     SPOptionsIdPPolicy, \
@@ -205,59 +205,8 @@ def check_id_and_issue_instant(request_response_or_assertion, now=None):
             return False
     return True
 
-# ID-FF 1.2 methods
-def get_idff12_metadata(request, metadata):
-    '''Produce SAMLv1.1 metadata for our ID-FF 1.2 IdP
-
-      This method only works with request pointing to an endpoint'''
-
-    metagen = saml11utils.Saml11Metadata(get_entity_id(request, metadata),
-            url_prefix = get_base_path(request, metadata),
-            protocol_support_enumeration = [ lasso.LIB_HREF ])
-    sso_protocol_profiles = [
-        lasso.LIB_PROTOCOL_PROFILE_BRWS_ART,
-        lasso.LIB_PROTOCOL_PROFILE_BRWS_POST,
-        lasso.LIB_PROTOCOL_PROFILE_BRWS_LECP ]
-    map = {
-            'SoapEndpoint': '/soap',
-            'SingleSignOn': (('/sso',), sso_protocol_profiles)
-          }
-    options = { 'key': settings.SAML_SIGNATURE_PUBLIC_KEY }
-    metagen.add_idp_descriptor(map, options)
-    return str(metagen)
-
-def create_idff12_server(request, metadata):
-    server = lasso.Server.newFromBuffers(get_idff12_metadata(request,
-        metadata), settings.SAML_SIGNATURE_PRIVATE_KEY)
-    if not server:
-        raise Exception('Cannot create LassoServer object')
-    return server
-
-def get_idff12_post_request(request):
-    '''Return a SAML 1.1 request transmitted through a POST request'''
-    return request.POST.get('LAREQ')
-
-get_idff12_query_request = get_saml2_query_request
-
-def get_idff12_request_message(request):
-    binding = get_http_binding(request)
-    if binding == 'GET':
-        return get_idff12_query_request(request)
-    elif binding == 'POST':
-        return get_idff12_post_request(request)
-
 def return_saml_soap_response(profile):
     return HttpResponse(profile.msgBody, mimetype = 'text/xml')
-
-def return_idff12_response(request, profile, title = ''):
-    '''Finish your ID-FFv1.2 views with this method to return a SAML
-    response'''
-    return return_saml2(request, profile, 'LARES', title)
-
-def return_idff12_request(request, profile, title = ''):
-    '''Finish your SAMLv2 views with this method to return a SAML
-    request'''
-    return return_saml2(request, profile, 'LAREQ', title)
 
 # Helper method to handle profiles endpoints
 # In the future we should move away from monolithic object (LassoIdentity and
@@ -299,7 +248,6 @@ def load_federation(request, entity_id, login, user = None):
     logger.debug('load_federation: user is %s' %user.username)
     identity_dump = federations_to_identity_dump(entity_id,
             LibertyFederation.objects.filter(user=user))
-    print identity_dump
     login.setIdentityFromDump(identity_dump)
     logger.debug('load_federation: set identity from dump done %s' % identity_dump)
 
@@ -316,18 +264,6 @@ def load_session(request, login, session_key = None,
         logger.debug('load_session: set session from dump done %s' %login.session.dump())
     except ObjectDoesNotExist:
         pass
-
-def save_federation(request, login, user = None):
-    '''Save identity dump to database'''
-    if not user:
-        user = request.user
-    if login.isIdentityDirty:
-        q, creation = LibertyIdentityDump.objects.get_or_create(user = user)
-        if login.identity:
-            q.identity_dump = login.identity.dump()
-        else:
-            q.identity_dump = None
-        q.save()
 
 def save_session(request, login, session_key=None,
         kind=LIBERTY_SESSION_DUMP_KIND_IDP):

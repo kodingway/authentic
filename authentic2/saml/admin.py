@@ -12,7 +12,7 @@ from authentic2.saml.models import LibertyProvider, LibertyServiceProvider
 from authentic2.saml.models import LibertyIdentityProvider, IdPOptionsSPPolicy
 from authentic2.saml.models import SPOptionsIdPPolicy
 from authentic2.saml.models import LibertyProviderPolicy
-from authentic2.saml.models import LibertySessionDump, LibertyIdentityDump, LibertyFederation
+from authentic2.saml.models import LibertySessionDump, LibertyFederation
 from authentic2.saml.models import LibertyAssertion, LibertySessionSP, KeyValue
 from authentic2.saml.models import LibertySession
 from authentic2.http_utils import get_url
@@ -196,7 +196,6 @@ admin.site.register(LibertyProviderPolicy, LibertyProviderPolicyAdmin)
 
 if settings.DEBUG:
     admin.site.register(LibertySessionDump)
-    admin.site.register(LibertyIdentityDump)
     admin.site.register(LibertyFederation, LibertyFederationAdmin)
     admin.site.register(LibertySession)
     admin.site.register(LibertyAssertion)

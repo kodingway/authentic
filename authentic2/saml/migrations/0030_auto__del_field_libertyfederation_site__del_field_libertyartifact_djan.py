@@ -4,19 +4,18 @@ from south.v2 import SchemaMigration
 
 from authentic2.compat import user_model_label
 
-
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding field 'LibertyFederation.termination_notified'
-        db.add_column(u'saml_libertyfederation', 'termination_notified',
-                      self.gf('django.db.models.fields.BooleanField')(default=False),
-                      keep_default=False)
+        # Deleting field 'LibertyArtifact.django_session_key'
+        db.delete_column(u'saml_libertyartifact', 'django_session_key')
 
 
     def backwards(self, orm):
-        # Deleting field 'LibertyFederation.termination_notified'
-        db.delete_column(u'saml_libertyfederation', 'termination_notified')
+        # Adding field 'LibertyArtifact.django_session_key'
+        db.add_column(u'saml_libertyartifact', 'django_session_key',
+                      self.gf('django.db.models.fields.CharField')(default='xxx', max_length=128),
+                      keep_default=False)
 
 
     models = {
@@ -159,7 +158,6 @@ class Migration(SchemaMigration):
             'artifact': ('django.db.models.fields.CharField', [], {'max_length': '128', 'primary_key': 'True'}),
             'content': ('django.db.models.fields.TextField', [], {}),
             'creation': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'django_session_key': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
             'provider_id': ('django.db.models.fields.CharField', [], {'max_length': '256'})
         },
         u'saml.libertyassertion': {
@@ -172,7 +170,7 @@ class Migration(SchemaMigration):
             'session_index': ('django.db.models.fields.CharField', [], {'max_length': '128'})
         },
         u'saml.libertyfederation': {
-            'Meta': {'unique_together': "(('user', 'sp', 'name_id_format'),('user', 'idp', 'name_id_format'),)", 'object_name': 'LibertyFederation'},
+            'Meta': {'unique_together': "(('user', 'idp', 'name_id_format'), ('user', 'sp', 'name_id_format'))", 'object_name': 'LibertyFederation'},
             'creation': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'idp': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['saml.LibertyIdentityProvider']", 'null': 'True'}),
@@ -276,12 +274,6 @@ class Migration(SchemaMigration):
             'idp_initiated_sso': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
             'prefered_assertion_consumer_binding': ('django.db.models.fields.CharField', [], {'default': "'meta'", 'max_length': '4'})
-        },
-        u'sites.site': {
-            'Meta': {'ordering': "('domain',)", 'object_name': 'Site', 'db_table': "'django_site'"},
-            'domain': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
         }
     }
 

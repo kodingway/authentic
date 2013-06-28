@@ -687,7 +687,6 @@ def sso_after_response(request, login, relay_state=None, provider=None):
             if request.session.test_cookie_worked():
                 request.session.delete_test_cookie()
             save_session(request, login, kind=LIBERTY_SESSION_DUMP_KIND_SP)
-            #save_federation(request, login)
             maintain_liberty_session_on_service_provider(request, login)
             logger.info('sso_after_response: \
                 Login processing ended with success - redirect to target')
@@ -802,7 +801,6 @@ def finish_federation(request):
             if login.identity:
                 login.identity.isDirty = True
             save_session(request, login, kind=LIBERTY_SESSION_DUMP_KIND_SP)
-            #save_federation(request, login)
             maintain_liberty_session_on_service_provider(request, login)
             logger.info('finish_federation: \
                 Login processing ended with success - redirect to target')
@@ -1649,11 +1647,6 @@ def manage_name_id_return(request, manage, message):
                 _('fedTerm/manage_name_id_return: %s') % \
                 lasso.strError(error[0]),
                 logger=logger)
-        else:
-            '''if manage.isIdentityDirty:
-                if manage.identity:
-                    save_federation(request, manage)'''
-            break
     return HttpResponseRedirect(get_registered_url(request))
 
 

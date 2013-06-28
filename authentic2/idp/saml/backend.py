@@ -27,10 +27,7 @@ class SamlBackend(object):
             if policy and policy.idp_initiated_sso:
                 actions = []
                 entity_id = liberty_provider.entity_id
-                if liberty_provider.protocol_conformance < 3:
-                    protocol = 'idff12'
-                else:
-                    protocol = 'saml2'
+                protocol = 'saml2'
                 actions.append(('login', 'POST',
                     '/idp/%s/idp_sso/' % protocol,
                     (('provider_id', entity_id ),)))
