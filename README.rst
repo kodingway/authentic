@@ -95,9 +95,13 @@ or easy_install::
 
    easy_install authentic2-x.z.y.tar.gz
 
+On first run you must create the database schema::
+
+   ./authentic2-ctl syncdb --all
+   ./authentic2-ctl migrate --fake
+
 You can now run Authentic from the installation directory, e.g.::
 
-   authentic2-ctl syncdb --migrate
    authentic2-ctl runserver
 
 You should see the following output::
