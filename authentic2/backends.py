@@ -8,12 +8,14 @@ import random
 log = logging.getLogger(__name__)
 
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 try:
     import lasso
 except ImportError:
     pass
+
+
+from authentic2.compat import get_user_model
 
 
 class LDAPBackendError(Exception):

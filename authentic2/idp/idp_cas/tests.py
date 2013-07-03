@@ -1,12 +1,15 @@
 from xml.etree import ElementTree as ET
 
+
 from django.test import TestCase
-from django.contrib.auth import get_user_model
 from django.test.client import RequestFactory
 
-from models import CasTicket
-import views
-import constants
+
+from authentic2.compat import get_user_model
+from .models import CasTicket
+from . import views
+from . import constants
+
 
 class CasTests(TestCase):
     LOGIN = 'test'

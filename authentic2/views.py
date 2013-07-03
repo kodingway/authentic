@@ -10,7 +10,6 @@ from django.conf import settings
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.generic.edit import UpdateView
-from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import SESSION_KEY
 from django import http
@@ -19,6 +18,7 @@ from django import http
 from authentic2.idp.decorators import prevent_access_to_transient_users
 from authentic2.idp.saml import saml2_endpoints
 from authentic2.saml import models as saml_models
+from authentic2.compat import get_user_model
 
 
 import forms
