@@ -1,5 +1,9 @@
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
+
+
 from authentic2.models import AbstractUser
+
 
 class User(AbstractUser):
     first_name = models.CharField(_('first name'), max_length=64, blank=True)
