@@ -83,7 +83,7 @@ class CustomIndexDashboard(Dashboard):
                 },
                 {
                     'title': _('Authentic Mailing List'),
-                    'url': 'https://lists.labs.libre-entreprise.org/mailman/listinfo/authentic-devel/',
+                    'url': 'http://listes.entrouvert.com/info/authentic',
                     'external': True,
                 },
             ]
