@@ -319,6 +319,10 @@ renew:%s and gateway:%s' % (service, renew, gateway))
 
     def service_validate_success_response(self, request, st):
         attributes, section = self.get_attributes(request, st)
+        try:
+            ET.register_namespace('cas', 'http://www.yale.edu/tp/cas')
+        except AttributeError:
+            ET._namespace_map['http://www.yale.edu/tp/cas'] = 'cas'
         root = ET.Element('{%s}%s' % (CAS_NAMESPACE, SERVICE_RESPONSE_ELT))
         success = ET.SubElement(root, '{%s}%s' % (CAS_NAMESPACE, AUTHENTICATION_SUCCESS_ELT))
         if attributes:
