@@ -83,7 +83,7 @@ def profile(request):
     return render_to_response('idp/account_management.html', { 
         'frontends_block': blocks, 
         'profile': profile,
-        'allow_account_deletion': app_settings.ALLOW_ACCOUNT_DELETION,
+        'allow_account_deletion': app_settings.A2_REGISTRATION_CAN_DELETE_ACCOUNT,
         },
         RequestContext(request))
 
