@@ -1853,8 +1853,8 @@ def view_profile(request, next='', template_name='profile.html'):
 
     #Add creation date
     federations = LibertyProvider.objects \
-            .filter(libertyfederation__user=request.user) \
-            .value_list('name', flat=True)
+            .filter(identity_provider__libertyfederation__user=request.user) \
+            .values_list('name', flat=True)
 
     from frontend import AuthSAML2Frontend
     form = AuthSAML2Frontend().form()()
@@ -1881,7 +1881,7 @@ def delete_federation(request, next_url='/'):
         if provider_name:
             LibertyFederation.objects.filter(
                     user=request.user,
-                    idp__name=provider_name).update(user=None)
+                    idp__liberty_provider__name=provider_name).update(user=None)
             logger.info('delete_federation: federation %s deleted',
                     provider_name)
             messages.add_message(request, messages.INFO,

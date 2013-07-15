@@ -421,9 +421,9 @@ def lookup_federation_by_name_id_and_provider_id(name_id, provider_id):
     '''Try to find a LibertyFederation object for the given NameID and
        the provider id.'''
     kwargs = models.nameid2kwargs(name_id)
+    kwargs['idp'] = LibertyProvider.objects.get(entity_id=provider_id).identity_provider
     try:
-        return LibertyFederation.objects.get(idp__liberty_provider__entity_id=provider_id,
-            **kwargs)
+        return LibertyFederation.objects.get(user__isnull=False, **kwargs)
     except:
         return None
 
