@@ -754,7 +754,7 @@ def finish_federation(request):
                     Unable to create Login object'), logger=logger)
 
             s = load_session(request, login, kind=LIBERTY_SESSION_DUMP_KIND_SP)
-            load_federation_temp(request, get_entity_id(request, reverse(metadata)), login)
+            load_federation_temp(request, login)
             if not login.session:
                 return error_page(request,
                     _('finish_federation: Error loading session.'),
