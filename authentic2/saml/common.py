@@ -1,6 +1,7 @@
 import urlparse
 import os.path
 import urllib
+import urllib2
 import httplib
 import logging
 import re
@@ -561,6 +562,11 @@ class SOAPException(Exception):
         self.url = url
 
 def soap_call(url, msg, client_cert = None):
+    if not client_cert:
+        request = urllib2.Request(url, data=msg,
+            headers={'Content-Type': 'text/xml'})
+        return urllib2.urlopen(request).read()
+
     if url.startswith('http://'):
         host, query = urllib.splithost(url[5:])
         conn = httplib.HTTPConnection(host)
