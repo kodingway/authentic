@@ -198,8 +198,8 @@ def disco(request):
     # Check that the return_url does not already contain a param with name
     # equal to returnIDParam. Else, it is an unconformant SP.
     if is_param_id_in_return_url(return_url, returnIDParam):
-        message = _('disco: invalid return url %s for %s' \
-            % (return_url, entityID))
+        message = _('disco: invalid return url %(return_url)s for %(entity_id)s' \
+            % dict(return_url=return_url, entity_id=entityID))
         return error_page(request, message, logger=logger)
 
     # not back from selection interface
