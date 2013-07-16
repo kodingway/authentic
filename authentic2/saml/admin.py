@@ -145,8 +145,8 @@ def update_metadata(modeladmin, request, queryset):
                     updated.append(provider.entity_id)
                     provider.save()
             except (urllib2.URLError, IOError), e:
-                messages.error(request, _('Failure to resolve %s: %s') %
-                        (provider.entity_id, e))
+                messages.error(request, _('Failure to resolve %(entity_id)s: %(error)s') %
+                        dict(entity_id=provider.entity_id, error=e))
     if updated:
         updated = ', '.join(updated)
         messages.info(request, _('Metadata update for: %s') % updated)
