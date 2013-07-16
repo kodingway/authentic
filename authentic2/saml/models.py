@@ -535,11 +535,21 @@ class LibertyFederation(models.Model):
             kwargs.update(nameid2kwargs(name_id))
         models.Model.__init__(self, *args, **kwargs)
 
+    def is_unique(self, for_format=True):
+        '''Return whether a federation already exist for this user and this provider.
+
+           By default the check is made by name_id_format, if you want to check
+           whatever the format, set for_format to False.
+        '''
+        qs = LibertyFederation.objects.exclude(id=self.id) \
+                .filter(user=self.user, idp=self.idp, sp=self.sp)
+        if for_format:
+            qs = qs.filter(name_id_format=self.name_id_format)
+        return not qs.exists()
+
     class Meta:
         verbose_name = _("Liberty federation")
         verbose_name_plural = _("Liberty federations")
-        unique_together = (('user', 'idp', 'name_id_format'),
-                           ('user', 'sp',  'name_id_format'))
 
     def __unicode__(self):
         return self.name_id_content
