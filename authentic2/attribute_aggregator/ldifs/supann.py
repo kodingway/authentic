@@ -293,7 +293,7 @@
 #http://www.cru.fr/_media/documentation/supann/supann_2009.schema.txt
 "": {
     "oid": "NAME'supannEtuInscription'",
-    "display_name": _(""),
+    "display_name": "",
     "type": "http://www.w3.org/2001/XMLSchema#string",
     "syntax": "1.3.6.1.4.1.1466.115.121.1.15{4096}",
 },
