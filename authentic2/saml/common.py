@@ -541,7 +541,7 @@ def get_provider_of_active_session(request):
         return None
     try:
         s = LibertySessionSP.objects.get(django_session_key=request.session.session_key)
-        p = LibertyProvider.objects.get(entity_id=s.federation.name_id_qualifier)
+        p = s.federation.idp.liberty_provider
         return p
     except:
         return None
