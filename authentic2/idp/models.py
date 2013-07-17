@@ -57,40 +57,6 @@ class UserConsentAttributes(models.Model):
         return "User consent for attributes propagation"
 
 
-class UserProfile(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, unique=True)
-    first_name = models.CharField(_('first name'),
-            max_length=30,
-            blank=True)
-    last_name = models.CharField(_('last name'),
-            max_length=30,
-            blank=True)
-    email = models.EmailField(_('e-mail address'), blank=True)
-    nickname = models.CharField(_('nickname'), max_length=50, blank=True)
-    url = models.URLField(_('Website'), blank=True)
-    company = models.CharField(verbose_name=_("Company"),
-            max_length=50, blank=True)
-    phone = models.CharField(verbose_name=_("Phone"),
-            max_length=50, blank=True)
-    postal_address = models.TextField(verbose_name=_("Postal address"),
-            max_length=255, blank=True)
-
-    def save(self, **kwargs):
-        super(UserProfile, self).save(**kwargs)
-        if self.user.first_name != self.first_name or \
-            self.user.last_name != self.last_name or \
-            self.user.email != self.email:
-            self.user.first_name = self.first_name
-            self.user.last_name = self.last_name
-            self.user.email = self.email
-            self.user.save()
-
-    def get_absolute_url(self):
-        return ('profiles_profile_detail', (),
-            {'username': self.user.username})
-    get_absolute_url = models.permalink(get_absolute_url)
-
-
 class AttributeItem(models.Model):
     attribute_name = models.CharField(
         verbose_name = _("Attribute name"),
