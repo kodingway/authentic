@@ -397,17 +397,12 @@ def add_federation(user, login=None, name_id=None, provider_id=None):
         if not login.nameIdentifier.content or not login.nameIdentifier.nameQualifier:
             return None
         name_id=login.nameIdentifier
-    qualifier = name_id.nameQualifier
-    if not qualifier and login:
-        qualifier = login.get_remoteProviderId()
     fed = LibertyFederation()
     fed.user = user
     fed.name_id_content = name_id.content
-    fed.name_id_qualifier = qualifier
-    fed.name_id_sp_name_qualifier = name_id.sPNameQualifier
     fed.name_id_format = name_id.format
     if provider_id:
-        fed.idp_id = provider_id
+        fed.idp = LibertyProvider.objects.get(entity_id=provider_id).identity_provider
     fed.save()
     return fed
 
