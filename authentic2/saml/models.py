@@ -76,7 +76,7 @@ def organization_name(provider):
 ASSERTION_CONSUMER_PROFILES = (
         ('meta', _('Use the default from the metadata file')),
         ('art', _('Artifact binding')),
-        ('post', _('Post binding')))
+        ('post', _('POST binding')))
 
 DEFAULT_NAME_ID_FORMAT = 'none'
 
@@ -138,6 +138,10 @@ class LibertyProviderPolicy(models.Model):
         options = []
         options.append(u'AuthnRequest signature: %s' % SIGNATURE_VERIFY_HINT[self.authn_request_signature_check_hint])
         return self.name + ' (%s)' % ', '.join(options)
+
+    class Meta:
+        verbose_name = _('liberty service provider policy')
+        verbose_name_plural = _('liberty service provider policies')
 
 
 AUTHSAML2_UNAUTH_PERSISTENT = (
@@ -288,6 +292,10 @@ class AuthorizationAttributeMap(models.Model):
     def __unicode__(self):
         return self.name
 
+    class Meta:
+        verbose_name = _('authorization attribute map')
+        verbose_name_plural = _('authorization attribute maps')
+
 class AuthorizationAttributeMapping(models.Model):
     source_attribute_name = models.CharField(max_length = 40,
             blank=True)
@@ -296,6 +304,10 @@ class AuthorizationAttributeMapping(models.Model):
     attribute_name = models.CharField(max_length = 40)
     attribute_value = models.CharField(max_length = 40)
     map = models.ForeignKey(AuthorizationAttributeMap)
+
+    class Meta:
+        verbose_name = _('authorization attribute mapping')
+        verbose_name_plural = _('authorization attribute mappings')
 
 class AuthorizationSPPolicy(models.Model):
     name = models.CharField(_('name'), max_length=80, unique=True)
@@ -310,8 +322,8 @@ class AuthorizationSPPolicy(models.Model):
             default=_('You are not authorized to access the service.'))
 
     class Meta:
-        verbose_name = _('authorization policy')
-        verbose_name_plural = _('authorization policies')
+        verbose_name = _('authorization identity providers policy')
+        verbose_name_plural = _('authorization identity providers policies')
 
     def __unicode__(self):
         return self.name
@@ -368,6 +380,7 @@ class LibertyProvider(models.Model):
     class Meta:
         ordering = ('name',)
         verbose_name = _('liberty provider')
+        verbose_name_plural = _('liberty providers')
 
 def get_all_custom_or_default(instance, name):
     model = instance._meta.get_field_by_name(name)[0].rel.to
@@ -391,20 +404,24 @@ class LibertyServiceProvider(models.Model):
     enabled = models.BooleanField(verbose_name = _('Enabled'))
     enable_following_sp_options_policy = models.BooleanField(verbose_name = \
         _('The following options policy will apply except if a policy for all service provider is defined.'))
-    sp_options_policy = models.ForeignKey(SPOptionsIdPPolicy, related_name = "sp_options_policy", verbose_name = _('SP Options Policy'), blank=True, null=True)
+    sp_options_policy = models.ForeignKey(SPOptionsIdPPolicy, related_name = "sp_options_policy", verbose_name = _('service provider options policy'), blank=True, null=True)
     policy = models.ForeignKey(LibertyProviderPolicy,
             verbose_name=_("Protocol policy"), null=True, default=1)
     enable_following_attribute_policy = models.BooleanField(verbose_name = \
         _('The following attribute policy will apply except if a policy for all service provider is defined.'))
     attribute_policy = models.ForeignKey(AttributePolicy,
              related_name = "attribute_policy",
-            verbose_name=_("Attribute policy"), null=True, blank=True)
+            verbose_name=_("attribute policy"), null=True, blank=True)
 
     def get_policy(self):
         return get_all_custom_or_default(self, 'policy')
 
     def __unicode__(self):
         return unicode(self.liberty_provider)
+
+    class Meta:
+        verbose_name = _('liberty service provider')
+        verbose_name_plural = _('liberty service providers')
 
 
 # TODO: The choice for requests must be restricted by the IdP metadata
@@ -416,11 +433,18 @@ class LibertyIdentityProvider(models.Model):
             primary_key = True, related_name = 'identity_provider')
     enabled = models.BooleanField(verbose_name = _('Enabled'))
     enable_following_idp_options_policy = models.BooleanField(verbose_name = \
-        _('The following options policy will apply except if a policy for all identity provider is defined.'))
-    idp_options_policy = models.ForeignKey(IdPOptionsSPPolicy, related_name = "idp_options_policy", verbose_name = _('IdP Options Policy'), blank=True, null=True)
+        _('The following options policy will apply except if a policy for all '
+          'identity provider is defined.'))
+    idp_options_policy = models.ForeignKey(IdPOptionsSPPolicy,
+            related_name="idp_options_policy",
+            verbose_name=_('identity provider options policy'), blank=True,
+            null=True)
     enable_following_authorization_policy = models.BooleanField(verbose_name = \
-        _('The following authorization policy will apply except if a policy for all identity provider is defined.'))
-    authorization_policy = models.ForeignKey(AuthorizationSPPolicy, related_name = "authorization_policy", verbose_name = _('Authorization Policy'), blank=True, null=True)
+        _('The following authorization policy will apply except if a policy for'
+          ' all identity provider is defined.'))
+    authorization_policy = models.ForeignKey(AuthorizationSPPolicy,
+            related_name="authorization_policy",
+            verbose_name=_('authorization identity providers policy'), blank=True, null=True)
 
     # TODO: add clean method which checks that the LassoProvider we can create
     # with the metadata file support the IDP role
@@ -429,6 +453,9 @@ class LibertyIdentityProvider(models.Model):
     def __unicode__(self):
         return unicode(self.liberty_provider)
 
+    class Meta:
+        verbose_name = _('liberty identity provider')
+        verbose_name_plural = _('liberty identity providers')
 
 class SessionLinkedManager(models.Manager):
     def cleanup(self):
@@ -460,6 +487,10 @@ class LibertySessionDump(models.Model):
 
     objects = SessionLinkedManager()
 
+    class Meta:
+        verbose_name = _('liberty session dump')
+        verbose_name_plural = _('liberty session dumps')
+
 class LibertyManageDump(models.Model):
     '''Store lasso manage dump
 
@@ -469,6 +500,10 @@ class LibertyManageDump(models.Model):
     manage_dump = models.TextField(blank = True)
 
     objects = SessionLinkedManager()
+
+    class Meta:
+        verbose_name = _('liberty manage dump')
+        verbose_name_plural = _('liberty manage dumps')
 
 class LibertyArtifactManager(models.Manager):
     def cleanup(self):
@@ -484,6 +519,10 @@ class LibertyArtifact(models.Model):
     provider_id = models.CharField(max_length = 256)
 
     objects = LibertyArtifactManager()
+
+    class Meta:
+        verbose_name = _('liberty artifact')
+        verbose_name_plural = _('liberty artifacts')
 
 def nameid2kwargs(name_id):
     return {
@@ -512,6 +551,10 @@ class LibertyAssertion(models.Model):
                     saml2_assertion.authnStatement[0].sessionIndex
             kwargs['assertion'] = saml2_assertion.exportToXml()
         models.Model.__init__(self, *args, **kwargs)
+
+    class Meta:
+        verbose_name = _('liberty assertion')
+        verbose_name_plural = _('liberty assertions')
 
 class LibertyFederation(models.Model):
     """Store a federation, i.e. an identifier shared with another provider, be
@@ -548,8 +591,8 @@ class LibertyFederation(models.Model):
         return not qs.exists()
 
     class Meta:
-        verbose_name = _("Liberty federation")
-        verbose_name_plural = _("Liberty federations")
+        verbose_name = _("liberty federation")
+        verbose_name_plural = _("liberty federations")
 
     def __unicode__(self):
         return self.name_id_content
@@ -589,10 +632,15 @@ class LibertySession(models.Model):
     @classmethod
     def get_for_nameid_and_session_indexes(cls, name_id, session_indexes):
         kwargs = nameid2kwargs(name_id)
-        return LibertySession.objects.filter(session_index__in = session_indexes, **kwargs)
+        return LibertySession.objects.filter(session_index__in=session_indexes,
+                **kwargs)
 
     def __unicode__(self):
         return '<LibertySession %s>' % self.__dict__
+
+    class Meta:
+        verbose_name = _("liberty session")
+        verbose_name_plural = _("liberty sessions")
 
 class LibertySessionSP(models.Model):
     """Store the link between a Django session and a Liberty session on the SP"""
@@ -600,12 +648,20 @@ class LibertySessionSP(models.Model):
     session_index =  models.CharField(max_length = 80, )
     federation = models.ForeignKey(LibertyFederation)
 
+    class Meta:
+        verbose_name = _("liberty service provider session")
+        verbose_name_plural = _("liberty service provider sessions")
+
 class KeyValue(models.Model):
     key = models.CharField(max_length=128, primary_key=True)
     value = PickledObjectField()
 
     def __unicode__(self):
         return self.key
+
+    class Meta:
+        verbose_name = _("key value association")
+        verbose_name_plural = _("key value associations")
 
 def save_key_values(key, *values):
     KeyValue(key = key, value = values).save()

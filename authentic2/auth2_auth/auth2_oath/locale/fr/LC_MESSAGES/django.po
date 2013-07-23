@@ -1,0 +1,120 @@
+# French translation of Authentic
+# Copyright (C) 2010, 2011 Entr'ouvert
+# This file is distributed under the same license as the Authentic package.
+# Frederic Peters <fpeters@entrouvert.com>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Authentic\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-23 17:44+0200\n"
+"PO-Revision-Date: 2013-07-23 17:42+0200\n"
+"Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
+"Language-Team: None\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n>1;\n"
+
+#: frontend.py:22
+msgid ""
+"Please enter a correct username and one-time password. Note that both fields "
+"are case-sensitive."
+msgstr ""
+"Veuillez taper un nom d'utilisateur correct et un mot de passe à usage "
+"unique. Notez que les deux champs sont sensibles à la casse."
+
+#: frontend.py:24
+msgid "This account is inactive."
+msgstr "Ce compte est inactif."
+
+#: frontend.py:29
+msgid ""
+"Your Web browser doesn't appear to have cookies enabled. Cookies are "
+"required for logging in."
+msgstr ""
+"Il semblerait que votre navigateur ne supporte pas les cookies. Les cookies "
+"sont requis pour se connecter."
+
+#: frontend.py:39
+msgid "One time password"
+msgstr "Mot de passe à usage unique"
+
+#: templates/auth/login_form_oath.html:5
+msgid ""
+"\n"
+"Once you have created your account, log in with an other authentication "
+"method.\n"
+"Then, in account management, follow the instructions to deploy the\n"
+"One Time password authentication method.\n"
+msgstr ""
+"\n"
+"Une fois votre compte créé, connectez-vous à l'aide d'une autre méthode.\n"
+"Alors, dans l'interface de gestion de votre compte, suivez les instructions "
+"pour déployer la\n"
+"méthode d'authentification basée sur le mot de passe à usage unique.\n"
+
+#: templates/auth/login_form_oath.html:16
+msgid "Log in"
+msgstr "S'identifier"
+
+#: templates/auth/login_form_oath.html:18
+msgid "Cancel"
+msgstr "Annuler"
+
+#: templates/auth/login_form_oath.html:24
+msgid "Forgot password?"
+msgstr "Mot de passe oublié ?"
+
+#: templates/auth/login_form_oath.html:24
+msgid "Reset it!"
+msgstr "Le réinitialiser !"
+
+#: templates/auth/login_form_oath.html:25
+msgid "Not a member?"
+msgstr "Pas un membre ?"
+
+#: templates/auth/login_form_oath.html:25
+msgid "Register!"
+msgstr "S'inscrire !"
+
+#: templates/oath/totp_profile.html:5
+msgid "Time based one-time password"
+msgstr "Mot de passe à usage unique basé sur le temps"
+
+#: templates/oath/totp_profile.html:8
+msgid "Secret"
+msgstr "Secret"
+
+#: templates/oath/totp_profile.html:10
+msgid "Google authenticator"
+msgstr "Google authenticator"
+
+#: templates/oath/totp_profile.html:12
+msgid "Bookmarklet"
+msgstr "Marque-page générateur de mot de passe"
+
+#: templates/oath/totp_profile.html:13
+msgid ""
+"Copy this link to your bookmarks. When clicking on it it will generate a new "
+"one-time password which will allow you to login"
+msgstr ""
+"Copier ce lien dans vos marque-pages. Cliquez le pour générer un nouveau mot "
+"de passe à usage unique pour vous connecter."
+
+#: templates/oath/totp_profile.html:16
+msgid "Delete this credential"
+msgstr "Supprimer ce moyen d'authentification"
+
+#: templates/oath/totp_profile.html:19
+msgid ""
+"This kind of authentication is actually not possible, because you do not "
+"have any secret setup."
+msgstr ""
+"Ce moyen d'authentification n'est pas disponible actuellement car vous "
+"n'avez pas encore généré de secret."
+
+#: templates/oath/totp_profile.html:23
+msgid "Generate a new credential"
+msgstr "Générer un nouveau secret"

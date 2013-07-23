@@ -67,6 +67,10 @@ class AttributeSource(models.Model):
             pass
         return None
 
+    class Meta:
+        verbose_name = _('attribute source')
+        verbose_name_plural = _('attribute sources')
+
 
 def get_source_from_name(name):
     try:
@@ -112,19 +116,23 @@ if ldap:
             super(LdapSource, self).__init__(*args, **kwargs)
             self.namespace = "X500"
 
+        class Meta:
+            verbose_name = _('ldap attribute source')
+            verbose_name_plural = _('ldap attribute sources')
+
 class UserAliasInSource(models.Model):
     name = models.CharField(
         verbose_name = _("Name"),
         max_length = 200)
     source = models.ForeignKey(AttributeSource,
-        verbose_name = _('Attribute Source'))
+        verbose_name = _('attribute source'))
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
-        verbose_name = _("User"),
+        verbose_name = _("user"),
         related_name='user_alias_in_source')
 
     class Meta:
-        verbose_name = _('alias in source')
-        verbose_name_plural = _('aliases in source')
+        verbose_name = _('user alias from source')
+        verbose_name_plural = _('user aliases from source')
         unique_together = ("name", "source")
 
     def __unicode__(self):
@@ -133,7 +141,6 @@ class UserAliasInSource(models.Model):
 
 
 class AttributeData:
-
     def __init__(self, definition, values=None, source=None,
             expiration_date=None):
         '''
@@ -558,3 +565,8 @@ class UserAttributeProfile(models.Model):
         for d in self.get_all_data():
             s = s + "\n\t" + d.__unicode__()
         return s
+
+    class Meta:
+        verbose_name = _('user attribute profile')
+        verbose_name_plural = _('user attribute profiles')
+

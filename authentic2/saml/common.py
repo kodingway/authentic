@@ -60,7 +60,7 @@ def get_soap_message(request, on_error_raise = True):
     if request.method != 'POST' or \
             'text/xml' not in request.META['CONTENT_TYPE']:
        if on_error_raise:
-           raise Http404(_('Only SOAP messages here'))
+           raise Http404('Only SOAP messages here')
        else:
            return None
     return request.raw_post_data

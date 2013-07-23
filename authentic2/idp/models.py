@@ -51,11 +51,16 @@ class UserConsentAttributes(models.Model):
     attributes = models.TextField()
 
     class Meta:
-        verbose_name = _('User consent for attributes propagation')
+        verbose_name = _('user consent for attributes propagation')
+        verbose_name_plural = _('user consents for attributes propagation')
 
     def __unicode__(self):
-        return "User consent for attributes propagation"
+        return _(u"user {0} consent to release attributes {1} to provider {2}") % (
+                self.user, self.attributes, self.provider)
 
+    def __repr__(self):
+        return '<UserConsentAttributes {0!r}>'.format(
+                self.__dict__)
 
 class AttributeItem(models.Model):
     attribute_name = models.CharField(
@@ -82,16 +87,24 @@ class AttributeItem(models.Model):
         blank = True, null = True)
 
     class Meta:
-        verbose_name = _('attribute of a list (SSO Login)')
-        verbose_name_plural = _('attributes of lists (SSO Login)')
+        verbose_name = _('attribute list item')
+        verbose_name_plural = _('attribute list items')
 
     def __unicode__(self):
         s = self.attribute_name
-        s += ' (Output name fomat: %s)' % self.output_name_format
-        s += ' (Output namespace: %s)' % self.output_namespace
-        s += ' (Required: %s)' % self.required
-        s += ' (Source: %s)' % self.source
+        attributes = []
+        attributes.append(u'output name fomat: %s' % self.output_name_format)
+        attributes.append(u'output namespace: %s' % self.output_namespace)
+        if self.required:
+            attributes.append(u'required' % self.required)
+        if self.source:
+            attributes.append(u'source: %s' % self.source)
+        s += u' (%s)' % u', '.join(attributes)
         return s
+
+    def __repr__(self):
+        return '<AttributeItem {0!r}>'.format(
+                self.__dict__)
 
 
 class AttributeList(models.Model):
@@ -104,11 +117,15 @@ class AttributeList(models.Model):
         blank = True, null = True)
 
     class Meta:
-        verbose_name = _('attribute list (SSO Login)')
-        verbose_name_plural = _('attribute lists (SSO Login)')
+        verbose_name = _('attribute list')
+        verbose_name_plural = _('attribute lists')
 
     def __unicode__(self):
         return self.name
+
+    def __repr__(self):
+        return '<AttributeList name:{0!r} attributes:[{1:r}]>'.format(
+                self.name, ', '.join(map(repr, self.attributes.all())))
 
 
 class AttributePolicy(models.Model):
@@ -203,11 +220,15 @@ class AttributePolicy(models.Model):
     #ask_user_consent = models.BooleanField(default=False)
 
     class Meta:
-        verbose_name = _('attribute options policy')
-        verbose_name_plural = _('attribute options policies')
+        verbose_name = _('attribute policy')
+        verbose_name_plural = _('attribute policies')
 
     def __unicode__(self):
         return self.name
+
+    def __repr__(self):
+        return '<AttributePolicy {0!r}>'.format(self.__dict__)
+
 
 
 def get_attribute_policy(provider):
