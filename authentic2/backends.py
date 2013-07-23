@@ -38,7 +38,8 @@ _DEFAULTS = {
     'fname_field': 'givenName',
     'lname_field': 'sn',
     'timeout': 1,
-    'disable_update': False
+    'disable_update': False,
+    'use_for_data' : None,
 }
 
 _REQUIRED = ('url', 'basedn')
@@ -339,13 +340,13 @@ class LDAPBackend():
             return lasso.SAML2_AUTHN_CONTEXT_PASSWORD
 
 # LDAP_AUTH_SETTINGS = ('ldap://10.0.44.2', 'cn=users,dc=example,dc=com')
-# 
+#
 # LDAP_AUTH_SETTINGS = ('ldap://10.0.44.2', 'cn=users,dc=example,dc=com', 'django_login',
 #   'cn=groups,dc=example,dc=com')
-#   
+#
 # LDAP_AUTH_SETTINGS = (('ldap://10.0.44.2', 'ldaps://10.0.44.200'), 'cn=users,dc=example,dc=com',
 #   ('django_login', 'staff', 'web_users'), 'cn=groups,dc=example,dc=com')
-# 
+#
 # -*> means required
 # --> means optional
 # LDAP_AUTH_SETTINGS = (
