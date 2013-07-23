@@ -312,7 +312,7 @@ class LDAPBackend():
     def save(self, user, *args, **kwargs):
         conn, block = self.get_user_connection(user)
         url, dn = user.backend_id.split('!', 1)
-        if block['use_for_data']:
+        if 'use_for_data' in block:
             results = conn.search_s(dn, ldap.SCOPE_BASE)
             new_entry = results[0][1].copy()
             fields = (
