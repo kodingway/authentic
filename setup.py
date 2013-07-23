@@ -31,10 +31,13 @@ class compile_translations(Command):
         import sys
         from django.core.management.commands.compilemessages import \
             compile_messages
-        curdir = os.getcwd()
-        os.chdir(os.path.realpath('authentic2'))
-        compile_messages(stderr=sys.stderr)
-        os.chdir(curdir)
+        for path, dirs, files in os.walk('authentic2'):
+            if 'locale' not in dirs:
+                continue
+            curdir = os.getcwd()
+            os.chdir(os.path.realpath(path))
+            compile_messages(stderr=sys.stderr)
+            os.chdir(curdir)
 
 
 class build(_build):
