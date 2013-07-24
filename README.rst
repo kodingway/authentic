@@ -251,6 +251,13 @@ You should refer to the Django documentation on databases settings at
 http://docs.djangoproject.com/en/dev/ref/settings/#databases for all
 the details.
 
+Compiling translations
+======================
+
+Translations must compiled to be useful, to do that run the following command:
+
+  ./setup.py compile_translations
+
 Using Authentic with an LDAP directory
 ======================================
 
