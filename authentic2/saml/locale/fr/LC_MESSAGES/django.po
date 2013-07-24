@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-07-24 11:14+0200\n"
-"PO-Revision-Date: 2013-07-24 11:14+0200\n"
+"PO-Revision-Date: 2013-07-24 15:36+0200\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
 "Language: fr\n"
@@ -256,7 +256,7 @@ msgstr "règlement des options de fournisseur de services"
 
 #: models.py:284
 msgid "service provider options policies"
-msgstr "règlement des options de fournisseur de services"
+msgstr "règlements des options de fournisseur de services"
 
 #: models.py:296
 msgid "authorization attribute map"
