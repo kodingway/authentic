@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''
     VERIDIC Project - Towards a centralized access control system
 
@@ -32,8 +33,8 @@ except ImportError:
     ldap = None
 
 from authentic2.attribute_aggregator.signals import any_attributes_call, \
-    listed_attributes_call, listed_attributes_with_source_call
-from authentic2.attribute_aggregator.mapping import ATTRIBUTE_MAPPING, \
+    listed_attributes_call, listed_attributes_with_source_call, add_attributes
+from authentic2.attribute_aggregator.mapping_loader import ATTRIBUTE_MAPPING, \
     ATTRIBUTE_NAMESPACES
 from authentic2.attribute_aggregator.core import convert_from_string, \
     get_def_name_from_name_and_ns_of_attribute, iso8601_to_datetime, \
@@ -41,7 +42,7 @@ from authentic2.attribute_aggregator.core import convert_from_string, \
     is_alias_of_definition, is_oid_of_definition
 
 
-logger = logging.getLogger('attribute_aggregator')
+logger = logging.getLogger(__name__)
 
 
 ATTRIBUTES_NS = [('Default', 'Default')] \
@@ -116,9 +117,17 @@ if ldap:
             super(LdapSource, self).__init__(*args, **kwargs)
             self.namespace = "X500"
 
+        def get_url(self):
+            port = ''
+            if not (self.port == 389 or (self.port == 636 and self.ldaps)):
+                port = ':%s' % str(self.port)
+            return "ldap%s://%s%s" % (self.ldaps and 's' or '',
+                self.server, port)
+
         class Meta:
             verbose_name = _('ldap attribute source')
             verbose_name_plural = _('ldap attribute sources')
+
 
 class UserAliasInSource(models.Model):
     name = models.CharField(
@@ -248,6 +257,24 @@ class AttributeData:
         else:
             return 0
 
+    def to_dic(self):
+        '''
+            a1 = dict()
+                a1['oid'] = definition_name
+            Or
+                a1['definition'] = definition_name
+                    definition may be the definition name like 'gn'
+                    or an alias like 'givenName'
+            a1['values'] = list_of_values
+        '''
+        attribute = dict()
+        attribute['definition'] = self.get_definition()
+        definition = self.get_full_definition()
+        if 'oid' in definition:
+            attribute['oid'] = definition['oid']
+        attribute['values'] = self.get_values()
+        return attribute
+
     def __unicode__(self):
         s = "AttributeData"
         values = self.get_values()
@@ -297,6 +324,34 @@ class UserAttributeProfile(models.Model):
             return l
         except:
             return []
+
+    def get_all_data_to_dic(self):
+        '''
+            Dictionnary format:
+            attributes = dict()
+            data_from_source = list()
+            a1 = dict()
+                a1['oid'] = definition_name
+            Or
+                a1['definition'] = definition_name
+                    definition may be the definition name like 'gn'
+                    or an alias like 'givenName'
+            Or
+                a1['name'] = attribute_name_in_ns
+                a1['namespace'] = ns_name
+            a1['values'] = list_of_values
+            data_from_source.append(a1)
+            ...
+            data_from_source.append(a2)
+            attributes[source_name] = data_from_source
+        '''
+        all_data = self.get_all_data()
+        all_data_to_dic = dict()
+        if all_data:
+            for data in all_data:
+                all_data_to_dic.setdefault(data.get_source().name,
+                    []).append(data.to_dic())
+        return all_data_to_dic
 
     def get_data_of_definition(self, definition, in_list=None):
         '''
@@ -506,7 +561,7 @@ class UserAttributeProfile(models.Model):
                 logger.info('load_listed_attributes: no definitions \
                     of attributes to load with %s' % str(definitions))
 
-    def load_listed_attributes_with_source(self, definitions, source):
+    def load_listed_attributes_with_source(self, definitions, source, auth_source=False):
         if not source:
             return
         if self.user:
@@ -527,7 +582,7 @@ class UserAttributeProfile(models.Model):
                     attributes required are %s from %s' % (defs, source))
                 attributes_provided = \
                     listed_attributes_with_source_call.send(sender=None,
-                        user=self.user, definitions=defs, source=source)
+                        user=self.user, definitions=defs, source=source, auth_source=auth_source)
                 for attrs in attributes_provided:
                     logger.info('load_listed_attributes_with_source: \
                         attributes_call connected to function %s' % \
@@ -542,6 +597,21 @@ class UserAttributeProfile(models.Model):
             else:
                 logger.info('load_listed_attributes: no definitions \
                     of attributes to load with %s' % str(definitions))
+
+    def process(self, context=None):
+        all_data = self.get_all_data_to_dic()
+        connecteds = \
+            add_attributes.send(sender=self.__class__, instance=self,
+                user=self.user, attributes=all_data, context=context)
+        logger.info('process_with_scripts: '
+            'signal add_attributes sent')
+        for connected in connecteds:
+            logger.info('process_with_scripts: add_attributes '
+                'connected to function %s' % connected[0].__name__)
+            if connected[1]:
+                logger.info('process_with_scripts: attributes provided are '
+                    '%s' % str(connected[1]))
+                self.load_by_dic({'PROCESSING': connected[1]})
 
     def cleanup(self):
         l = self.get_all_data()
@@ -569,4 +639,3 @@ class UserAttributeProfile(models.Model):
     class Meta:
         verbose_name = _('user attribute profile')
         verbose_name_plural = _('user attribute profiles')
-

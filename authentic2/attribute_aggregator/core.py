@@ -27,7 +27,7 @@ from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
 
 from authentic2.attribute_aggregator.xacml_constants import *
-from authentic2.attribute_aggregator.mapping import ATTRIBUTE_MAPPING
+from authentic2.attribute_aggregator.mapping_loader import ATTRIBUTE_MAPPING
 
 
 logger = logging.getLogger('attribute_aggregator')
