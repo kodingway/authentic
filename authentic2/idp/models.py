@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 
 
-from authentic2.attribute_aggregator.mapping import ATTRIBUTE_MAPPING, \
+from authentic2.attribute_aggregator.mapping_loader import ATTRIBUTE_MAPPING, \
     ATTRIBUTE_NAMESPACES
 
 from authentic2.attribute_aggregator.models import AttributeSource
