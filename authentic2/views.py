@@ -86,6 +86,11 @@ class EditProfile(UpdateView):
             thread.start_new_thread(self.push_attributes, ())
         return super(EditProfile, self).form_valid(form)
 
+    def get_form_kwargs(self, **kwargs):
+        kwargs = super(EditProfile, self).get_form_kwargs(**kwargs)
+        kwargs['prefix'] = 'edit-profile'
+        return kwargs
+
 
 edit_profile = prevent_access_to_transient_users(EditProfile.as_view())
 
