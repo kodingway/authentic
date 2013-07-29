@@ -5,7 +5,7 @@ from django.contrib.auth.models import _user_get_all_permissions, _user_has_perm
 
 
 class FakePk:
-    name = '_pk'
+    name = 'pk'
 
 class FakeMeta:
     pk = FakePk()
@@ -15,16 +15,17 @@ class SAML2TransientUser(object):
        which represent an user authenticated using a Transient
        federation'''
     id = None
+    pk = None
     is_staff = False
     is_active = False
     is_superuser = False
     _groups = EmptyManager()
     _user_permissions = EmptyManager()
-    _pk = -1
     _meta = FakeMeta()
 
     def __init__(self, id):
         self.id = id
+        self.pk = id
 
     def __unicode__(self):
         return 'AnonymousUser'
@@ -41,7 +42,7 @@ class SAML2TransientUser(object):
     def __hash__(self):
         return 1 # instances always return the same hash value
 
-    def save(self):
+    def save(self, **kwargs):
         pass
 
     def delete(self):
