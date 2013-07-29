@@ -96,7 +96,7 @@ class AttributeItem(models.Model):
         attributes.append(u'output name fomat: %s' % self.output_name_format)
         attributes.append(u'output namespace: %s' % self.output_namespace)
         if self.required:
-            attributes.append(u'required' % self.required)
+            attributes.append(u'required')
         if self.source:
             attributes.append(u'source: %s' % self.source)
         s += u' (%s)' % u', '.join(attributes)
