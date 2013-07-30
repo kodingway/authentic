@@ -51,11 +51,11 @@ msgstr "Espace de nom"
 
 #: models.py:71 models.py:128
 msgid "attribute source"
-msgstr "source d'attributs"
+msgstr "source des attributs"
 
 #: models.py:72
 msgid "attribute sources"
-msgstr "sources d'attributs"
+msgstr "sources des attributs"
 
 #: models.py:91
 msgid "Server"

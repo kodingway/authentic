@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-07-23 17:54+0200\n"
-"PO-Revision-Date: 2013-07-23 17:56+0200\n"
+"PO-Revision-Date: 2013-07-30 13:59+0200\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
 "Language: fr\n"
@@ -52,11 +52,11 @@ msgstr "Source d'attributs"
 
 #: models.py:90
 msgid "attribute list item"
-msgstr "élément d'une liste d'attributs"
+msgstr "définition de l'attribut"
 
 #: models.py:91
 msgid "attribute list items"
-msgstr "éléments d'une liste d'attributs"
+msgstr "définitions des attributs"
 
 #: models.py:112
 msgid "Name"
@@ -68,11 +68,11 @@ msgstr "Attributs"
 
 #: models.py:120
 msgid "attribute list"
-msgstr "liste d'attributs"
+msgstr "groupe d'attributs"
 
 #: models.py:121
 msgid "attribute lists"
-msgstr "listes d'attributs"
+msgstr "groupes d'attributs"
 
 #: models.py:133
 msgid "Enabled"
