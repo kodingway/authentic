@@ -328,12 +328,19 @@ class AuthorizationSPPolicy(models.Model):
     def __unicode__(self):
         return self.name
 
+
+class GetBySlugManager(models.Manager):
+    def get_by_natural_key(self, slug):
+        return self.get(slug=slug)
+
+
 class LibertyProvider(models.Model):
-    entity_id = models.URLField(unique = True)
-    entity_id_sha1 = models.CharField(max_length = 40, blank=True)
     name = models.CharField(max_length = 140,
             help_text = _("Internal nickname for the service provider"),
             blank = True)
+    slug = models.SlugField(max_length=140, unique=True)
+    entity_id = models.URLField(unique = True)
+    entity_id_sha1 = models.CharField(max_length = 40, blank=True)
     protocol_conformance = models.IntegerField(max_length = 10,
             choices = ((lasso.PROTOCOL_SAML_2_0, 'SAML 2.0'),))
     metadata = models.TextField(validators = [ metadata_validator ])
@@ -342,6 +349,8 @@ class LibertyProvider(models.Model):
     ssl_certificate = models.TextField(blank=True)
     ca_cert_chain = models.TextField(blank=True)
     federation_source = models.CharField(max_length=64, blank=True, null=True)
+
+    objects = GetBySlugManager()
 
     def __unicode__(self):
         return self.name
@@ -376,6 +385,9 @@ class LibertyProvider(models.Model):
         self.protocol_conformance = p.protocolConformance
         if self.protocol_conformance != lasso.PROTOCOL_SAML_2_0:
             raise ValidationError(_('Protocol other than SAML 2.0 are unsupported'))
+
+    def natural_key(self):
+        return (self.slug,)
 
     class Meta:
         ordering = ('name',)

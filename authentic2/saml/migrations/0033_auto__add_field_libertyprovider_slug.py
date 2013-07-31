@@ -3,25 +3,35 @@ import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
+from django.template.defaultfilters import slugify
 
 from authentic2.compat import user_model_label
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Removing unique constraint on 'LibertyFederation', fields ['sp', 'user', 'name_id_format']
-        db.delete_unique(u'saml_libertyfederation', ['sp_id', 'user_id', 'name_id_format'])
-
-        # Removing unique constraint on 'LibertyFederation', fields ['user', 'idp', 'name_id_format']
-        db.delete_unique(u'saml_libertyfederation', ['user_id', 'idp_id', 'name_id_format'])
+        # Adding field 'LibertyProvider.slug'
+        db.add_column(u'saml_libertyprovider', 'slug',
+                      self.gf('django.db.models.fields.SlugField')(max_length=140, null=True),
+                      keep_default=False)
+        for provider in orm.LibertyProvider.objects.all():
+            provider.slug = slugify(provider.name)
+            provider.save()
+        # Changing field 'LibertyProvider.slug'
+        db.alter_column(u'saml_libertyprovider', 'slug', self.gf('django.db.models.fields.SlugField')(default='', unique=True, max_length=140))
+        # Adding unique constraint on 'LibertyProvider', fields ['slug']
+        db.create_unique(u'saml_libertyprovider', ['slug'])
 
 
     def backwards(self, orm):
-        # Adding unique constraint on 'LibertyFederation', fields ['user', 'idp', 'name_id_format']
-        db.create_unique(u'saml_libertyfederation', ['user_id', 'idp_id', 'name_id_format'])
+        # Removing unique constraint on 'LibertyProvider', fields ['slug']
+        db.delete_unique(u'saml_libertyprovider', ['slug'])
 
-        # Adding unique constraint on 'LibertyFederation', fields ['sp', 'user', 'name_id_format']
-        db.create_unique(u'saml_libertyfederation', ['sp_id', 'user_id', 'name_id_format'])
+
+        # Changing field 'LibertyProvider.slug'
+        db.alter_column(u'saml_libertyprovider', 'slug', self.gf('django.db.models.fields.SlugField')(max_length=140, null=True))
+        # Deleting field 'LibertyProvider.slug'
+        db.delete_column(u'saml_libertyprovider', 'slug')
 
 
     models = {
@@ -193,6 +203,7 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.CharField', [], {'max_length': '140', 'blank': 'True'}),
             'protocol_conformance': ('django.db.models.fields.IntegerField', [], {'max_length': '10'}),
             'public_key': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
+            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '140'}),
             'ssl_certificate': ('django.db.models.fields.TextField', [], {'blank': 'True'})
         },
         u'saml.libertyproviderpolicy': {

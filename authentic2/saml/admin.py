@@ -134,6 +134,7 @@ class LibertyProviderForm(ModelForm):
     class Meta:
         model = LibertyProvider
 
+
 def update_metadata(modeladmin, request, queryset):
     updated = []
     for provider in queryset:
@@ -150,6 +151,7 @@ def update_metadata(modeladmin, request, queryset):
     if updated:
         updated = ', '.join(updated)
         messages.info(request, _('Metadata update for: %s') % updated)
+
 
 class LibertyProviderAdmin(admin.ModelAdmin):
     form = LibertyProviderForm
@@ -171,12 +173,14 @@ class LibertyProviderAdmin(admin.ModelAdmin):
             LibertyIdentityProviderInline
     ]
     actions = [ update_metadata ]
+    prepopulated_fields = {'slug': ('title',)}
 
 
 class LibertyProviderPolicyAdmin(admin.ModelAdmin):
     inlines = [
             LibertyServiceProviderInline,
     ]
+
 
 class LibertyFederationAdmin(admin.ModelAdmin):
     search_fields = ('name_id_content', 'user__username')
