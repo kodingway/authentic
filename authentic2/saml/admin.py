@@ -173,7 +173,7 @@ class LibertyProviderAdmin(admin.ModelAdmin):
             LibertyIdentityProviderInline
     ]
     actions = [ update_metadata ]
-    prepopulated_fields = {'slug': ('title',)}
+    prepopulated_fields = {'slug': ('name',)}
 
 
 class LibertyProviderPolicyAdmin(admin.ModelAdmin):
