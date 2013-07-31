@@ -80,6 +80,10 @@ __settings = dict(
                 definition='Root urlconf for the /accounts endpoints'),
     A2_REGISTRATION_FORM_CLASS = Setting(default='authentic2.registration_backend.forms.RegistrationForm',
                 definition='Default registration form'),
+    A2_REGISTRATION_SET_PASSWORD_FORM_CLASS = Setting(default='registration.auth_urls.SetPasswordForm',
+                definition='Default set password form'),
+    A2_REGISTRATION_CHANGE_PASSWORD_FORM_CLASS = Setting(default='registration.auth_urls.SetPasswordForm',
+                definition='Default change password form'),
     A2_REGISTRATION_CAN_DELETE_ACCOUNT = Setting(default=True,
                 definition='Can user self delete their account and all their data')
 )

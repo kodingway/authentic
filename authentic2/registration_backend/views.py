@@ -5,6 +5,12 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.utils.translation import ugettext as _
+from django.views.generic import TemplateView
+from django.contrib.auth.views import password_change, password_reset_confirm
+
+
+from registration.views import activate
+from registration.views import register
 
 
 from .. import models
@@ -12,6 +18,16 @@ from .. import app_settings
 
 
 logger = logging.getLogger(__name__)
+
+
+
+activate_complete = TemplateView.as_view(template_name='registration/activation_complete.html')
+
+
+register_complete = TemplateView.as_view(template_name='registration/registration_complete.html')
+
+
+register_closed = TemplateView.as_view(template_name='registration/registration_closed.html')
 
 
 @login_required
