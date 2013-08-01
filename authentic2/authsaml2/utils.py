@@ -69,6 +69,7 @@ def save_federation_temp(request, login, attributes=None):
     if login and login.identity:
         request.session['identity_dump'] = login.identity.dump()
     request.session['remoteProviderId'] = login.remoteProviderId
+    request.session['nameId'] = login.nameIdentifier
     if attributes:
         request.session['attributes'] = attributes
 
