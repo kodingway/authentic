@@ -48,6 +48,7 @@ class IdPOptionsSPPolicyAdmin(admin.ModelAdmin):
                     'no_nameid_policy',
                     'requested_name_id_format',
                     'transient_is_persistent',
+                    'persistent_identifier_attribute',
                     'allow_create',
                     ('enable_binding_for_sso_response',
                         'binding_for_sso_response'),
