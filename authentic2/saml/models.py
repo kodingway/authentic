@@ -11,6 +11,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.importlib import import_module
+from django.utils.timezone import now
 
 from fields import PickledObjectField, MultiSelectField
 
@@ -479,7 +480,7 @@ class SessionLinkedManager(models.Manager):
                 o.delete()
             else:
                 session = engine.SessionStore(session_key=key)
-                if session.get_expiry_date() >= datetime.datetime.now():
+                if session.get_expiry_date() >= now():
                     store.delete(key)
                     o.delete()
 
@@ -520,7 +521,7 @@ class LibertyManageDump(models.Model):
 class LibertyArtifactManager(models.Manager):
     def cleanup(self):
         expire = getattr(settings, 'SAML2_ARTIFACT_EXPIRATION', 600)
-        before = datetime.datetime.now()-datetime.timedelta(seconds=expire)
+        before = now()-datetime.timedelta(seconds=expire)
         self.filter(creation__lt=before).delete()
 
 class LibertyArtifact(models.Model):
@@ -545,7 +546,7 @@ class LibertyAssertionManager(models.Manager):
     def cleanup(self):
         # keep assertions 1 week
         expire = getattr(settings, 'SAML2_ASSERTION_EXPIRATION', 3600*24*7)
-        before = datetime.datetime.now()-datetime.timedelta(seconds=expire)
+        before = now()-datetime.timedelta(seconds=expire)
         self.filter(creation__lt=before).delete()
 
 class LibertyAssertion(models.Model):

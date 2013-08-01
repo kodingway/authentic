@@ -1,18 +1,21 @@
-from django.db import models
+from datetime import timedelta
 
-from datetime import datetime, timedelta
+from django.db import models
+from django.utils.timezone import now
+
 
 class CasTicketManager(models.Manager):
     def clean_expired(self):
         '''
            Remove expired tickets.
         '''
-        self.filter(expire__gte=datetime.now()).delete()
+        self.filter(expire__gte=now()).delete()
 
     def cleanup(self):
         # Keep them 4 minutes
         expire = getattr(settings, 'CAS_TICKET_EXPIRATION', 240)
-        self.filter(when__lt=date.today()-timedelta(seconds=expire)).delete()
+        self.filter(when__lt=now()-timedelta(seconds=expire)).delete()
+
 
 class CasTicket(models.Model):
     '''Session ticket with a CAS 1.0 or 2.0 consumer'''
@@ -32,6 +35,6 @@ class CasTicket(models.Model):
     def expired(self):
         '''Check if the given CAS ticket has expired'''
         if self.expire:
-            return datetime.now() >= self.expire
+            return now() >= self.expire
         else:
             return False

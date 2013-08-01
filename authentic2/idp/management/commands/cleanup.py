@@ -1,4 +1,3 @@
-import datetime
 import sys
 
 from django.core.management.base import NoArgsCommand
