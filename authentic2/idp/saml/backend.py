@@ -79,13 +79,13 @@ class SamlBackend(object):
             return ()
         user = request.user
         links = []
-        d = dict((p.entity_id, p) for p in models.LibertyProvider.objects.all())
         qs = models.LibertyFederation.objects \
                 .filter(user=user,
                         sp__isnull=False) \
                 .select_related('sp')
         for federation in qs:
-            links.append((d[federation.sp.liberty_provider.entity_id], federation.name_id_content))
+            links.append((federation.sp.liberty_provider,
+                federation.name_id_content))
         return links
 
     def can_synchronous_logout(self, django_sessions_keys):
