@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 
 
-from authentic2.attribute_aggregator.mapping import ATTRIBUTE_MAPPING, \
+from authentic2.attribute_aggregator.mapping_loader import ATTRIBUTE_MAPPING, \
     ATTRIBUTE_NAMESPACES
 
 from authentic2.attribute_aggregator.models import AttributeSource
@@ -51,45 +51,16 @@ class UserConsentAttributes(models.Model):
     attributes = models.TextField()
 
     class Meta:
-        verbose_name = _('User consent for attributes propagation')
+        verbose_name = _('user consent for attributes propagation')
+        verbose_name_plural = _('user consents for attributes propagation')
 
     def __unicode__(self):
-        return "User consent for attributes propagation"
+        return _(u"user {0} consent to release attributes {1} to provider {2}") % (
+                self.user, self.attributes, self.provider)
 
-
-class UserProfile(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, unique=True)
-    first_name = models.CharField(_('first name'),
-            max_length=30,
-            blank=True)
-    last_name = models.CharField(_('last name'),
-            max_length=30,
-            blank=True)
-    email = models.EmailField(_('e-mail address'), blank=True)
-    nickname = models.CharField(_('nickname'), max_length=50, blank=True)
-    url = models.URLField(_('Website'), blank=True)
-    company = models.CharField(verbose_name=_("Company"),
-            max_length=50, blank=True)
-    phone = models.CharField(verbose_name=_("Phone"),
-            max_length=50, blank=True)
-    postal_address = models.TextField(verbose_name=_("Postal address"),
-            max_length=255, blank=True)
-
-    def save(self, **kwargs):
-        super(UserProfile, self).save(**kwargs)
-        if self.user.first_name != self.first_name or \
-            self.user.last_name != self.last_name or \
-            self.user.email != self.email:
-            self.user.first_name = self.first_name
-            self.user.last_name = self.last_name
-            self.user.email = self.email
-            self.user.save()
-
-    def get_absolute_url(self):
-        return ('profiles_profile_detail', (),
-            {'username': self.user.username})
-    get_absolute_url = models.permalink(get_absolute_url)
-
+    def __repr__(self):
+        return '<UserConsentAttributes {0!r}>'.format(
+                self.__dict__)
 
 class AttributeItem(models.Model):
     attribute_name = models.CharField(
@@ -116,16 +87,24 @@ class AttributeItem(models.Model):
         blank = True, null = True)
 
     class Meta:
-        verbose_name = _('attribute of a list (SSO Login)')
-        verbose_name_plural = _('attributes of lists (SSO Login)')
+        verbose_name = _('attribute list item')
+        verbose_name_plural = _('attribute list items')
 
     def __unicode__(self):
         s = self.attribute_name
-        s += ' (Output name fomat: %s)' % self.output_name_format
-        s += ' (Output namespace: %s)' % self.output_namespace
-        s += ' (Required: %s)' % self.required
-        s += ' (Source: %s)' % self.source
+        attributes = []
+        attributes.append(u'output name fomat: %s' % self.output_name_format)
+        attributes.append(u'output namespace: %s' % self.output_namespace)
+        if self.required:
+            attributes.append(u'required')
+        if self.source:
+            attributes.append(u'source: %s' % self.source)
+        s += u' (%s)' % u', '.join(attributes)
         return s
+
+    def __repr__(self):
+        return '<AttributeItem {0!r}>'.format(
+                self.__dict__)
 
 
 class AttributeList(models.Model):
@@ -138,11 +117,15 @@ class AttributeList(models.Model):
         blank = True, null = True)
 
     class Meta:
-        verbose_name = _('attribute list (SSO Login)')
-        verbose_name_plural = _('attribute lists (SSO Login)')
+        verbose_name = _('attribute list')
+        verbose_name_plural = _('attribute lists')
 
     def __unicode__(self):
         return self.name
+
+    def __repr__(self):
+        return '<AttributeList name:{0!r} attributes:[{1:r}]>'.format(
+                self.name, ', '.join(map(repr, self.attributes.all())))
 
 
 class AttributePolicy(models.Model):
@@ -237,11 +220,15 @@ class AttributePolicy(models.Model):
     #ask_user_consent = models.BooleanField(default=False)
 
     class Meta:
-        verbose_name = _('attribute options policy')
-        verbose_name_plural = _('attribute options policies')
+        verbose_name = _('attribute policy')
+        verbose_name_plural = _('attribute policies')
 
     def __unicode__(self):
         return self.name
+
+    def __repr__(self):
+        return '<AttributePolicy {0!r}>'.format(self.__dict__)
+
 
 
 def get_attribute_policy(provider):

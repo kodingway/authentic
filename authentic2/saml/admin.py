@@ -48,6 +48,7 @@ class IdPOptionsSPPolicyAdmin(admin.ModelAdmin):
                     'no_nameid_policy',
                     'requested_name_id_format',
                     'transient_is_persistent',
+                    'persistent_identifier_attribute',
                     'allow_create',
                     ('enable_binding_for_sso_response',
                         'binding_for_sso_response'),
@@ -134,6 +135,7 @@ class LibertyProviderForm(ModelForm):
     class Meta:
         model = LibertyProvider
 
+
 def update_metadata(modeladmin, request, queryset):
     updated = []
     for provider in queryset:
@@ -145,22 +147,23 @@ def update_metadata(modeladmin, request, queryset):
                     updated.append(provider.entity_id)
                     provider.save()
             except (urllib2.URLError, IOError), e:
-                messages.error(request, _('Failure to resolve %s: %s') %
-                        (provider.entity_id, e))
+                messages.error(request, _('Failure to resolve %(entity_id)s: %(error)s') %
+                        dict(entity_id=provider.entity_id, error=e))
     if updated:
         updated = ', '.join(updated)
         messages.info(request, _('Metadata update for: %s') % updated)
 
+
 class LibertyProviderAdmin(admin.ModelAdmin):
     form = LibertyProviderForm
-    list_display = ('name', 'entity_id', 'protocol_conformance')
+    list_display = ('name', 'slug', 'entity_id', 'protocol_conformance')
     list_display_links = ('entity_id',)
     list_editable = ('name',)
     search_fields = ('name', 'entity_id')
     readonly_fields = ('entity_id','protocol_conformance','entity_id_sha1','federation_source')
     fieldsets = (
             (None, {
-                'fields' : ('name', 'entity_id', 'entity_id_sha1','federation_source')
+                'fields' : ('name', 'slug', 'entity_id', 'entity_id_sha1','federation_source')
             }),
             (_('Metadata files'), {
                 'fields': ('metadata', 'public_key', 'ssl_certificate', 'ca_cert_chain')
@@ -171,12 +174,14 @@ class LibertyProviderAdmin(admin.ModelAdmin):
             LibertyIdentityProviderInline
     ]
     actions = [ update_metadata ]
+    prepopulated_fields = {'slug': ('name',)}
 
 
 class LibertyProviderPolicyAdmin(admin.ModelAdmin):
     inlines = [
             LibertyServiceProviderInline,
     ]
+
 
 class LibertyFederationAdmin(admin.ModelAdmin):
     search_fields = ('name_id_content', 'user__username')

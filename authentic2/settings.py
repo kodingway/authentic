@@ -123,7 +123,6 @@ if 'AUTHENTIC2_ALLOW_ACCOUNT_DELETION' in os.environ:
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
-AUTH_USER_MODEL = 'authentic2.User'
 
 # authentication
 AUTHENTICATION_BACKENDS = (

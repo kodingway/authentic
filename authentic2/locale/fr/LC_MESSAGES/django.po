@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-12-23 19:15+0100\n"
-"PO-Revision-Date: 2013-05-07 23:27+0200\n"
+"POT-Creation-Date: 2013-07-24 11:22+0200\n"
+"PO-Revision-Date: 2013-07-24 11:26+0200\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
 "Language: fr\n"
@@ -17,1315 +17,154 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n>1;\n"
 
-#: forms.py:11 auth2_auth/auth2_ssl/forms.py:32
-msgid "username"
-msgstr "Identifiant"
+#: admin.py:22
+msgid "Personal info"
+msgstr "Informations personnelles"
 
-#: forms.py:12
-msgid "your username must contain only letters, numbers and no spaces"
-msgstr ""
-"Votre nom d'utilisateur peut contenir des lettres et des chiffres mais aucun "
-"espace."
-
-#: settings.py:50
-msgid "English"
-msgstr "Anglais"
-
-#: settings.py:51
-msgid "French"
-msgstr "Français"
-
-#: attribute_aggregator/mapping.py:871 idp/models.py:67
-msgid "Last name"
-msgstr "Nom de famille"
-
-#: attribute_aggregator/mapping.py:968
-msgid "Organization"
-msgstr "Organisation"
-
-#: attribute_aggregator/mapping.py:1008 idp/models.py:79
-msgid "Postal address"
-msgstr "Adresse postale"
-
-#: attribute_aggregator/mapping.py:1053 idp/models.py:77
-msgid "Phone"
-msgstr "Téléphone"
-
-#: attribute_aggregator/mapping.py:1215 idp/models.py:63
-msgid "First name"
-msgstr "Prénom"
-
-#: attribute_aggregator/mapping.py:1352
-msgid "Email Address"
-msgstr "Adresse email"
-
-#: attribute_aggregator/models.py:49 attribute_aggregator/models.py:114
-#: idp/models.py:135
-msgid "Name"
-msgstr "Nom"
-
-#: attribute_aggregator/models.py:52
-msgid "Namespace"
-msgstr "Espace de nom"
-
-#: attribute_aggregator/models.py:83
-msgid "Server"
-msgstr "Serveur"
-
-#: attribute_aggregator/models.py:86 attribute_aggregator/models.py:119
-msgid "User"
-msgstr "Utilisateur"
-
-#: attribute_aggregator/models.py:89 auth2_auth/backend.py:17
-#: auth2_auth/templates/auth/login_password_profile.html:2
-#: templates/authopenid/complete.html:71 vendor/registration/forms.py:41
-msgid "Password"
-msgstr "Mot de passe"
-
-#: attribute_aggregator/models.py:92
-msgid "Base"
-msgstr "Base"
-
-#: attribute_aggregator/models.py:95
-msgid "Port"
-msgstr "Port"
-
-#: attribute_aggregator/models.py:98
-msgid "LDAPS"
-msgstr "LDAPS"
-
-#: attribute_aggregator/models.py:101
-msgid "Certificate"
-msgstr "Certificat"
-
-#: attribute_aggregator/models.py:104
-msgid "Is it used for authentication?"
-msgstr "Est-elle utilisée pour l'authentification ?"
-
-#: attribute_aggregator/models.py:117
-msgid "Attribute Source"
-msgstr "Source d'attributs"
-
-#: attribute_aggregator/models.py:123
-msgid "alias in source"
-msgstr "alias utilisateur par source"
-
-#: attribute_aggregator/models.py:124
-msgid "aliases in source"
-msgstr "alias utilisateur par source"
-
-#: auth2_auth/models.py:23
-#, python-format
-msgid "Authentication of %(who)s by %(how)s at %(when)s"
-msgstr "Authentification de %(who)s par la méthode %(how)s à %(when)s"
-
-#: auth2_auth/auth2_oath/frontend.py:22
-msgid ""
-"Please enter a correct username and one-time password. Note that both fields "
-"are case-sensitive."
+#: admin.py:25
+msgid "Permissions"
 msgstr ""
 
-#: auth2_auth/auth2_oath/frontend.py:24
-msgid "This account is inactive."
-msgstr "Ce compte est inactif."
+#: admin.py:27
+msgid "Important dates"
+msgstr "Dates importantes"
 
-#: auth2_auth/auth2_oath/frontend.py:29
-msgid ""
-"Your Web browser doesn't appear to have cookies enabled. Cookies are "
-"required for logging in."
-msgstr ""
-"Il semblerait que votre navigateur ne supporte pas les cookies. Les cookies "
-"sont requis pour se connecter."
+#: dashboard.py:28
+msgid "Quick links"
+msgstr "Raccourcis"
 
-#: auth2_auth/auth2_oath/frontend.py:39
-msgid "One time password"
-msgstr "Mot de passe à usage unique"
+#: dashboard.py:34
+msgid "Return to site"
+msgstr "Retourner au site"
 
-#: auth2_auth/auth2_oath/templates/oath/totp_profile.html:5
-msgid "Time based one-time password"
-msgstr "Mot de passe à usage unique basé sur le temps"
-
-#: auth2_auth/auth2_oath/templates/oath/totp_profile.html:8
-msgid "Secret"
-msgstr "Secret"
-
-#: auth2_auth/auth2_oath/templates/oath/totp_profile.html:10
-msgid "Google authenticator"
-msgstr "Google authenticator"
-
-#: auth2_auth/auth2_oath/templates/oath/totp_profile.html:12
-msgid "Bookmarklet"
-msgstr "Marque-page générateur de mot de passe"
-
-#: auth2_auth/auth2_oath/templates/oath/totp_profile.html:13
-msgid ""
-"Copy this link to your bookmarks. When clicking on it it will generate a new "
-"one-time password which will allow you to login"
-msgstr ""
-"Copier ce lien dans vos marque-pages. Cliquez le pour générer un nouveau mot "
-"de passe à usage unique pour vous connecter."
-
-#: auth2_auth/auth2_oath/templates/oath/totp_profile.html:15
-msgid "Delete this credential"
-msgstr "Supprimer ce moyen d'authentification"
-
-#: auth2_auth/auth2_oath/templates/oath/totp_profile.html:18
-msgid ""
-"This kind of authentication is actually not possible, because you do not "
-"have any secret setup."
-msgstr ""
-"Ce moyen d'authentification n'est pas disponible actuellement car vous "
-"n'avez pas encore généré de secret."
-
-#: auth2_auth/auth2_oath/templates/oath/totp_profile.html:21
-msgid "Generate a new credential"
-msgstr "Générer un nouveau secret"
-
-#: auth2_auth/auth2_openid/templates/auth/openid_profile.html:6
-msgid "Associate your account with an OpenID"
-msgstr "Associer votre compte avec un OpenID"
-
-#: auth2_auth/auth2_ssl/forms.py:35
-msgid "email address"
-msgstr "Adresse email"
-
-#: auth2_auth/auth2_ssl/forms.py:52
-msgid "This username is already taken.             Please choose another."
-msgstr "Ce nom d'utilisateur est déja utilisé. Choisissez-en un autre."
-
-#: auth2_auth/auth2_ssl/frontend.py:18
-msgid "SSL with certificates"
-msgstr "Certificats SSL"
-
-#: auth2_auth/auth2_ssl/login_ssl.py:51
-msgid ""
-"SSL Client Authentication failed.             No client certificate found."
-msgstr "Echec de l'authentification cliente SSL. Aucun certificat trouvé."
-
-#: auth2_auth/auth2_ssl/login_ssl.py:58
-msgid ""
-"SSL Client Authentication failed.             Your client certificate is not "
-"valid."
-msgstr ""
-"Echec de l'authentification cliente SSL. Votre certificat n'est pas valide."
-
-#: auth2_auth/auth2_ssl/login_ssl.py:78 auth2_auth/auth2_ssl/login_ssl.py:95
-#: auth2_auth/auth2_ssl/login_ssl.py:108 auth2_auth/auth2_ssl/login_ssl.py:162
-msgid "SSL Client Authentication failed. Internal server error."
-msgstr "Echec de l'authentification SSL. Erreur interne du serveur."
-
-#: auth2_auth/auth2_ssl/login_ssl.py:226
-msgid "No certificate name provided for deletion."
-msgstr "Aucun nom de certificat fourni pour la suppression."
-
-#: auth2_auth/auth2_ssl/login_ssl.py:243
-msgid "Successful certificate deletion."
-msgstr "Succès de la suppression du certificat."
-
-#: auth2_auth/auth2_ssl/login_ssl.py:252
-msgid "Certificate deletion failed."
-msgstr "Échec de suppression du certificat"
-
-#: auth2_auth/auth2_ssl/templates/ssl/profile.html:2
-msgid "SSL Certificates"
-msgstr "Certificats SSL"
-
-#: auth2_auth/auth2_ssl/templates/ssl/profile.html:11
-#: authsaml2/templates/profile.html:15
-msgid "Delete"
-msgstr "Supprimer"
-
-#: auth2_auth/auth2_ssl/templates/ssl/profile.html:17
-msgid "Add a certificate?"
-msgstr "Ajouter un certificat ?"
-
-#: auth2_auth/auth2_ssl/templates/ssl/profile.html:19
-msgid "Add"
-msgstr "Ajouter"
-
-#: auth2_auth/templates/auth/login_password_profile.html:6
-#: templates/authopenid/password_change_form.html:6
-#: templates/authopenid/password_change_form.html:25
-msgid "Set password"
-msgstr "Change le mot de passe"
-
-#: auth2_auth/templates/auth/login_password_profile.html:8
-#: templates/authopenid/password_change_form.html:8
+#: dashboard.py:35
 msgid "Change password"
 msgstr "Modifier votre mot de passe"
 
-#: authsaml2/backends.py:67
-#, python-format
-msgid "Sending logout to %(pid)s...."
-msgstr "Envoi de la deconnesion a %(pid)s...."
-
-#: authsaml2/frontend.py:20
-msgid "Choose your identity provider"
-msgstr "Choisissez votre fournisseur d'identité"
-
-#: authsaml2/frontend.py:34
-msgid "SAML 2.0"
-msgstr "SAML 2.0"
-
-#: authsaml2/models.py:93
-msgid "Anonymous"
-msgstr "Anonyme"
-
-#: authsaml2/saml2_endpoints.py:116 authsaml2/saml2_endpoints.py:122
-msgid "sso: Service provider not configured"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:128
-msgid "sso: No SAML2 identity provider selected"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:136
-msgid "sso: The provider does not exist"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:141
-msgid "sso: Unable to create Login object"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:150
-#, python-format
-msgid "sso: %s does not have any supported SingleSignOn endpoint"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:156
-#, python-format
-msgid "sso: initAuthnRequest %s"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:162
-msgid "sso: No IdP policy defined"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:168
-#, python-format
-msgid "SSO: buildAuthnRequestMsg %s"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:194
-msgid "singleSignOnArtifact: Service provider not configured"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:211
-msgid "singleSignOnArtifact: Unable to create Login object"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:216
-msgid "singleSignOnArtifact: No message given."
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:237
-#, python-format
-msgid "singleSignOnArtifact: provider %r unknown"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:245
-#, python-format
-msgid "singleSignOnArtifact: initRequest %s"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:252
-#, python-format
-msgid "singleSignOnArtifact: buildRequestMsg %s"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:264
-#, python-format
-msgid ""
-"singleSignOnArtifact: Failure to communicate             with artifact "
-"resolver %r"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:269
-#, python-format
-msgid ""
-"singleSignOnArtifact: Artifact resolver at %r returned             an empty "
-"response"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:285
-#, python-format
-msgid "singleSignOnArtifact: processResponseMsg raised %s"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:299
-msgid "singleSignOnPost: Service provider not configured"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:305
-msgid "singleSignOnPost: Unable to create Login object"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:314
-msgid "singleSignOnPost: No message given."
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:341
-#, python-format
-msgid "singleSignOnPost: provider %r unknown"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:352
-#, python-format
-msgid "singleSignOnPost: %s"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:376
-msgid "sso_after_response: No Response ID"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:381
-msgid "sso_after_response: Request and Response ID do not match"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:393
-msgid "sso_after_response: Assertion missing"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:402
-msgid ""
-"sso_after_response: SubjectConfirmation                 Recipient Mismatch"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:407
-msgid ""
-"sso_after_response: Errot checking             SubjectConfirmation Recipient"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:418
-msgid "sso_after_response: Unknown                 SubjectConfirmation Method"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:423
-msgid ""
-"sso_after_response: Error checking             SubjectConfirmation Method"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:435
-msgid "sso_after_response:                     Incorrect AudienceRestriction"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:441
-msgid "sso_after_response:                 Incorrect AudienceRestriction"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:446
-msgid "sso_after_response: Error checking AudienceRestriction"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:457
-msgid "sso_after_response: missing subjectConfirmationData"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:466
-msgid ""
-"sso_after_response:                 assertion in response to an "
-"AuthnRequest,                 notBefore MUST not be present in "
-"SubjectConfirmationData"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:472
-msgid "sso_after_response:             invalid notBefore value "
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:476 authsaml2/saml2_endpoints.py:493
-msgid "sso_after_response: invalid notOnOrAfter value"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:481
-msgid "sso_after_response: Assertion received too early"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:485
-msgid "sso_after_response: invalid notBefore value "
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:490
-msgid "sso_after_response: Assertion expired"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:503
-#, python-format
-msgid "sso_after_response: acceptSso raised %s"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:680
-msgid "sso_after_response: No IdP policy defined"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:695
-msgid ""
-"sso_after_response:                 Transient access policy not yet "
-"implemented"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:706
-msgid ""
-"sso_after_response:                     No backend for temporary federation "
-"is configured"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:724
-msgid ""
-"sso_after_response:             Transient access policy: Configuration error"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:777
-msgid ""
-"sso_after_response: You were                     not asked your consent for "
-"account linking"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:794
-msgid ""
-"sso_after_response:             Persistent Account policy: Configuration "
-"error"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:798
-msgid ""
-"sso_after_response:         Transient access policy: NameId format not "
-"supported"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:820
-msgid "finish_federation:                     Service provider not configured"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:826
-msgid "finish_federation:                     Unable to create Login object"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:833
-msgid "finish_federation: Error loading session."
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:850
-msgid ""
-"SSO/finish_federation:                     Error adding new federation for "
-"this user"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:890
-msgid "finish_federation: Unable to perform federation"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1041
-msgid "logout: not a logged in user"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1046
-msgid "logout: Service provider not configured"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1051
-msgid "logout: Unable to create Login object"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1059
-msgid "logout: No session for global logout."
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1067
-msgid "logout: Session malformed."
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1073
-msgid "logout: Error loading provider."
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1101
-msgid "logout: SOAP error -                     Only local logout performed."
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1149
-msgid "logout:  Unknown HTTP method."
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1159
-#, python-format
-msgid ""
-"localLogout:  SOAP error             with %s -  Only local logout performed."
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1163
-#, python-format
-msgid "localLogout:  %s -  Only local         logout performed."
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1175
-msgid "singleLogoutReturn: Service provider not configured"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1181
-msgid ""
-"singleLogoutReturn:             Unable to handle Single Logout by Redirect "
-"without request"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1188
-msgid "singleLogoutReturn: Unable to create Login object"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1471
-#, python-format
-msgid "singleLogout: provider %r unknown"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1551
-msgid "fedTerm/SP UI: No provider for defederation"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1556
-msgid "fedTerm/SP UI: Unable to defederate a not logged user!"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1562
-msgid "fedTerm/SP UI: Service provider not configured"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1569
-msgid "fedTerm/SP UI: No such identity provider."
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1579
-msgid "fedTerm/SP UI: Not a valid federation"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1595
-#, python-format
-msgid "fedTerm/SP UI: %s"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1603 authsaml2/saml2_endpoints.py:1634
-#, python-format
-msgid "fedTerm/SP SOAP: %s"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1612
-msgid ""
-"fedTerm/SP SOAP:                     Unable to perform SOAP defederation "
-"request"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1621 authsaml2/saml2_endpoints.py:1655
-#, python-format
-msgid "fedTerm/SP Redirect: %s"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1643
-msgid ""
-"fedTerm/SP SOAP:                 Unable to perform SOAP defederation request"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1660
-msgid "Unknown HTTP method."
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1672
-msgid "fedTerm/SP Redirect: Service provider not configured"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1680
-msgid "fedTerm/SP Redirect: Error managing manage dump"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1695
-msgid "fedTerm/SP Redirect: Defederation failed"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1720
-#, python-format
-msgid "fedTerm/Return:                     provider %r unknown"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1727
-#, python-format
-msgid "fedTerm/manage_name_id_return: %s"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1779
-#, python-format
-msgid "fedTerm/SOAP: provider %r unknown"
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1972
-msgid "Successful federation deletion."
-msgstr ""
-
-#: authsaml2/saml2_endpoints.py:1979
-msgid "Federation deletion failure."
-msgstr "Échec de suppression d'une fédération"
-
-#: authsaml2/utils.py:42
-#, python-format
-msgid "An error happened. Report this %s to the administrator."
-msgstr ""
-
-#: authsaml2/templates/error_authsaml2.html:16
-#: idp/templates/idp/account_management.html:29 templates/error.html:8
-#: templates/registration/logout.html:10
-#: templates/registration/registration_complete.html:10
-msgid "Back"
-msgstr "Retour"
-
-#: authsaml2/templates/profile.html:3
-msgid "SAML2 Federations"
-msgstr "Fédérations SAML2"
-
-#: authsaml2/templates/profile.html:9
-msgid "Delete a federation?"
-msgstr "Supprimer une fédération ?"
-
-#: authsaml2/templates/profile.html:23
-msgid "Add a federation?"
-msgstr "Ajouter une fédération ?"
-
-#: authsaml2/templates/profile.html:26
-#: authsaml2/templates/auth/saml2/account_linking.html:32
-#: authsaml2/templates/auth/saml2/login_form.html:5
-#: templates/auth/account_linking_ssl.html:37 templates/auth/login.html:5
-#: templates/auth/login_form.html:5 templates/auth/login_form_oath.html:15
-#: templates/auth/login_form_openid.html:15
-#: templates/auth/login_form_ssl.html:8
-#: templates/registration/activate.html:14 templates/registration/login.html:5
-#: templates/registration/login.html:21
-#: templates/registration/password_reset_complete.html:12
-msgid "Log in"
-msgstr "S'identifier"
-
-#: authsaml2/templates/auth/saml2/account_linking.html:5
-msgid "Log in to link your account"
-msgstr "Connectez-vous pour lier vos comptes"
-
-#: authsaml2/templates/auth/saml2/account_linking.html:9
-msgid "Log in to link with your existing account"
-msgstr "Connectez-vous pour lier avec un compte existant"
-
-#: authsaml2/templates/auth/saml2/account_linking.html:17
-#: authsaml2/templates/auth/saml2/account_linking.html:24
-#: templates/auth/account_linking_ssl.html:17
-#: templates/auth/account_linking_ssl.html:24
-msgid "Username:"
-msgstr "Nom d'utilisateur :"
-
-#: authsaml2/templates/auth/saml2/account_linking.html:20
-#: authsaml2/templates/auth/saml2/account_linking.html:28
-#: templates/auth/account_linking_ssl.html:20
-#: templates/auth/account_linking_ssl.html:28
-msgid "Password:"
-msgstr "Mot de passe :"
-
-#: authsaml2/templates/auth/saml2/logout.html:5
-#: idp/templates/idp/logout.html:5 templates/base.html:32
-msgid "Logout"
-msgstr "Déconnexion"
-
-#: authsaml2/templates/auth/saml2/logout.html:18
-#: idp/templates/idp/logout.html:18
-msgid "Continue logout"
-msgstr "Continuer la déconnexion"
-
-#: idp/models.py:54
-msgid "User consent for attributes propagation"
-msgstr "Consentement utilisateur pour la propagation des attributs"
-
-#: idp/models.py:70
-msgid "Email address"
-msgstr "Adresse email"
-
-#: idp/models.py:72
-msgid "Nickname"
-msgstr "Surnom"
-
-#: idp/models.py:73
-msgid "Website"
-msgstr "Site Web"
-
-#: idp/models.py:75
-msgid "Company"
-msgstr "Société"
-
-#: idp/models.py:98
-msgid "Attribute name"
-msgstr "Nom de l'attribut"
-
-#: idp/models.py:104 idp/models.py:189
-msgid "Output name format"
-msgstr "Format du nom de l'attribut en sortie"
-
-#: idp/models.py:110 idp/models.py:196
-msgid "Output namespace"
-msgstr "Espace de nom de sortie"
-
-#: idp/models.py:114
-msgid "Required"
-msgstr "Requis"
-
-#: idp/models.py:117
-msgid "Attribute source"
-msgstr "Source d'attributs"
-
-#: idp/models.py:121
-msgid "attribute of a list (SSO Login)"
-msgstr "attribute d'une liste (Login SSO)"
-
-#: idp/models.py:122
-msgid "attributes of lists (SSO Login)"
-msgstr "les attributs d'une liste (Login SSO)"
-
-#: idp/models.py:138
-msgid "Attributes"
-msgstr "Attributs"
-
-#: idp/models.py:143
-msgid "attribute list (SSO Login)"
-msgstr "liste d'attributs (Login SSO)"
-
-#: idp/models.py:144
-msgid "attribute lists (SSO Login)"
-msgstr "listes d'attributs (Login SSO)"
-
-#: idp/models.py:152 saml/models.py:171 saml/models.py:252 saml/models.py:309
-#: saml/models.py:382 saml/models.py:402
-msgid "Enabled"
-msgstr "Activé"
-
-#: idp/models.py:154
-msgid "Ask the user consent before forwarding attributes"
-msgstr ""
-"Demander le consentement de l'utilisateur avant d'envoyer des attributs"
-
-#: idp/models.py:157
-msgid "Allow the user to select the forwarding attributes"
-msgstr "Permettre à l'utilisateur de séléctioner les attributs à envoyer"
-
-#: idp/models.py:164
-msgid "Pull attributes list"
-msgstr "Liste des attributs des sources locales"
-
-#: idp/models.py:173
-msgid "Forward pushed attributes"
-msgstr "Faire suivre les attributs poussés"
-
-#: idp/models.py:183
-msgid "Map forwarded pushed attributes"
-msgstr "Mapper les attributs poussés à faire suivre"
-
-#: idp/models.py:204
-msgid "Filter by source the forwarded pushed attributes"
-msgstr "Filtrer par source les attributs poussés à faire suivre"
-
-#: idp/models.py:212
-msgid "Filter by attribute names the forwarded pushed attributes"
-msgstr "Filtrer par attribut les attributs poussés à faire suivre"
-
-#: idp/models.py:220
-msgid "Filter by source and per attribute the forwarded pushed attributes"
-msgstr ""
-"Filtrer par source et par attribut les attributs poussés à faire suivre"
-
-#: idp/models.py:228
-msgid "Map filtered attributes"
-msgstr "Mapper les attributs filtrés"
-
-#: idp/models.py:235
-msgid "Send an error when a required attribute is missing"
-msgstr "envoyer une erreur lorsqu'un attribut requis est manquant"
-
-#: idp/models.py:242
-msgid "attribute options policy"
-msgstr "regle d'options d'attributs"
-
-#: idp/models.py:243
-msgid "attribute options policies"
-msgstr "regles d'options d'attributs"
-
-#: idp/views.py:93
-msgid "Local logout..."
-msgstr "Déconnexion locale"
-
-#: idp/views.py:101
-msgid "Logging out from all your services"
-msgstr "Déconnexion de tous vos services"
-
-#: idp/views.py:107 templates/registration/logout.html:9
-msgid "Logged out"
+#: dashboard.py:37
+msgid "Log out"
 msgstr "Déconnecté"
 
-#: idp/idp_openid/views.py:266
-msgid "Trust this site?"
-msgstr "Faire confiance à ce site ?"
+#: dashboard.py:43
+msgid "Users and groups"
+msgstr "Utilisateurs et groupes"
 
-#: idp/saml/backend.py:71
-#, python-format
-msgid "Sending logout to %(name)s...."
-msgstr "Envoi de la deconnexion à %(name)s...."
-
-#: idp/saml/idff12_endpoints.py:84
-#, python-format
-msgid "Invalid SAML 1.1 AuthnRequest: %r"
-msgstr ""
-
-#: idp/saml/idff12_endpoints.py:88
-#, python-format
-msgid "Invalid signature on SAML 1.1 AuthnRequest: %r"
-msgstr ""
-
-#: idp/saml/idff12_endpoints.py:102 idp/saml/idff12_endpoints.py:275
-#, python-format
-msgid "ID-FFv1.2: provider %r unknown"
-msgstr ""
-
-#: idp/saml/idff12_endpoints.py:190 idp/saml/saml2_endpoints.py:708
-msgid "Authentication response"
-msgstr "Réponse d'authentification"
-
-#: idp/saml/idff12_endpoints.py:248
-#, python-format
-msgid "ID-FFv1.2: soap request type %r is currently not supported"
-msgstr ""
-
-#: idp/saml/idff12_endpoints.py:290
-#, python-format
-msgid "ID-FFv1.2: default nameIdPolicy unsupported %r"
-msgstr ""
-
-#: idp/saml/saml2_endpoints.py:314
-#, python-format
-msgid ""
-"SAMLv2 Single Sign On: invalid message for WebSSO profile with HTTP-Redirect "
-"binding: %r"
-msgstr ""
-
-#: idp/saml/saml2_endpoints.py:318
-msgid ""
-"SAMLv2 Single Sign On: the request cannot be answered because no valid "
-"protocol binding could be found"
-msgstr ""
-
-#: idp/saml/saml2_endpoints.py:334
-#, python-format
-msgid "sso: fail to load unknown provider %s"
-msgstr ""
-
-#: idp/saml/saml2_endpoints.py:340
-msgid "sso: No SP policy defined"
-msgstr ""
-
-#: idp/saml/saml2_endpoints.py:433
-msgid "continue_sso: error loading login"
-msgstr ""
-
-#: idp/saml/saml2_endpoints.py:436
-#, python-format
-msgid "continue_sso: unknown provider %s"
-msgstr ""
-
-#: idp/saml/saml2_endpoints.py:542 idp/saml/saml2_endpoints.py:802
-#, python-format
-msgid "Provider %s is unknown"
-msgstr ""
-
-#: idp/saml/saml2_endpoints.py:547
-msgid "No service provider policy defined"
-msgstr "Aucun règlement applicable à ce fournisseur de service n'a été trouvé"
-
-#: idp/saml/saml2_endpoints.py:789
-msgid "Error trying to initiate a single sign on"
-msgstr ""
-
-#: idp/saml/saml2_endpoints.py:793
-msgid "A provider identifier was not provided"
-msgstr ""
-
-#: idp/saml/saml2_endpoints.py:821
-msgid "idp_sso: No SP policy defined"
-msgstr ""
-
-#: idp/saml/saml2_endpoints.py:832
-msgid "Server error"
-msgstr ""
-
-#: idp/saml/saml2_endpoints.py:1184 idp/saml/saml2_endpoints.py:1193
-msgid "Logout response"
-msgstr ""
-
-#: idp/saml/saml2_endpoints.py:1187
-msgid "Invalid logout request"
-msgstr ""
-
-#: idp/templates/idp/account_management.html:5
-msgid "Authentic - Account Management"
-msgstr "Authentic - Gestion du compte"
-
-#: idp/templates/idp/account_management.html:10
-#: idp/templates/idp/homepage.html:13
-msgid "Account Management"
-msgstr "Gestion de votre compte"
-
-#: idp/templates/idp/account_management.html:11
-msgid "Profile"
-msgstr "Profil"
-
-#: idp/templates/idp/account_management.html:20
-msgid "Edit profile"
-msgstr "Edition du profil"
-
-#: idp/templates/idp/account_management.html:22
-#: templates/profiles/create_profile.html:4
-#: templates/profiles/edit_profile.html:4
-#: templates/profiles/profile_detail.html:4
-msgid "Create profile"
-msgstr "Creer votre profile"
-
-#: idp/templates/idp/account_management.html:25
-msgid "Credentials"
-msgstr "Moyens d'authentification"
-
-#: idp/templates/idp/homepage.html:5
-msgid "Authentic"
-msgstr "Authentic"
-
-#: idp/templates/idp/homepage.html:20
+#: dashboard.py:48
 msgid "Services"
 msgstr "Services"
 
-#: idp/templates/idp/homepage.html:44
-msgid "Administration"
-msgstr "Administration"
-
-#: saml/common.py:63
-msgid "Only SOAP messages here"
+#: dashboard.py:61 dashboard.py:108
+msgid "Recent Actions"
 msgstr ""
 
-#: saml/common.py:769
-msgid "Your access is denied. At least one attribute does not match."
+#: dashboard.py:65
+msgid "Latest Authentic News"
+msgstr "Dernières actualités sur Authentic"
+
+#: dashboard.py:72
+msgid "Support"
 msgstr ""
 
-#: saml/models.py:24
-msgid "Bad metadata file"
-msgstr "Fichier de metadonnées incorrect"
+#: dashboard.py:75
+msgid "Authentic2 documentation"
+msgstr "Documentation sur authentic2"
 
-#: saml/models.py:78
-msgid "Use the default from the metadata file"
-msgstr "Utilisation des valeurs par défaut du fichier de métadonnées"
+#: dashboard.py:80
+msgid "Authentic2 project"
+msgstr "Projet Authentic2"
 
-#: saml/models.py:79 saml/models.py:121
-msgid "Artifact binding"
+#: dashboard.py:85
+msgid "Authentic Mailing List"
+msgstr "List de diffusion sur Authentic"
+
+#: hashers.py:80 hashers.py:109
+msgid "algorithm"
+msgstr "algorithme"
+
+#: hashers.py:81
+msgid "iterations"
 msgstr ""
 
-#: saml/models.py:80
-msgid "Post binding"
-msgstr ""
+#: hashers.py:82 hashers.py:110
+msgid "salt"
+msgstr "sel"
 
-#: saml/models.py:86
-msgid "None"
-msgstr "Aucun"
+#: hashers.py:83 hashers.py:111
+msgid "hash"
+msgstr "condensé"
 
-#: saml/models.py:89
-msgid "Persistent"
-msgstr ""
+#: menu.py:22
+msgid "Dashboard"
+msgstr "Tableau de bord"
 
-#: saml/models.py:92
-msgid "Transient"
-msgstr ""
+#: models.py:53
+msgid "username"
+msgstr "Identifiant"
 
-#: saml/models.py:95
-msgid "Email (only supported by SAMLv2)"
-msgstr "Email (seulement supporté en SAML2)"
-
-#: saml/models.py:122
-msgid "POST binding"
-msgstr ""
-
-#: saml/models.py:127
-msgid "Redirect binding"
-msgstr ""
-
-#: saml/models.py:128
-msgid "SOAP binding"
-msgstr ""
-
-#: saml/models.py:133
-msgid "Let authentic decides which signatures to check"
-msgstr "Laisser authentic decider quelles signatures vérifier"
-
-#: saml/models.py:134
-msgid "Always check signatures"
-msgstr "Vérifier toutes les signatures"
-
-#: saml/models.py:135
-msgid "Does not check signatures"
-msgstr "Ne pas vérifier les signatures"
-
-#: saml/models.py:141
-msgid "How to verify signatures Authentication Request ?"
-msgstr "Comment vérifier les signatures des requêtes d'authentification"
-
-#: saml/models.py:152
-msgid "Account linking by authentication"
-msgstr "Liaison des comptes par authentification"
-
-#: saml/models.py:154
-msgid "Create new account"
-msgstr "Creer un nouveau compte"
-
-#: saml/models.py:158
-msgid "Ask authentication"
-msgstr "Requerir l'authentification"
-
-#: saml/models.py:159
-msgid "Open a session"
-msgstr "Etablir une session"
-
-#: saml/models.py:170 saml/models.py:251 saml/models.py:308
-msgid "name"
-msgstr "nom"
-
-#: saml/models.py:173
-msgid "Do not send a nameId Policy"
-msgstr "Ne pas envoyer une nameId Policy"
-
-#: saml/models.py:175
-msgid "Requested NameID format"
-msgstr "Format du NameID demandé"
-
-#: saml/models.py:181
-msgid "This IdP falsely sends a transient NameID which is in fact persistent"
-msgstr ""
-"Cet IdP envoie un nameID transient qui doit être considéré comme persistent"
-
-#: saml/models.py:183
-msgid "Allow IdP to create an identity"
-msgstr "Autoriser l'IdP à créer une identité"
-
-#: saml/models.py:185
+#: models.py:54
 msgid ""
-"Binding for Authnresponse             (taken from metadata by the IdP if not "
-"enabled)"
+"Required. 30 characters or fewer. Letters, numbers and @/./+/-/_ characters"
 msgstr ""
-"Transport pour les réponses d'authentification (extrait des métadonnées du "
-"fournisseur de service si non activé)"
+"Requis. 30 caractères ou moins, les lettres, chiffres et caractères @/./+/-/_ sont acceptés"
 
-#: saml/models.py:188
-msgid "Binding for the SSO responses"
-msgstr "Binding pour les reponses au SSO"
+#: models.py:57
+msgid "Enter a valid username."
+msgstr "Entrez un identifiant valide."
 
-#: saml/models.py:192
+#: models.py:59
+msgid "staff status"
+msgstr "statut équipe"
+
+#: models.py:60
+msgid "Designates whether the user can log into this admin site."
+msgstr "Indique si l'utilisateur peut accéder aux pages d'administration"
+
+#: models.py:62
+msgid "active"
+msgstr "actif"
+
+#: models.py:63
 msgid ""
-"HTTP method for single logout request             (taken from metadata if "
-"not enabled)"
+"Designates whether this user should be treated as active. Unselect this "
+"instead of deleting accounts."
 msgstr ""
-"Transport pour les requêtes de déconnexion (extrait des métadonnées du "
-"fournisseur de service si non activé)"
 
-#: saml/models.py:195
-msgid "HTTP binding for the SLO requests"
-msgstr "Binding HTTP pour les requêtes de SLO"
+#: models.py:65
+msgid "date joined"
+msgstr ""
 
-#: saml/models.py:200
+#: models.py:75
+msgid "user"
+msgstr "utilisateur"
+
+#: models.py:76
+msgid "users"
+msgstr "utilisateurs"
+
+#: models.py:178
+msgid "user to delete"
+msgstr ""
+
+#: models.py:179
+msgid "users to delete"
+msgstr ""
+
+#: settings.py:38
+msgid "English"
+msgstr "Anglais"
+
+#: settings.py:39
+msgid "French"
+msgstr "Français"
+
+#: registration_backend/forms.py:29
+msgid "A user with that username already exists."
+msgstr "Un utilisateur avec ce nom existe deja."
+
+#: registration_backend/views.py:26
 msgid ""
-"HTTP method for federation termination request             (taken from "
-"metadata if not enabled)"
+"Your account has been scheduled for deletion. You cannot use it anymore."
 msgstr ""
-"Transport pour les requêtes de suppression de fédération (extrait des "
-"métadonnées du fournisseur de service si non activé)"
-
-#: saml/models.py:203
-msgid "HTTP method for the SLO requests"
-msgstr "Méthode HTTP pour les requêtes de SLO"
-
-#: saml/models.py:208
-msgid "Require the user consent be given at account linking"
-msgstr ""
-"Requerir que le consentement utilisateur soit donné lors de la liaison de "
-"compte"
-
-#: saml/models.py:211
-msgid "Force authentication"
-msgstr "Forcer l'authentification"
-
-#: saml/models.py:213
-msgid "Passive authentication"
-msgstr "Authentification sans action de l'utilisateur"
-
-#: saml/models.py:215
-msgid "Want AuthnRequest signed"
-msgstr "Les requêtes d'authentification doivent être signées"
-
-#: saml/models.py:218
-msgid "Behavior with persistent NameID"
-msgstr "Comportement avec un NameID persistent"
-
-#: saml/models.py:223
-msgid "Behavior with transient NameID"
-msgstr "Comportement avec un NameID transient"
-
-#: saml/models.py:229
-msgid "Return URL after a successful authentication"
-msgstr "URL de retour après un authentification valide"
-
-#: saml/models.py:231 saml/models.py:279
-msgid "Accept to receive Single Logout requests"
-msgstr "Accepter les requêtes de déconnexion"
-
-#: saml/models.py:234 saml/models.py:282
-msgid "Forward Single Logout requests"
-msgstr "Faire suivre les requêtes de déconnexion"
-
-#: saml/models.py:238
-msgid "identity provider options policy"
-msgstr "règlement des options de fournisseur d'identités"
-
-#: saml/models.py:239
-msgid "identity provider options policies"
-msgstr "règlements des options de fournisseur d'identités"
-
-#: saml/models.py:254
-msgid "Prefered assertion consumer binding"
-msgstr "Binding du consommateur d'assertion préféré"
-
-#: saml/models.py:257
-msgid "Encrypt NameID"
-msgstr "Encrypter le NameID"
-
-#: saml/models.py:259
-msgid "Encrypt Assertion"
-msgstr "Encrypter l'assertion"
-
-#: saml/models.py:261
-msgid "Authentication request signed"
-msgstr "Requête d'authentification signée"
-
-#: saml/models.py:263
-msgid "Allow IdP initiated SSO"
-msgstr "Autoriser le SSO initié par l'IdP"
-
-#: saml/models.py:270
-msgid "NameID formats accepted"
-msgstr "Formats de NameID acceptés"
-
-#: saml/models.py:277
-msgid "Ask user for consent when creating a federation"
-msgstr "Demander le consentement utilisateur à la création d'une fédération"
-
-#: saml/models.py:286
-msgid "service provider options policy"
-msgstr "règlement des options de fournisseur de services"
-
-#: saml/models.py:287
-msgid "service provider options policies"
-msgstr "règlement des options de fournisseur de services"
-
-#: saml/models.py:316
-msgid "Default message to display to the user when access is denied"
-msgstr ""
-
-#: saml/models.py:317
-msgid "You are not authorized to access the service."
-msgstr "Vous n'etes pas autorise à acceder a ce service."
-
-#: saml/models.py:320
-msgid "authorization policy"
-msgstr ""
-
-#: saml/models.py:321
-msgid "authorization policies"
-msgstr ""
-
-#: saml/models.py:330
-msgid "Internal nickname for the service provider"
-msgstr "Nom local du fournisseur de service"
-
-#: saml/models.py:384
-msgid ""
-"The following options policy will apply except if a policy for all service "
-"provider is defined."
-msgstr ""
-
-#: saml/models.py:385
-msgid "SP Options Policy"
-msgstr "Règlement des options de SP"
-
-#: saml/models.py:387
-msgid "Protocol policy"
-msgstr "Règlement du protocole"
-
-#: saml/models.py:389
-msgid ""
-"The following attribute policy will apply except if a policy for all service "
-"provider is defined."
-msgstr ""
-
-#: saml/models.py:392
-msgid "Attribute policy"
-msgstr "Règlement sur les attributs"
-
-#: saml/models.py:404
-msgid ""
-"The following options policy will apply except if a policy for all identity "
-"provider is defined."
-msgstr ""
-
-#: saml/models.py:405
-msgid "IdP Options Policy"
-msgstr "Règlement des options d'IdP"
-
-#: saml/models.py:407
-msgid ""
-"The following authorization policy will apply except if a policy for all "
-"identity provider is defined."
-msgstr ""
-
-#: saml/models.py:408
-msgid "Authorization Policy"
-msgstr ""
-
-#: saml/models.py:535
-msgid "Liberty federation"
-msgstr "Fédération liberty"
-
-#: saml/models.py:536
-msgid "Liberty federations"
-msgstr "Fédérations liberty"
-
-#: saml/models.py:554
-msgid "Qualifier"
-msgstr "Qualifiant"
-
-#: saml/models.py:556
-msgid "NameIDFormat"
-msgstr "Format pour le NameID"
-
-#: saml/models.py:558
-msgid "NameID"
-msgstr ""
-
-#: saml/models.py:560
-msgid "SPNameQualifier"
-msgstr ""
-
-#: saml/templates/saml/post_form.html:11
-msgid "You should be automatically redirected."
-msgstr ""
-"Vous devriez être automatiquement redirigé."
-
-#: saml/templates/saml/post_form.html:12
-msgid ""
-"If this page is still visible after a few seconds, press the Send button "
-"below."
-msgstr ""
-"Si cette page est encore visible après quelques secondes, cliquez sur le "
-"bouton Envoyer ci-dessous."
-
-#: saml/templates/saml/post_form.html:18
-msgid "Send"
-msgstr "Envoyer"
 
 #: templates/404.html:4 templates/404.html.py:8
 msgid "Error: page not found"
@@ -1362,17 +201,14 @@ msgstr ""
 "             Vous êtes identifié en tant que %(username)s.\n"
 "             "
 
-#: templates/error_ssl.html:4
-msgid "Error: authentication failure"
-msgstr "Erreur: Echec de l'authentification"
+#: templates/base.html:32
+msgid "Logout"
+msgstr "Déconnexion"
 
-#: templates/error_ssl.html:8
-msgid "Authentication failure"
-msgstr "Échec d'authentification"
-
-#: templates/error_ssl.html:10
-msgid "The SSL authentication has failed"
-msgstr "L'authentification par certificat électronique a échouée."
+#: templates/error.html:8 templates/registration/logout.html:10
+#: templates/registration/registration_complete.html:10
+msgid "Back"
+msgstr "Retour"
 
 #: templates/admin/base_site.html:4
 msgid "Authentic site admin"
@@ -1394,288 +230,15 @@ msgstr "Accueil"
 msgid "Logs page"
 msgstr "Page des traces"
 
-#: templates/auth/account_linking_ssl.html:5
-#: templates/auth/account_linking_ssl.html:9
-msgid "Log in to link your certificate with an existing account"
-msgstr "connectez-vous pour lier votre certificat avec un compte existant"
+#: templates/profiles/edit_profile.html:4
+msgid "Create profile"
+msgstr "Creer votre profile"
 
-#: templates/auth/account_linking_ssl.html:33
-msgid "Create me a new account"
-msgstr "Me créer un nouveau compte"
+#: templates/profiles/edit_profile.html:11
+msgid "Modify"
+msgstr "Modifier"
 
-#: templates/auth/login_form.html:7 templates/auth/login_form_oath.html:17
-#: templates/auth/login_form_openid.html:21
-#: templates/auth/login_form_ssl.html:10
-#: templates/authopenid/dissociate.html:32
-msgid "Cancel"
-msgstr "Annuler"
-
-#: templates/auth/login_form.html:13 templates/auth/login_form_oath.html:23
-#: templates/registration/login.html:26
-msgid "Forgot password?"
-msgstr "Mot de passe oublié ?"
-
-#: templates/auth/login_form.html:13 templates/auth/login_form_oath.html:23
-#: templates/registration/login.html:26
-msgid "Reset it!"
-msgstr "Le réinitialiser !"
-
-#: templates/auth/login_form.html:14 templates/auth/login_form_oath.html:24
-#: templates/registration/login.html:27
-msgid "Not a member?"
-msgstr "Pas un membre ?"
-
-#: templates/auth/login_form.html:14 templates/auth/login_form_oath.html:24
-#: templates/registration/login.html:27
-msgid "Register!"
-msgstr "S'inscrire !"
-
-#: templates/auth/login_form_oath.html:5
-msgid ""
-"\n"
-"Once you have created your account, log in with an other authentication "
-"method.\n"
-"Then, in account management, follow the instructions to deploy the\n"
-"One Time password authentication method.\n"
-msgstr ""
-"\n"
-"Une fois votre compte créé, connectez-vous à l'aide d'une autre méthode.\n"
-"Alors, dans l'interface de gestion de votre compte, suivez les instructions "
-"pour déployer la\n"
-"méthode d'authentification basée sur le mot de passe à usage unique.\n"
-
-#: templates/auth/login_form_openid.html:12
-#: templates/authopenid/associate.html:42
-#: templates/authopenid/signin-iframe.html:38
-#: templates/authopenid/signin.html:44
-msgid "Please select your account provider:"
-msgstr "Si vous avez un compte sur un de ces sites, connectez-vous avec:"
-
-#: templates/auth/login_form_openid.html:17
-#: templates/authopenid/signin-iframe.html:42
-#: templates/authopenid/signin.html:48
-msgid "Or enter your OpenID identity:"
-msgstr "Ou entrez une identité OpenIDL (URL):"
-
-#: templates/auth/login_form_openid.html:18
-#: templates/authopenid/associate.html:46
-#: templates/authopenid/signin-iframe.html:43
-#: templates/authopenid/signin.html:49
-msgid "OpenId URL :"
-msgstr "URL OpenID:"
-
-#: templates/auth/login_form_ssl.html:4
-msgid "Use a self-generated X509 certificate to log in."
-msgstr "Utilisez un certificat x509 auto-généré pour vous connecter."
-
-#: templates/authopenid/associate.html:5
-msgid "Associate OpenID"
-msgstr "Lier un identifiant OpenID"
-
-#: templates/authopenid/associate.html:20
-msgid "OpenID URL:"
-msgstr "URL OpenID:"
-
-#: templates/authopenid/associate.html:25
-#: templates/authopenid/dissociate.html:26
-msgid "Dissociate OpenID URL"
-msgstr "Délier un identifiant OpenID"
-
-#: templates/authopenid/associate.html:37
-msgid "Add a new OpenID account"
-msgstr "Ajouter une nouveau compte OpenID"
-
-#: templates/authopenid/associate.html:47
-msgid "Add OpenID"
-msgstr ""
-
-#: templates/authopenid/complete.html:18
-msgid "Your OpenID is verified! "
-msgstr "Votre identifiant OpenID a été vérifié."
-
-#: templates/authopenid/complete.html:19
-msgid ""
-"\n"
-"\t<p>Your OpenID can now be associated with a new or existing membership. "
-"You can change the association later in your preferences.</p>\n"
-"\t"
-msgstr ""
-"\n"
-"\t<p>Votre OpenID peut desormais etre associe a un compte nouveau ou "
-"existant. Vous pourrez modifier cette association dans vos preferences.</p>\n"
-"\t"
-
-#: templates/authopenid/complete.html:22
-msgid "Associate your OpenID"
-msgstr "Associez votre OpenID"
-
-#: templates/authopenid/complete.html:23
-msgid ""
-"\n"
-"\t<p>If you're joining <strong>Sitename</strong>, associate your OpenID with "
-"a new account. If you're already a member, associate with your existing "
-"account.</p>\n"
-"\t"
-msgstr ""
-
-#: templates/authopenid/complete.html:30 templates/authopenid/complete.html:40
-#: templates/authopenid/signin-iframe.html:16
-#: templates/authopenid/signin.html:22
-msgid "Please correct errors below:"
-msgstr "Veuillez corriger les erreurs suivantes :"
-
-#: templates/authopenid/complete.html:54
-msgid "A new account"
-msgstr "Un nouveau compte"
-
-#: templates/authopenid/complete.html:55 templates/authopenid/complete.html:70
-#: vendor/registration/forms.py:35
-msgid "Username"
-msgstr "Identifiant"
-
-#: templates/authopenid/complete.html:56
-msgid "Email"
-msgstr "Courriel"
-
-#: templates/authopenid/complete.html:57
-msgid "Create account"
-msgstr "Créer un compte"
-
-#: templates/authopenid/complete.html:69
-msgid "An existing account"
-msgstr "Un compte existant"
-
-#: templates/authopenid/complete.html:72
-msgid "Verify"
-msgstr "Verifier"
-
-#: templates/authopenid/dissociate.html:31
-msgid "Dissociate OpenID"
-msgstr "Dissocier vot OpenID"
-
-#: templates/authopenid/password_change_form.html:26
-msgid ""
-"Please enter your new password twice so we can verify you typed it in "
-"correctly."
-msgstr ""
-
-#: templates/authopenid/password_change_form.html:30
-#: templates/authopenid/password_change_form.html:46
-msgid "New password:"
-msgstr "Nouveau mot de passe :"
-
-#: templates/authopenid/password_change_form.html:32
-#: templates/authopenid/password_change_form.html:48
-msgid "Confirm password:"
-msgstr "Confirmation du mot de passe :"
-
-#: templates/authopenid/password_change_form.html:33
-#: templates/authopenid/password_change_form.html:50
-msgid "Change my password"
-msgstr "Modifier son mot de passe"
-
-#: templates/authopenid/password_change_form.html:38
-msgid "Password change"
-msgstr "Changer de mot de passe"
-
-#: templates/authopenid/password_change_form.html:39
-msgid ""
-"Please enter your old password, for security's sake, and then enter your new "
-"password twice so we can verify you typed it in correctly."
-msgstr ""
-"Veuillez entre votre ancien mot de passe, par raison de sécurité, et entrez "
-"ensuite votre nouveau mot de passe deux fois pour s'assurer que vous l'avez "
-"tapé correctement."
-
-#: templates/authopenid/password_change_form.html:44
-msgid "Old password:"
-msgstr "Ancien mot de passe :"
-
-#: templates/authopenid/signin-iframe.html:5
-#: templates/authopenid/signin.html:5
-msgid "OpenID Signin"
-msgstr "Connexion OpenID"
-
-#: templates/authopenid/signin-iframe.html:44
-#: templates/authopenid/signin.html:50
-msgid "Sign in with OpenID"
-msgstr "Connectez vous avec OpenID"
-
-#: templates/django_openid_provider/manage_id.html:5
-#: templates/django_openid_provider/manage_id_confirm.html:5
-msgid "Manage OpenID"
-msgstr "Gérer la connexion OpenID"
-
-#: templates/django_openid_provider/manage_id.html:23
-msgid "Your current OpenID"
-msgstr "Vos identifiants OpenID actuels"
-
-#: templates/django_openid_provider/manage_id.html:51
-msgid "Add a new OpenID identity"
-msgstr "Ajouter une nouvelle identité OpenID"
-
-#: templates/django_openid_provider/manage_trustroot.html:5
-msgid "Manage trusted site"
-msgstr "Gérer vos sites de confiance"
-
-#: templates/django_openid_provider/manage_trustroot.html:17
-msgid "Your trusted site"
-msgstr "Vos sites de confiance"
-
-#: templates/interaction/consent.html:4
-msgid "Consent page"
-msgstr "Page de consentement"
-
-#: templates/interaction/consent.html:13
-#: templates/interaction/consent_federation.html:13
-msgid "Do you accept to federate your account with "
-msgstr "Acceptez-vous de fédérer votre compte avec "
-
-#: templates/interaction/consent.html:15
-#: templates/interaction/consent_federation.html:15
-msgid "Do you accept to federate your account ?"
-msgstr "Acceptez-vous de federez vos comptes ?"
-
-#: templates/interaction/consent.html:21
-msgid "Do you accept to send these attributes?"
-msgstr "Acceptez-vous de transmettre ces attributs ?"
-
-#: templates/interaction/consent.html:32
-#: templates/interaction/consent_federation.html:22
-msgid "Accept"
-msgstr "Accepter"
-
-#: templates/interaction/consent.html:33
-#: templates/interaction/consent_federation.html:23
-msgid "Refuse"
-msgstr "Refuser"
-
-#: templates/interaction/consent_attributes.html:4
-msgid "Consent page for attribute propagation"
-msgstr "Page de consentement pour la transmission des attributs"
-
-#: templates/interaction/consent_attributes.html:14
-msgid "Choose attributes to send to "
-msgstr "Choisissez les attributs à envoyer"
-
-#: templates/interaction/consent_attributes.html:31
-msgid "Send selected"
-msgstr "Envoyer la selection"
-
-#: templates/interaction/consent_attributes.html:33
-msgid "Send all"
-msgstr "Tout envoyer"
-
-#: templates/interaction/consent_attributes.html:35
-msgid "Refuse all"
-msgstr "Aucun"
-
-#: templates/interaction/consent_federation.html:4
-msgid "Consent page for federation"
-msgstr "Page de consentement pour la fédération"
-
-#: templates/profiles/create_profile.html:9
-#: templates/profiles/edit_profile.html:9
+#: templates/profiles/edit_profile.html:13
 msgid "Create"
 msgstr "Creer"
 
@@ -1687,6 +250,12 @@ msgstr "Activation de compte"
 msgid "Account successfully activated"
 msgstr "Compte activé avec succès."
 
+#: templates/registration/activate.html:14 templates/registration/login.html:5
+#: templates/registration/login.html:13
+#: templates/registration/password_reset_complete.html:12
+msgid "Log in"
+msgstr "S'identifier"
+
 #: templates/registration/activate.html:18
 msgid "Account activation failed"
 msgstr "Échec à l'activation du compte"
@@ -1695,17 +264,66 @@ msgstr "Échec à l'activation du compte"
 msgid "Your account is now activated"
 msgstr "Compte activé avec succès."
 
-#: templates/registration/login.html:38
+#: templates/registration/activation_email.txt:2
+msgid "Activate account at"
+msgstr "Activer le compte sur"
+
+#: templates/registration/activation_email.txt:6
+#, python-format
+msgid "Link is valid for %(expiration_days)s days."
+msgstr ""
+
+#: templates/registration/activation_email_subject.txt:1
+msgid "Account activation on"
+msgstr "Activation de compte sur"
+
+#: templates/registration/delete_account.html:5
+msgid "Delete account"
+msgstr "Supprimer le compte"
+
+#: templates/registration/delete_account.html:12
+msgid "Delete my account and all my personal datas ?"
+msgstr "Supprimer mon compte et toutes mes données personnelles ?"
+
+#: templates/registration/delete_account.html:13
+msgid "Yes"
+msgstr "Oui"
+
+#: templates/registration/delete_account.html:14
+msgid "No"
+msgstr "Non"
+
+#: templates/registration/login.html:18
+msgid "Forgot password?"
+msgstr "Mot de passe oublié ?"
+
+#: templates/registration/login.html:18
+msgid "Reset it!"
+msgstr "Le réinitialiser !"
+
+#: templates/registration/login.html:19
+msgid "Not a member?"
+msgstr "Pas un membre ?"
+
+#: templates/registration/login.html:19
+msgid "Register!"
+msgstr "S'inscrire !"
+
+#: templates/registration/login.html:30
 msgid "Log in with a federated account?"
 msgstr "S'identifier avec un compte fédéré ?"
 
-#: templates/registration/login.html:43
+#: templates/registration/login.html:36
 msgid "Tell me where!"
 msgstr "Dites-moi où !"
 
 #: templates/registration/logout.html:5
 msgid "Logging out"
 msgstr "En déconnexion"
+
+#: templates/registration/logout.html:9
+msgid "Logged out"
+msgstr "Déconnecté"
 
 #: templates/registration/password_change_done.html:5
 #: templates/registration/password_change_form.html:5
@@ -1716,10 +334,10 @@ msgstr "Modification du mot de passe"
 msgid "Password changed"
 msgstr "Mot de passe modifié"
 
-#: templates/registration/password_change_form.html:12
-#: templates/registration/password_reset_confirm.html:15
-#: templates/registration/password_reset_form.html:15
-#: templates/registration/registration_form.html:21
+#: templates/registration/password_change_form.html:13
+#: templates/registration/password_reset_confirm.html:16
+#: templates/registration/password_reset_form.html:16
+#: templates/registration/registration_form.html:22
 msgid "Submit"
 msgstr "Transmettre"
 
@@ -1735,7 +353,7 @@ msgstr "Mot de passe réinitialisé avec succès"
 msgid "Resetting password"
 msgstr "Réinitialisation du mot de passe"
 
-#: templates/registration/password_reset_confirm.html:20
+#: templates/registration/password_reset_confirm.html:21
 msgid "Password reset failed"
 msgstr "Échec à la réinitialisation du mot de passe"
 
@@ -1762,69 +380,3 @@ msgstr "Vous êtes maintenant inscrit. Un courriel d'activation a été envoyé.
 #: templates/registration/registration_form.html:16
 msgid "Registration"
 msgstr "Inscription"
-
-#: vendor/registration/admin.py:23
-msgid "Activate users"
-msgstr "Utilisateurs activés"
-
-#: vendor/registration/admin.py:43
-msgid "Re-send activation emails"
-msgstr "Re-envoyer le mail d'activation"
-
-#: vendor/registration/forms.py:36
-msgid "This value must contain only letters, numbers and underscores."
-msgstr ""
-"Cette valeur ne doit contenir que des lettres, des nombres ou le signe "
-"underscore."
-
-#: vendor/registration/forms.py:39
-msgid "E-mail"
-msgstr "Courriel"
-
-#: vendor/registration/forms.py:43
-msgid "Password (again)"
-msgstr "Mot de passe (à nouveau)"
-
-#: vendor/registration/forms.py:55
-msgid "A user with that username already exists."
-msgstr "Un utilisateur avec ce nom existe deja."
-
-#: vendor/registration/forms.py:67
-msgid "The two password fields didn't match."
-msgstr "Les deux mots de passe saisis ne correspondent pas"
-
-#: vendor/registration/forms.py:78
-msgid "I have read and agree to the Terms of Service"
-msgstr "J'ai lu et j'approuve les termes d'usage du service"
-
-#: vendor/registration/forms.py:79
-msgid "You must agree to the terms to register"
-msgstr "Vous devez approuver les termes d'usage du service"
-
-#: vendor/registration/forms.py:95
-msgid ""
-"This email address is already in use. Please supply a different email "
-"address."
-msgstr "Ce courriel est deja utilise. Merci d'en fournir un different."
-
-#: vendor/registration/forms.py:122
-msgid ""
-"Registration using free email addresses is prohibited. Please supply a "
-"different email address."
-msgstr ""
-
-#: vendor/registration/models.py:168
-msgid "user"
-msgstr "utilisateur"
-
-#: vendor/registration/models.py:169
-msgid "activation key"
-msgstr "cle d'activation"
-
-#: vendor/registration/models.py:174
-msgid "registration profile"
-msgstr "profile d'inscription"
-
-#: vendor/registration/models.py:175
-msgid "registration profiles"
-msgstr "profiles d'inscription"

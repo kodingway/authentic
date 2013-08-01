@@ -1,6 +1,6 @@
 from django.conf import settings
 
-from django.conf.urls import patterns
+from django.conf.urls import patterns, url
 
 from authentic2.authsaml2.saml2_endpoints import metadata, sso, finish_federation, \
     singleSignOnArtifact, singleSignOnPost, sp_slo, logout, singleLogoutReturn, \
@@ -34,7 +34,8 @@ urlpatterns = patterns('',
     # Receive request from Redirect IdP initiated
     (r'^manageNameId$', manageNameId),
     # Receive request from Redirect IdP initiated
-    (r'^delete_federation$', delete_federation),
+    url(r'^delete_federation/$', delete_federation,
+        name='authsaml2-delete-federation'),
 )
 
 try:

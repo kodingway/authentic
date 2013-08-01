@@ -19,7 +19,7 @@ from django.core.urlresolvers import reverse
 from django.utils.http import urlquote
 
 from authentic2 import settings
-from authentic2.saml.common import error_page
+from authentic2.saml.common import error_page as base_error_page
 from authentic2.saml.models import LibertyProvider
 
 logger = logging.getLogger('authentic2.disco.responder')
@@ -30,6 +30,12 @@ try:
     USE_OF_METADATA = settings.DISCO_USE_OF_METADATA
 except:
     logger.error("disco: missing parameters in settings for idp discovery.")
+
+
+def error_page(request, message, logger):
+    '''Customized disco service error page'''
+    message = u'disco: ' + message
+    return base_error_page(request, message, logger)
 
 
 def save_key_values(request, *values):
@@ -132,7 +138,7 @@ def add_param_to_url(url, param_name, value):
 
 def disco(request):
     if not request.method == "GET":
-        message = _('disco: HTTP request not supported %s' % request.method)
+        message = _('HTTP verb not supported %s' % request.method)
         return error_page(request, message, logger=logger)
 
     entityID = None
@@ -175,12 +181,12 @@ def disco(request):
             isPAssive=False
 
     if not entityID:
-        message = _('disco: missing mandatory parameter entityID')
+        message = _('missing mandatory parameter entityID')
         return error_page(request, message, logger=logger)
 
-    if not policy == \
+    if policy != \
 'urn:oasis:names:tc:SAML:profiles:SSO:idp-discovery-protocol:single':
-        message = _('disco: policy not implemented')
+        message = _('policy %r not implemented') % policy
         return error_page(request, message, logger=logger)
 
     # If we use metadata, we ignore the parameter return and take it from the
@@ -191,15 +197,15 @@ def disco(request):
     else:
         return_url = _return
     if not return_url:
-        message = _('disco: unable to find a valid return url for %s' \
+        message = _('unable to find a valid return url for %s' \
             % entityID)
         return error_page(request, message, logger=logger)
 
     # Check that the return_url does not already contain a param with name
     # equal to returnIDParam. Else, it is an unconformant SP.
     if is_param_id_in_return_url(return_url, returnIDParam):
-        message = _('disco: invalid return url %s for %s' \
-            % (return_url, entityID))
+        message = _('invalid return url %(return_url)s for %(entity_id)s' \
+            % dict(return_url=return_url, entity_id=entityID))
         return error_page(request, message, logger=logger)
 
     # not back from selection interface

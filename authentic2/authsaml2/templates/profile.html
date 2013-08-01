@@ -8,7 +8,7 @@
 <p>
 <h5>{% trans "Delete a federation?" %}</h5>
 {% for f in federations %}
-<form action="authsaml2/delete_federation" method="post">
+<form action="{% url 'authsaml2-delete-federation' %}" method="post">
   <label for="id_del_fed">{{ f }}</label>
   <input type="hidden" name="fed" value="{{ f }}" />
   <input type="hidden" name="next" value="/profile" />

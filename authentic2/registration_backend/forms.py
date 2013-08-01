@@ -1,9 +1,11 @@
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth import get_user_model
 from django import forms
 
 
 from registration.forms import RegistrationForm as BaseRegistrationForm
+
+
+from authentic2.compat import get_user_model
 
 
 class RegistrationForm(BaseRegistrationForm):

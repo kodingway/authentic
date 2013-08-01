@@ -8,8 +8,19 @@ import calendar
 import openid.association
 import openid.store.nonce
 from django.db import models
+from django.utils.timezone import now, utc
+
 
 from authentic2.saml.fields import PickledObjectField
+
+
+def utctimestamp_to_aware_datetime(tst):
+    if settings.USE_TZ:
+        return datetime.datetime.utcfromtimestamp(association.issued) \
+                .replace(tz_info=utc)
+    else:
+        return datetime.datetime.utcfromtimestamp(association.issued)
+
 
 class TrustedRoot(models.Model):
     user = models.CharField(max_length=255)
@@ -18,6 +29,7 @@ class TrustedRoot(models.Model):
 
     def __unicode__(self):
         return unicode(self.trust_root)
+
 
 class Association(models.Model):
     server_url = models.CharField(max_length=768, blank=False)
@@ -38,7 +50,7 @@ be expired")
 
     def save(self, *args, **kwargs):
         '''Overload default save() method to compute the expire field'''
-        self.issued = datetime.datetime.today()
+        self.issued = now()
         self.expire = self.issued + datetime.timedelta(seconds=self.lifetime)
         super(Association, self).save(*args, **kwargs)
 
@@ -56,7 +68,7 @@ be expired")
     def get_association(cls, server_url, handle=None):
         try:
             filter = cls.objects.filter(server_url=server_url,
-                expire__gt=datetime.datetime.utcnow())
+                expire__gt=now())
             if handle is not None:
                 filter = filter.filter(handle=handle)
             return filter.latest('issued').to_association()
@@ -65,7 +77,7 @@ be expired")
 
     @classmethod
     def cleanup_associations(cls):
-        filter = cls.objects.filter(expire__lt=datetime.datetime.utcnow())
+        filter = cls.objects.filter(expire__lt=now())
         count = filter.count()
         filter.delete()
         return count
@@ -82,14 +94,14 @@ be expired")
         Association(server_url=server_url,
                 handle=association.handle,
                 secret=association.secret,
-                issued=datetime.datetime.utcfromtimestamp(association.issued),
+                issued=utctimestamp_to_aware_datetime(association.issued),
                 lifetime=association.lifetime,
                 assoc_type=association.assoc_type).save()
 
 class NonceManager(models.Manager):
     def cleanup(self):
         expire = openid.store.nonce.SKEW
-        now = calendar.timegm(datetime.datetime.now().utctimetuple())
+        now = calendar.timegm(now().utctimetuple())
         self.filter(timestamp__lt=now-expire).delete()
 
 class Nonce(models.Model):

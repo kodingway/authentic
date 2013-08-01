@@ -1,11 +1,12 @@
 #!/bin/sh
+BASE=`dirname $0`
 PROJECT=authentic2
-CTL=${PROJECT}-ctl
-VENV=${PROJECT}-venv
+CTL=$BASE/${PROJECT}-ctl
+VENV=$BASE/${PROJECT}-venv
 
 if [ ! -d $VENV ]; then
-	./start.sh
+	$BASE/start.sh
 else
-	. ./$VENV/bin/activate
-	./$CTL "${@:-runserver}"
+	. $VENV/bin/activate
+	$CTL "${@:-runserver}"
 fi

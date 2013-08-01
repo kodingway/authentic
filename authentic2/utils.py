@@ -111,3 +111,7 @@ def cache_and_validate(timeout, hashing=hashlib.md5):
                 return content
         return replacement
     return transform
+
+def import_from(module, name):
+    module = __import__(module, fromlist=[name])
+    return getattr(module, name)

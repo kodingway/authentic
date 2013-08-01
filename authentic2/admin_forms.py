@@ -1,11 +1,16 @@
 from django import forms
 
+
 from django.contrib.auth.forms import UserChangeForm as AuthUserChangeForm, UserCreationForm as AuthUserCreationForm
-from django.contrib.auth import get_user_model
+
+
+from authentic2.compat import get_user_model
+
 
 class UserChangeForm(AuthUserChangeForm):
     class Meta(AuthUserChangeForm.Meta):
         model = get_user_model()
+
 
 class UserCreationForm(AuthUserCreationForm):
     class Meta(AuthUserCreationForm.Meta):

@@ -12,12 +12,14 @@
 	<p><a href="{{ bookmarklet|safe }}">{% trans "Bookmarklet" %}</a>
 	<p>{% trans "Copy this link to your bookmarks. When clicking on it it will generate a new one-time password which will allow you to login" %}</p></p>
 	<p><form action="{{ base|safe }}/delete_totp_secret{{ next|safe }}" method="post">
+                {% csrf_token %}
 		<input type="submit" class="submit-link" value="{% trans "Delete this credential" %}">
 		</form></p>
 	{% else %}
 	<p>{% trans "This kind of authentication is actually not possible, because you do not have any secret setup." %}</p>
 	{% endif %}
 	<p><form action="{{ base|safe }}/new_totp_secret{{ next|safe }}" class="submit-link" method="post">
+            {% csrf_token %}
 	    <input type="submit" value="{% trans "Generate a new credential" %}">
 	</form></p>
 </div>

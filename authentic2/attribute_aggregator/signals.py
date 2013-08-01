@@ -26,11 +26,11 @@ import user_profile
 
 from django.dispatch import Signal
 
-
 any_attributes_call = Signal(providing_args = ["user"])
 listed_attributes_call = Signal(providing_args = ["user", "definitions"])
 listed_attributes_with_source_call = Signal(providing_args = \
-    ["user", "definitions", "source"])
+    ["user", "definitions", "source", "auth_source"])
+add_attributes = Signal(providing_args = ["instance", "user", "attributes", "context"])
 
 if ldap_sources:
     any_attributes_call.connect(ldap_sources.get_attributes)

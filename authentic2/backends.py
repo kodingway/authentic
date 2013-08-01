@@ -8,12 +8,14 @@ import random
 log = logging.getLogger(__name__)
 
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 try:
     import lasso
 except ImportError:
     pass
+
+
+from authentic2.compat import get_user_model
 
 
 class LDAPBackendError(Exception):
@@ -36,7 +38,8 @@ _DEFAULTS = {
     'fname_field': 'givenName',
     'lname_field': 'sn',
     'timeout': 1,
-    'disable_update': False
+    'disable_update': False,
+    'use_for_data' : None,
 }
 
 _REQUIRED = ('url', 'basedn')
@@ -309,7 +312,7 @@ class LDAPBackend():
     def save(self, user, *args, **kwargs):
         conn, block = self.get_user_connection(user)
         url, dn = user.backend_id.split('!', 1)
-        if block['use_for_data']:
+        if 'use_for_data' in block:
             results = conn.search_s(dn, ldap.SCOPE_BASE)
             new_entry = results[0][1].copy()
             fields = (
@@ -337,13 +340,13 @@ class LDAPBackend():
             return lasso.SAML2_AUTHN_CONTEXT_PASSWORD
 
 # LDAP_AUTH_SETTINGS = ('ldap://10.0.44.2', 'cn=users,dc=example,dc=com')
-# 
+#
 # LDAP_AUTH_SETTINGS = ('ldap://10.0.44.2', 'cn=users,dc=example,dc=com', 'django_login',
 #   'cn=groups,dc=example,dc=com')
-#   
+#
 # LDAP_AUTH_SETTINGS = (('ldap://10.0.44.2', 'ldaps://10.0.44.200'), 'cn=users,dc=example,dc=com',
 #   ('django_login', 'staff', 'web_users'), 'cn=groups,dc=example,dc=com')
-# 
+#
 # -*> means required
 # --> means optional
 # LDAP_AUTH_SETTINGS = (

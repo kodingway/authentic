@@ -20,7 +20,7 @@
 
 from django.core.management.base import BaseCommand
 
-from attribute_aggregator.mapping import ATTRIBUTE_MAPPING
+from authentic2.attribute_aggregator.mapping_loader import ATTRIBUTE_MAPPING
 from attribute_aggregator.core import load_or_create_user_profile, \
     set_user_alias_in_source
 from attribute_aggregator.models import *

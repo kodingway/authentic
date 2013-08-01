@@ -1,0 +1,204 @@
+# French translation of Authentic
+# Copyright (C) 2010, 2011 Entr'ouvert
+# This file is distributed under the same license as the Authentic package.
+# Frederic Peters <fpeters@entrouvert.com>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Authentic\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-23 16:57+0200\n"
+"PO-Revision-Date: 2013-07-23 16:57+0200\n"
+"Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
+"Language-Team: None\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n>1;\n"
+
+#: templates/auth/login_form_openid.html:13
+#: templates/authopenid/associate.html:44
+#: templates/authopenid/signin-iframe.html:39
+#: templates/authopenid/signin.html:45
+msgid "Please select your account provider:"
+msgstr "Si vous avez un compte sur un de ces sites, connectez-vous avec:"
+
+#: templates/auth/login_form_openid.html:16
+msgid "Log in"
+msgstr "S'identifier"
+
+#: templates/auth/login_form_openid.html:18
+#: templates/authopenid/signin-iframe.html:43
+#: templates/authopenid/signin.html:49
+msgid "Or enter your OpenID identity:"
+msgstr "Ou entrez une identité OpenIDL (URL):"
+
+#: templates/auth/login_form_openid.html:19
+#: templates/authopenid/associate.html:48
+#: templates/authopenid/signin-iframe.html:44
+#: templates/authopenid/signin.html:50
+msgid "OpenId URL :"
+msgstr "URL OpenID:"
+
+#: templates/auth/login_form_openid.html:22
+#: templates/authopenid/dissociate.html:33
+msgid "Cancel"
+msgstr "Annuler"
+
+#: templates/auth/openid_profile.html:6
+msgid "Associate your account with an OpenID"
+msgstr "Associer votre compte avec un OpenID"
+
+#: templates/authopenid/associate.html:5
+msgid "Associate OpenID"
+msgstr "Lier un identifiant OpenID"
+
+#: templates/authopenid/associate.html:20
+msgid "OpenID URL:"
+msgstr "URL OpenID:"
+
+#: templates/authopenid/associate.html:25
+#: templates/authopenid/dissociate.html:26
+msgid "Dissociate OpenID URL"
+msgstr "Délier un identifiant OpenID"
+
+#: templates/authopenid/associate.html:38
+msgid "Add a new OpenID account"
+msgstr "Ajouter une nouveau compte OpenID"
+
+#: templates/authopenid/associate.html:49
+msgid "Add OpenID"
+msgstr ""
+
+#: templates/authopenid/associate_email.txt:1
+msgid "Thank you to join"
+msgstr ""
+
+#: templates/authopenid/associate_email_subject.txt:1
+msgid "Welcome to"
+msgstr ""
+
+#: templates/authopenid/complete.html:18
+msgid "Your OpenID is verified! "
+msgstr "Votre identifiant OpenID a été vérifié."
+
+#: templates/authopenid/complete.html:19
+msgid ""
+"\n"
+"\t<p>Your OpenID can now be associated with a new or existing membership. "
+"You can change the association later in your preferences.</p>\n"
+"\t"
+msgstr ""
+"\n"
+"\t<p>Votre OpenID peut desormais etre associe a un compte nouveau ou "
+"existant. Vous pourrez modifier cette association dans vos preferences.</p>\n"
+"\t"
+
+#: templates/authopenid/complete.html:22
+msgid "Associate your OpenID"
+msgstr "Associez votre OpenID"
+
+#: templates/authopenid/complete.html:23
+msgid ""
+"\n"
+"\t<p>If you're joining <strong>Sitename</strong>, associate your OpenID with "
+"a new account. If you're already a member, associate with your existing "
+"account.</p>\n"
+"\t"
+msgstr ""
+
+#: templates/authopenid/complete.html:30 templates/authopenid/complete.html:40
+#: templates/authopenid/signin-iframe.html:16
+#: templates/authopenid/signin.html:22
+msgid "Please correct errors below:"
+msgstr "Veuillez corriger les erreurs suivantes :"
+
+#: templates/authopenid/complete.html:55
+msgid "A new account"
+msgstr "Un nouveau compte"
+
+#: templates/authopenid/complete.html:56 templates/authopenid/complete.html:72
+msgid "Username"
+msgstr "Identifiant"
+
+#: templates/authopenid/complete.html:57
+msgid "Email"
+msgstr "Courriel"
+
+#: templates/authopenid/complete.html:58
+msgid "Create account"
+msgstr "Créer un compte"
+
+#: templates/authopenid/complete.html:71
+msgid "An existing account"
+msgstr "Un compte existant"
+
+#: templates/authopenid/complete.html:73
+msgid "Password"
+msgstr "Mot de passe"
+
+#: templates/authopenid/complete.html:74
+msgid "Verify"
+msgstr "Verifier"
+
+#: templates/authopenid/dissociate.html:32
+msgid "Dissociate OpenID"
+msgstr "Dissocier vot OpenID"
+
+#: templates/authopenid/password_change_form.html:6
+#: templates/authopenid/password_change_form.html:25
+msgid "Set password"
+msgstr "Change le mot de passe"
+
+#: templates/authopenid/password_change_form.html:8
+msgid "Change password"
+msgstr "Modifier votre mot de passe"
+
+#: templates/authopenid/password_change_form.html:26
+msgid ""
+"Please enter your new password twice so we can verify you typed it in "
+"correctly."
+msgstr ""
+
+#: templates/authopenid/password_change_form.html:31
+#: templates/authopenid/password_change_form.html:47
+msgid "New password:"
+msgstr "Nouveau mot de passe :"
+
+#: templates/authopenid/password_change_form.html:33
+#: templates/authopenid/password_change_form.html:49
+msgid "Confirm password:"
+msgstr "Confirmation du mot de passe :"
+
+#: templates/authopenid/password_change_form.html:34
+#: templates/authopenid/password_change_form.html:51
+msgid "Change my password"
+msgstr "Modifier son mot de passe"
+
+#: templates/authopenid/password_change_form.html:39
+msgid "Password change"
+msgstr "Changer de mot de passe"
+
+#: templates/authopenid/password_change_form.html:40
+msgid ""
+"Please enter your old password, for security's sake, and then enter your new "
+"password twice so we can verify you typed it in correctly."
+msgstr ""
+"Veuillez entre votre ancien mot de passe, par raison de sécurité, et entrez "
+"ensuite votre nouveau mot de passe deux fois pour s'assurer que vous l'avez "
+"tapé correctement."
+
+#: templates/authopenid/password_change_form.html:45
+msgid "Old password:"
+msgstr "Ancien mot de passe :"
+
+#: templates/authopenid/signin-iframe.html:5
+#: templates/authopenid/signin.html:5
+msgid "OpenID Signin"
+msgstr "Connexion OpenID"
+
+#: templates/authopenid/signin-iframe.html:45
+#: templates/authopenid/signin.html:51
+msgid "Sign in with OpenID"
+msgstr "Connectez vous avec OpenID"

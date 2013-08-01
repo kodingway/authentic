@@ -40,7 +40,7 @@ class CustomIndexDashboard(Dashboard):
 
         # append an app list module for "Applications"
         self.children.append(modules.ModelList(
-            _('User and groups'),
+            _('Users and groups'),
             models=('authentic2.models.User',
                 'django.contrib.auth.models.Group'),
         ))
@@ -83,7 +83,7 @@ class CustomIndexDashboard(Dashboard):
                 },
                 {
                     'title': _('Authentic Mailing List'),
-                    'url': 'https://lists.labs.libre-entreprise.org/mailman/listinfo/authentic-devel/',
+                    'url': 'http://listes.entrouvert.com/info/authentic',
                     'external': True,
                 },
             ]

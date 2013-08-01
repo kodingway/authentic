@@ -3,12 +3,13 @@ from datetime import date, timedelta
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
+from django.utils.timezone import now
 
 class AuthenticationEventManager(models.Manager):
     def cleanup(self):
         expire = getattr(settings, 'AUTHENTICATION_EVENT_EXPIRATION',
                 3600*24*7)
-        self.filter(when__lt=date.today()-timedelta(seconds=expire)).delete()
+        self.filter(when__lt=now()-timedelta(seconds=expire)).delete()
 
 class AuthenticationEvent(models.Model):
     '''Record authentication events whatever the source'''

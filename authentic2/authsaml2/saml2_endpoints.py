@@ -658,11 +658,40 @@ def sso_after_response(request, login, relay_state=None, provider=None):
             lasso.SAML2_NAME_IDENTIFIER_FORMAT_TRANSIENT \
             or (policy is not None and policy.transient_is_persistent):
         #Consider that all kinds of nameId not transient are persistent.
-        logger.info('sso_after_response: The nameId is not transient')
-        if policy is not None and policy.transient_is_persistent:
+        logger.info('sso_after_response: persistent federation processing')
+        if policy is not None and policy.transient_is_persistent and \
+                login.nameIdentifier.format == \
+                lasso.SAML2_NAME_IDENTIFIER_FORMAT_TRANSIENT:
             logger.info('sso_after_response: \
-                Transient nameID %s treated as persistent' % \
-                login.nameIdentifier.dump())
+                the nameId %s is transient the but option persistent '
+                'federation processing is selected' \
+                    % login.nameIdentifier.dump())
+            if policy.persistent_identifier_attribute:
+                logger.info('sso_after_response: '
+                    '%s is used as persistent identifier for federation' % \
+                    policy.persistent_identifier_attribute)
+                for key in attributes:
+                    if policy.persistent_identifier_attribute in key \
+                            and attributes[key]:
+                        identifier = attributes[key][0]
+                        break
+                if identifier:
+                    logger.info('sso_after_response: '
+                        '%s value is %s' % \
+                        (policy.persistent_identifier_attribute, identifier))
+                    login.nameIdentifier.content = identifier
+                else:
+                    logger.warn('sso_after_response: '
+                        '%s not provided by the identity provider, '
+                        'we continue with the nameID.' % \
+                        policy.persistent_identifier_attribute)
+            else:
+               logger.info('sso_after_response: '
+                    'No attribute declared as persistent identifier '
+                    'NameID is used.')
+            login.nameIdentifier.format = \
+                lasso.SAML2_NAME_IDENTIFIER_FORMAT_PERSISTENT
+
         user = AuthSAML2PersistentBackend(). \
             authenticate(name_id=login.nameIdentifier,
                 provider_id=login.remoteProviderId)
@@ -754,14 +783,13 @@ def finish_federation(request):
                     Unable to create Login object'), logger=logger)
 
             s = load_session(request, login, kind=LIBERTY_SESSION_DUMP_KIND_SP)
-            load_federation_temp(request, get_entity_id(request, reverse(metadata)), login)
+            load_federation_temp(request, login)
             if not login.session:
                 return error_page(request,
                     _('finish_federation: Error loading session.'),
                     logger=logger)
 
-            login.nameIdentifier = \
-                login.session.getAssertions()[0].subject.nameID
+            login.nameIdentifier = request.session['nameId']
 
             logger.debug('finish_federation: nameID %s' % \
                 login.nameIdentifier.dump())
@@ -1853,8 +1881,8 @@ def view_profile(request, next='', template_name='profile.html'):
 
     #Add creation date
     federations = LibertyProvider.objects \
-            .filter(libertyfederation__user=request.user) \
-            .value_list('name', flat=True)
+            .filter(identity_provider__libertyfederation__user=request.user) \
+            .values_list('name', flat=True)
 
     from frontend import AuthSAML2Frontend
     form = AuthSAML2Frontend().form()()
@@ -1881,7 +1909,7 @@ def delete_federation(request, next_url='/'):
         if provider_name:
             LibertyFederation.objects.filter(
                     user=request.user,
-                    idp__name=provider_name).update(user=None)
+                    idp__liberty_provider__name=provider_name).update(user=None)
             logger.info('delete_federation: federation %s deleted',
                     provider_name)
             messages.add_message(request, messages.INFO,

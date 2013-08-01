@@ -1,6 +1,7 @@
 import urlparse
 import os.path
 import urllib
+import urllib2
 import httplib
 import logging
 import re
@@ -59,7 +60,7 @@ def get_soap_message(request, on_error_raise = True):
     if request.method != 'POST' or \
             'text/xml' not in request.META['CONTENT_TYPE']:
        if on_error_raise:
-           raise Http404(_('Only SOAP messages here'))
+           raise Http404('Only SOAP messages here')
        else:
            return None
     return request.raw_post_data
@@ -397,17 +398,12 @@ def add_federation(user, login=None, name_id=None, provider_id=None):
         if not login.nameIdentifier.content or not login.nameIdentifier.nameQualifier:
             return None
         name_id=login.nameIdentifier
-    qualifier = name_id.nameQualifier
-    if not qualifier and login:
-        qualifier = login.get_remoteProviderId()
     fed = LibertyFederation()
     fed.user = user
     fed.name_id_content = name_id.content
-    fed.name_id_qualifier = qualifier
-    fed.name_id_sp_name_qualifier = name_id.sPNameQualifier
     fed.name_id_format = name_id.format
     if provider_id:
-        fed.idp_id = provider_id
+        fed.idp = LibertyProvider.objects.get(entity_id=provider_id).identity_provider
     fed.save()
     return fed
 
@@ -426,9 +422,9 @@ def lookup_federation_by_name_id_and_provider_id(name_id, provider_id):
     '''Try to find a LibertyFederation object for the given NameID and
        the provider id.'''
     kwargs = models.nameid2kwargs(name_id)
-    kwargs['idp_id'] = provider_id
+    kwargs['idp'] = LibertyProvider.objects.get(entity_id=provider_id).identity_provider
     try:
-        return LibertyFederation.objects.get(**kwargs)
+        return LibertyFederation.objects.get(user__isnull=False, **kwargs)
     except:
         return None
 
@@ -546,7 +542,7 @@ def get_provider_of_active_session(request):
         return None
     try:
         s = LibertySessionSP.objects.get(django_session_key=request.session.session_key)
-        p = LibertyProvider.objects.get(entity_id=s.federation.name_id_qualifier)
+        p = s.federation.idp.liberty_provider
         return p
     except:
         return None
@@ -566,6 +562,11 @@ class SOAPException(Exception):
         self.url = url
 
 def soap_call(url, msg, client_cert = None):
+    if not client_cert:
+        request = urllib2.Request(url, data=msg,
+            headers={'Content-Type': 'text/xml'})
+        return urllib2.urlopen(request).read()
+
     if url.startswith('http://'):
         host, query = urllib.splithost(url[5:])
         conn = httplib.HTTPConnection(host)

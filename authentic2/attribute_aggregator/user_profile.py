@@ -27,12 +27,11 @@ from authentic2.attribute_aggregator.core import get_profile_field_name_from_def
     get_definition_from_profile_field_name
 
 
-logger = logging.getLogger('attribute_aggregator.user_profile')
-
+logger = logging.getLogger(__name__)
 
 SOURCE_NAME = 'USER_PROFILE'
 
-def get_attributes(user, definitions=None, source=None, **kwargs):
+def get_attributes(user, definitions=None, source=None, auth_source=False, **kwargs):
     '''
         Return attributes dictionnary
 

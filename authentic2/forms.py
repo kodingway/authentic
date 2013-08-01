@@ -1,5 +1,6 @@
 from django import forms
-from django.contrib.auth import get_user_model
+
+from authentic2.compat import get_user_model
 
 
 class UserProfileForm(forms.ModelForm):
@@ -22,6 +23,7 @@ class UserProfileForm(forms.ModelForm):
     class Meta:
         model = get_user_model()
         fields = [ field_name
-                for field_name in get_user_model().USER_PROFILE
-                if field_name in get_user_model()._meta.get_all_field_names()
-                    and not field_name == get_user_model().USERNAME_FIELD ]
+                for field_name in getattr(model, 'USER_PROFILE',
+                    model._meta.get_all_field_names())
+                if field_name in model._meta.get_all_field_names()
+                    and not field_name == model.USERNAME_FIELD ]

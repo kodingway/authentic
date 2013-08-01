@@ -23,7 +23,7 @@ import lasso
 
 
 from authentic2.attribute_aggregator.models import AttributeSource
-from authentic2.attribute_aggregator.mapping import ATTRIBUTE_MAPPING
+from authentic2.attribute_aggregator.mapping_loader import ATTRIBUTE_MAPPING
 from authentic2.attribute_aggregator.core import get_def_name_from_oid, \
     get_def_name_from_name_and_ns_of_attribute, \
     load_or_create_user_profile, get_oid_from_def_name, \
@@ -212,6 +212,9 @@ def provide_attributes_at_sso(request, user, audience, **kwargs):
     dic = dict()
     attributes = dict()
 
+    # If profile already filled in that session, we should offer to skip
+    # filling.
+
     list_pull = attribute_policy.attribute_list_for_sso_from_pull_sources
     if not list_pull:
         logger.debug('provide_attributes_at_sso: no attribute list found \
@@ -237,7 +240,17 @@ def provide_attributes_at_sso(request, user, audience, **kwargs):
                     else:
                         l_with_source[a.source] = [a.attribute_name]
             for source, defs in l_with_source.items():
-                p.load_listed_attributes_with_source(defs, source)
+                if source.name == 'PROCESSING':
+                    continue
+                auth_source = False
+                if source.name == 'AUTH_BACKEND':
+                    auth_source = True
+                p.load_listed_attributes_with_source(defs, source,
+                    auth_source=auth_source)
+
+            logger.debug('provide_attributes_at_sso: process profile')
+            context = ('sso', {'audience' : audience})
+            p.process(context)
 
             for a in l:
                 data = None

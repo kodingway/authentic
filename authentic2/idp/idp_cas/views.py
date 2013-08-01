@@ -230,8 +230,10 @@ renew:%s and gateway:%s' % (service, renew, gateway))
             return self.return_ticket(request, st)
 
     def return_ticket(self, request, st):
-        return HttpResponseRedirect('%s?ticket=%s' % (st.service,
-            st.ticket_id))
+        if '?' in st.service:
+               return HttpResponseRedirect('%s&ticket=%s' % (st.service,st.ticket_id))
+       else:
+               return HttpResponseRedirect('%s?ticket=%s' % (st.service,st.ticket_id))
 
     def validate(self, request):
         if request.method != 'GET':
@@ -317,6 +319,10 @@ renew:%s and gateway:%s' % (service, renew, gateway))
 
     def service_validate_success_response(self, request, st):
         attributes, section = self.get_attributes(request, st)
+        try:
+            ET.register_namespace('cas', 'http://www.yale.edu/tp/cas')
+        except AttributeError:
+            ET._namespace_map['http://www.yale.edu/tp/cas'] = 'cas'
         root = ET.Element('{%s}%s' % (CAS_NAMESPACE, SERVICE_RESPONSE_ELT))
         success = ET.SubElement(root, '{%s}%s' % (CAS_NAMESPACE, AUTHENTICATION_SUCCESS_ELT))
         if attributes:

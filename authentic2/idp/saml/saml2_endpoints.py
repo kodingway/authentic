@@ -1515,7 +1515,7 @@ def process_logout_response(request, logout, soap_response, next):
         return redirect_next(request, next) or ko_icon(request)
     except:
         logger.exception('process_logout_response: \
-            slo error with soap response %s and logout dump %s' \
+            slo error with soap response %r and logout dump %r' \
                 % (soap_response, logout.dump()))
     else:
         LibertySession.objects.filter(
