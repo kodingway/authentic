@@ -176,7 +176,9 @@ class IdPOptionsSPPolicy(models.Model):
             choices = NAME_ID_FORMATS_CHOICES)
     transient_is_persistent = models.BooleanField(
             verbose_name = \
-_("This IdP falsely sends a transient NameID which is in fact persistent"))
+_("This IdP sends a transient NameID but you want a persistent behaviour for your SP"))
+    persistent_identifier_attribute = models.CharField(_('Persistent '
+            'identifier attribute'), max_length=200, null=True, blank=True)
     allow_create = models.BooleanField(
             verbose_name = _("Allow IdP to create an identity"))
     enable_binding_for_sso_response = models.BooleanField(
