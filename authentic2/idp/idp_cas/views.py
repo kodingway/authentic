@@ -231,9 +231,9 @@ renew:%s and gateway:%s' % (service, renew, gateway))
 
     def return_ticket(self, request, st):
         if '?' in st.service:
-               return HttpResponseRedirect('%s&ticket=%s' % (st.service,st.ticket_id))
-       else:
-               return HttpResponseRedirect('%s?ticket=%s' % (st.service,st.ticket_id))
+            return HttpResponseRedirect('%s&ticket=%s' % (st.service,st.ticket_id))
+        else:
+            return HttpResponseRedirect('%s?ticket=%s' % (st.service,st.ticket_id))
 
     def validate(self, request):
         if request.method != 'GET':
