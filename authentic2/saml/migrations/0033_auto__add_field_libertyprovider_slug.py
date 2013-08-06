@@ -14,9 +14,10 @@ class Migration(SchemaMigration):
         db.add_column(u'saml_libertyprovider', 'slug',
                       self.gf('django.db.models.fields.SlugField')(max_length=140, null=True),
                       keep_default=False)
-        for provider in orm.LibertyProvider.objects.all():
-            provider.slug = slugify(provider.name)
-            provider.save()
+        if not db.dry_run:
+            for provider in orm.LibertyProvider.objects.all():
+                provider.slug = slugify(provider.name)
+                provider.save()
         # Changing field 'LibertyProvider.slug'
         db.alter_column(u'saml_libertyprovider', 'slug', self.gf('django.db.models.fields.SlugField')(default='', unique=True, max_length=140))
         # Adding unique constraint on 'LibertyProvider', fields ['slug']
