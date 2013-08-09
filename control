@@ -3,7 +3,7 @@ Section: python
 Priority: optional
 Maintainer: Frederic Peters <fpeters@debian.org>
 Build-Depends-Indep: python-all-dev (>= 2.5)
-Build-Depends: debhelper (>= 8.0), python-setuptools, git, python-django (>= 1.5)
+Build-Depends: debhelper (>= 8.0), python-setuptools, python-django (>= 1.5)
 Standards-Version: 3.8.3
 Homepage: http://authentic.labs.libre-entreprise.org
 X-Python-Version: >= 2.6
@@ -27,8 +27,7 @@ Description: Versatile identity server
 Package: authentic2
 Architecture: all
 Pre-Depends: python-django (>= 1.5)
-Depends: ${misc:Depends}, adduser,
-    python-authentic2
+Depends: ${misc:Depends}, adduser, python-authentic2
 Description: Versatile identity server Python module
  Authentic is a versatile identity provider aiming to address a broad
  range of needs, from simple to complex setups; it has support for many
