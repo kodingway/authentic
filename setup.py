@@ -5,10 +5,6 @@
 '''
 import authentic2
 
-from ez_setup import use_setuptools
-use_setuptools()
-
-
 from setuptools import setup, find_packages
 from setuptools.command.install_lib import install_lib as _install_lib
 from distutils.command.build import build as _build
