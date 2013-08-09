@@ -29,23 +29,25 @@ class compile_translations(Command):
     def run(self):
         import os
         import sys
-        from django.core.management.commands.compilemessages import \
-            compile_messages
-        for path, dirs, files in os.walk('authentic2'):
-            if 'locale' not in dirs:
-                continue
-            curdir = os.getcwd()
-            os.chdir(os.path.realpath(path))
-            compile_messages(stderr=sys.stderr)
-            os.chdir(curdir)
+        try:
+            from django.core.management.commands.compilemessages import \
+                    compile_messages
+            for path, dirs, files in os.walk('authentic2'):
+                if 'locale' not in dirs:
+                    continue
+                curdir = os.getcwd()
+                os.chdir(os.path.realpath(path))
+                compile_messages(stderr=sys.stderr)
+                os.chdir(curdir)
+        except ImportError:
+            print
+            sys.stderr.write('!!! Please install Django >= 1.4 to build translations')
+            print
+            print
 
 
 class build(_build):
     sub_commands = [('compile_translations', None)] + _build.sub_commands
-
-
-class sdist(_sdist):
-    sub_commands = [('compile_translations', None)] + _sdist.sub_commands
 
 
 class install_lib(_install_lib):
@@ -103,7 +105,6 @@ setup(name="authentic2",
         'requests',
         'django-registration==0.8.0final',
         'django-debug-toolbar<1.0.0'],
-      setup_requires=['django>=1.4'],
       zip_safe=False,
       classifiers=[
           "Development Status :: 5 - Production/Stable",
@@ -125,6 +126,5 @@ setup(name="authentic2",
           'https://bitbucket.org/bdauvergne/django-registration-1.5/get/tip.tar.gz#egg=django-registration-0.8.0final',
       ],
       cmdclass={'build': build, 'install_lib': install_lib,
-          'compile_translations': compile_translations,
-          'sdist': sdist},
+          'compile_translations': compile_translations},
 )
