@@ -3,12 +3,16 @@
 '''
    Setup script for Authentic 2
 '''
-import authentic2
+
+import glob
+import re
+import sys
+import os
 
 from setuptools import setup, find_packages
 from setuptools.command.install_lib import install_lib as _install_lib
 from distutils.command.build import build as _build
-from distutils.command.sdist import sdist  as _sdist
+from distutils.command.sdist import sdist
 from distutils.cmd import Command
 
 
@@ -23,8 +27,6 @@ class compile_translations(Command):
         pass
 
     def run(self):
-        import os
-        import sys
         try:
             from django.core.management.commands.compilemessages import \
                     compile_messages
@@ -45,6 +47,20 @@ class compile_translations(Command):
 class build(_build):
     sub_commands = [('compile_translations', None)] + _build.sub_commands
 
+class eo_sdist(sdist):
+
+    def run(self):
+        print "creating VERSION file"
+        if os.path.exists('VERSION'):
+            os.remove('VERSION')
+        version = get_version()
+        version_file = open('VERSION', 'w')
+        version_file.write(version)
+        version_file.close()
+        sdist.run(self)
+        print "removing VERSION file"
+        if os.path.exists('VERSION'):
+            os.remove('VERSION')
 
 class install_lib(_install_lib):
     def run(self):
@@ -53,11 +69,13 @@ class install_lib(_install_lib):
 
 
 def get_version():
-    import glob
-    import re
-    import os
 
     version = None
+    if os.path.exists('VERSION'):
+        version_file = open('VERSION', 'r')
+        version = version_file.read()
+        version_file.close()
+        return version
     for d in glob.glob('*'):
         if not os.path.isdir(d):
             continue
@@ -122,5 +140,6 @@ setup(name="authentic2",
           'https://bitbucket.org/bdauvergne/django-registration-1.5/get/tip.tar.gz#egg=django-registration-0.8.0final',
       ],
       cmdclass={'build': build, 'install_lib': install_lib,
-          'compile_translations': compile_translations},
+          'compile_translations': compile_translations,
+          'sdist': eo_sdist},
 )
