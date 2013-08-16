@@ -1,7 +1,7 @@
 import datetime as dt
 
 from django.db import models
-from django.utils.timezone import now
+from django.utils import timezone
 
 __all__ = ('Nonce',)
 
@@ -9,8 +9,7 @@ _NONCE_LENGTH_CONSTANT = 256
 
 class NonceManager(models.Manager):
     def cleanup(self, now=None):
-        if not now:
-            now = now()
+        now = now or timezone.now()
         self.filter(not_on_or_after__lt=now).delete()
 
 class Nonce(models.Model):
