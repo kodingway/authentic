@@ -9,7 +9,8 @@ _NONCE_LENGTH_CONSTANT = 256
 
 class NonceManager(models.Manager):
     def cleanup(self, now=None):
-        now = now or now()
+        if not now:
+            now = now()
         self.filter(not_on_or_after__lt=now).delete()
 
 class Nonce(models.Model):
