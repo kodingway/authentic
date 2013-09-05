@@ -2,6 +2,9 @@ from django import forms
 
 from authentic2.compat import get_user_model
 
+User = get_user_model()
+all_field_names = [field.name for field in User._meta.fields]
+field_names = getattr(User, 'USER_PROFILE', all_field_names)
 
 class UserProfileForm(forms.ModelForm):
     error_css_class = 'form-field-error'
@@ -21,9 +24,8 @@ class UserProfileForm(forms.ModelForm):
         return instance
 
     class Meta:
-        model = get_user_model()
+        model = User
         fields = [ field_name
-                for field_name in getattr(model, 'USER_PROFILE',
-                    model._meta.get_all_field_names())
-                if field_name in model._meta.get_all_field_names()
+                for field_name in field_names
+                if field_name in all_field_names
                     and not field_name == model.USERNAME_FIELD ]
