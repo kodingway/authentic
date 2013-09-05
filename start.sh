@@ -15,11 +15,10 @@ if [ "$VIRTUAL_ENV" = "" ]; then
 	fi
 fi
 easy_install -U pip distribute
-pip install -U django>1.5.0,<1.6
+pip install -U 'django>1.5.0,<1.6'
 pip install -U -r requirements.txt
 if [ ! -f $PROJECT.db ]; then
-	$CTL syncdb --all --noinput
-	$CTL migrate --fake
+	$CTL syncdb --migrate --noinput
 	$BASE/load-base-data.sh
 fi
 $CTL runserver
