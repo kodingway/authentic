@@ -1,4 +1,5 @@
 import xml.etree.ElementTree as etree
+import collections
 import lasso
 import x509utils
 import base64
@@ -171,7 +172,7 @@ class Saml2Metadata(object):
                 self.add_keyinfo(options['key'], None)
             if 'disco' in options:
                 self.add_disco_extension(options['disco'])
-        assertion_consumer_idx = 1
+        endpoint_idx = collections.defaultdict(lambda:0)
         for service in listing:
             selected = [ row for row in map if row[0] == service ]
             for row in selected:
@@ -190,8 +191,8 @@ class Saml2Metadata(object):
                                 attribs['isDefault'] = 'true'
                             if row[4] is False:
                                 attribs['isDefault'] = 'false'
-                        attribs['index'] = str(assertion_consumer_idx)
-                        assertion_consumer_idx += 1
+                        attribs['index'] = str(endpoint_idx[service])
+                        endpoint_idx[service] += 1
                     self.tb.start(service, attribs)
                     self.tb.end(service)
 
