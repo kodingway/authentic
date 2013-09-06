@@ -231,7 +231,7 @@ class Saml2Metadata(object):
     def add_disco_extension(self, disco_return_url):
         self.tb.start(self.EXTENSIONS, {})
         self.tb.pushNamespace(self.DISCOVERY_NS)
-        index = 1
+        index = 0
         for url in disco_return_url:
             attrib = {'Binding': self.DISCOVERY_BINDING,
                 'Location': self.url_prefix + url,
