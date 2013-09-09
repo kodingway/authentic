@@ -512,7 +512,7 @@ def continue_sso(request):
                 "attributes %s" % consent_attribute_answer)
     nonce = request.REQUEST.get(NONCE_FIELD_NAME, '')
     if not nonce:
-        logger.error('continue_sso: nonce not found')
+        logger.warning('continue_sso: nonce not found')
         return HttpResponseBadRequest()
     login_dump, consent_obtained, save, nid_format = \
             get_and_delete_key_values(nonce)
