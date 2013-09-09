@@ -1,10 +1,13 @@
 from django import forms
+from django.contrib.auth import models as auth_models
 
 from authentic2.compat import get_user_model
 
+auth_models.User.USER_PROFILE = ('first_name', 'last_name', 'email')
 User = get_user_model()
 all_field_names = [field.name for field in User._meta.fields]
 field_names = getattr(User, 'USER_PROFILE', all_field_names)
+
 
 class UserProfileForm(forms.ModelForm):
     error_css_class = 'form-field-error'
