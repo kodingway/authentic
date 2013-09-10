@@ -96,31 +96,31 @@ def logout(request, next_page='/', redirect_field_name=REDIRECT_FIELD_NAME,
     global __logout_redirection_timeout
     "Logs out the user and displays 'You are logged out' message."
     do_local = 'local' in request.REQUEST
-    l = logout_list(request)
     context = RequestContext(request)
     context['redir_timeout'] = __logout_redirection_timeout
     next_page = request.REQUEST.get(redirect_field_name, next_page)
-    if l and not do_local:
-        # Full logout
-        ok_icon_url = '%s/authentic2/images/ok.png' % settings.STATIC_URL
-        next_is_ok = '?local=ok&next=%s' % urllib.quote(ok_icon_url)
-        code = '<div>'
-        code += _('Local logout...')
-        code += '<iframe src="/logout%s" marginwidth="0" marginheight="0" \
-            scrolling="no" style="border: none" width="16" height="16"> \
-            </iframe></div>' % next_is_ok
-        l += [code]
-        context['logout_list'] = l
-        logger.debug('logout: %r' % unicode(context['logout_list']))
-        context['next_page'] = next_page
-        context['message'] = _('Logging out from all your services')
-        return render_to_response(template, context_instance = context)
-    else:
-        # Local logout
-        auth_logout(request)
-        context['next_page'] = next_page
-        context['message'] = _('Logged out')
-        return render_to_response(template, context_instance = context)
+    if not do_local:
+        l = logout_list(request)
+        if l:
+            # Full logout
+            ok_icon_url = '%s/authentic2/images/ok.png' % settings.STATIC_URL
+            next_is_ok = '?local=ok&next=%s' % urllib.quote(ok_icon_url)
+            code = '<div>'
+            code += _('Local logout...')
+            code += '<iframe src="/logout%s" marginwidth="0" marginheight="0" \
+                scrolling="no" style="border: none" width="16" height="16"> \
+                </iframe></div>' % next_is_ok
+            l += [code]
+            context['logout_list'] = l
+            logger.debug('logout: %r' % unicode(context['logout_list']))
+            context['next_page'] = next_page
+            context['message'] = _('Logging out from all your services')
+            return render_to_response(template, context_instance = context)
+    # Local logout
+    auth_logout(request)
+    context['next_page'] = next_page
+    context['message'] = _('Logged out')
+    return render_to_response(template, context_instance = context)
 
 def redirect_to_logout(request, next_page='/'):
     return HttpResponseRedirect('%s?next=%s' % (reverse(logout), urllib.quote(next_page)))
