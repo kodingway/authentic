@@ -842,8 +842,9 @@ def return_login_response(request, login):
         logger.error('return_login_response: '
             'NotImplementedError with login %s' % login.dump())
         raise NotImplementedError()
+    provider = LibertyProvider.objects.get(entity_id=login.remoteProviderId)
     return return_saml2_response(request, login,
-        title=_('Authentication response'))
+        title=_('You are being redirected to « %s »') % provider.name)
 
 
 def finish_sso(request, login, user=None, save=False, return_profile=False):
@@ -1027,7 +1028,9 @@ def finish_slo(request):
     except:
         logger.exception('finish_slo: failure to build reponse msg')
         pass
-    return return_saml2_response(request, logout)
+    provider = LibertyProvider.objects.get(entity_id=logout.remoteProviderId)
+    return return_saml2_response(request, logout,
+        title=_('You are being redirected to « %s »') % provider.name)
 
 
 def return_logout_error(request, logout, error):
@@ -1037,7 +1040,9 @@ def return_logout_error(request, logout, error):
     # buildResponseMsg
     logout.buildResponseMsg()
     logger.debug('return_logout_error: send an error message %s' % error)
-    return return_saml2_response(request, logout)
+    provider = LibertyProvider.objects.get(entity_id=logout.remoteProviderId)
+    return return_saml2_response(request, logout,
+        title=_('You are being redirected to « %s »') % provider.name)
 
 
 def process_logout_request(request, message, binding):
@@ -1249,7 +1254,9 @@ def slo_soap(request):
         except Exception, e:
             logger.exception('slo_soap: slo, unknown error %s' % str(e))
             logout.buildResponseMsg()
-            return return_saml2_response(request, logout)
+            provider = LibertyProvider.objects.get(entity_id=logout.remoteProviderId)
+            return return_saml2_response(request, logout,
+                title=_('You are being redirected to « %s »') % provider.name)
         for lib_session in lib_sessions:
             try:
                 logger.info('slo_soap: slo, relaying logout to provider %s' \
@@ -1326,7 +1333,9 @@ def slo_soap(request):
     logger.info('slo_soap: processing finished')
     logger.exception('slo_soap: kill django sessions')
     kill_django_sessions(django_session_keys)
-    return return_saml2_response(request, logout)
+    provider = LibertyProvider.objects.get(entity_id=logout.remoteProviderId)
+    return return_saml2_response(request, logout,
+        title=_('You are being redirected to « %s »') % provider.name)
 
 
 @csrf_exempt
@@ -1371,8 +1380,9 @@ def slo(request):
     except lasso.DsError, e:
         logger.exception('slo: signature error %s' % e)
         logout.buildResponseMsg()
+        provider = LibertyProvider.objects.get(entity_id=logout.remoteProviderId)
         return return_saml2_response(request, logout,
-            title=_('Logout response'))
+            title=_('You are being redirected to « %s »') % provider.name)
     except Exception, e:
         logger.exception('slo: slo %s' % message)
         return error_page(_('Invalid logout request'), logger=logger)
@@ -1381,8 +1391,9 @@ def slo(request):
         logger.error('slo: slo received a request from %s without any \
             SessionIndex, it is forbidden' % logout.remoteProviderId)
         logout.buildResponseMsg()
+        provider = LibertyProvider.objects.get(entity_id=logout.remoteProviderId)
         return return_saml2_response(request, logout,
-            title=_('Logout response'))
+            title=_('You are being redirected to « %s »') % provider.name)
     logger.info('slo: asynchronous slo from %s' % logout.remoteProviderId)
     # Filter sessions
     all_sessions = LibertySession.get_for_nameid_and_session_indexes(

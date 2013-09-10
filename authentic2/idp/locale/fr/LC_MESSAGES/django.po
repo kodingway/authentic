@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-23 17:54+0200\n"
-"PO-Revision-Date: 2013-07-30 13:59+0200\n"
+"POT-Creation-Date: 2013-09-10 21:56+0200\n"
+"PO-Revision-Date: 2013-09-10 21:56+0200\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
 "Language: fr\n"
@@ -128,11 +128,11 @@ msgstr "règlement sur les attributs"
 msgid "attribute policies"
 msgstr "règlements sur les attributs"
 
-#: views.py:108
+#: views.py:109
 msgid "Local logout..."
 msgstr "Déconnexion locale"
 
-#: views.py:116
+#: views.py:117
 msgid "Logging out from all your services"
 msgstr "Déconnexion de tous vos services"
 
@@ -151,8 +151,8 @@ msgid ""
 "SAMLv2 Single Sign On: invalid message for WebSSO profile with HTTP-Redirect "
 "binding: %r"
 msgstr ""
-"SAMLv2 Single Sign On: message invalide pour le profile WebSSO avec le binding "
-"HTTP-Redirect: %r"
+"SAMLv2 Single Sign On: message invalide pour le profile WebSSO avec le "
+"binding HTTP-Redirect: %r"
 
 #: saml/saml2_endpoints.py:375
 msgid ""
@@ -178,7 +178,7 @@ msgstr ""
 msgid "continue_sso: unknown provider %s"
 msgstr ""
 
-#: saml/saml2_endpoints.py:662 saml/saml2_endpoints.py:954
+#: saml/saml2_endpoints.py:662 saml/saml2_endpoints.py:955
 #, python-format
 msgid "Provider %s is unknown"
 msgstr ""
@@ -187,31 +187,31 @@ msgstr ""
 msgid "No service provider policy defined"
 msgstr ""
 
-#: saml/saml2_endpoints.py:846
-msgid "Authentication response"
-msgstr ""
+#: saml/saml2_endpoints.py:847 saml/saml2_endpoints.py:1033
+#: saml/saml2_endpoints.py:1045 saml/saml2_endpoints.py:1259
+#: saml/saml2_endpoints.py:1338 saml/saml2_endpoints.py:1385
+#: saml/saml2_endpoints.py:1396
+#, python-format
+msgid "You are being redirected to « %s »"
+msgstr "Vous allez être redirigé sur « %s »"
 
-#: saml/saml2_endpoints.py:937
+#: saml/saml2_endpoints.py:938
 msgid "Error trying to initiate a single sign on"
 msgstr ""
 
-#: saml/saml2_endpoints.py:943
+#: saml/saml2_endpoints.py:944
 msgid "A provider identifier was not provided"
 msgstr ""
 
-#: saml/saml2_endpoints.py:974
+#: saml/saml2_endpoints.py:975
 msgid "idp_sso: No SP policy defined"
 msgstr ""
 
-#: saml/saml2_endpoints.py:986
+#: saml/saml2_endpoints.py:987
 msgid "Server error"
 msgstr ""
 
-#: saml/saml2_endpoints.py:1375 saml/saml2_endpoints.py:1385
-msgid "Logout response"
-msgstr ""
-
-#: saml/saml2_endpoints.py:1378
+#: saml/saml2_endpoints.py:1388
 msgid "Invalid logout request"
 msgstr ""
 
