@@ -145,7 +145,7 @@ class UserAliasInSource(models.Model):
         unique_together = ("name", "source")
 
     def __unicode__(self):
-        return "alias %s of user %s in %s" % (self.name, self.user,
+        return u"alias %s of user %s in %s" % (self.name, self.user,
             self.source)
 
 
@@ -276,15 +276,15 @@ class AttributeData:
         return attribute
 
     def __unicode__(self):
-        s = "AttributeData"
+        s = u"AttributeData"
         values = self.get_values()
         if values:
-            s += " %s with values %s" % (self.get_definition(), values)
+            s += u" %s with values %s" % (self.get_definition(), values)
         source = self.get_source()
         if source:
-            s += " from %s" % str(source)
+            s += u" from %s" % str(source)
         if self.does_expire():
-            s += " (Expires on %s)" % self.does_expire()
+            s += u" (Expires on %s)" % self.does_expire()
         return s
 
 
@@ -623,17 +623,17 @@ class UserAttributeProfile(models.Model):
         self.save()
 
     def __unicode__(self):
-        s = None
+        s = u""
         if self.user:
-            s = "Profile of %s" % self.user
+            s = u"Profile of %s" % self.user
         else:
-            s = "Anonymous profile"
+            s = u"Anonymous profile"
         if not self.get_all_data():
-            s += " is empty."
+            s += u" is empty."
             return s
-        s += " that contains:"
+        s += u" that contains:"
         for d in self.get_all_data():
-            s = s + "\n\t" + d.__unicode__()
+            s = s + u"\n\t" + d.__unicode__()
         return s
 
     class Meta:
