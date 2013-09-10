@@ -107,7 +107,7 @@ def logout(request, next_page='/', redirect_field_name=REDIRECT_FIELD_NAME,
             next_is_ok = '?local=ok&next=%s' % urllib.quote(ok_icon_url)
             code = '<div>'
             code += _('Local logout...')
-            code += '<iframe src="/logout%s" marginwidth="0" marginheight="0" \
+            code += '<iframe src="/logout/%s" marginwidth="0" marginheight="0" \
                 scrolling="no" style="border: none" width="16" height="16"> \
                 </iframe></div>' % next_is_ok
             l += [code]
