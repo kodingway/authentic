@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-10 21:56+0200\n"
-"PO-Revision-Date: 2013-09-10 21:56+0200\n"
+"POT-Creation-Date: 2013-09-10 22:29+0200\n"
+"PO-Revision-Date: 2013-09-10 22:29+0200\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
 "Language: fr\n"
@@ -140,6 +140,31 @@ msgstr "Déconnexion de tous vos services"
 msgid "Logged out"
 msgstr "Déconnecté"
 
+#: idp_openid/views.py:266
+msgid "Trust this site?"
+msgstr ""
+
+#: idp_openid/templates/django_openid_provider/manage_id.html:5
+#: idp_openid/templates/django_openid_provider/manage_id_confirm.html:5
+msgid "Manage OpenID"
+msgstr ""
+
+#: idp_openid/templates/django_openid_provider/manage_id.html:23
+msgid "Your current OpenID"
+msgstr ""
+
+#: idp_openid/templates/django_openid_provider/manage_id.html:52
+msgid "Add a new OpenID identity"
+msgstr ""
+
+#: idp_openid/templates/django_openid_provider/manage_trustroot.html:5
+msgid "Manage trusted site"
+msgstr ""
+
+#: idp_openid/templates/django_openid_provider/manage_trustroot.html:17
+msgid "Your trusted site"
+msgstr ""
+
 #: saml/backend.py:69
 #, python-format
 msgid "Sending logout to %(name)s...."
@@ -192,7 +217,7 @@ msgstr ""
 #: saml/saml2_endpoints.py:1338 saml/saml2_endpoints.py:1385
 #: saml/saml2_endpoints.py:1396
 #, python-format
-msgid "You are being redirected to « %s »"
+msgid "You are being redirected to \"%s\""
 msgstr "Vous allez être redirigé sur « %s »"
 
 #: saml/saml2_endpoints.py:938
