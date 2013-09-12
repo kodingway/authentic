@@ -576,8 +576,8 @@ class LibertyFederation(models.Model):
        it IdP or SP"""
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True,
             on_delete=models.SET_NULL)
-    idp = models.ForeignKey('LibertyIdentityProvider', null=True)
-    sp = models.ForeignKey('LibertyServiceProvider', null=True)
+    idp = models.ForeignKey('LibertyIdentityProvider', null=True, blank=True)
+    sp = models.ForeignKey('LibertyServiceProvider', null=True, blank=True)
     name_id_format = models.CharField(max_length = 100,
             verbose_name = "NameIDFormat", blank=True, null=True)
     name_id_content = models.CharField(max_length = 100,
