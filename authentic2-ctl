@@ -9,4 +9,4 @@ if [ -f /etc/authentic2/authentic.conf ]; then
     . /etc/authentic2/authentic.conf
 fi
 
-/usr/lib/authentic2/manage.py $*
+/usr/lib/authentic2/manage.py "$@"
