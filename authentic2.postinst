@@ -7,7 +7,7 @@ set -e
 
 AUTHENTIC_USER=authentic
 AUTHENTIC_GROUP=authentic
-AUTHENTIC_HOME=/var/lib/authentic
+AUTHENTIC_HOME=/var/lib/authentic2
 
 case "$1" in
     configure)
