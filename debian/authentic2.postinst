@@ -53,7 +53,7 @@ esac
 case "$1" in
     configure)
         if [ -z "$2" ]; then
-            su authentic -p -c "/usr/bin/authentic2-ctl syncdb --settings authentic2.settings --noinput"
+            su authentic -p -c "/usr/bin/authentic2-ctl syncdb --migrate --noinput"
         fi
         ;;
 esac
