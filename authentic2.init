@@ -5,8 +5,8 @@
 # Required-Stop:
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: Passerelle provides an uniform access to multiple data sources and services
-# Description:       Passerelle provides an uniform access to multiple data sources and services.
+# Short-Description: Authentic2 is a versatile identity provider
+# Description:       Authentic2 is a versatile identity provider
 ### END INIT INFO
 
 # Author: Jérôme Schneider <jschneider@entrouvert.com>
