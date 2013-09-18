@@ -1,8 +1,14 @@
 #!/bin/sh
 
 if [ "$(whoami)" != "authentic" ]; then
-    echo "You must run this script with authentic user"
-    exit 1
+    if which sudo; then
+      if sudo -v -u authentic; then
+        sudo -u authentic authentic2-ctl "$@"
+        exit $?
+      fi
+      echo "You must run this script with authentic user"
+      exit 1
+    fi
 fi
 
 if [ -f /etc/authentic2/authentic.conf ]; then
