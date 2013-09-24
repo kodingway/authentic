@@ -176,7 +176,11 @@ existing providers with the same tag will be removed if they do not exist\
                 else:
                     print 'No SAML2 identity provider options policy provided'
                 loaded = []
-                for entity_descriptor in doc.getroot().findall(ENTITY_DESCRIPTOR_TN):
+                if doc.getroot().tag == ENTITY_DESCRIPTOR_TN:
+                    entity_descriptors = [ doc.getroot() ]
+                else:
+                    entity_descriptors = doc.getroot().findall(ENTITY_DESCRIPTOR_TN)
+                for entity_descriptor in entity_descriptors:
                     try:
                         load_one_entity(entity_descriptor, options, sp_policy=sp_policy, idp_policy=idp_policy)
                         loaded.append(entity_descriptor.get(ENTITY_ID))
