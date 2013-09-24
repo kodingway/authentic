@@ -1101,7 +1101,7 @@ def localLogout(request, error):
     remove_liberty_session_sp(request)
     signals.auth_logout.send(sender=None, user=request.user)
     auth_logout(request)
-    if error.url:
+    if hasattr(error, 'url'):
         return error_page(request,
             _('localLogout:  SOAP error \
             with %s - Only local logout performed.') % error.url,
