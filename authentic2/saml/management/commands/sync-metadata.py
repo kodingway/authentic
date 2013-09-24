@@ -5,6 +5,7 @@ import xml.etree.ElementTree as etree
 import lasso
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
+from django.template.defaultfilters import slugify
 
 from authentic2.saml.models import *
 
@@ -53,8 +54,9 @@ def load_one_entity(tree, options, sp_policy=None, idp_policy=None):
         print 'Deleted', entity_id
         return
     if idp or sp:
+        slug = slugify(name)
         provider, created = LibertyProvider.objects.get_or_create(entity_id=entity_id,
-                protocol_conformance=3)
+                protocol_conformance=3, defaults={'name': name, 'slug': slug})
         if options['verbosity'] == '2':
             if created:
                 what = 'Creating'
