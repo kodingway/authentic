@@ -1068,7 +1068,7 @@ def logout(request):
     try:
         logout.initRequest(pid)
     except lasso.Error, error:
-        localLogout(request, error)
+        return localLogout(request, error)
     if not logout.msgBody:
         try:
             logout.buildRequestMsg()
