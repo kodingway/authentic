@@ -14,9 +14,11 @@
    {% if relay_state %}
    <input type="hidden" name="RelayState" value="{{ relay_state }}"/>
    {% endif %}
-   <div class="buttons-bar">
-    <input type="submit" name="sendButton" value="{% trans 'Send' %}" />
-   </div>
+   <noscript>
+     <div class="buttons-bar">
+      <input type="submit" name="sendButton" value="{% trans 'Send' %}" />
+     </div>
+  </noscript>
   </form>
 </div>
 {% endblock %}
