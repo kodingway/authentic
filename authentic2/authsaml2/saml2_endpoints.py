@@ -692,6 +692,7 @@ def sso_after_response(request, login, relay_state=None, provider=None):
                     'NameID is used.')
             login.nameIdentifier.format = \
                 lasso.SAML2_NAME_IDENTIFIER_FORMAT_PERSISTENT
+            login.nameIdentifier.nameQualifier = provider.entity_id
 
         user = AuthSAML2PersistentBackend(). \
             authenticate(name_id=login.nameIdentifier,
