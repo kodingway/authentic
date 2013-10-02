@@ -663,7 +663,5 @@ if any, to sign a "copyright disclaimer" for the program, if necessary.
 For more information on this, and how to apply and follow the GNU AGPL, see
 <http://www.gnu.org/licenses/>.
 
-External modules oath and totp-js modules are licensed under a BSD-like licence.
-
 OpenID idp module is derived of the project django_openid_provider which is
 distributed under the Apache 2.0 license.

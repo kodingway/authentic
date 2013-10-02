@@ -317,7 +317,6 @@ ADMIN_TOOLS_MENU = 'authentic2.menu.CustomMenu'
 AUTH_SAML2 = 'AUTH_SAML2' in os.environ
 AUTH_OPENID = 'AUTH_OPENID' in os.environ
 AUTH_SSL = 'AUTH_SSL' in os.environ
-AUTH_OATH = 'AUTH_OATH' in os.environ
 IDP_SAML2 = 'IDP_SAML2' in os.environ
 IDP_OPENID = 'IDP_OPENID' in os.environ
 IDP_CAS = 'IDP_CAS' in os.environ
@@ -353,11 +352,6 @@ if AUTH_SSL:
     AUTHENTICATION_BACKENDS += ('authentic2.auth2_auth.auth2_ssl.backend.SSLBackend',)
     AUTH_FRONTENDS += ('authentic2.auth2_auth.auth2_ssl.frontend.SSLFrontend',)
     INSTALLED_APPS += ('authentic2.auth2_auth.auth2_ssl',)
-
-if AUTH_OATH:
-    INSTALLED_APPS += ('authentic2.auth2_auth.auth2_oath',)
-    AUTHENTICATION_BACKENDS += ('authentic2.auth2_auth.auth2_oath.backend.OATHTOTPBackend',)
-    AUTH_FRONTENDS += ('authentic2.auth2_auth.auth2_oath.frontend.OATHOTPFrontend',)
 
 if IDP_SAML2:
     IDP_BACKENDS += ('authentic2.idp.saml.backend.SamlBackend',)

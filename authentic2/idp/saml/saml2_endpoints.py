@@ -260,9 +260,6 @@ def build_assertion(request, login, nid_format='transient', attributes=None):
         elif backend == \
                 'authentic2.authsaml2.backends.AuthSAML2TransientBackend':
             authn_context = lasso.SAML2_AUTHN_CONTEXT_UNSPECIFIED
-        elif backend == \
-                'authentic2.auth2_auth.auth2_oath.backend.OATHTOTPBackend':
-            authn_context = lasso.SAML2_AUTHN_CONTEXT_TIME_SYNC_TOKEN
         else:
             backend = load_backend(backend)
             if hasattr(backend, 'get_saml2_authn_context'):
