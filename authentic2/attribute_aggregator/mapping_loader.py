@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 '''
-    VERIDIC Project - Towards a centralized access control system
+    Authentic 2 - Versatile Identity Server
 
-    Copyright (C) 2011  Mikael Ates
+    Copyright (C) 2011 Entr'ouvert
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as
