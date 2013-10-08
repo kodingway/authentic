@@ -446,7 +446,7 @@ msgstr "associations clé valeurs"
 
 #: templates/saml/post_form.html:11
 msgid "You should be automatically redirected."
-msgstr "Vous devriez être automatiquement redirigés."
+msgstr "Vous devriez être automatiquement redirigé."
 
 #: templates/saml/post_form.html:12
 msgid ""
