@@ -9,6 +9,7 @@ from django.utils.translation import ugettext as _
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic.base import TemplateView
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.contrib import messages
@@ -245,3 +246,8 @@ def delete_certificate(request, next='/'):
     messages.add_message(request, messages.ERROR,
         _('Certificate deletion failed.'))
     return HttpResponseRedirect(next)
+
+class SslErrorView(TemplateView):
+    template_name = 'error_ssl.html'
+
+error_ssl = SslErrorView.as_view()
