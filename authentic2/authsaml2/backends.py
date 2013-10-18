@@ -105,7 +105,7 @@ class AuthSAML2PersistentBackend:
         if not username:
             # FIXME: maybe keep more information in the forged username
             username = 'saml2-%s' % ''. \
-                join([random.choice(string.letters) for x in range(10)])
+                join([random.SystemRandom().choice(string.letters) for x in range(10)])
         User = get_user_model()
         user = User()
         user.username = username

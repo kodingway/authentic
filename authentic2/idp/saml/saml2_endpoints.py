@@ -81,7 +81,7 @@ logger = logging.getLogger('authentic2.idp.saml')
 
 def get_nonce():
     alphabet = string.letters+string.digits
-    return '_'+''.join(random.choice(alphabet) for i in xrange(20))
+    return '_'+''.join(random.SystemRandom().choice(alphabet) for i in xrange(20))
 
 metadata_map = (
         (saml2utils.Saml2Metadata.SINGLE_SIGN_ON_SERVICE,
