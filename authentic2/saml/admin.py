@@ -3,6 +3,7 @@ import logging
 
 from django.contrib import admin
 from django.utils.translation import ugettext as _
+from django.conf.urls.defaults import patterns, url
 from django.conf import settings
 from django.forms import ModelForm
 import django.forms
@@ -16,6 +17,8 @@ from authentic2.saml.models import LibertySessionDump, LibertyFederation
 from authentic2.saml.models import LibertyAssertion, LibertySessionSP, KeyValue
 from authentic2.saml.models import LibertySession
 from authentic2.http_utils import get_url
+
+from . import admin_views
 
 logger = logging.getLogger(__name__)
 
@@ -175,6 +178,15 @@ class LibertyProviderAdmin(admin.ModelAdmin):
     ]
     actions = [ update_metadata ]
     prepopulated_fields = {'slug': ('name',)}
+
+    def get_urls(self):
+        urls = super(LibertyProviderAdmin, self).get_urls()
+        urls = patterns('',
+            url(r'^add-from-url/$',
+                self.admin_site.admin_view(admin_views.AddLibertyProviderFromUrlView.as_view(model_admin=self)),
+                name='eo_facture_facture_add_from_url'),
+            ) + urls
+        return urls
 
 
 class LibertyProviderPolicyAdmin(admin.ModelAdmin):
