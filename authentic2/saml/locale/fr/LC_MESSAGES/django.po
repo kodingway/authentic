@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-24 11:14+0200\n"
-"PO-Revision-Date: 2013-07-24 15:36+0200\n"
+"POT-Creation-Date: 2013-10-25 13:53+0200\n"
+"PO-Revision-Date: 2013-10-25 13:55+0200\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
 "Language: fr\n"
@@ -17,17 +17,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n>1;\n"
 
-#: admin.py:148
+#: admin.py:153
 #, python-format
 msgid "Failure to resolve %(entity_id)s: %(error)s"
 msgstr "Échec dans la résolution de %(entity_id)s: %(error)s"
 
-#: admin.py:152
+#: admin.py:157
 #, python-format
 msgid "Metadata update for: %s"
 msgstr "Mise à jour des metadatas pour: %s"
 
-#: admin.py:165
+#: admin.py:171
 msgid "Metadata files"
 msgstr "Fichiers de metadonnées"
 
@@ -35,112 +35,135 @@ msgstr "Fichiers de metadonnées"
 msgid "Your access is denied. At least one attribute does not match."
 msgstr "Accés interdit. Au moins un attribut ne correspond pas."
 
-#: models.py:23
+#: forms.py:9
+msgid "Name"
+msgstr ""
+
+#: forms.py:10
+msgid "Shortcut"
+msgstr ""
+
+#: forms.py:11 models.py:342
+msgid "Internal nickname for the service provider"
+msgstr "Nom local du fournisseur de service"
+
+#: forms.py:12
+msgid "Metadata's URL"
+msgstr "URL des métadonnées"
+
+#: models.py:24
 msgid "Bad metadata file"
 msgstr "Fichier de metadonnées incorrect"
 
-#: models.py:77
+#: models.py:78
 msgid "Use the default from the metadata file"
 msgstr "Utilisation des valeurs par défaut du fichier de métadonnées"
 
-#: models.py:78 models.py:113
+#: models.py:79 models.py:114
 msgid "Artifact binding"
 msgstr "Binding utilisant les artefacts"
 
-#: models.py:79 models.py:114
+#: models.py:80 models.py:115
 msgid "POST binding"
 msgstr "Binding utilisant le verbe HTTP POST"
 
-#: models.py:85
+#: models.py:86
 msgid "None"
 msgstr "Aucun"
 
-#: models.py:87
+#: models.py:88
 msgid "Persistent"
 msgstr "Persistant"
 
-#: models.py:89
+#: models.py:90
 msgid "Transient"
 msgstr "Temporaire"
 
-#: models.py:91
+#: models.py:92
 msgid "Email (only supported by SAMLv2)"
 msgstr "Email (seulement supporté en SAML2)"
 
-#: models.py:119
+#: models.py:120
 msgid "Redirect binding"
 msgstr "Binding utilisant les redirections HTTP"
 
-#: models.py:120
+#: models.py:121
 msgid "SOAP binding"
 msgstr "Binding utilisant le protocole SOAP sur HTTP"
 
-#: models.py:125
+#: models.py:126
 msgid "Let authentic decides which signatures to check"
 msgstr "Laisser authentic decider quelles signatures vérifier"
 
-#: models.py:126
+#: models.py:127
 msgid "Always check signatures"
 msgstr "Vérifier toutes les signatures"
 
-#: models.py:127
+#: models.py:128
 msgid "Does not check signatures"
 msgstr "Ne pas vérifier les signatures"
 
-#: models.py:133
+#: models.py:134
 msgid "How to verify signatures Authentication Request ?"
 msgstr "Comment vérifier les signatures des requêtes d'authentification"
 
-#: models.py:143
+#: models.py:144
 msgid "liberty service provider policy"
 msgstr "règlement d'options pour fournisseur de service liberty"
 
-#: models.py:144
+#: models.py:145
 msgid "liberty service provider policies"
 msgstr "règlements d'options pour fournisseur de service liberty"
 
-#: models.py:149
+#: models.py:150
 msgid "Account linking by authentication"
 msgstr "Liaison des comptes par authentification"
 
-#: models.py:151
+#: models.py:152
 msgid "Create new account"
 msgstr "Créer un nouveau compte"
 
-#: models.py:155
+#: models.py:156
 msgid "Ask authentication"
 msgstr "Requerir l'authentification"
 
-#: models.py:156
+#: models.py:157
 msgid "Open a session"
 msgstr "Etablir une session"
 
-#: models.py:167 models.py:248 models.py:313
+#: models.py:168 models.py:251 models.py:316
 msgid "name"
 msgstr "nom"
 
-#: models.py:168 models.py:249 models.py:314 models.py:404 models.py:434
+#: models.py:169 models.py:252 models.py:317 models.py:419 models.py:449
 msgid "Enabled"
 msgstr "Activé"
 
-#: models.py:170
+#: models.py:171
 msgid "Do not send a nameId Policy"
 msgstr "Ne pas envoyer une nameId Policy"
 
-#: models.py:172
+#: models.py:173
 msgid "Requested NameID format"
 msgstr "Format du NameID demandé"
 
-#: models.py:178
-msgid "This IdP falsely sends a transient NameID which is in fact persistent"
+#: models.py:179
+msgid ""
+"This IdP sends a transient NameID but you want a persistent behaviour for "
+"your SP"
 msgstr ""
-"Cet IdP envoie un nameID transient qui doit être considéré comme persistent"
+"Cet IdP envoie un nameID transient mais vous souhaitez un comportement persistent "
+"pour ce fournisseur de service"
 
 #: models.py:180
+msgid "Persistent identifier attribute"
+msgstr "Attribut servant d'identifiant persistent"
+
+#: models.py:183
 msgid "Allow IdP to create an identity"
 msgstr "Autoriser l'IdP à créer une identité"
 
-#: models.py:182
+#: models.py:185
 msgid ""
 "Binding for Authnresponse             (taken from metadata by the IdP if not "
 "enabled)"
@@ -148,11 +171,11 @@ msgstr ""
 "Transport pour les réponses d'authentification (extrait des métadonnées du "
 "fournisseur de service si non activé)"
 
-#: models.py:185
+#: models.py:188
 msgid "Binding for the SSO responses"
 msgstr "Binding pour les reponses au SSO"
 
-#: models.py:189
+#: models.py:192
 msgid ""
 "HTTP method for single logout request             (taken from metadata if "
 "not enabled)"
@@ -160,11 +183,11 @@ msgstr ""
 "Transport pour les requêtes de déconnexion (extrait des métadonnées du "
 "fournisseur de service si non activé)"
 
-#: models.py:192
+#: models.py:195
 msgid "HTTP binding for the SLO requests"
 msgstr "Binding HTTP pour les requêtes de SLO"
 
-#: models.py:197
+#: models.py:200
 msgid ""
 "HTTP method for federation termination request             (taken from "
 "metadata if not enabled)"
@@ -172,142 +195,138 @@ msgstr ""
 "Transport pour les requêtes de suppression de fédération (extrait des "
 "métadonnées du fournisseur de service si non activé)"
 
-#: models.py:200
+#: models.py:203
 msgid "HTTP method for the SLO requests"
 msgstr "Méthode HTTP pour les requêtes de SLO"
 
-#: models.py:205
+#: models.py:208
 msgid "Require the user consent be given at account linking"
 msgstr ""
 "Requerir que le consentement utilisateur soit donné lors de la liaison de "
 "compte"
 
-#: models.py:208
+#: models.py:211
 msgid "Force authentication"
 msgstr "Forcer l'authentification"
 
-#: models.py:210
+#: models.py:213
 msgid "Passive authentication"
 msgstr "Authentification sans action de l'utilisateur"
 
-#: models.py:212
+#: models.py:215
 msgid "Want AuthnRequest signed"
 msgstr "Les requêtes d'authentification doivent être signées"
 
-#: models.py:215
+#: models.py:218
 msgid "Behavior with persistent NameID"
 msgstr "Comportement avec un NameID persistent"
 
-#: models.py:220
+#: models.py:223
 msgid "Behavior with transient NameID"
 msgstr "Comportement avec un NameID transient"
 
-#: models.py:226
+#: models.py:229
 msgid "Return URL after a successful authentication"
 msgstr "URL de retour après un authentification valide"
 
-#: models.py:228 models.py:276
+#: models.py:231 models.py:279
 msgid "Accept to receive Single Logout requests"
 msgstr "Accepter les requêtes de déconnexion"
 
-#: models.py:231 models.py:279
+#: models.py:234 models.py:282
 msgid "Forward Single Logout requests"
 msgstr "Faire suivre les requêtes de déconnexion"
 
-#: models.py:235 models.py:440
+#: models.py:238 models.py:455
 msgid "identity provider options policy"
 msgstr "règlement des options de fournisseur d'identités"
 
-#: models.py:236
+#: models.py:239
 msgid "identity provider options policies"
 msgstr "règlements des options de fournisseur d'identités"
 
-#: models.py:251
+#: models.py:254
 msgid "Prefered assertion consumer binding"
 msgstr "Binding du consommateur d'assertion préféré"
 
-#: models.py:254
+#: models.py:257
 msgid "Encrypt NameID"
 msgstr "Encrypter le NameID"
 
-#: models.py:256
+#: models.py:259
 msgid "Encrypt Assertion"
 msgstr "Encrypter l'assertion"
 
-#: models.py:258
+#: models.py:261
 msgid "Authentication request signed"
 msgstr "Requête d'authentification signée"
 
-#: models.py:260
+#: models.py:263
 msgid "Allow IdP initiated SSO"
 msgstr "Autoriser le SSO initié par l'IdP"
 
-#: models.py:267
+#: models.py:270
 msgid "NameID formats accepted"
 msgstr "Formats de NameID acceptés"
 
-#: models.py:274
+#: models.py:277
 msgid "Ask user for consent when creating a federation"
 msgstr "Demander le consentement utilisateur à la création d'une fédération"
 
-#: models.py:283 models.py:407
+#: models.py:286 models.py:422
 msgid "service provider options policy"
 msgstr "règlement des options de fournisseur de services"
 
-#: models.py:284
+#: models.py:287
 msgid "service provider options policies"
 msgstr "règlements des options de fournisseur de services"
 
-#: models.py:296
+#: models.py:299
 msgid "authorization attribute map"
 msgstr "carte des attributs d'autorisation"
 
-#: models.py:297
+#: models.py:300
 msgid "authorization attribute maps"
 msgstr "cartes des attributs d'autorisation"
 
-#: models.py:309
+#: models.py:312
 msgid "authorization attribute mapping"
 msgstr "correspondance entre attributs d'autorisation"
 
-#: models.py:310
+#: models.py:313
 msgid "authorization attribute mappings"
 msgstr "correspondances entre attributs d'autorisation"
 
-#: models.py:321
+#: models.py:324
 msgid "Default message to display to the user when access is denied"
 msgstr ""
 "Message par défaut à afficher à l'utilisateur quand l'accès lui est refusé"
 
-#: models.py:322
+#: models.py:325
 msgid "You are not authorized to access the service."
 msgstr "Vous n'etes pas autorise à acceder a ce service."
 
-#: models.py:325 models.py:447
+#: models.py:328 models.py:462
 msgid "authorization identity providers policy"
 msgstr "règlement des autorisations pour les fournisseurs d'identité"
 
-#: models.py:326
+#: models.py:329
 msgid "authorization identity providers policies"
 msgstr "règlement des autorisations pour les fournisseurs d'identité"
 
-#: models.py:335
-msgid "Internal nickname for the service provider"
-msgstr "Nom local du fournisseur de service"
-
-#: models.py:378
+#: models.py:390
 msgid "Protocol other than SAML 2.0 are unsupported"
 msgstr "Les protocoles autre que SAML 2.0 ne sont pas supportés"
 
-#: models.py:382
+#: models.py:397
 msgid "liberty provider"
 msgstr "fournisseur liberty"
 
-#: models.py:383
+#: models.py:398
 msgid "liberty providers"
 msgstr "fournisseurs liberty"
 
-#: models.py:406
+#: models.py:421
 msgid ""
 "The following options policy will apply except if a policy for all service "
 "provider is defined."
@@ -315,11 +334,11 @@ msgstr ""
 "Active le règlement d'option de fournisseur de service qui suit sauf si un "
 "règlementpour tous les fournisseurs de service est actif"
 
-#: models.py:409
+#: models.py:424
 msgid "Protocol policy"
 msgstr "Règlement sur le protocole"
 
-#: models.py:411
+#: models.py:426
 msgid ""
 "The following attribute policy will apply except if a policy for all service "
 "provider is defined."
@@ -327,19 +346,19 @@ msgstr ""
 "Le règlement sur les attributs qui suit s'appliquera sauf si un "
 "règlementpour tous les fournisseurs de services est défini."
 
-#: models.py:414
+#: models.py:429
 msgid "attribute policy"
 msgstr "règlement sur les attributs"
 
-#: models.py:423
+#: models.py:438
 msgid "liberty service provider"
 msgstr "fournisseur de service liberty"
 
-#: models.py:424
+#: models.py:439
 msgid "liberty service providers"
 msgstr "fournisseurs de service liberty"
 
-#: models.py:436
+#: models.py:451
 msgid ""
 "The following options policy will apply except if a policy for all identity "
 "provider is defined."
@@ -347,7 +366,7 @@ msgstr ""
 "Le règlement d'option pour les fournisseurs d'identité qui suit s'appliquera "
 "sauf si un règlement pour tous les fournisseurs d'identité est défini."
 
-#: models.py:443
+#: models.py:458
 msgid ""
 "The following authorization policy will apply except if a policy for all "
 "identity provider is defined."
@@ -356,93 +375,116 @@ msgstr ""
 "s'appliquera sauf si un règlement pour tous les fournisseurs d'identité est "
 "défini."
 
-#: models.py:457
+#: models.py:472
 msgid "liberty identity provider"
 msgstr "fournisseur d'identité liberty"
 
-#: models.py:458
+#: models.py:473
 msgid "liberty identity providers"
 msgstr "fournisseurs d'identité liberty"
 
-#: models.py:491
+#: models.py:506
 msgid "liberty session dump"
 msgstr "dump de session liberty"
 
-#: models.py:492
+#: models.py:507
 msgid "liberty session dumps"
 msgstr "dumps de session liberty"
 
-#: models.py:505
+#: models.py:520
 msgid "liberty manage dump"
 msgstr "dump du profil gestion des fédérations liberty"
 
-#: models.py:506
+#: models.py:521
 msgid "liberty manage dumps"
 msgstr "dumps du profil gestion des fédérations liberty"
 
-#: models.py:524
+#: models.py:539
 msgid "liberty artifact"
 msgstr "artéfact liberty"
 
-#: models.py:525
+#: models.py:540
 msgid "liberty artifacts"
 msgstr "artéfacts liberty"
 
-#: models.py:556
+#: models.py:571
 msgid "liberty assertion"
 msgstr "assertion liberty"
 
-#: models.py:557
+#: models.py:572
 msgid "liberty assertions"
 msgstr "assertions liberty"
 
-#: models.py:594
+#: models.py:609
 msgid "liberty federation"
 msgstr "fédérations liberty"
 
-#: models.py:595
+#: models.py:610
 msgid "liberty federations"
 msgstr "fédérations liberty"
 
-#: models.py:609
+#: models.py:624
 msgid "Qualifier"
 msgstr ""
 
-#: models.py:611
+#: models.py:626
 msgid "NameIDFormat"
 msgstr ""
 
-#: models.py:613
+#: models.py:628
 msgid "NameID"
 msgstr ""
 
-#: models.py:615
+#: models.py:630
 msgid "SPNameQualifier"
 msgstr ""
 
-#: models.py:642
+#: models.py:657
 msgid "liberty session"
 msgstr "session liberty"
 
-#: models.py:643
+#: models.py:658
 msgid "liberty sessions"
 msgstr "sessions liberty"
 
-#: models.py:652
+#: models.py:667
 msgid "liberty service provider session"
 msgstr "session de fournisseur de service liberty"
 
-#: models.py:653
+#: models.py:668
 msgid "liberty service provider sessions"
 msgstr "sessions de fournisseur de service liberty"
 
-#: models.py:663
+#: models.py:678
 msgid "key value association"
 msgstr "association clé valeur"
 
-#: models.py:664
+#: models.py:679
 msgid "key value associations"
 msgstr "associations clé valeurs"
+
+#: templates/admin/saml/libertyprovider/add_from_url.html:18
+msgid "Home"
+msgstr ""
+
+#: templates/admin/saml/libertyprovider/add_from_url.html:21
+msgid "Rapid' facture"
+msgstr ""
+
+#: templates/admin/saml/libertyprovider/add_from_url.html:30
+msgid "Please correct the error below."
+msgid_plural "Please correct the errors below."
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/admin/saml/libertyprovider/change_list.html:9
+#, python-format
+msgid "Add %(name)s"
+msgstr "Ajouter %(name)s"
+
+#: templates/admin/saml/libertyprovider/change_list.html:13
+msgid "Add from URL"
+msgstr "Ajouter depuis une URL"
 
 #: templates/saml/post_form.html:11
 msgid "You should be automatically redirected."
@@ -456,6 +498,6 @@ msgstr ""
 "Si cette page est encore visible après quelques secondes, cliquez sur le "
 "bouton Envoyer ci-dessous."
 
-#: templates/saml/post_form.html:18
+#: templates/saml/post_form.html:19
 msgid "Send"
 msgstr "Envoyer"
