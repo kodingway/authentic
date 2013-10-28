@@ -363,7 +363,8 @@ def sso(request):
             lasso.ProfileMissingIssuerError,), e:
             logger.error('sss: invalid message for WebSSO profile with '
                           'HTTP-Redirect binding: %r exception: %s' \
-                          % (message, e))
+                          % (message, e),
+                          extra={'request': request})
             return HttpResponseBadRequest(_("SAMLv2 Single Sign On: "
                 "invalid message for WebSSO profile with HTTP-Redirect "
                 "binding: %r") % message)
