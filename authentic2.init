@@ -42,6 +42,12 @@ authentic2.wsgi:application"
 # Load confg
 . /etc/authentic2/authentic.conf
 
+# Load extra config
+EXTRA_CONFIG = $(ls /etc/authentic2/config.d/*|sort -V)
+for extra_config in $EXTRA_CONFIG; do
+	. $extra_config
+done
+
 # Load the VERBOSE setting and other rcS variables
 . /lib/init/vars.sh
 
