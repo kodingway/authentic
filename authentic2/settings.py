@@ -21,12 +21,18 @@ if 'ADMINS' in os.environ:
 
 MANAGERS = ADMINS
 
+
 DATABASES = {
     'default': {
-        'ENGINE': os.environ.get('DATABASE_ENGINE', 'django.db.backends.sqlite3'),
-        'NAME': os.environ.get('DATABASE_NAME', os.path.join(PROJECT_PATH, PROJECT_NAME + '.db')),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(PROJECT_PATH, PROJECT_NAME + '.db'),
     }
 }
+
+for key in os.environ:
+    if key.startswith('DATABASE_'):
+        prefix, db_key = key.split('_', 1)
+        DATABASES['default'][db_key] = os.environ[key]
 
 # Hey Entr'ouvert is in France !!
 TIME_ZONE = 'Europe/Paris'
