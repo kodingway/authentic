@@ -276,13 +276,6 @@ LOGGING = {
             'formatter': 'verbose',
             'filters': ['cleaning'],
         },
-        'local_file': {
-            'level':'DEBUG',
-            'class':'logging.FileHandler',
-            'formatter': 'verbose',
-            'filename': os.environ.get('LOG_ROOT', os.path.join(PROJECT_PATH, 'log.log')),
-            'filters': ['cleaning'],
-        },
         'syslog': {
             'level':'INFO',
             'class':'logging.handlers.SysLogHandler',
@@ -296,18 +289,13 @@ LOGGING = {
         }
     },
     'loggers': {
-        'django': {
-            'handlers':['null'],
-            'propagate': True,
-            'level':'INFO',
-        },
         'django.request': {
-            'handlers': ['mail_admins'],
+            'handlers': ['mail_admins', 'syslog'],
             'level': 'ERROR',
             'propagate': False,
         },
         '': {
-                'handlers': ['local_file'] + (['console'] if DEBUG else []),
+                'handlers': ['mail_admins', 'syslog'] + (['console'] if DEBUG else []),
                 'level': 'INFO',
         }
     },
