@@ -40,6 +40,7 @@ _DEFAULTS = {
     'timeout': 1,
     'disable_update': False,
     'use_for_data' : None,
+    'bind_with_username': False,
 }
 
 _REQUIRED = ('url', 'basedn')
@@ -134,10 +135,13 @@ class LDAPBackend():
                                 return None
                             continue
                     try:
-                        user_basedn = block.get('user_basedn', block['basedn'])
-                        results = conn.search_s(user_basedn,
-                                ldap.SCOPE_SUBTREE,
-                                block['user_filter'].format(username=username))
+                        if block.get('bind_with_username'):
+                            results = [[username]]
+                        else:
+                            user_basedn = block.get('user_basedn', block['basedn'])
+                            query = block['user_filter'].format(username=username)
+                            log.debug('using query %r from base dn %r', query, user_basedn)
+                            results = conn.search_s(user_basedn, ldap.SCOPE_SUBTREE, query)
                     except ldap.NO_SUCH_OBJECT:
                         log.error('user basedn %s not found', user_basedn)
                         if block['replicas']:
