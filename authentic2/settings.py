@@ -298,10 +298,10 @@ LOGGING = {
         }
     },
     'loggers': {
+        # disable default handlers
         'django.request': {
-            'handlers': ['mail_admins', 'syslog'],
-            'level': 'ERROR',
-            'propagate': False,
+            'handlers': [],
+            'propagate': True,
         },
         '': {
                 'handlers': ['mail_admins', 'syslog'] + (['console'] if DEBUG else []),
@@ -309,6 +309,20 @@ LOGGING = {
         }
     },
 }
+
+# add sentry handler if environment contains SENTRY_DSN
+if 'SENTRY_DSN' in os.environ:
+    try:
+        import raven
+    except ImportError:
+        raise ImproperlyConfigured('SENTRY_DSN environment variable is set but raven is not installed.')
+    SENTRY_DSN = os.environ['SENTRY_DSN']
+    LOGGING['handlers']['sentry'] = {
+            'level': 'ERROR',
+            'class': 'raven.handlers.logging.SentryHandler',
+            'dsn': SENTRY_DSN,
+    }
+    LOGGING['loggers']['']['handlers'].append('sentry')
 
 SOUTH_TESTS_MIGRATE = False
 
