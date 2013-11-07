@@ -177,3 +177,15 @@ class DeletedUser(models.Model):
     class Meta:
         verbose_name = _('user to delete')
         verbose_name_plural = _('users to delete')
+
+class UserExternalId(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+            verbose_name=_('user'))
+    external_id = models.URLField(max_length=256,
+            verbose_name=_('external id'))
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = _('user external id')
+        verbose_name_plural = _('user external ids')
+
