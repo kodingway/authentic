@@ -1,5 +1,6 @@
 # Django settings for authentic project.
 import os
+from django.core.exceptions import ImproperlyConfigured
 
 gettext_noop = lambda s: s
 
@@ -248,6 +249,14 @@ SAML_METADATA_AUTOLOAD = os.environ.get('SAML_METADATA_AUTOLOAD', 'none')
 
 PUSH_PROFILE_UPDATES = 'PUSH_PROFILE_UPDATES' in os.environ
 
+##################################
+# LDAP Configuration
+##################################
+if 'LDAP_AUTH_SETTINGS' in os.environ:
+    try:
+        LDAP_AUTH_SETTINGS = json.loads(os.environ['LDAP_AUTH_SETTINGS'])
+    except Exception, e:
+        raise ImproperlyConfigured('LDAP_AUTH_SETTINGS is not a JSON document', e)
 
 # Logging settings
 
@@ -356,3 +365,6 @@ if IDP_OPENID:
 
 if IDP_CAS:
     INSTALLED_APPS += ('authentic2.idp.idp_cas',)
+
+if LDAP_AUTH_SETTINGS:
+    AUTHENTICATION_BACKENDS += ('authentic2.backends.LDAPBackend',)
