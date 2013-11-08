@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-24 11:22+0200\n"
-"PO-Revision-Date: 2013-07-24 11:26+0200\n"
+"POT-Creation-Date: 2013-11-07 23:53+0100\n"
+"PO-Revision-Date: 2013-11-08 15:44+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
 "Language: fr\n"
@@ -105,7 +105,8 @@ msgstr "Identifiant"
 msgid ""
 "Required. 30 characters or fewer. Letters, numbers and @/./+/-/_ characters"
 msgstr ""
-"Requis. 30 caractères ou moins, les lettres, chiffres et caractères @/./+/-/_ sont acceptés"
+"Requis. 30 caractères ou moins, les lettres, chiffres et caractères @/./+/-/"
+"_ sont acceptés"
 
 #: models.py:57
 msgid "Enter a valid username."
@@ -133,7 +134,7 @@ msgstr ""
 msgid "date joined"
 msgstr ""
 
-#: models.py:75
+#: models.py:75 models.py:183
 msgid "user"
 msgstr "utilisateur"
 
@@ -149,22 +150,25 @@ msgstr ""
 msgid "users to delete"
 msgstr ""
 
-#: settings.py:38
+#: models.py:185
+msgid "external id"
+msgstr ""
+
+#: models.py:189
+msgid "user external id"
+msgstr ""
+
+#: models.py:190
+msgid "user external ids"
+msgstr ""
+
+#: settings.py:45
 msgid "English"
 msgstr "Anglais"
 
-#: settings.py:39
+#: settings.py:46
 msgid "French"
 msgstr "Français"
-
-#: registration_backend/forms.py:29
-msgid "A user with that username already exists."
-msgstr "Un utilisateur avec ce nom existe deja."
-
-#: registration_backend/views.py:26
-msgid ""
-"Your account has been scheduled for deletion. You cannot use it anymore."
-msgstr ""
 
 #: templates/404.html:4 templates/404.html.py:8
 msgid "Error: page not found"
@@ -190,18 +194,12 @@ msgstr "Nous nous excusons mais une erreur est intervenue."
 msgid "Versatile Identity Management Server"
 msgstr "Serveur de gestion d'identité polyvalent"
 
-#: templates/base.html:29
+#: templates/base.html:30
 #, python-format
-msgid ""
-"\n"
-"             You are authenticated as %(username)s.\n"
-"             "
-msgstr ""
-"\n"
-"             Vous êtes identifié en tant que %(username)s.\n"
-"             "
+msgid "Hello %(username)s."
+msgstr "Bonjour %(username)s."
 
-#: templates/base.html:32
+#: templates/base.html:31
 msgid "Logout"
 msgstr "Déconnexion"
 
