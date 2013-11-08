@@ -181,9 +181,12 @@ class DeletedUser(models.Model):
 class UserExternalId(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
             verbose_name=_('user'))
-    external_id = models.URLField(max_length=256,
+    source = models.URLField(max_length=256,
+            verbose_name=_('source'))
+    external_id = models.CharField(max_length=256,
             verbose_name=_('external id'))
     created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = _('user external id')

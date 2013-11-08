@@ -389,7 +389,7 @@ class LDAPBackend():
         return '{scheme}://{netloc}/{dn}??one?'.format(scheme=parsed_uri.scheme,
                 netloc=parsed_uri.netloc, dn=dn)
 
-    def create_user(self, uri, dn, username, password, conn, block, external_id):
+    def create_user(self, uri, dn, username, password, conn, block):
         User = get_user_model()
         new_user_username = username
         count = 0
@@ -400,7 +400,9 @@ class LDAPBackend():
             except IntegrityError:
                 new_user_username = u'{0}-{1}'.format(username, count)
                 count += 1
-        UserExternalId.objects.create(user=user, external_id=external_id)
+        if block['replicas']:
+            uri = block['url'][0]
+        UserExternalId.objects.create(user=user, source=uri, external_id=dn)
         user.set_unusable_password()
         user.save()
         return user
@@ -551,13 +553,13 @@ class LDAPBackend():
         return user
 
     def _return_django_user(self, uri, dn, username, password, conn, block):
-        external_id = self.build_ldap_external_id(uri, dn, block)
-        user_external_ids = UserExternalId.objects.filter(external_id=external_id)
+        if block['replicas']:
+            uri = block['url'][0]
+        user_external_ids = UserExternalId.objects.filter(source=uri, external_id=dn)
         count = len(user_external_ids)
         if count == 0:
             log.info('creating user %r with dn %r from server %r', username, dn, uri)
-            user = self.create_user(uri, dn, username, password, conn, block,
-                    external_id)
+            user = self.create_user(uri, dn, username, password, conn, block)
         elif count == 1:
             user = user_external_ids[0].user
             log.debug('found user %r for dn %r from server %r', user, dn, uri)
