@@ -17,6 +17,7 @@ from fields import PickledObjectField, MultiSelectField
 
 from authentic2.idp.models import AttributePolicy
 
+from . import app_settings
 
 def metadata_validator(meta):
     provider=lasso.Provider.newFromBuffer(lasso.PROVIDER_ROLE_ANY, meta.encode('utf8'))
@@ -126,7 +127,6 @@ SIGNATURE_VERIFY_HINT = {
         lasso.PROFILE_SIGNATURE_VERIFY_HINT_MAYBE: _('Let authentic decides which signatures to check'),
         lasso.PROFILE_SIGNATURE_VERIFY_HINT_FORCE: _('Always check signatures'),
         lasso.PROFILE_SIGNATURE_VERIFY_HINT_IGNORE: _('Does not check signatures') }
-
 
 class LibertyProviderPolicy(models.Model):
     name = models.CharField(max_length=64, unique=True)
@@ -281,6 +281,9 @@ class SPOptionsIdPPolicy(models.Model):
     forward_slo = models.BooleanField(\
             verbose_name = _("Forward Single Logout requests"),
             default=True)
+    federation_mode = models.PositiveIntegerField(_('federation mode'),
+            choices=app_settings.FEDERATION_MODE.get_choices(app_settings),
+            default=app_settings.FEDERATION_MODE.get_default(app_settings))
 
     class Meta:
         verbose_name = _('service provider options policy')
