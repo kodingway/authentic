@@ -82,7 +82,7 @@ __settings = dict(
                 definition='Default registration form'),
     A2_REGISTRATION_SET_PASSWORD_FORM_CLASS = Setting(default='registration.auth_urls.SetPasswordForm',
                 definition='Default set password form'),
-    A2_REGISTRATION_CHANGE_PASSWORD_FORM_CLASS = Setting(default='registration.auth_urls.SetPasswordForm',
+    A2_REGISTRATION_CHANGE_PASSWORD_FORM_CLASS = Setting(default='registration.auth_urls.PasswordChangeForm',
                 definition='Default change password form'),
     A2_REGISTRATION_CAN_DELETE_ACCOUNT = Setting(default=True,
                 definition='Can user self delete their account and all their data')
