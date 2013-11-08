@@ -246,11 +246,7 @@ def build_assertion(request, login, nid_format='transient', attributes=None):
         if backend in ('django.contrib.auth.backends.ModelBackend',
                 'authentic2.idp.auth_backends.LogginBackend',
                 'django_auth_ldap.backend.LDAPBackend'):
-            if ssl:
-                authn_context = \
-                    lasso.SAML2_AUTHN_CONTEXT_PASSWORD_PROTECTED_TRANSPORT
-            else:
-                authn_context = lasso.SAML2_AUTHN_CONTEXT_PASSWORD
+            authn_context = lasso.SAML2_AUTHN_CONTEXT_PASSWORD
         elif backend == 'authentic2.auth2_auth.auth2_ssl.backend.SSLBackend':
             authn_context = lasso.SAML2_AUTHN_CONTEXT_X509
         # XXX: grab context from the assertion received
@@ -266,6 +262,8 @@ def build_assertion(request, login, nid_format='transient', attributes=None):
                 authn_context = backend.get_saml2_authn_context(request)
             else:
                 raise Exception('backend unsupported: ' + backend)
+        if authn_context == lasso.SAML2_AUTHN_CONTEXT_PASSWORD and ssl:
+            authn_context = lasso.SAML2_AUTHN_CONTEXT_PASSWORD_PROTECTED_TRANSPORT
     else:
         try:
             auth_event = AuthenticationEvent.objects.\
