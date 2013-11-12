@@ -1,6 +1,7 @@
 # Django settings for authentic project.
 import os
 from django.core.exceptions import ImproperlyConfigured
+import json
 
 gettext_noop = lambda s: s
 
