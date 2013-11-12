@@ -260,6 +260,16 @@ if 'LDAP_AUTH_SETTINGS' in os.environ:
         raise ImproperlyConfigured('LDAP_AUTH_SETTINGS is not a JSON document', e)
 else:
     LDAP_AUTH_SETTINGS = []
+##################################
+# Cache configuration
+##################################
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+}
+if 'CACHE_BACKEND' in os.environ:
+    CACHES['default'] = json.loads(os.environ['CACHE_BACKEND'])
 
 # Logging settings
 
