@@ -258,6 +258,8 @@ if 'LDAP_AUTH_SETTINGS' in os.environ:
         LDAP_AUTH_SETTINGS = json.loads(os.environ['LDAP_AUTH_SETTINGS'])
     except Exception, e:
         raise ImproperlyConfigured('LDAP_AUTH_SETTINGS is not a JSON document', e)
+else:
+    LDAP_AUTH_SETTINGS = []
 
 # Logging settings
 
