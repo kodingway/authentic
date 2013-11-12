@@ -263,9 +263,15 @@ class LDAPBackend():
                 if d not in block:
                     block[d] = _DEFAULTS[d]
                 else:
-                    if isinstance(_DEFAULTS[d], str) and not isinstance(block[d], str):
-                        raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: '
-                                'attribute %r must be a string' % d)
+                    if isinstance(_DEFAULTS[d], basestring):
+                        if not isinstance(block[d], basestring):
+                            raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: '
+                                    'attribute %r must be a string' % d)
+                        try:
+                            block[d] = str(block[d])
+                        except UnicodeEncodeError:
+                            raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: '
+                                    'attribute %r must be a string' % d)
                     if isinstance(_DEFAULTS[d], bool) and not isinstance(block[d], bool):
                         raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: '
                                 'attribute %r must be a boolean' % d)
