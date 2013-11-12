@@ -300,6 +300,7 @@ LOGGING = {
         },
         'syslog': {
             'level':'INFO',
+            'address': '/dev/log',
             'class':'logging.handlers.SysLogHandler',
             'filters': ['cleaning'],
         },
