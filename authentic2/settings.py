@@ -308,7 +308,7 @@ LOGGING = {
         },
         '': {
                 'handlers': ['mail_admins', 'syslog'] + (['console'] if DEBUG else []),
-                'level': 'INFO',
+                'level': 'DEBUG' if DEBUG else 'INFO',
         }
     },
 }
