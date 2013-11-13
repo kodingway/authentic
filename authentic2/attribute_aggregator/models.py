@@ -32,8 +32,6 @@ try:
 except ImportError:
     ldap = None
 
-from authentic2.attribute_aggregator.signals import any_attributes_call, \
-    listed_attributes_call, listed_attributes_with_source_call, add_attributes
 from authentic2.attribute_aggregator.mapping_loader import ATTRIBUTE_MAPPING, \
     ATTRIBUTE_NAMESPACES
 from authentic2.attribute_aggregator.core import convert_from_string, \
@@ -639,3 +637,6 @@ class UserAttributeProfile(models.Model):
     class Meta:
         verbose_name = _('user attribute profile')
         verbose_name_plural = _('user attribute profiles')
+
+from authentic2.attribute_aggregator.signals import any_attributes_call, \
+    listed_attributes_call, listed_attributes_with_source_call, add_attributes

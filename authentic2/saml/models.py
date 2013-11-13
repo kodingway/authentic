@@ -15,8 +15,6 @@ from django.utils.timezone import now
 
 from fields import PickledObjectField, MultiSelectField
 
-from authentic2.idp.models import AttributePolicy
-
 from . import app_settings
 
 def metadata_validator(meta):
@@ -427,7 +425,7 @@ class LibertyServiceProvider(models.Model):
             verbose_name=_("Protocol policy"), null=True, default=1)
     enable_following_attribute_policy = models.BooleanField(verbose_name = \
         _('The following attribute policy will apply except if a policy for all service provider is defined.'))
-    attribute_policy = models.ForeignKey(AttributePolicy,
+    attribute_policy = models.ForeignKey('idp.AttributePolicy',
              related_name = "attribute_policy",
             verbose_name=_("attribute policy"), null=True, blank=True)
 

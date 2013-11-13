@@ -10,9 +10,6 @@ from django.conf import settings
 from authentic2.attribute_aggregator.mapping_loader import ATTRIBUTE_MAPPING, \
     ATTRIBUTE_NAMESPACES
 
-from authentic2.attribute_aggregator.models import AttributeSource
-
-
 ATTRIBUTES = [(key, key) \
     for key in sorted(ATTRIBUTE_MAPPING.iterkeys())]
 ATTRIBUTES_NS = [('Default', 'Default')] \
@@ -82,7 +79,7 @@ class AttributeItem(models.Model):
     required = models.BooleanField(
         verbose_name = _("Required"),
         default=False)
-    source = models.ForeignKey(AttributeSource,
+    source = models.ForeignKey('attribute_aggregator.AttributeSource',
         verbose_name = _("Attribute source"),
         blank = True, null = True)
 
@@ -180,7 +177,7 @@ class AttributePolicy(models.Model):
 
     # Filter attributes pushed from source.
     source_filter_for_sso_from_push_sources = \
-        models.ManyToManyField(AttributeSource,
+        models.ManyToManyField('attribute_aggregator.AttributeSource',
         verbose_name = \
             _("Filter by source the forwarded pushed attributes"),
         related_name = "filter attributes of push sources with sources",
