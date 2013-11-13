@@ -20,45 +20,6 @@ ATTRIBUTE_VALUE_FORMATS = (
         (lasso.SAML2_ATTRIBUTE_NAME_FORMAT_BASIC, 'SAMLv2 BASIC'))
 
 
-def set_user_consent_attributes(user, provider, attributes):
-    if not user or not provider:
-        return None
-    return UserConsentAttributes.objects.get_or_create(user=user,
-        object_id=provider.id,
-             content_type=ContentType.objects.get_for_model(provider))
-
-
-def get_user_consent_attributes(user, provider, attributes):
-    if not user or not provider:
-        return None
-    try:
-        return UserConsentAttributes.objects.get(user=user,
-            object_id=provider.id,
-            content_type=ContentType.objects.get_for_model(provider),
-            attributes=attributes)
-    except:
-        return None
-
-
-class UserConsentAttributes(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
-    content_type = models.ForeignKey(ContentType)
-    object_id = models.PositiveIntegerField()
-    provider = generic.GenericForeignKey('content_type', 'object_id')
-    attributes = models.TextField()
-
-    class Meta:
-        verbose_name = _('user consent for attributes propagation')
-        verbose_name_plural = _('user consents for attributes propagation')
-
-    def __unicode__(self):
-        return _(u"user {0} consent to release attributes {1} to provider {2}") % (
-                self.user, self.attributes, self.provider)
-
-    def __repr__(self):
-        return '<UserConsentAttributes {0!r}>'.format(
-                self.__dict__)
-
 class AttributeItem(models.Model):
     attribute_name = models.CharField(
         verbose_name = _("Attribute name"),

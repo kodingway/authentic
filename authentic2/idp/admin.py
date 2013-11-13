@@ -1,8 +1,6 @@
 from django.contrib import admin
-from django.conf import settings
 
-from models import AttributeItem, AttributeList, AttributePolicy, \
-    UserConsentAttributes
+from models import AttributeItem, AttributeList, AttributePolicy
 
 
 class AttributeListAdmin(admin.ModelAdmin):
@@ -45,6 +43,3 @@ class AttributePolicyAdmin(admin.ModelAdmin):
 admin.site.register(AttributeItem)
 admin.site.register(AttributeList, AttributeListAdmin)
 admin.site.register(AttributePolicy, AttributePolicyAdmin)
-
-if settings.DEBUG:
-    admin.site.register(UserConsentAttributes)
