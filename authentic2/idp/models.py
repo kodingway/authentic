@@ -247,3 +247,6 @@ def get_attribute_policy(provider):
     except AttributePolicy.DoesNotExist:
         pass
     return None
+
+# assure signals are loaded
+from . import signals

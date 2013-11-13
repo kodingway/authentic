@@ -40,3 +40,9 @@ if ldap_sources:
 any_attributes_call.connect(user_profile.get_attributes)
 listed_attributes_call.connect(user_profile.get_attributes)
 listed_attributes_with_source_call.connect(user_profile.get_attributes)
+
+# Connect to saml2_idp signals
+from authentic2.idp.signals import add_attributes_to_response
+from . import attributes
+
+add_attributes_to_response.connect(attributes.provide_attributes_at_sso)

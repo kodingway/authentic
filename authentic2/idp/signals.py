@@ -1,8 +1,5 @@
 from django.dispatch import Signal
 
-from authentic2.idp.attributes import provide_attributes_at_sso
-
-
 '''authorize_decision
 Expect a dictionnaries as return with:
  - the authorization decision e.g. dic['authz'] = True or False
@@ -37,8 +34,6 @@ The return expected is a dictionnaries such as:
 '''
 add_attributes_to_response = \
     Signal(providing_args = ["request", "user", "audience"])
-
-add_attributes_to_response.connect(provide_attributes_at_sso)
 
 '''add_attributes_to_response
 

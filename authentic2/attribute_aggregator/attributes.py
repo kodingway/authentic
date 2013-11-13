@@ -21,21 +21,20 @@
 import logging
 import lasso
 
+from authentic2.saml.models import LibertyProvider
+from authentic2.idp.models import get_attribute_policy
 
-from authentic2.attribute_aggregator.models import AttributeSource
-from authentic2.attribute_aggregator.mapping_loader import ATTRIBUTE_MAPPING
-from authentic2.attribute_aggregator.core import get_def_name_from_oid, \
+from .models import AttributeSource
+from .mapping_loader import ATTRIBUTE_MAPPING
+from .core import get_def_name_from_oid, \
     get_def_name_from_name_and_ns_of_attribute, \
     load_or_create_user_profile, get_oid_from_def_name, \
     get_attribute_name_in_namespace, get_definition_from_alias, \
     get_attribute_friendly_name_in_namespace
-from authentic2.attribute_aggregator.utils import oid_to_urn, urn_to_oid
+from .utils import oid_to_urn, urn_to_oid
 
-from authentic2.saml.models import LibertyProvider
 
-from authentic2.idp.models import get_attribute_policy
-
-logger = logging.getLogger('authentic2.idp.attributes')
+logger = logging.getLogger(__name__)
 
 
 def add_data_to_dic(attributes, name, values,
@@ -174,8 +173,8 @@ def add_data_to_dic(attributes, name, values,
             elif required:
                 raise Exception('Missing a required attribute')
             else:
-                logger.info('add_data_to_dic: The attribute %s \
-                    is not found in %s' % (name, namespace_out))
+                logger.info('add_data_to_dic: The attribute %s '
+                    'is not found in %s' % (name, namespace_out))
     logger.debug('add_data_to_dic: dic is now %s' % attributes)
 
 
@@ -193,18 +192,18 @@ def provide_attributes_at_sso(request, user, audience, **kwargs):
     try:
         provider = LibertyProvider.objects.get(entity_id=audience)
     except:
-        logger.debug('provide_attributes_at_sso: Provider with name %s not \
-            found' % audience)
+        logger.debug('provide_attributes_at_sso: Provider with name %s not '
+            'found' % audience)
     attribute_policy = get_attribute_policy(provider)
     if not attribute_policy:
-        logger.debug('provide_attributes_at_sso: no attribute policy found \
-            for %s' % audience)
+        logger.debug('provide_attributes_at_sso: no attribute policy found '
+            'for %s' % audience)
         return None
 
     p = load_or_create_user_profile(user=user)
     if not p:
-        logger.error('provide_attributes_at_sso: unable to load or create a \
-            profile for %s' % user)
+        logger.error('provide_attributes_at_sso: unable to load or create a '
+            'profile for %s' % user)
         return None
     logger.debug('provide_attributes_at_sso: profile loaded %s' % p)
 
@@ -217,11 +216,11 @@ def provide_attributes_at_sso(request, user, audience, **kwargs):
 
     list_pull = attribute_policy.attribute_list_for_sso_from_pull_sources
     if not list_pull:
-        logger.debug('provide_attributes_at_sso: no attribute list found \
-            from pull source')
+        logger.debug('provide_attributes_at_sso: no attribute list found '
+            'from pull source')
     else:
-        logger.debug('provide_attributes_at_sso: found attribute list named \
-            %s' % list_pull.name)
+        logger.debug('provide_attributes_at_sso: found attribute list named '
+            '%s' % list_pull.name)
         l = list_pull.attributes.all()
         if not l:
             logger.debug('provide_attributes_at_sso: The list is empty')
@@ -255,8 +254,8 @@ def provide_attributes_at_sso(request, user, audience, **kwargs):
             for a in l:
                 data = None
                 if a.source:
-                    logger.debug('provide_attributes_at_sso: %s must be \
-                        provided by %s' % (a.attribute_name, a.source))
+                    logger.debug('provide_attributes_at_sso: %s must be '
+                        'provided by %s' % (a.attribute_name, a.source))
                     data = \
                         p.get_data_of_definition_and_source(\
                             a.attribute_name, a.source)
@@ -288,8 +287,8 @@ def provide_attributes_at_sso(request, user, audience, **kwargs):
                         # Missing required attribute
                         pass
 
-            logger.debug('provide_attributes_at_sso: attributes returned \
-                from pull source %s' % str(attributes))
+            logger.debug('provide_attributes_at_sso: attributes returned '
+                'from pull source %s' % str(attributes))
 
     if attribute_policy.forward_attributes_from_push_sources \
             and request and request.session \
@@ -304,15 +303,15 @@ def provide_attributes_at_sso(request, user, audience, **kwargs):
                 attribute_policy.source_filter_for_sso_from_push_sources.all()
         if sources:
             s_names = [s.name for s in sources]
-            logger.debug('provide_attributes_at_sso: filter attributes from \
-                push source, sources accepted are %s' % str(s_names))
+            logger.debug('provide_attributes_at_sso: filter attributes from '
+                'push source, sources accepted are %s' % str(s_names))
             for entity_id, l \
                     in request.session['multisource_attributes'].items():
                 if entity_id in s_names:
                     for token in l:
                         if 'attributes' in token:
-                            logger.debug('provide_attributes_at_sso: \
-                                keep in dic %s' \
+                            logger.debug('provide_attributes_at_sso: '
+                                'keep in dic %s' \
                                 % str({entity_id: token['attributes']}))
                             attrs.update({entity_id: token['attributes']})
         else:
@@ -320,8 +319,8 @@ def provide_attributes_at_sso(request, user, audience, **kwargs):
                     in request.session['multisource_attributes'].items():
                 for token in l:
                     if 'attributes' in token:
-                        logger.debug('provide_attributes_at_sso: \
-                            keep in dic %s' \
+                        logger.debug('provide_attributes_at_sso: '
+                            'keep in dic %s' \
                             % str({entity_id: token['attributes']}))
                         attrs.update({entity_id: token['attributes']})
 
@@ -352,19 +351,18 @@ def provide_attributes_at_sso(request, user, audience, **kwargs):
                             pass
                 namespace_in = 'Default'
                 if not source:
-                    logger.debug('provide_attributes_at_sso: Not \
-                        attribute source found for %s' \
-                        % str(attributes))
+                    logger.debug('provide_attributes_at_sso: Not attribute '
+                            'source found for %s' % str(attributes))
                 else:
-                    logger.debug('provide_attributes_at_sso: Source \
-                        found %s' % source.name)
+                    logger.debug('provide_attributes_at_sso: Source found %s' %
+                            source.name)
                     namespace_in = source.namespace
-                logger.debug('provide_attributes_at_sso: \
-                    input namespace is %s' % namespace_in)
+                logger.debug('provide_attributes_at_sso: input namespace is %s'
+                        % namespace_in)
                 dic_to_load_in_profile[entity_id] = list()
                 for key, values in attrs_list.items():
-                    logger.debug('provide_attributes_at_sso: treat \
-                        %s' % str(attrs))
+                    logger.debug('provide_attributes_at_sso: treat %s' %
+                            str(attrs))
                     found = False
                     try:
                         name, format, fname = key
@@ -380,8 +378,8 @@ def provide_attributes_at_sso(request, user, audience, **kwargs):
                             except:
                                 pass
                     if found:
-                        logger.debug('provide_attributes_at_sso: \
-                            attribute with name %s' % str(name))
+                        logger.debug('provide_attributes_at_sso: attribute with '
+                                'name %s' % str(name))
                         if namespace_in == 'Default':
                             definition = None
                             if name in ATTRIBUTE_MAPPING:
@@ -393,8 +391,8 @@ def provide_attributes_at_sso(request, user, audience, **kwargs):
                                     definition = \
                                         get_definition_from_alias(name)
                             if definition:
-                                logger.debug('provide_attributes_at_sso: \
-                                    found definition %s' % definition)
+                                logger.debug('provide_attributes_at_sso: found '
+                                        'definition %s' % definition)
                                 definitions.append(definition)
                                 dic_to_load_in_profile[entity_id].\
                                     append({'definition': definition,
@@ -404,22 +402,22 @@ def provide_attributes_at_sso(request, user, audience, **kwargs):
                             get_def_name_from_name_and_ns_of_attribute(name,
                                 namespace_in)
                             if definition:
-                                logger.debug('provide_attributes_at_sso: \
-                                    found definition %s' % definition)
+                                logger.debug('provide_attributes_at_sso: found '
+                                        'definition %s' % definition)
                                 definitions.append(definition)
                                 dic_to_load_in_profile[entity_id].\
                                     append({'name': name,
                                         'namespace': namespace_in,
                                         'values': values})
                     else:
-                        logger.debug('provide_attributes_at_sso: \
-                            unknown format')
+                        logger.debug('provide_attributes_at_sso: unknown '
+                                'format')
 
             '''
                 Load in profile to deal with input mapping
             '''
-            logger.debug('provide_attributes_at_sso: \
-                load in profile %s' % str(dic_to_load_in_profile))
+            logger.debug('provide_attributes_at_sso: load in profile %s' %
+                    str(dic_to_load_in_profile))
             p.load_by_dic(dic_to_load_in_profile)
 
             if attribute_policy.attribute_filter_for_sso_from_push_sources:
@@ -453,10 +451,10 @@ def provide_attributes_at_sso(request, user, audience, **kwargs):
                                     attribute_policy.output_namespace
                                 name_format_out = \
                                     attribute_policy.attribute_name_format
-                            logger.debug('provide_attributes_at_sso: \
-                                output namespace %s' % namespace_out)
-                            logger.debug('provide_attributes_at_sso: \
-                                output format %s' % name_format_out)
+                            logger.debug('provide_attributes_at_sso: output '
+                                    'namespace %s' % namespace_out)
+                            logger.debug('provide_attributes_at_sso: output '
+                                    'format %s' % name_format_out)
                             add_data_to_dic(attributes,
                                 d.definition,
                                 d.get_values(),
@@ -480,8 +478,8 @@ def provide_attributes_at_sso(request, user, audience, **kwargs):
                             name_format_out,
                             namespace_out)
 
-    logger.debug('provide_attributes_at_sso: attributes returned are \
-        %s' % str(attributes))
+    logger.debug('provide_attributes_at_sso: attributes returned are %s' %
+            str(attributes))
 
     dic['attributes'] = attributes
     return dic
