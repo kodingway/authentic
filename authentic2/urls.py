@@ -13,8 +13,12 @@ admin.autodiscover()
 handler500 = 'authentic2.views.server_error'
 
 
-urlpatterns = patterns('',
-    (r'^$', login_required(authentic2.idp.views.homepage), {}, 'index'))
+if app_settings.A2_HOMEPAGE_URL:
+    urlpatterns = patterns('authentic2.views',
+        url(r'^$', 'redirect_to_homepage'))
+else:
+    urlpatterns = patterns('',
+        url(r'^$', login_required(authentic2.idp.views.homepage), name='index'))
 
 not_homepage_patterns = patterns('',
     url(r'^', include('authentic2.auth2_auth.urls')),

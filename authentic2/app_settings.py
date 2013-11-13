@@ -85,7 +85,9 @@ __settings = dict(
     A2_REGISTRATION_CHANGE_PASSWORD_FORM_CLASS = Setting(default='registration.auth_urls.PasswordChangeForm',
                 definition='Default change password form'),
     A2_REGISTRATION_CAN_DELETE_ACCOUNT = Setting(default=True,
-                definition='Can user self delete their account and all their data')
+                definition='Can user self delete their account and all their data'),
+    A2_HOMEPAGE_URL = Setting(default=None, definition='IdP has no homepage, '
+        'redirect to this one.'),
 )
 
 for key, value in __settings.iteritems():
