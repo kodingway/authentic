@@ -32,12 +32,11 @@ try:
 except ImportError:
     ldap = None
 
-from authentic2.attribute_aggregator.mapping_loader import ATTRIBUTE_MAPPING, \
-    ATTRIBUTE_NAMESPACES
-from authentic2.attribute_aggregator.core import convert_from_string, \
-    get_def_name_from_name_and_ns_of_attribute, iso8601_to_datetime, \
-    get_def_name_from_oid, get_def_name_from_alias, \
-    is_alias_of_definition, is_oid_of_definition
+from .mapping_loader import ATTRIBUTE_MAPPING, ATTRIBUTE_NAMESPACES
+from .core import (convert_from_string,
+    get_def_name_from_name_and_ns_of_attribute, iso8601_to_datetime,
+    get_def_name_from_oid, get_def_name_from_alias,
+    is_alias_of_definition, is_oid_of_definition)
 
 
 logger = logging.getLogger(__name__)
