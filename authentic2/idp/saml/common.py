@@ -16,12 +16,6 @@ def redirect_to_login(next, login_url=None,
         data[k] = v
     return HttpResponseRedirect('%s?%s' % (login_url, urlencode(data)))
 
-def save_login_object(login, consent_obtained, nonce):
-    raise NotImplementedError()
-
-def load_login_object(nonce):
-    raise NotImplementedError()
-
 def kill_django_sessions(session_key):
     engine = import_module(settings.SESSION_ENGINE)
     try:
