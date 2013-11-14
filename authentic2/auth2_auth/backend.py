@@ -31,7 +31,12 @@ class LoginPasswordBackend(object):
         else:
             how = 'password'
         if nonce:
-            models.AuthenticationEvent(who=form.get_user().username, how=how,
+            user = form.get_user()
+            if hasattr(user, 'USERNAME_FIELD'):
+                username = getattr(user, user.USERNAME_FIELD)
+            else:
+                username = user.username
+            models.AuthenticationEvent(who=username, how=how,
                     nonce=nonce).save()
         return HttpResponseRedirect(next)
 
