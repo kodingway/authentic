@@ -797,11 +797,6 @@ def sso_after_process_request(request, login, consent_obtained=False,
         set_saml2_response_responder_status_code(login.response,
                 lasso.SAML2_STATUS_CODE_REQUEST_DENIED)
         return finish_sso(request, login, user=user, save=save)
-    except:
-        logger.error('access denied due to unknown error')
-        set_saml2_response_responder_status_code(login.response,
-                lasso.SAML2_STATUS_CODE_REQUEST_DENIED)
-        return finish_sso(request, login, user=user, save=save)
 
     login.response.consent = consent_value
 
