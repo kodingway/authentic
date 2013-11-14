@@ -25,7 +25,6 @@ import random
 import string
 
 import lasso
-from django.conf.urls import patterns
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
@@ -1637,19 +1636,3 @@ def check_destination(request, req_or_res):
         logger.error('check_destination: failure, expected: %s got: %s ' \
             % (destination, req_or_res.destination))
     return result
-
-
-urlpatterns = patterns('',
-    (r'^metadata$', metadata),
-    (r'^sso$', sso),
-    (r'^continue$', continue_sso),
-    (r'^slo$', slo),
-    (r'^slo/soap$', slo_soap),
-    (r'^idp_slo/(.*)$', idp_slo),
-    (r'^slo_return$', slo_return),
-    (r'^finish_slo$', finish_slo),
-    (r'^artifact$', artifact),
-    (r'^idp_sso/(.*)$', idp_sso),
-    (r'^idp_sso/([^/]*)/([^/]*)$', idp_sso),
-    (r'^idp_sso/([^/]*)/([^/]*)/([^/]*)$', idp_sso),
-)
