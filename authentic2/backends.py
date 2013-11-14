@@ -15,7 +15,7 @@ log = logging.getLogger(__name__)
 
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
-from django.contrib.auth.models import Group, AbstractUser, Permission
+from django.contrib.auth.models import Group, Permission
 from django.db import IntegrityError
 
 from .cache import get_shared_cache
@@ -82,18 +82,18 @@ def get_connection(block, credentials=()):
     for url in block['url']:
         conn = ldap.initialize(url)
         try:
-            authzid = conn.whoami_s()
+            conn.whoami_s()
         except ldap.SERVER_DOWN:
             if block['replicas']:
-                log.warning('ldap %r is down', uri)
+                log.warning('ldap %r is down', url)
             else:
-                log.error('ldap %r is down', uri)
+                log.error('ldap %r is down', url)
             continue
         try:
             if credentials:
                 conn.bind_s(*credentials)
             elif block['binddn'] and block['bindpw']:
-                conn.bind_s(blockp['binddn'], block['bindpw'])
+                conn.bind_s(block['binddn'], block['bindpw'])
             break
         except ldap.INVALID_CREDENTIALS:
             if block['replicas']:
@@ -108,7 +108,6 @@ def ad_encoding(s):
 
 def modify_password(conn, block, dn, old_password, new_password):
     '''Change user password with adaptation for Active Directory'''
-    results = conn.search_s(dn, ldap.SCOPE_BASE)
     if block['active_directory']:
         old_entry = { 'unicodePwd': [ ad_encoding(old_password) ] }
         new_entry = { 'unicodePwd': [ ad_encoding(new_password) ] }
@@ -311,7 +310,7 @@ class LDAPBackend():
                 # if necessary bind as admin
                 self.try_admin_bind(conn, block)
                 if block['user_dn_template']:
-                    authzid = block['user_dn_template'].format(username=username)
+                    authz_id = block['user_dn_template'].format(username=username)
                 else:
                     try:
                         if block.get('bind_with_username'):
@@ -419,13 +418,12 @@ class LDAPBackend():
                     [block['email_field'], block['fname_field'],
                         block['lname_field']])
         except ldap.LDAPError, e:
-            log.warning('unable to retrieve attributes of user %r with dn %r '
-                    'from server %r: %s', username, dn, uri, e)
+            log.warning('unable to retrieve attributes of user with dn %r '
+                    'from server %r: %s', dn, uri, e)
         if len(results) > 1:
-            log.warning('unable to retrieve attributes of user %r with dn %r '
-                    'from server %r: too many records', username, dn, uri)
+            log.warning('unable to retrieve attributes of user with dn %r '
+                    'from server %r: too many records', dn, uri)
         attributes = results[0][1]
-        ldap_data = {}
         for legacy_attribute, legacy_field in (('email', 'email_field'), 
                 ('first_name', 'fname_field'), ('last_name', 'lname_field')):
             ldap_attribute = block[legacy_field]
@@ -447,11 +445,10 @@ class LDAPBackend():
             elif block['binddn'] and block['bindpw']:
                 conn.simple_bind_s(block['binddn'], block['bindpw'])
         except ldap.INVALID_CREDENTIALS:
-            log.error('admin bind on %r failed: invalid credentials (%r, %r)',
-                    uri, block['binddn'], '*hidden*')
+            log.error('admin bind failed: invalid credentials (%r, %r)',
+                    block['binddn'], '*hidden*')
         except ldap.INVALID_DN_SYNTAX:
-            log.error('admin bind on %r failed: invalid dn syntax %r', uri,
-                    who)
+            log.error('admin bind failed: invalid dn syntax %r', who)
         else:
             return True
         return False
@@ -479,7 +476,7 @@ class LDAPBackend():
         for dn, group_names in group_mapping:
             method = user.groups.add if dn in group_dns else user.groups.remove
             for group_name in group_names:
-                group = self.get_group_by_name(group_name)
+                group = self.get_group_by_name(block, group_name)
                 if group is not None:
                     try:
                         method(group)
@@ -513,7 +510,7 @@ class LDAPBackend():
         self.populate_groups_by_mapping(user, uri, dn, conn, block, group_dns)
 
 
-    def get_group_by_name(self, group_name, create=None):
+    def get_group_by_name(self, block, group_name, create=None):
         '''Obtain a Django group'''
         if create is None:
             create = block['create_group']
@@ -531,7 +528,7 @@ class LDAPBackend():
         if not mandatory_groups:
             return
         for group_name in mandatory_groups:
-            group = self.get_group_by_name(django_group_name)
+            group = self.get_group_by_name(block, group_name)
             if group:
                 user.groups.add(group)
 
