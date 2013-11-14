@@ -1,10 +1,8 @@
 import urllib
 import re
 
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import REDIRECT_FIELD_NAME
-from django import forms
 from django.http import HttpResponseRedirect
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
@@ -20,27 +18,6 @@ from django.views.generic.base import TemplateView
 
 from authentic2.auth2_auth import NONCE_FIELD_NAME
 from authentic2.idp import get_backends
-import models
-
-class WithNonceAuthenticationForm(AuthenticationForm):
-    nonce = forms.CharField(label='Nonce', widget=forms.HiddenInput,
-            required = False)
-
-    def __init__(self, request = None, **kwargs):
-        AuthenticationForm.__init__(self, request, **kwargs)
-        if request and NONCE_FIELD_NAME in request.REQUEST:
-            self.initial[NONCE_FIELD_NAME] = request.REQUEST.get(NONCE_FIELD_NAME)
-
-    def clean(self):
-        res = AuthenticationForm.clean(self)
-        # create an authentication event
-        if self.user_cache and NONCE_FIELD_NAME in self.cleaned_data:
-            how = 'password'
-            if self.request and 'HTTPS' in self.request.environ:
-                how = 'password-on-https'
-            models.AuthenticationEvent(who=self.user_cache.username,
-                    how=how, nonce=self.cleaned_data[NONCE_FIELD_NAME]).save()
-        return res
 
 def add_arg(url, key, value = None):
     '''Add a parameter to an URL'''
@@ -58,8 +35,7 @@ def add_arg(url, key, value = None):
 @never_cache
 def login(request, template_name='auth/login.html',
           login_form_template='auth/login_form.html',
-          redirect_field_name=REDIRECT_FIELD_NAME,
-          authentication_form=WithNonceAuthenticationForm):
+          redirect_field_name=REDIRECT_FIELD_NAME):
     """Displays the login form and handles the login action."""
 
     redirect_to = request.REQUEST.get(redirect_field_name)
