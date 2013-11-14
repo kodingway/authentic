@@ -26,6 +26,8 @@ import user_profile
 
 from django.dispatch import Signal
 
+from . import simple_source
+
 any_attributes_call = Signal(providing_args = ["user"])
 listed_attributes_call = Signal(providing_args = ["user", "definitions"])
 listed_attributes_with_source_call = Signal(providing_args = \
@@ -40,6 +42,10 @@ if ldap_sources:
 any_attributes_call.connect(user_profile.get_attributes)
 listed_attributes_call.connect(user_profile.get_attributes)
 listed_attributes_with_source_call.connect(user_profile.get_attributes)
+
+any_attributes_call.connect(simple_source.get_attributes)
+listed_attributes_call.connect(simple_source.get_attributes)
+listed_attributes_with_source_call.connect(simple_source.get_attributes)
 
 # Connect to saml2_idp signals
 from authentic2.idp.signals import add_attributes_to_response
