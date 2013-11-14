@@ -20,6 +20,7 @@ class Migration(SchemaMigration):
             ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=100)),
             ('attribute_filter_for_sso_from_push_sources', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='filter attributes of push sources with list', null=True, to=orm['idp.AttributeList'])),
             ('output_namespace', self.gf('django.db.models.fields.CharField')(default=('Default', 'Default'), max_length=100)),
+            ('forward_attributes_from_push_sources', self.gf('django.db.models.fields.BooleanField')(default=False, blank=True)),
             ('output_name_format', self.gf('django.db.models.fields.CharField')(default=('urn:oasis:names:tc:SAML:2.0:attrname-format:basic', 'SAMLv2 BASIC'), max_length=100)),
             ('map_attributes_of_filtered_attributes', self.gf('django.db.models.fields.BooleanField')(default=False, blank=True)),
             ('map_attributes_from_push_sources', self.gf('django.db.models.fields.BooleanField')(default=False, blank=True)),
