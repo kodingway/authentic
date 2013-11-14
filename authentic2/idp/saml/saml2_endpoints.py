@@ -1622,6 +1622,6 @@ def check_destination(request, req_or_res):
     destination = request.build_absolute_uri(request.path)
     result = req_or_res.destination == destination
     if not result:
-        logger.error('failure, expected: %s got: %s ' \
+        logger.warning('failure, expected: %r got: %r ' \
             % (destination, req_or_res.destination))
     return result
