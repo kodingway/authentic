@@ -952,7 +952,7 @@ def idp_sso(request, provider_id=None, user_id=None, nid_format=None,
                 'another user')
     else:
         user = request.user
-        logger.info('sso by %r' % user.username)
+        logger.info('sso by %r' % user)
     load_federation(request, get_entity_id(request, reverse(metadata)), login, user)
     logger.debug('federation loaded')
     login.initIdpInitiatedAuthnRequest(provider_id)
