@@ -317,6 +317,11 @@ LOGGING = {
             'handlers': [],
             'propagate': True,
         },
+        'django.db': {
+            'handlers': ['mail_admins', 'syslog'] + (['console'] if DEBUG else []),
+            'level': 'INFO',
+            'propagate': False,
+        },
         '': {
                 'handlers': ['mail_admins', 'syslog'] + (['console'] if DEBUG else []),
                 'level': 'DEBUG' if DEBUG else 'INFO',

@@ -1,19 +1,6 @@
 from django.contrib import admin
 
-from models import AttributeItem, AttributeList, AttributePolicy
-
-
-class AttributeListAdmin(admin.ModelAdmin):
-    filter_horizontal = ('attributes', )
-    fieldsets = (
-            (None, {
-                'fields' : (
-                    'name',
-                    'attributes',
-                )
-            }),
-    )
-
+from .models import AttributePolicy
 
 class AttributePolicyAdmin(admin.ModelAdmin):
     filter_horizontal = ('source_filter_for_sso_from_push_sources', )
@@ -40,6 +27,4 @@ class AttributePolicyAdmin(admin.ModelAdmin):
 
 
 
-admin.site.register(AttributeItem)
-admin.site.register(AttributeList, AttributeListAdmin)
 admin.site.register(AttributePolicy, AttributePolicyAdmin)

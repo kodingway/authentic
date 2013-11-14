@@ -1,87 +1,17 @@
-import lasso
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+import lasso
 
-from authentic2.attribute_aggregator.mapping_loader import ATTRIBUTE_MAPPING, \
-    ATTRIBUTE_NAMESPACES
+from authentic2.attribute_aggregator.mapping_loader import ATTRIBUTE_NAMESPACES
 
-ATTRIBUTES = [(key, key) \
-    for key in sorted(ATTRIBUTE_MAPPING.iterkeys())]
 ATTRIBUTES_NS = [('Default', 'Default')] \
     + [(ns, ns) for ns in ATTRIBUTE_NAMESPACES]
 
 ATTRIBUTE_VALUE_FORMATS = (
         (lasso.SAML2_ATTRIBUTE_NAME_FORMAT_URI, 'SAMLv2 URI'),
         (lasso.SAML2_ATTRIBUTE_NAME_FORMAT_BASIC, 'SAMLv2 BASIC'))
-
-
-class AttributeItem(models.Model):
-    attribute_name = models.CharField(
-        verbose_name = _("Attribute name"),
-        max_length = 100, choices = ATTRIBUTES,
-        default = ATTRIBUTES[0])
-    # ATTRIBUTE_VALUE_FORMATS[0] =>
-    #    (lasso.SAML2_ATTRIBUTE_NAME_FORMAT_BASIC, 'SAMLv2 BASIC')
-    output_name_format = models.CharField(
-        verbose_name = _("Output name format"),
-        max_length = 100,
-        choices = ATTRIBUTE_VALUE_FORMATS,
-        default = ATTRIBUTE_VALUE_FORMATS[0])
-    #ATTRIBUTES_NS[0] => ('Default', 'Default')
-    output_namespace = models.CharField(
-        verbose_name = _("Output namespace"),
-        max_length = 100,
-        choices = ATTRIBUTES_NS, default = ATTRIBUTES_NS[0])
-    required = models.BooleanField(
-        verbose_name = _("Required"),
-        default=False)
-    source = models.ForeignKey('attribute_aggregator.AttributeSource',
-        verbose_name = _("Attribute source"),
-        blank = True, null = True)
-
-    class Meta:
-        verbose_name = _('attribute list item')
-        verbose_name_plural = _('attribute list items')
-
-    def __unicode__(self):
-        s = self.attribute_name
-        attributes = []
-        attributes.append(u'output name fomat: %s' % self.output_name_format)
-        attributes.append(u'output namespace: %s' % self.output_namespace)
-        if self.required:
-            attributes.append(u'required')
-        if self.source:
-            attributes.append(u'source: %s' % self.source)
-        s += u' (%s)' % u', '.join(attributes)
-        return s
-
-    def __repr__(self):
-        return '<AttributeItem {0!r}>'.format(
-                self.__dict__)
-
-
-class AttributeList(models.Model):
-    name = models.CharField(
-        verbose_name = _("Name"),
-        max_length = 100, unique = True)
-    attributes = models.ManyToManyField(AttributeItem,
-        verbose_name = _("Attributes"),
-        related_name = "attributes of the list",
-        blank = True, null = True)
-
-    class Meta:
-        verbose_name = _('attribute list')
-        verbose_name_plural = _('attribute lists')
-
-    def __unicode__(self):
-        return self.name
-
-    def __repr__(self):
-        return '<AttributeList name:{0!r} attributes:[{1:r}]>'.format(
-                self.name, ', '.join(map(repr, self.attributes.all())))
-
 
 class AttributePolicy(models.Model):
     name = models.CharField(max_length = 100, unique = True)
@@ -96,7 +26,7 @@ class AttributePolicy(models.Model):
     # If an attribute is indicate without a source, from any source.
     # The output format and namespace is given by each attribute.
     attribute_list_for_sso_from_pull_sources = \
-        models.ForeignKey(AttributeList,
+        models.ForeignKey('attribute_aggregator.AttributeList',
         verbose_name = _("Pull attributes list"),
         related_name = "attributes from pull sources",
         blank = True, null = True)
@@ -143,7 +73,7 @@ class AttributePolicy(models.Model):
 
     # List of attributes to filter from push sources at SSO Login.
     attribute_filter_for_sso_from_push_sources = \
-        models.ForeignKey(AttributeList,
+        models.ForeignKey('attribute_aggregator.AttributeList',
         verbose_name = \
             _("Filter by attribute names the forwarded pushed attributes"),
         related_name = "filter attributes of push sources with list",
