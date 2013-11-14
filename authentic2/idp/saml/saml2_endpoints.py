@@ -457,7 +457,7 @@ def need_consent_for_federation(request, login, save, nid_format):
         provider = \
             LibertyProvider.objects.get(entity_id=login.request.issuer.content)
         display_name = provider.name
-    except:
+    except LibertyProvider.DoesNotExist:
         pass
     if not display_name:
         display_name = urllib.quote(login.request.issuer.content)
