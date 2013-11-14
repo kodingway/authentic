@@ -125,6 +125,8 @@ class LDAPUser(object):
     is_staff = False
     is_superuser = False
 
+    USERNAME_FIELD = 'dn'
+
     def __init__(self, block, dn, password):
         self.block = block
         self.dn = dn
