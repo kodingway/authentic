@@ -18,13 +18,11 @@
 '''
 
 
-try:
-    import ldap_sources
-except ImportError:
-    ldap_sources = None
 import user_profile
 
+from django.conf import settings
 from django.dispatch import Signal
+from django.core.exceptions import ImproperlyConfigured
 
 from . import simple_source
 
@@ -34,11 +32,6 @@ listed_attributes_with_source_call = Signal(providing_args = \
     ["user", "definitions", "source", "auth_source"])
 add_attributes = Signal(providing_args = ["instance", "user", "attributes", "context"])
 
-if ldap_sources:
-    any_attributes_call.connect(ldap_sources.get_attributes)
-    listed_attributes_call.connect(ldap_sources.get_attributes)
-    listed_attributes_with_source_call.connect(ldap_sources.get_attributes)
-
 any_attributes_call.connect(user_profile.get_attributes)
 listed_attributes_call.connect(user_profile.get_attributes)
 listed_attributes_with_source_call.connect(user_profile.get_attributes)
@@ -46,6 +39,16 @@ listed_attributes_with_source_call.connect(user_profile.get_attributes)
 any_attributes_call.connect(simple_source.get_attributes)
 listed_attributes_call.connect(simple_source.get_attributes)
 listed_attributes_with_source_call.connect(simple_source.get_attributes)
+
+if getattr(settings, 'A2_ATTRIBUTE_AGGREGATOR_LDAP_SOURCE', False):
+    try:
+        import ldap_sources
+    except ImportError:
+        raise ImproperlyConfigured('A2_ATTRIBUTE_AGGREGATOR_LDAP_SOURCE is activated but the pyhon ldap library is not available')
+    if ldap_sources:
+        any_attributes_call.connect(ldap_sources.get_attributes)
+        listed_attributes_call.connect(ldap_sources.get_attributes)
+        listed_attributes_with_source_call.connect(ldap_sources.get_attributes)
 
 # Connect to saml2_idp signals
 from authentic2.idp.signals import add_attributes_to_response
