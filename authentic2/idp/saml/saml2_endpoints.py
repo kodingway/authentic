@@ -258,7 +258,7 @@ def build_assertion(request, login, nid_format='transient', attributes=None):
         else:
             backend = load_backend(backend)
             if hasattr(backend, 'get_saml2_authn_context'):
-                authn_context = backend.get_saml2_authn_context(request)
+                authn_context = backend.get_saml2_authn_context()
             else:
                 raise Exception('backend unsupported: ' + backend)
         if authn_context == lasso.SAML2_AUTHN_CONTEXT_PASSWORD and ssl:
