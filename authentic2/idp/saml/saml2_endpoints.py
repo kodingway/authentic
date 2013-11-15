@@ -724,7 +724,7 @@ def sso_after_process_request(request, login, consent_obtained=False,
     try:
         LibertyFederation.objects.get(
                 user=request.user,
-                sp__provider__entity_id=login.remoteProviderId)
+                sp__liberty_provider__entity_id=login.remoteProviderId)
         logger.debug('consent already '
             'given (existing federation) for %s' % login.remoteProviderId)
         consent_obtained = True
