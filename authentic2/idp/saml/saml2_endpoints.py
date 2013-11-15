@@ -457,7 +457,7 @@ def need_consent_for_federation(request, login, save, nid_format):
         provider = \
             LibertyProvider.objects.get(entity_id=login.request.issuer.content)
         display_name = provider.name
-    except LibertyProvider.DoesNotExist:
+    except ObjectDoesNotExist:
         pass
     if not display_name:
         display_name = urllib.quote(login.request.issuer.content)
@@ -478,7 +478,7 @@ def need_consent_for_attributes(request, login, consent_obtained, save,
         provider = \
             LibertyProvider.objects.get(entity_id=login.request.issuer.content)
         display_name = provider.name
-    except:
+    except ObjectDoesNotExist:
         pass
     if not display_name:
         display_name = urllib.quote(login.request.issuer.content)
@@ -731,7 +731,7 @@ def sso_after_process_request(request, login, consent_obtained=False,
         '''This is abusive since a federation may exist even if we have
         not previously asked the user consent.'''
         consent_value = 'urn:oasis:names:tc:SAML:2.0:consent:prior'
-    except:
+    except ObjectDoesNotExist:
         logger.debug('consent not yet given \
             (no existing federation) for %s' % login.remoteProviderId)
 
@@ -1181,7 +1181,7 @@ def slo_soap(request):
     try:
         provider = \
             LibertyProvider.objects.get(entity_id=logout.remoteProviderId)
-    except:
+    except ObjectDoesNotExist:
         logger.warn('provider %r unknown' \
             % logout.remoteProviderId)
         return return_logout_error(request, logout,
@@ -1257,7 +1257,7 @@ def slo_soap(request):
                     logout.processResponseMsg(soap_response)
                 else:
                     logger.info('Provider does not support SOAP')
-            except:
+            except lasso.Error:
                 logger.exception('slo, relaying to %s failed ' %
                         lib_session.provider_id)
 
@@ -1275,7 +1275,7 @@ def slo_soap(request):
         for s in q:
             try:
                 lib_session = lasso.Session().newFromDump(s.session_dump)
-            except:
+            except lasso.Error:
                 logger.debug('Unable to load session %s' % s)
             else:
                 try:
@@ -1311,7 +1311,7 @@ def slo_soap(request):
     '''
     try:
         logout.buildResponseMsg()
-    except:
+    except lasso.Error:
         logger.exception('slo failure to build reponse msg')
         raise NotImplementedError()
     logger.info('processing finished')
@@ -1336,7 +1336,7 @@ def slo(request):
     try:
         provider = \
             LibertyProvider.objects.get(entity_id=logout.remoteProviderId)
-    except:
+    except ObjectDoesNotExist:
         logger.warn('provider %r unknown' \
             % logout.remoteProviderId)
         return return_logout_error(request, logout,
