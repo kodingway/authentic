@@ -373,12 +373,14 @@ class LDAPBackend():
                 pass
             else:
                 shared_cache = get_shared_cache('ldap')
-                uri, dn, username, password, block = shared_cache.get('ldap-pk-{0}'.format(user_id))
-                user.ldap_uri = uri
-                user.ldap_dn = dn
-                user.ldap_username = username
-                user.ldap_password = password
-                user.ldap_block = block
+                value = shared_cache.get('ldap-pk-{0}'.format(user_id))
+                if value is not None:
+                    uri, dn, username, password, block = value
+                    user.ldap_uri = uri
+                    user.ldap_dn = dn
+                    user.ldap_username = username
+                    user.ldap_password = password
+                    user.ldap_block = block
         return user
 
     def _parse_simple_config(self):
