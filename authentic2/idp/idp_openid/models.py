@@ -9,7 +9,7 @@ import openid.association
 import openid.store.nonce
 from django.db import models
 from django.utils.timezone import now, utc
-
+from django.conf import settings
 
 from authentic2.saml.fields import PickledObjectField
 
