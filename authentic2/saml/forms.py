@@ -12,8 +12,6 @@ class AddLibertyProviderFromUrlForm(Form):
     url = URLField(label=_("Metadata's URL"))
 
     def clean(self):
-        import pdb
-        pdb.set_trace()
         cleaned_data = super(AddLibertyProviderFromUrlForm, self).clean()
         name = cleaned_data['name']
         slug = cleaned_data['slug']
