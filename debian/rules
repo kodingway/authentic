@@ -6,7 +6,7 @@ pythonauthentic2=$(CURDIR)/debian/python-authentic2
 %:
 	dh $@ --with python2
 
-override_dh_auto_install:
-	dh_auto_install
+override_dh_install:
+	dh_install
 	mv $(CURDIR)/debian/tmp/usr/bin/authentic2-ctl $(pythonauthentic2)/usr/lib/authentic2/manage.py
 

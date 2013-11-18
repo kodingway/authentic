@@ -1,4 +1,5 @@
 etc/authentic2
+etc/authentic2/config.d
 var/lib/authentic2/media
 var/lib/authentic2/static
 var/lib/authentic2/extra-static
