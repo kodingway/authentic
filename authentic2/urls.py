@@ -35,15 +35,15 @@ not_homepage_patterns = patterns('',
         'account_management'),
 )
 
+if getattr(settings, 'IDP_OPENID', False):
+    not_homepage_patterns += patterns('',
+            (r'^openid/', include('authentic2.idp.idp_openid.urls')))
+
 urlpatterns += not_homepage_patterns
 
 urlpatterns += patterns('',
     (r'^authsaml2/', include('authentic2.authsaml2.urls')),
 )
-
-if getattr(settings, 'IDP_OPENID', False):
-    urlpatterns += patterns('',
-            (r'^openid/', include('authentic2.idp.idp_openid.urls')))
 
 try:
     if settings.DISCO_SERVICE:
