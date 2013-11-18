@@ -9,6 +9,19 @@ AUTHENTIC_USER=authentic
 AUTHENTIC_GROUP=authentic
 AUTHENTIC_HOME=/var/lib/authentic2
 
+# source debconf stuff
+. /usr/share/debconf/confmodule
+# source dbconfig-common shell library, and call the hook function
+if [ -f /usr/share/dbconfig-common/dpkg/postinst.pgsql ]; then
+    . /usr/share/dbconfig-common/dpkg/postinst.pgsql 
+    dbc_generate_include=template:/etc/authentic2/db.conf
+    dbc_generate_include_args="-o template_infile=/usr/share/authentic2/templates/db.conf -U"
+    dbc_generate_include_owner="authentic"
+    dbc_generate_include_perms="640"
+    dbc_go authentic2 $@
+fi
+
+
 case "$1" in
     configure)
         if ! getent group $AUTHENTIC_GROUP > /dev/null 2>&1; then
@@ -28,6 +41,7 @@ case "$1" in
         chown $AUTHENTIC_USER:$AUTHENTIC_GROUP /var/lib/authentic2 /var/run/authentic2 /var/log/authentic2
         chown $AUTHENTIC_USER:$AUTHENTIC_GROUP /var/lib/authentic2/static /var/lib/authentic2/extra-static
         chown $AUTHENTIC_USER:$AUTHENTIC_GROUP /var/lib/authentic2/media
+
         echo -n "Generating static files.."
         su authentic -p -c "/usr/bin/authentic2-ctl collectstatic --noinput --link"
         echo "..done"
@@ -47,15 +61,6 @@ case "$1" in
     *)
         echo "postinst called with unknown argument \`$1'" >&2
         exit 1
-        ;;
-esac
-
-case "$1" in
-    configure)
-        if [ -z "$2" ]; then
-            su authentic -p -c "/usr/bin/authentic2-ctl syncdb --noinput"
-            su authentic -p -c "/usr/bin/authentic2-ctl migrate --fake --noinput"
-        fi
         ;;
 esac
 
