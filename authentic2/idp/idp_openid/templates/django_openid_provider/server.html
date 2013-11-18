@@ -11,7 +11,7 @@
 {% load breadcrumbs %}
 {% block breadcrumbs %}
 {{ block.super }}
-{% breadcrumb_url 'OpenID' openid-provider-root %}
+{% breadcrumb_url 'OpenID' 'openid-provider-root' %}
 {% endblock %}
 
 {% block content %}

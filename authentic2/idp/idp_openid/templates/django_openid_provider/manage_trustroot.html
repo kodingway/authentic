@@ -8,8 +8,8 @@
 {% load breadcrumbs %}
 {% block breadcrumbs %}
 {{ block.super }}
-{% breadcrumb_url 'Manage OpenID' manage_id %}
-{% breadcrumb_url 'Manage trusted site' manage_trustroot %}
+{% breadcrumb_url 'Manage OpenID' 'manage_id' %}
+{% breadcrumb_url 'Manage trusted site' 'manage_trustroot' %}
 {% endblock %}
 
 {% block content %}
