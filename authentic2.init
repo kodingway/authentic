@@ -15,8 +15,9 @@ PATH=/sbin:/usr/sbin:/bin:/usr/bin
 DESC=authentic2
 NAME=authentic2
 DAEMON=/usr/bin/gunicorn
-PIDFILE=/var/run/authentic2/$NAME.pid
-LOG_DIR=/var/log/authentic2
+PID_DIR=/var/run/$NAME
+LOG_DIR=/var/log/$NAME
+PIDFILE=$PID_DIR/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 
 USER=authentic
@@ -27,7 +28,7 @@ DAEMON_ARGS="--pid $PIDFILE \
 --daemon \
 --access-logfile $LOG_DIR/gunicorn-access.log \
 --log-file $LOG_DIR/gunicorn-error.log \
---bind=127.0.0.1:8092 \
+--bind=unix:$PID_DIR/$NAME.sock \
 --workers=10 \
 --worker-class=sync \
 --timeout=60 \
@@ -54,6 +55,11 @@ done
 # Define LSB log_* functions.
 # Depend on lsb-base (>= 3.0-6) to ensure that this file is present.
 . /lib/lsb/init-functions
+
+# Create pid directory
+if [ ! -d $PID_DIR ]; then
+    install -d -m 755 -o $NAME -g $NAME $PID_DIR
+fi
 
 #
 # Function that starts the daemon/service
