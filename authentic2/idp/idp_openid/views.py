@@ -17,7 +17,8 @@ try:
 except ImportError:
     from django.contrib.csrf.middleware import csrf_exempt
 import django.forms as forms
-
+from django.conf import settings
+from django.http import Http404
 
 from openid.consumer.discover import OPENID_IDP_2_0_TYPE, \
     OPENID_2_0_TYPE, OPENID_1_0_TYPE, OPENID_1_1_TYPE
@@ -48,8 +49,8 @@ def check_exploded(exploded, request):
 @csrf_exempt
 def openid_server(request):
     """
-    This view is the actual OpenID server - running at the URL pointed to by 
-    the <link rel="openid.server"> tag. 
+    This view is the actual OpenID server - running at the URL pointed to by
+    the <link rel="openid.server"> tag.
     """
     server = Server(get_store(request),
         op_endpoint=request.build_absolute_uri(
@@ -111,6 +112,14 @@ redirecting to login page')
                    # We only support directed identity
                    logger.debug('Invalid OpenID identity %s' % identity)
                    return oresponse_to_response(server, orequest.answer(False))
+            if getattr(settings, 'RESTRICT_OPENID_RP', None):
+                logger.debug('RP restriction is activated')
+                if orequest.trust_root in getattr(settings, 'RESTRICT_OPENID_RP'):
+                    logger.debug('The RP %s is authorized' % orequest.trust_root)
+                else:
+                    logger.debug('The RP %s is not authorized, return 404.' \
+                        % orequest.trust_root)
+                    raise Http404
             try:
                 trusted_root = models.TrustedRoot.objects.get(
                         user=request.user.id, trust_root=orequest.trust_root)

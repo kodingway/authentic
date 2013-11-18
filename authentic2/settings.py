@@ -393,6 +393,7 @@ if IDP_SAML2:
     IDP_BACKENDS += ('authentic2.idp.saml.backend.SamlBackend',)
 
 if IDP_OPENID:
+    # RESTRICT_OPENID_RP = ["http://rp.example.com", ] # orequest.trust_root
     INSTALLED_APPS += ('authentic2.idp.idp_openid',)
     TEMPLATE_CONTEXT_PROCESSORS += ('authentic2.idp.idp_openid.context_processors.openid_meta',)
 
