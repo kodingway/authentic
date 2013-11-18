@@ -273,6 +273,34 @@ if 'CACHE_BACKEND' in os.environ:
 
 # Logging settings
 
+# add sentry handler if environment contains SENTRY_DSN
+if 'SENTRY_DSN' in os.environ:
+    try:
+        import raven
+    except ImportError:
+        raise ImproperlyConfigured('SENTRY_DSN environment variable is set but raven is not installed.')
+    SENTRY_DSN = os.environ['SENTRY_DSN']
+
+SOUTH_TESTS_MIGRATE = False
+
+# Admin tools
+ADMIN_TOOLS_INDEX_DASHBOARD = 'authentic2.dashboard.CustomIndexDashboard'
+ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'authentic2.dashboard.CustomAppIndexDashboard'
+ADMIN_TOOLS_MENU = 'authentic2.menu.CustomMenu'
+
+AUTH_SAML2 = 'AUTH_SAML2' in os.environ
+AUTH_OPENID = 'AUTH_OPENID' in os.environ
+AUTH_SSL = 'AUTH_SSL' in os.environ
+IDP_SAML2 = 'IDP_SAML2' in os.environ
+IDP_OPENID = 'IDP_OPENID' in os.environ
+IDP_CAS = 'IDP_CAS' in os.environ
+
+try:
+    from local_settings import *
+except ImportError, e:
+    if 'local_settings' in e.args[0]:
+        pass
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
@@ -329,39 +357,13 @@ LOGGING = {
     },
 }
 
-# add sentry handler if environment contains SENTRY_DSN
-if 'SENTRY_DSN' in os.environ:
-    try:
-        import raven
-    except ImportError:
-        raise ImproperlyConfigured('SENTRY_DSN environment variable is set but raven is not installed.')
-    SENTRY_DSN = os.environ['SENTRY_DSN']
+if SENTRY_DSN:
     LOGGING['handlers']['sentry'] = {
             'level': 'ERROR',
             'class': 'raven.handlers.logging.SentryHandler',
             'dsn': SENTRY_DSN,
     }
     LOGGING['loggers']['']['handlers'].append('sentry')
-
-SOUTH_TESTS_MIGRATE = False
-
-# Admin tools
-ADMIN_TOOLS_INDEX_DASHBOARD = 'authentic2.dashboard.CustomIndexDashboard'
-ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'authentic2.dashboard.CustomAppIndexDashboard'
-ADMIN_TOOLS_MENU = 'authentic2.menu.CustomMenu'
-
-AUTH_SAML2 = 'AUTH_SAML2' in os.environ
-AUTH_OPENID = 'AUTH_OPENID' in os.environ
-AUTH_SSL = 'AUTH_SSL' in os.environ
-IDP_SAML2 = 'IDP_SAML2' in os.environ
-IDP_OPENID = 'IDP_OPENID' in os.environ
-IDP_CAS = 'IDP_CAS' in os.environ
-
-try:
-    from local_settings import *
-except ImportError, e:
-    if 'local_settings' in e.args[0]:
-        pass
 
 if USE_DEBUG_TOOLBAR:
     try:
