@@ -1328,6 +1328,7 @@ ATTRIBUTE_MAPPING = {
     "oid": "0.9.2342.19200300.100.1.3",
     "display_name": "mail rfc822Mailbox",
     "alias": ['rfc822Mailbox'],
+    "profile_field_name": 'email',
     "type": "http://www.w3.org/2001/XMLSchema#string",
 },
 
