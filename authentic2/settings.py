@@ -280,6 +280,8 @@ if 'SENTRY_DSN' in os.environ:
     except ImportError:
         raise ImproperlyConfigured('SENTRY_DSN environment variable is set but raven is not installed.')
     SENTRY_DSN = os.environ['SENTRY_DSN']
+else:
+    SENTRY_DSN = None
 
 SOUTH_TESTS_MIGRATE = False
 
@@ -357,7 +359,7 @@ LOGGING = {
     },
 }
 
-if SENTRY_DSN:
+if SENTRY_DSN is not None:
     LOGGING['handlers']['sentry'] = {
             'level': 'ERROR',
             'class': 'raven.handlers.logging.SentryHandler',
