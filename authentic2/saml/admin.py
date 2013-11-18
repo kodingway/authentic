@@ -3,7 +3,7 @@ import logging
 
 from django.contrib import admin
 from django.utils.translation import ugettext as _
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls import patterns, url
 from django.conf import settings
 from django.forms import ModelForm
 import django.forms
