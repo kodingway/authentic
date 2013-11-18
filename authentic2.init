@@ -44,7 +44,7 @@ authentic2.wsgi:application"
 . /etc/authentic2/authentic.conf
 
 # Load extra config
-EXTRA_CONFIG = $(ls /etc/authentic2/config.d/*|sort -V)
+EXTRA_CONFIG = $(ls /etc/authentic2/config.d|sort -V)
 for extra_config in $EXTRA_CONFIG; do
 	. $extra_config
 done
