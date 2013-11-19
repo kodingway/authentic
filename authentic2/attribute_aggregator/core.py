@@ -32,6 +32,18 @@ from authentic2.attribute_aggregator.mapping_loader import ATTRIBUTE_MAPPING
 
 logger = logging.getLogger('attribute_aggregator')
 
+class INDEXES(object):
+
+    @classmethod
+    def setup_idxs(cls):
+        cls.by_profile_field_name = {}
+        for key, mapping in ATTRIBUTE_MAPPING.iteritems():
+            if mapping.get('profile_field_name'):
+                l = cls.by_profile_field_name.setdefault(mapping['profile_field_name'],
+                        [])
+                l.append(key)
+
+INDEXES.setup_idxs()
 
 def iso8601_to_datetime(date_string):
     '''
