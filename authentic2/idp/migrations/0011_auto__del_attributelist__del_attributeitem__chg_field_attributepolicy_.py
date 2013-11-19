@@ -7,6 +7,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Rename model 'AttributeList' table
         db.rename_table('idp_attributelist', 'attribute_aggregator_attributelist')
+        db.send_create_signal('attribute_aggregator', ['AttributeList'])
 
         # Rename M2M table for field attributes on 'AttributeList'
         db.rename_table(db.shorten_name('idp_attributelist_attributes'),
@@ -14,6 +15,7 @@ class Migration(SchemaMigration):
 
         # Rename model 'AttributeItem' table
         db.rename_table('idp_attributeitem', 'attribute_aggregator_attributeitem')
+        db.send_create_signal('attribute_aggregator', ['AttributeItem'])
 
 
         # Changing field 'AttributePolicy.attribute_filter_for_sso_from_push_sources'
@@ -25,6 +27,8 @@ class Migration(SchemaMigration):
     def backwards(self, orm):
         # Rename model 'AttributeList' table
         db.rename_table('attribute_aggregator_attributelist', 'idp_attributelist', )
+        db.send_create_signal('idp', ['AttributeList'])
+
 
         # Rename M2M table for field attributes on 'AttributeList'
         db.rename_table(
@@ -34,6 +38,7 @@ class Migration(SchemaMigration):
         # Deleting model 'AttributeItem' table
         db.rename_table('attribute_aggregator_attributeitem',
                 'idp_attributeitem')
+        db.send_create_signal('idp', ['AttributeItem'])
 
 
         # Changing field 'AttributePolicy.attribute_filter_for_sso_from_push_sources'
