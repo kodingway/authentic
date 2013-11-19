@@ -8,6 +8,8 @@ set -e
 case "$1" in purge)
     deluser --quiet --system authentic > /dev/null || true
     rm -f /etc/authentic2/secret
+    rm -f /etc/authentic2/db.conf
+    rm -f /var/lib/authentic2/static/*
     ;;
 
 esac
