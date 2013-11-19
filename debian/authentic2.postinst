@@ -9,6 +9,9 @@ AUTHENTIC_USER=authentic
 AUTHENTIC_GROUP=authentic
 AUTHENTIC_HOME=/var/lib/authentic2
 
+export DEBCONF_DEBUG=developer
+export dbc_debug=1
+
 case "$1" in
     configure)
         if ! getent group $AUTHENTIC_GROUP > /dev/null 2>&1; then
