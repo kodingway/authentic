@@ -60,12 +60,11 @@ def get_attributes(user, definitions=None, source=None, auth_source=False, **kwa
     try:
         AttributeSource.objects.get(name=SOURCE_NAME)
     except:
-        logger.debug('get_attributes: \
-            Profile source not configured')
+        logger.debug('USER_PROFILE source is inactive')
         return None
     if source and source.name != SOURCE_NAME:
-        logger.debug('get_attributes: '
-                'The required source %s is not user profile' % source)
+        logger.debug('USER_PROFILE source ignored as source %r is required',
+                source.name)
         return None
 
     attributes = dict()
@@ -83,16 +82,13 @@ def get_attributes(user, definitions=None, source=None, auth_source=False, **kwa
         fields = []
         if definitions:
             for definition in definitions:
-                logger.debug('get_attributes: looking for %s' % definition)
                 field_name = get_profile_field_name_from_definition(definition)
                 if not field_name:
-                    '''
-                        Profile model may be extended without modifying the
-                        mapping file if the attribute name is the same as the
-                        definition
-                    '''
-                    logger.debug('get_attributes: '
-                            'Field name will be the definition')
+                    #
+                    #  Profile model may be extended without modifying the
+                    #  mapping file if the attribute name is the same as the
+                    #  definition
+                    #
                     field_name = definition
                 if field_name in field_names:
                     fields.append((field_name, definition))
@@ -102,13 +98,14 @@ def get_attributes(user, definitions=None, source=None, auth_source=False, **kwa
             fields = [(field_name, definition)
                         for definition in get_definitions_from_profile_field_name(field_name)
                         for field_name in field_names]
+        logger.debug('retrieving fields %r from USER_PROFILE', fields)
         for field_name, definition in fields:
             logger.debug('get_attributes: found field %s' % (field_name,))
             value = getattr(user, field_name, None)
             if value:
                 if callable(value):
                     value = value()
-                logger.debug('get_attributes: found value %s' % value)
+                logger.debug('field %r has value %r', field_name, value)
                 attr = {}
                 attr['definition'] = definition
                 if not isinstance(value, basestring) and hasattr(value,
