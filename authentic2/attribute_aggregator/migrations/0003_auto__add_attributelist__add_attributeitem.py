@@ -4,6 +4,9 @@ from south.v2 import SchemaMigration
 from authentic2.compat import user_model_label
 
 class Migration(SchemaMigration):
+    depends_on = (
+            ('idp', '0011_auto__del_attributelist__del_attributeitem__chg_field_attributepolicy_.py'),
+    )
 
     def forwards(self, orm):
         pass
