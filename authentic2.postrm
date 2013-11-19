@@ -11,6 +11,7 @@ case "$1" in purge)
     rm -f /etc/authentic2/db.conf
     rm -rf /var/lib/authentic2/static
     ucf --purge /etc/authentic2/db.conf
+    ucf --purge /etc/dbconfig-common/authentic2.conf
     ;;
 
 esac
