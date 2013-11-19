@@ -35,14 +35,7 @@ case "$1" in
 
         ;;
 
-    reconfigure)
-        echo -n "Generating static files.."
-        su authentic -p -c "/usr/bin/authentic2-ctl collectstatic --noinput --link"
-        echo "..done"
-
-        ;;
-
-    abort-upgrade|abort-remove|abort-deconfigure)
+    reconfigure|abort-upgrade|abort-remove|abort-deconfigure)
         ;;
 
     *)
