@@ -19,6 +19,7 @@
 
 
 import logging
+from operator import attrgetter
 
 from django.contrib.auth.models import SiteProfileNotAvailable
 from django.core.exceptions import ObjectDoesNotExist
@@ -97,8 +98,11 @@ def get_attributes(user, definitions=None, source=None, auth_source=False, **kwa
                         for field_name in field_names]
         logger.debug('retrieving fields %r from USER_PROFILE', fields)
         for field_name, definition in fields:
-            logger.debug('get_attributes: found field %s' % (field_name,))
-            value = getattr(user, field_name, None)
+            try:
+                value = attrgetter(field_name)(user)
+            except AttributeError:
+                logger.debug('field %r not found in USER_PROFILE', field_name)
+                continue
             if value:
                 if callable(value):
                     value = value()
