@@ -24,7 +24,7 @@ from django.contrib.auth.models import SiteProfileNotAvailable
 from django.core.exceptions import ObjectDoesNotExist
 
 from authentic2.attribute_aggregator.core import get_profile_field_name_from_definition, \
-    get_definition_from_profile_field_name
+    get_definitions_from_profile_field_name
 
 
 logger = logging.getLogger(__name__)
@@ -99,11 +99,9 @@ def get_attributes(user, definitions=None, source=None, auth_source=False, **kwa
                 else:
                     logger.debug('get_attributes: Field not found in profile')
         else:
-            fields = [(field_name,
-                        get_definition_from_profile_field_name(field_name)) \
-                        for field_name \
-                            in field_names  \
-                        if get_definition_from_profile_field_name(field_name)]
+            fields = [(field_name, definition)
+                        for definition in get_definitions_from_profile_field_name(field_name)
+                        for field_name in field_names]
         for field_name, definition in fields:
             logger.debug('get_attributes: found field %s' % (field_name,))
             value = getattr(user, field_name, None)

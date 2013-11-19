@@ -126,14 +126,11 @@ def get_profile_field_name_from_definition(definition):
     return None
 
 
-def get_definition_from_profile_field_name(field_name):
+def get_definitions_from_profile_field_name(field_name):
     if not field_name:
-        return None
-    for def_name, content in ATTRIBUTE_MAPPING.items():
-        if 'profile_field_name' in content:
-            if field_name == content['profile_field_name']:
-                return def_name
-    return None
+        return ()
+    keys = INDEXES.by_profile_field_name.get(field_name, ())
+    return [ATTRIBUTE_MAPPING[key] for key in keys]
 
 
 def get_def_name_from_name_and_ns_of_attribute(name, namespace):
