@@ -29,10 +29,9 @@ Package: authentic2
 Architecture: all
 Pre-Depends: python-django (>= 1.5)
 Depends: ${misc:Depends}, adduser,
-    python-authentic2,
-    python-psycopg2,
-    gunicorn,
-    dbconfig-common
+    python-authentic2, python-psycopg2,
+    gunicorn, dbconfig-common,
+    debconf | debconf-2.0, ucf
 Recommends: nginx, postgresql-client
 Description: Versatile identity server Python module
  Authentic is a versatile identity provider aiming to address a broad
