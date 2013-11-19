@@ -90,10 +90,7 @@ def get_attributes(user, definitions=None, source=None, auth_source=False, **kwa
                     #  definition
                     #
                     field_name = definition
-                if field_name in field_names:
-                    fields.append((field_name, definition))
-                else:
-                    logger.debug('get_attributes: Field not found in profile')
+                fields.append((field_name, definition))
         else:
             fields = [(field_name, definition)
                         for definition in get_definitions_from_profile_field_name(field_name)
