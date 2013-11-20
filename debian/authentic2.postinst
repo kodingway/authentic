@@ -4,6 +4,10 @@
 #
 
 set -e
+set -x
+
+export DEBCONF_DEBUG=developer
+export dbc_debug=1
 
 AUTHENTIC_USER=authentic
 AUTHENTIC_GROUP=authentic
@@ -49,10 +53,12 @@ esac
 # source dbconfig-common shell library, and call the hook function
 if [ -f /usr/share/dbconfig-common/dpkg/postinst.pgsql ]; then
     . /usr/share/dbconfig-common/dpkg/postinst.pgsql 
-    dbc_generate_include=template:/etc/authentic2/db.conf
+    dbc_debug=1
+    dbc_generate_include="template:/etc/authentic2/db.conf"
     dbc_generate_include_args="-o template_infile=/usr/share/authentic2/templates/db.conf -U"
     dbc_generate_include_owner="authentic"
     dbc_generate_include_perms="640"
+    dbc_pgsql_createdb_encoding="UTF8"
     dbc_go authentic2 $@
 fi
 
