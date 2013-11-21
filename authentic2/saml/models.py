@@ -383,6 +383,8 @@ class LibertyProvider(models.Model):
     def clean(self):
         super(LibertyProvider, self).clean()
         p = lasso.Provider.newFromBuffer(lasso.PROVIDER_ROLE_ANY, self.metadata.encode('utf8'))
+        if p is None:
+            raise ValidationError(_('Invalid metadata file'))
         self.entity_id = p.providerId
         if not self.name:
             self.name = organization_name(p)
