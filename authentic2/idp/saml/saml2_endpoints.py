@@ -387,13 +387,14 @@ def sso(request):
             if not provider_loaded:
                 message = _('sso: fail to load unknown provider %s' \
                     % provider_id)
-                return error_page(request, message, logger=logger)
+                return error_page(request, message, logger=logger,
+                        warning=True)
             else:
                 policy = get_sp_options_policy(provider_loaded)
                 if not policy:
                     logger.error('No policy defined')
                     return error_page(request, _('sso: No SP policy defined'),
-                        logger=logger)
+                        logger=logger, warning=True)
                 logger.info('provider %s loaded with success' \
                     % provider_id)
             if provider_loaded.service_provider.policy.authn_request_signature_check_hint == lasso.PROFILE_SIGNATURE_VERIFY_HINT_IGNORE:

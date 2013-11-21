@@ -613,14 +613,16 @@ def set_saml2_response_responder_status_code(response, code):
 
 __root_refererer_re = re.compile('^(https?://[^/]*/?)')
 
-def error_page(request, message, back = None, logger = None):
+def error_page(request, message, back = None, logger = None, warning=False):
     '''View that show a simple error page to the user with a back link.
 
          back - url for the back link, if None, return to root of the referer
                 or the local root.
     '''
-    if logger:
-        logger.error('Showing message %r on an error page' % message)
+    if not logger:
+        logger = logging
+    if warning:
+        logging.warning('Showing message %r on an error page' % message)
     else:
         logging.error('Showing message %r on an error page' % message)
     if back is None:
