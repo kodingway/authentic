@@ -631,8 +631,10 @@ def error_page(request, message, back = None, logger = None):
                 back = root_referer.group(1)
         if back is None:
             back = '/'
-    return render_to_response('error.html', {'msg': message, 'back': back},
-            context_instance=RequestContext(request))
+    redirection_timeout = getattr(settings, 'REDIRECTION_TIMEOUT_AFTER_ERROR', 2000)
+    return render_to_response('error.html', {'msg': message, 'back': back,
+        'redir_timeout': redirection_timeout},
+        context_instance=RequestContext(request))
 
 def redirect_next(request, next):
     if next:
