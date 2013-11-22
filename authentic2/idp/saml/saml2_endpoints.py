@@ -631,24 +631,6 @@ def sso_after_process_request(request, login, consent_obtained=False,
                 lasso.SAML2_STATUS_CODE_REQUEST_DENIED)
         return finish_sso(request, login)
 
-    attributes_provided = \
-        idp_signals.add_attributes_to_response.send(sender=None,
-            request=request, user=request.user,
-            audience=login.remoteProviderId)
-    logger.info(''
-        'signal add_attributes_to_response sent')
-
-    attributes = {}
-    for attrs in attributes_provided:
-        logger.info('add_attributes_to_response '
-            'connected to function %s' % attrs[0].__name__)
-        if attrs[1] and 'attributes' in attrs[1]:
-            dic = attrs[1]
-            logger.info('attributes provided are '
-                '%s' % str(dic['attributes']))
-            for key in dic['attributes'].keys():
-                attributes[key] = dic['attributes'][key]
-
     provider = load_provider(request, login.remoteProviderId,
         server=login.server)
     if not provider:
@@ -757,6 +739,24 @@ def sso_after_process_request(request, login, consent_obtained=False,
         return need_consent_for_federation(request, login, save, nid_format)
 
     policy = get_attribute_policy(provider)
+
+    attributes_provided = \
+        idp_signals.add_attributes_to_response.send(sender=None,
+            request=request, user=request.user,
+            audience=login.remoteProviderId)
+    logger.info(''
+        'signal add_attributes_to_response sent')
+
+    attributes = {}
+    for attrs in attributes_provided:
+        logger.info('add_attributes_to_response '
+            'connected to function %s' % attrs[0].__name__)
+        if attrs[1] and 'attributes' in attrs[1]:
+            dic = attrs[1]
+            logger.info('attributes provided are '
+                '%s' % str(dic['attributes']))
+            for key in dic['attributes'].keys():
+                attributes[key] = dic['attributes'][key]
 
     if not policy and attributes:
         logger.info('no attribute policy, we do '
