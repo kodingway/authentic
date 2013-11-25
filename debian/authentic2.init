@@ -65,6 +65,9 @@ fi
 #
 do_start()
 {
+    log_action_msg "Applying new migrations .."
+    su authentic -p -c "/usr/bin/authentic2-ctl syncdb --migrate --noinput"
+    log_action_msg ".. done"
 	# Return
 	#   0 if daemon has been started
 	#   1 if daemon was already running
