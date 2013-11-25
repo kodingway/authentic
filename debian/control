@@ -1,8 +1,8 @@
 Source: authentic2
 Section: python
 Priority: optional
-Maintainer: Frederic Peters <fpeters@debian.org>
-Build-Depends-Indep: python-all-dev (>= 2.5)
+Maintainer: Jerome Schneider <jschneider@entrouvert.com>
+Build-Depends-Indep: python-all-dev (>= 2.6)
 Build-Depends: debhelper (>= 8.0), python-setuptools, python-django (>= 1.5)
 Standards-Version: 3.8.3
 Homepage: http://authentic.labs.libre-entreprise.org
@@ -16,7 +16,8 @@ Depends: ${misc:Depends}, ${python:Depends},
     python-requests,
     python-django-south (>= 0.7), python-django-south (<< 0.9),
     python-django-admin-tools, python-lasso
-Recommends: python-openid
+Recommends: python-openid, python-ldap
+Suggests: python-raven
 Description: Versatile identity server
  Authentic is a versatile identity provider aiming to address a broad
  range of needs, from simple to complex setups; it has support for many
@@ -32,7 +33,8 @@ Depends: ${misc:Depends}, adduser,
     python-authentic2, python-psycopg2,
     gunicorn, dbconfig-common,
     debconf | debconf-2.0, ucf
-Recommends: nginx, postgresql-client
+Recommends: postgresql-client
+Suggests: nginx
 Description: Versatile identity server Python module
  Authentic is a versatile identity provider aiming to address a broad
  range of needs, from simple to complex setups; it has support for many
