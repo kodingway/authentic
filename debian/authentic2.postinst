@@ -27,10 +27,18 @@ case "$1" in
                     $AUTHENTIC_USER
             echo "..done" >&2
         fi
+        if [ -f "/etc/$NAME/secret"]; then
+            echo "export SECRET_KEY='`</dev/urandom tr -dc [:alnum:]-_\!\%\^:\; | head -c70`'" > /etc/$NAME/secret
+            chmod 0600 /etc/$NAME/secret
+            chown $AUTHENTIC_USER:$AUTHENTIC_GROUP /etc/$NAME/secret
+        fi
 
-        chown $AUTHENTIC_USER:$AUTHENTIC_GROUP /var/lib/authentic2 /var/run/authentic2 /var/log/authentic2
-        chown $AUTHENTIC_USER:$AUTHENTIC_GROUP /var/lib/authentic2/static /var/lib/authentic2/extra-static
-        chown $AUTHENTIC_USER:$AUTHENTIC_GROUP /var/lib/authentic2/media
+        chown $AUTHENTIC_USER:$AUTHENTIC_GROUP /var/lib/authentic2 \
+            /var/lib/authentic2/static \
+            /var/lib/authentic2/extra-static \
+            /var/lib/authentic2/media \
+            /var/run/authentic2 \
+            /var/log/authentic2
 
         # source dbconfig-common shell library, and call the hook function
         if [ -f /usr/share/dbconfig-common/dpkg/postinst.pgsql ]; then

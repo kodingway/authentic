@@ -65,9 +65,6 @@ fi
 #
 do_start()
 {
-    log_action_msg "Applying new migrations .."
-    su authentic -p -c "/usr/bin/authentic2-ctl syncdb --migrate --noinput"
-    log_action_msg ".. done"
 	# Return
 	#   0 if daemon has been started
 	#   1 if daemon was already running
@@ -120,6 +117,9 @@ do_reload() {
 
 case "$1" in
   start)
+    log_action_msg "Applying new migrations .."
+    su authentic -p -c "/usr/bin/authentic2-ctl syncdb --migrate --noinput"
+    log_action_msg ".. done"
     log_daemon_msg "Starting $DESC " "$NAME"
     do_start
     case "$?" in
