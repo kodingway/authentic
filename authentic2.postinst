@@ -5,6 +5,7 @@
 
 set -e
 
+NAME=authentic2
 AUTHENTIC_USER=authentic
 AUTHENTIC_GROUP=authentic
 AUTHENTIC_HOME=/var/lib/authentic2
