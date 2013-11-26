@@ -606,6 +606,7 @@ ATTRIBUTE_MAPPING = {
 "displayName": {
     "oid": "2.16.840.1.113730.3.1.241",
     "display_name": "displayName",
+    "profile_field_name": "get_full_name",
     "type": "http://www.w3.org/2001/XMLSchema#string",
     "syntax": "1.3.6.1.4.1.1466.115.121.1.15",
 },
