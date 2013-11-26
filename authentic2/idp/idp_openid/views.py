@@ -19,6 +19,8 @@ except ImportError:
 import django.forms as forms
 from django.conf import settings
 from django.http import Http404
+from django.views.generic import DeleteView
+from django.core.urlresolvers import reverse_lazy
 
 from openid.consumer.discover import OPENID_IDP_2_0_TYPE, \
     OPENID_2_0_TYPE, OPENID_1_0_TYPE, OPENID_1_1_TYPE
@@ -290,3 +292,8 @@ def openid_discovery(request, id):
     }, context_instance=RequestContext(request))
     response['X-XRDS-Location'] = xrds_url
     return response
+
+class TrustedRootDelete(DeleteView):
+    model = models.TrustedRoot
+    success_url = reverse_lazy('account_management')
+    template_name = 'idp/openid/trustedroot_confirm_delete.html'

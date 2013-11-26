@@ -1,4 +1,5 @@
 from idp.views import accumulate_from_backends
+from django.conf import settings
 
 class UserFederations(object):
     '''Provide access to all federations of the current user'''
@@ -23,5 +24,10 @@ class UserFederations(object):
         return super(UserFederations, self).__getattr__(name)
 
 def federations_processor(request):
-    return {'federations': UserFederations(request) }
-
+    context = {'federations': UserFederations(request)}
+    if settings.IDP_OPENID:
+        from authentic2.idp.idp_openid import models
+        openid_links = [link for link in accumulate_from_backends(request,
+            'links') if isinstance(link, models.TrustedRoot)]
+        context['openid_links'] = openid_links
+    return context
