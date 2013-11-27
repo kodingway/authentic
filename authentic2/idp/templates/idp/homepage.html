@@ -21,13 +21,15 @@
   <ul>
     {% for service in authorized_services %}
     {% if service.actions %}
-    <li>{% if service.url %}<a href="{{ service.url }}">{% endif %}{{ service.name }}{% if service.url %}</a>{% endif %} 
+    <li>{% if service.url %}<a href="{{ service.url }}">{% endif %}{{ service.name }}{% if service.url %}</a>{% endif %}
     <div class="actions">
     {% for action in service.actions %}
       <form action="{{ action.2 }}" method="{{ action.1 }}">
+        {% if action.3 %}
         {% for key, value in action.3 %}
           <input type="hidden" name="{{ key }}" value="{{ value }}" />
         {% endfor %}
+        {% endif %}
         <input type="hidden" name="next" value="/"/>
         <input type="submit" class="submit-link" value="{{ action.0 }}">
       </form>

@@ -32,11 +32,5 @@
   {% for html_block in frontends_block %}
     {{ html_block|safe }}
   {% endfor %}
-{% if openid_links %}
-<h3>{% trans "Links with OpenID Relying Parties" %}</h3>
-  {% for link in openid_links %}
-    <p>{{ link }} <a href="{% url 'trustedroot_delete' link.id %}">Unlink</a></p>
-  {% endfor %}
-{% endif %}
 <p><a href="/">{% trans "Back" %}<a/></p>
 {% endblock %}

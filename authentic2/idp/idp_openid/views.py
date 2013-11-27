@@ -295,5 +295,5 @@ def openid_discovery(request, id):
 
 class TrustedRootDelete(DeleteView):
     model = models.TrustedRoot
-    success_url = reverse_lazy('account_management')
+    success_url = '/'
     template_name = 'idp/openid/trustedroot_confirm_delete.html'
