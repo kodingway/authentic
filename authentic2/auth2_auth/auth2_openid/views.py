@@ -19,6 +19,7 @@ from django.template.loader import render_to_string
 from django.utils.encoding import smart_unicode
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
+from django.shortcuts import redirect
 
 from openid.consumer.consumer import Consumer, SUCCESS, CANCEL, FAILURE, SETUP_NEEDED
 from openid.consumer.discover import DiscoveryFailure
@@ -36,7 +37,7 @@ def signin_success(request, identity_url, openid_response,
     """
     openid signin success.
 
-    If the openid is already registered, the user is redirected to 
+    If the openid is already registered, the user is redirected to
     url set par next or in settings with OPENID_REDIRECT_NEXT variable.
     If none of these urls are set user is redirectd to /.
 
@@ -99,9 +100,9 @@ def mycomplete(request, on_success=None, on_failure=None, return_to=None,
         assert False, "Bad openid status: %s" % openid_response.status
 
 @csrf_exempt
-def complete_signin(request, redirect_field_name=REDIRECT_FIELD_NAME,  
-        openid_form=OpenidSigninForm, auth_form=AuthenticationForm, 
-        on_success=signin_success, on_failure=signin_failure, 
+def complete_signin(request, redirect_field_name=REDIRECT_FIELD_NAME,
+        openid_form=OpenidSigninForm, auth_form=AuthenticationForm,
+        on_success=signin_success, on_failure=signin_failure,
         extra_context=None):
 
     _openid_form = openid_form
@@ -110,7 +111,7 @@ def complete_signin(request, redirect_field_name=REDIRECT_FIELD_NAME,
 
     return mycomplete(request, on_success, on_failure,
             get_url_host(request) + reverse('user_complete_signin'),
-            redirect_field_name=redirect_field_name, openid_form=_openid_form, 
+            redirect_field_name=redirect_field_name, openid_form=_openid_form,
             auth_form=_auth_form, extra_context=_extra_context)
 
 def ask_openid(request, openid_url, redirect_to, on_failure=None):
@@ -147,11 +148,11 @@ def ask_openid(request, openid_url, redirect_to, on_failure=None):
         # set ax extension
         # we always ask for nickname and email
         ax_req = ax.FetchRequest()
-        ax_req.add(ax.AttrInfo('http://schema.openid.net/contact/email', 
+        ax_req.add(ax.AttrInfo('http://schema.openid.net/contact/email',
                                 alias='email', required=True))
-        ax_req.add(ax.AttrInfo('http://schema.openid.net/namePerson/friendly', 
+        ax_req.add(ax.AttrInfo('http://schema.openid.net/namePerson/friendly',
                                 alias='nickname', required=True))
-        # add custom ax attrs          
+        # add custom ax attrs
         ax_attrs = getattr(settings, 'OPENID_AX', [])
         for attr in ax_attrs:
             if len(attr) == 2:
@@ -168,7 +169,7 @@ def ask_openid(request, openid_url, redirect_to, on_failure=None):
 
 @csrf_exempt
 @not_authenticated
-def signin(request, template_name='authopenid/signin.html', 
+def signin(request, template_name='authopenid/signin.html',
         redirect_field_name=REDIRECT_FIELD_NAME, openid_form=OpenidSigninForm,
         auth_form=AuthenticationForm, on_failure=None, extra_context=None):
 
@@ -180,18 +181,18 @@ def signin(request, template_name='authopenid/signin.html',
     form2 = auth_form()
     if request.POST:
         if not redirect_to or '://' in redirect_to or ' ' in redirect_to:
-            redirect_to = settings.LOGIN_REDIRECT_URL     
+            redirect_to = settings.LOGIN_REDIRECT_URL
         if 'openid_url' in request.POST.keys():
             form1 = openid_form(data=request.POST)
             if form1.is_valid():
                 redirect_url = "%s%s?%s" % (
                         get_url_host(request),
-                        reverse('user_complete_signin'), 
+                        reverse('user_complete_signin'),
                         urllib.urlencode({ redirect_field_name: redirect_to })
                 )
-                return ask_openid(request, 
-                        form1.cleaned_data['openid_url'], 
-                        redirect_url, 
+                return ask_openid(request,
+                        form1.cleaned_data['openid_url'],
+                        redirect_url,
                         on_failure=on_failure)
         else:
             # perform normal django authentification
@@ -211,8 +212,8 @@ def signin(request, template_name='authopenid/signin.html',
 @csrf_exempt
 @login_required
 def dissociate(request, template_name="authopenid/dissociate.html",
-        dissociate_form=OpenidDissociateForm, 
-        redirect_field_name=REDIRECT_FIELD_NAME, 
+        dissociate_form=OpenidDissociateForm,
+        redirect_field_name=REDIRECT_FIELD_NAME,
         default_redirect=settings.LOGIN_REDIRECT_URL, extra_context=None):
     """ view used to dissociate an openid from an account """
     nb_associated_openids, associated_openids = get_associate_openid(request.user)
@@ -228,7 +229,7 @@ def dissociate(request, template_name="authopenid/dissociate.html",
     if request.POST:
         if request.POST.get('bdissociate_cancel','') ==  'Cancel':
             msg = ['Operation Cancel.']
-            return redirect_to(request,'/accounts/openid/associate/')
+            return redirect('/accounts/openid/associate/')
 
         openid_urls = request.POST.getlist('a_openids_remove')
         if len(openid_urls) >= 1:
@@ -238,18 +239,18 @@ def dissociate(request, template_name="authopenid/dissociate.html",
                     del request.session['openid_url']
                 msg = "Openid removed."
 
-            request.user.message_set.create(message = msg)
-            return redirect_to(request,'/accounts/openid/associate')
+            messages.success(request, msg)
+            return redirect('/accounts/openid/associate')
     else:
-        return redirect_to(request, '/accounts/openid/associate')
+        return redirect('/accounts/openid/associate')
 
 @login_required
-def associate(request, template_name='authopenid/associate.html', 
+def associate(request, template_name='authopenid/associate.html',
         openid_form=AssociateOpenID, redirect_field_name='/',
         on_failure=associate_failure, extra_context=None):
     nb_associated_openids, associated_openids = get_associate_openid(request.user)
     redirect_to = request.REQUEST.get(redirect_field_name, '')
-    if request.POST:            
+    if request.POST:
         if 'a_openids' in request.POST.keys():
             a_openids = []
             if request.POST.get('a_openids','') is not '':
@@ -265,7 +266,7 @@ def associate(request, template_name='authopenid/associate.html',
                         'associated_openids' : associated_openids,
                         'nb_associated_openids' : nb_associated_openids,
                         'msg':msg,
-                        }, context_instance=_build_context(request, extra_context=extra_context))     
+                        }, context_instance=_build_context(request, extra_context=extra_context))
 
                 return render_to_response("authopenid/dissociate.html",{
                         'a_openids' : a_openids },
@@ -281,7 +282,7 @@ def associate(request, template_name='authopenid/associate.html',
                        'associated_openids' : associated_openids,
                         'nb_associated_openids' : nb_associated_openids,
                         'msg':msg,
-                        }, context_instance=_build_context(request, extra_context=extra_context))     
+                        }, context_instance=_build_context(request, extra_context=extra_context))
                 if not redirect_to or '://' in redirect_to or ' ' in redirect_to:
                     redirect_to = settings.LOGIN_REDIRECT_URL
                 redirect_url = "%s%s?%s" % (
@@ -289,9 +290,9 @@ def associate(request, template_name='authopenid/associate.html',
                         reverse('user_complete_myassociate'),
                         urllib.urlencode({ redirect_field_name: redirect_to })
                         )
-                return ask_openid(request, 
-                        form.cleaned_data['openid_url'], 
-                        redirect_url, 
+                return ask_openid(request,
+                        form.cleaned_data['openid_url'],
+                        redirect_url,
                         on_failure=on_failure)
             else:
                 msg = ['You must enter a valid OpenID url']
@@ -300,7 +301,7 @@ def associate(request, template_name='authopenid/associate.html',
                    'associated_openids' : associated_openids,
                     'nb_associated_openids' : nb_associated_openids,
                     'msg':msg,
-                    }, context_instance=_build_context(request, extra_context=extra_context))     
+                    }, context_instance=_build_context(request, extra_context=extra_context))
     else:
         form = openid_form(request.user)
 
@@ -311,7 +312,7 @@ def associate(request, template_name='authopenid/associate.html',
         'associated_openids' : associated_openids,
         'nb_associated_openids' : nb_associated_openids,
         'msg':msg,
-    }, context_instance=_build_context(request, extra_context=extra_context))     
+    }, context_instance=_build_context(request, extra_context=extra_context))
 
 
 @login_required
@@ -339,18 +340,18 @@ def associate_success(request, identity_url, openid_response,
 @csrf_exempt
 @login_required
 def complete_associate(request, redirect_field_name=REDIRECT_FIELD_NAME,
-        template_failure='authopenid/associate.html', 
-        openid_form=AssociateOpenID, redirect_name=None, 
+        template_failure='authopenid/associate.html',
+        openid_form=AssociateOpenID, redirect_name=None,
         on_success=associate_success, on_failure=associate_failure,
         send_email=True, extra_context=None):
     if request.method == 'GET':
         return  mycomplete(request, on_success, on_failure,
                 get_url_host(request) + reverse('user_complete_myassociate'),
-                redirect_field_name=redirect_field_name, openid_form=openid_form, 
-                template_failure=template_failure, redirect_name=redirect_name, 
+                redirect_field_name=redirect_field_name, openid_form=openid_form,
+                template_failure=template_failure, redirect_name=redirect_name,
                 send_email=send_email, extra_context=extra_context)
     else:
-        return associate(request, template_name='authopenid/associate.html', 
+        return associate(request, template_name='authopenid/associate.html',
                 openid_form=AssociateOpenID, redirect_field_name='/',
                 on_failure=associate_failure, extra_context=None)
 
@@ -367,4 +368,3 @@ def openid_profile(request, next, template_name='auth/openid_profile.html'):
             { 'idp_openid': getattr(settings, 'IDP_OPENID', False),
               'associated_openids': associated_openids},
             RequestContext(request))
-
