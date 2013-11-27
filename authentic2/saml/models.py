@@ -483,11 +483,6 @@ class SessionLinkedManager(models.Manager):
             key = o.django_session_key
             if not store.exists(key):
                 o.delete()
-            else:
-                session = engine.SessionStore(session_key=key)
-                if session.get_expiry_date() >= now():
-                    store.delete(key)
-                    o.delete()
 
 LIBERTY_SESSION_DUMP_KIND_SP = 0
 LIBERTY_SESSION_DUMP_KIND_IDP = 1
