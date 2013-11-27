@@ -125,16 +125,16 @@ def ask_openid(request, openid_url, redirect_to, on_failure=None):
     if xri.identifierScheme(openid_url) == 'XRI' and getattr(
             settings, 'OPENID_DISALLOW_INAMES', False
     ):
-        msg = ("i-names are not supported")
+        msg = "i-names are not supported"
         auth_oidlogin.send(sender = None, openid_url = _openid_url, state = 'not_supported')
-        return on_failure(request, msg)
+        return on_failure(request, [msg])
     consumer = Consumer(request.session, DjangoOpenIDStore())
     try:
         auth_request = consumer.begin(openid_url)
     except DiscoveryFailure:
-        msg = ("The OpenID %s was invalid") % openid_url
+        msg = "The OpenID %s was invalid" % openid_url
         auth_oidlogin.send(sender = None, openid_url = _openid_url, state = 'invalid')
-        return on_failure(request, msg)
+        return on_failure(request, [msg])
 
     # get capabilities
     use_ax, use_sreg = discover_extensions(openid_url)
@@ -228,7 +228,8 @@ def dissociate(request, template_name="authopenid/dissociate.html",
 
     if request.POST:
         if request.POST.get('bdissociate_cancel','') ==  'Cancel':
-            msg = ['Operation Cancel.']
+            msg = 'Operation canceled'
+            messages.info(request, msg)
             return redirect('/accounts/openid/associate/')
 
         openid_urls = request.POST.getlist('a_openids_remove')
