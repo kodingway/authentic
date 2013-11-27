@@ -1,7 +1,7 @@
 import logging
 
 from django.core.urlresolvers import reverse
-
+from django.conf import settings
 from authentic2.idp.utils import Service
 
 import models
@@ -18,6 +18,10 @@ class OpenIDBackend(object):
         for service_provider in q:
             actions = []
             actions.append(('go', 'GET', service_provider.trust_root, None))
+            if getattr(settings, 'OPENID_ACTIONS', None):
+                tpl = settings.OPENID_ACTIONS.get(service_provider.trust_root, None)
+                if tpl:
+                    actions.append(('template', tpl))
             actions.append(('unlink', 'GET', reverse('trustedroot_delete',
                 kwargs={'pk': service_provider.id}), None))
             ls.append(Service(url=None, name=service_provider.trust_root,

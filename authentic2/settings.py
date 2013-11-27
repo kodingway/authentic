@@ -400,6 +400,7 @@ if IDP_OPENID:
     # RESTRICT_OPENID_RP = ["http://rp.example.com", ] # orequest.trust_root
     INSTALLED_APPS += ('authentic2.idp.idp_openid',)
     TEMPLATE_CONTEXT_PROCESSORS += ('authentic2.idp.idp_openid.context_processors.openid_meta',)
+    # OPENID_ACTIONS = {"http://rp.example.com" : 'my-template.html', }
 
 if IDP_CAS:
     INSTALLED_APPS += ('authentic2.idp.idp_cas',)
