@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-23 16:57+0200\n"
+"POT-Creation-Date: 2013-11-27 12:03+0100\n"
 "PO-Revision-Date: 2013-07-23 16:57+0200\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -47,8 +47,8 @@ msgid "Cancel"
 msgstr "Annuler"
 
 #: templates/auth/openid_profile.html:6
-msgid "Associate your account with an OpenID"
-msgstr "Associer votre compte avec un OpenID"
+msgid "Manage your OpenID associations"
+msgstr "Gérer vos associations OpenID"
 
 #: templates/authopenid/associate.html:5
 msgid "Associate OpenID"
@@ -69,15 +69,19 @@ msgstr "Ajouter une nouveau compte OpenID"
 
 #: templates/authopenid/associate.html:49
 msgid "Add OpenID"
-msgstr ""
+msgstr "Ajouter un OpenID"
+
+#: templates/authopenid/associate.html:53
+msgid "Back"
+msgstr "Retour"
 
 #: templates/authopenid/associate_email.txt:1
 msgid "Thank you to join"
-msgstr ""
+msgstr "Merci de nous rejoindre"
 
 #: templates/authopenid/associate_email_subject.txt:1
 msgid "Welcome to"
-msgstr ""
+msgstr "Bienvenue"
 
 #: templates/authopenid/complete.html:18
 msgid "Your OpenID is verified! "
@@ -91,8 +95,8 @@ msgid ""
 "\t"
 msgstr ""
 "\n"
-"\t<p>Votre OpenID peut desormais etre associe a un compte nouveau ou "
-"existant. Vous pourrez modifier cette association dans vos preferences.</p>\n"
+"\t<p>Votre OpenID peut desormais être associé a un compte nouveau ou "
+"existant. Vous pourrez modifier cette association dans vos préférences.</p>\n"
 "\t"
 
 #: templates/authopenid/complete.html:22
@@ -102,11 +106,15 @@ msgstr "Associez votre OpenID"
 #: templates/authopenid/complete.html:23
 msgid ""
 "\n"
-"\t<p>If you're joining <strong>Sitename</strong>, associate your OpenID with "
-"a new account. If you're already a member, associate with your existing "
-"account.</p>\n"
+"\t<p>If you're joining, associate your OpenID with a new account. If you're "
+"already a member, associate with your existing account.</p>\n"
 "\t"
 msgstr ""
+"\n"
+"\t<p>Si vous nous rejoignez, associez votre OpenID avec "
+"un nouveau compte. Si vous êtes déjà membre, associez-le avec un compte "
+"existant.</p>\n"
+"\t"
 
 #: templates/authopenid/complete.html:30 templates/authopenid/complete.html:40
 #: templates/authopenid/signin-iframe.html:16
@@ -140,16 +148,16 @@ msgstr "Mot de passe"
 
 #: templates/authopenid/complete.html:74
 msgid "Verify"
-msgstr "Verifier"
+msgstr "Vérifier"
 
 #: templates/authopenid/dissociate.html:32
 msgid "Dissociate OpenID"
-msgstr "Dissocier vot OpenID"
+msgstr "Dissocier votre OpenID"
 
 #: templates/authopenid/password_change_form.html:6
 #: templates/authopenid/password_change_form.html:25
 msgid "Set password"
-msgstr "Change le mot de passe"
+msgstr "Changez le mot de passe"
 
 #: templates/authopenid/password_change_form.html:8
 msgid "Change password"
@@ -160,6 +168,8 @@ msgid ""
 "Please enter your new password twice so we can verify you typed it in "
 "correctly."
 msgstr ""
+"Saisissez deux fois votre mot de passe afin que nous puissions vérifier "
+"qu'il est saisi correctement."
 
 #: templates/authopenid/password_change_form.html:31
 #: templates/authopenid/password_change_form.html:47
@@ -187,7 +197,7 @@ msgid ""
 msgstr ""
 "Veuillez entre votre ancien mot de passe, par raison de sécurité, et entrez "
 "ensuite votre nouveau mot de passe deux fois pour s'assurer que vous l'avez "
-"tapé correctement."
+"saisi correctement."
 
 #: templates/authopenid/password_change_form.html:45
 msgid "Old password:"
@@ -201,4 +211,7 @@ msgstr "Connexion OpenID"
 #: templates/authopenid/signin-iframe.html:45
 #: templates/authopenid/signin.html:51
 msgid "Sign in with OpenID"
-msgstr "Connectez vous avec OpenID"
+msgstr "Connectez-vous avec OpenID"
+
+#~ msgid "Associate your account with an OpenID"
+#~ msgstr "Associer votre compte avec un OpenID"
