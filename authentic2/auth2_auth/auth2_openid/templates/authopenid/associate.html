@@ -49,6 +49,8 @@
             <input name="openid_submit" type="submit" value="{% trans "Add OpenID" %}">
 		</div>
 </form>
+
+<p><a href="{% url 'account_management' %}">{% trans "Back" %}</a></p>
 {% endblock %}
 
 {% block extra_scripts %}
