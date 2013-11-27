@@ -127,14 +127,14 @@ def ask_openid(request, openid_url, redirect_to, on_failure=None):
     ):
         msg = "i-names are not supported"
         auth_oidlogin.send(sender = None, openid_url = _openid_url, state = 'not_supported')
-        return on_failure(request, [msg])
+        return on_failure(request, msg)
     consumer = Consumer(request.session, DjangoOpenIDStore())
     try:
         auth_request = consumer.begin(openid_url)
     except DiscoveryFailure:
         msg = "The OpenID %s was invalid" % openid_url
         auth_oidlogin.send(sender = None, openid_url = _openid_url, state = 'invalid')
-        return on_failure(request, [msg])
+        return on_failure(request, msg)
 
     # get capabilities
     use_ax, use_sreg = discover_extensions(openid_url)
