@@ -12,6 +12,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.importlib import import_module
 from django.utils.timezone import now
+from django.dispatch import Signal
 
 from fields import PickledObjectField, MultiSelectField
 
@@ -569,6 +570,19 @@ class LibertyAssertion(models.Model):
         verbose_name = _('liberty assertion')
         verbose_name_plural = _('liberty assertions')
 
+
+federation_delete = Signal()
+
+class LibertyFederationManager(models.Manager):
+    def cleanup(self):
+        for federation in self.filter(user__isnull=True):
+            results = federation_delete.send_robust(sender=federation)
+            for callback, result in results:
+                if not result:
+                    return
+            federation.delete()
+
+
 class LibertyFederation(models.Model):
     """Store a federation, i.e. an identifier shared with another provider, be
        it IdP or SP"""
@@ -583,6 +597,8 @@ class LibertyFederation(models.Model):
     termination_notified = models.BooleanField(blank=True, default=False)
     creation = models.DateTimeField(auto_now_add=True)
     last_modification = models.DateTimeField(auto_now=True)
+
+    objects = LibertyFederationManager()
 
     def __init__(self, *args, **kwargs):
         saml2_assertion = kwargs.pop('saml2_assertion', None)
