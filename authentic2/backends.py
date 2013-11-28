@@ -359,6 +359,8 @@ class LDAPBackend():
                     log.error('Got error from LDAP library: %s' % str(e))
                     return None
                 return self._return_user(uri, authz_id, username, password, conn, block)
+            except ldap.SERVER_DOWN:
+                log.error('ldap authentication error: %r is down', uri)
             finally:
                 del conn
         return None
