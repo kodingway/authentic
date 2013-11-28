@@ -38,6 +38,7 @@ from django.utils.encoding import smart_unicode
 from django.contrib.auth import load_backend
 
 
+from authentic2.idp.utils import get_username
 from authentic2.compat import get_user_model
 import authentic2.idp as idp
 import authentic2.idp.views as idp_views
@@ -156,6 +157,10 @@ def fill_assertion(request, saml_request, assertion, provider_id, nid_format):
     if nid_format == 'email':
         assert request.user.email, 'email is required when using the email NameID format'
         assertion.subject.nameID.content = request.user.email
+    if nid_format == 'username':
+        username = get_username(request.user)
+        assert username, 'username is required when using the username NameID format'
+        assertion.subject.nameID.content = username
     assertion.subject.nameID.format = NAME_ID_FORMATS[nid_format]['samlv2']
 
 

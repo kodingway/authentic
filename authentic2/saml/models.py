@@ -89,8 +89,10 @@ NAME_ID_FORMATS = {
             'samlv2': lasso.SAML2_NAME_IDENTIFIER_FORMAT_PERSISTENT,},
         'transient': { 'caption': _("Transient"),
             'samlv2': lasso.SAML2_NAME_IDENTIFIER_FORMAT_TRANSIENT,},
-        'email': { 'caption': _("Email (only supported by SAMLv2)"),
-            'samlv2': lasso.SAML2_NAME_IDENTIFIER_FORMAT_EMAIL,}}
+        'email': { 'caption': _("Email"),
+            'samlv2': lasso.SAML2_NAME_IDENTIFIER_FORMAT_EMAIL,},
+        'username': { 'caption': _("Username (use with Google Apps)"),
+            'samlv2': lasso.SAML2_NAME_IDENTIFIER_FORMAT_UNSPECIFIED,},
 
 NAME_ID_FORMATS_CHOICES = \
         tuple([(x, y['caption']) for x, y in NAME_ID_FORMATS.iteritems()])
