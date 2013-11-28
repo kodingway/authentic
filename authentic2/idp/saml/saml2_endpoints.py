@@ -46,7 +46,7 @@ from authentic2.saml.models import LibertyAssertion, LibertyArtifact, \
     LibertySession, LibertyFederation, LibertySessionDump, \
     nameid2kwargs, saml2_urn_to_nidformat, LIBERTY_SESSION_DUMP_KIND_SP, \
     nidformat_to_saml2_urn, save_key_values, get_and_delete_key_values, \
-    LibertyProvider, LibertyServiceProvider
+    LibertyProvider, LibertyServiceProvider, NAME_ID_FORMATS
 from authentic2.saml.common import redirect_next, asynchronous_bindings, \
     soap_bindings, load_provider, get_saml2_request_message, \
     error_page, set_saml2_response_responder_status_code, \
@@ -139,30 +139,24 @@ def fill_assertion(request, saml_request, assertion, provider_id, nid_format):
     # TODO: use information from the consent event to specialize release of
     # attributes (user only authorized to give its email for email)
        '''
-    logger.info('fill assertion with the nameid format %s' \
-        % nid_format)
+    assert nid_format in NAME_ID_FORMATS
+
+    logger.debug('initializing assertion %r', assertion.id)
     # Use assertion ID as session index
     assertion.authnStatement[0].sessionIndex = assertion.id
-    logger.debug('\
-        assertion.authnStatement[0].sessionIndex = %s' % assertion.id)
-    # NameID
-    if nid_format == 'persistent':
-        logger.debug("nid_format is persistent")
-    elif nid_format == 'transient':
-        logger.debug("nid_format is transient")
+    logger.debug("nid_format is %r", nid_format)
+    if nid_format == 'transient':
         # Generate the transient identifier from the session key, to fix it for
         # a session duration, without that logout is broken as you can send
         # many session_index in a logout request but only one NameID
-        _hash = hashlib.sha1(request.session.session_key + \
-            settings.SECRET_KEY).hexdigest()
-        assertion.subject.nameID.content = '_%s' % _hash.upper()
-    elif nid_format == 'email':
-        logger.debug("nid_format is email")
+        keys = ''.join([request.session.session_key, provider_id,
+            settings.SECRET_KEY])
+        transient_id_content = '_' + hashlib.sha1(keys).hexdigest().upper()
+        assertion.subject.nameID.content = transient_id_content
+    if nid_format == 'email':
+        assert request.user.email, 'email is required when using the email NameID format'
         assertion.subject.nameID.content = request.user.email
-    else:
-        # It should not happen as the nid_format has been checked before
-        logger.error("unsupported nid_format %s" % nid_format)
-        assert False
+    assertion.subject.nameID.format = NAME_ID_FORMATS[nid_format]['samlv2']
 
 
 def saml2_add_attribute_values(assertion, attributes):
