@@ -101,8 +101,8 @@ be expired")
 class NonceManager(models.Manager):
     def cleanup(self):
         expire = openid.store.nonce.SKEW
-        now = calendar.timegm(now().utctimetuple())
-        self.filter(timestamp__lt=now-expire).delete()
+        timestamp = calendar.timegm(now().utctimetuple())
+        self.filter(timestamp__lt=timestamp-expire).delete()
 
 class Nonce(models.Model):
     salt = models.CharField(max_length=40)
