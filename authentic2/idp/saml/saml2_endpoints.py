@@ -132,7 +132,6 @@ def fill_assertion(request, saml_request, assertion, provider_id, nid_format):
        given provider or modified the request to match the identity provider
        policy.
 
-    TODO: add attributes from user account
     TODO: determine and add attributes from the session, for anonymous users
     (pseudonymous federation, openid without accounts)
     # TODO: add information from the login event, of the session or linked
