@@ -161,6 +161,20 @@ def fill_assertion(request, saml_request, assertion, provider_id, nid_format):
         username = get_username(request.user)
         assert username, 'username is required when using the username NameID format'
         assertion.subject.nameID.content = username
+    if nid_format == 'edupersontargetedid':
+        assertion.subject.nameID.format = NAME_ID_FORMATS[nid_format]['samlv2']
+        keys = ''.join([get_username(request.user),
+            provider_id, settings.SECRET_KEY])
+        edu_person_targeted_id = '_' + hashlib.sha1(keys).hexdigest().upper()
+        assertion.subject.nameID.content = edu_person_targeted_id
+        attribute_definition = ('urn:oid:1.3.6.1.4.1.5923.1.1.1.10',
+                lasso.SAML2_ATTRIBUTE_NAME_FORMAT_URI, 'eduPersonTargetedID')
+        value = assertion.subject.nameID.exportToXml()
+        value = ctree.fromstring(value)
+        saml2_add_attribute_values(assertion,
+                { attribute_definition: [ value ]})
+        logger.info('adding an eduPersonTargetedID attribute with value %s',
+                edu_person_targeted_id)
     assertion.subject.nameID.format = NAME_ID_FORMATS[nid_format]['samlv2']
 
 
