@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth import models as auth_models
+from django.utils.translation import ugettext_lazy as _
 
 from authentic2.compat import get_user_model
 
@@ -34,3 +35,6 @@ class UserProfileForm(forms.ModelForm):
                 if field_name in all_field_names
                     and field_name != model.USERNAME_FIELD
                     and field_name != 'email' ]
+
+class EmailChangeForm(forms.Form):
+    email = forms.EmailField(label=_('New email'))

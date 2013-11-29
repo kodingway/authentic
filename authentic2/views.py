@@ -9,10 +9,16 @@ import requests
 from django.conf import settings
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.views.generic.edit import UpdateView
-from django.views.generic import RedirectView
+from django.template.loader import render_to_string
+from django.views.generic.edit import UpdateView, FormView
+from django.views.generic import RedirectView, TemplateView
 from django.contrib.auth import SESSION_KEY
 from django import http, shortcuts
+from django.core import mail, signing
+from django.core.urlresolvers import reverse
+from django.contrib.sites.models import get_current_site
+from django.contrib import messages
+from django.utils.translation import ugettext as _
 
 
 from authentic2.idp.decorators import prevent_access_to_transient_users
@@ -22,7 +28,7 @@ from authentic2.compat import get_user_model
 
 
 from . import app_settings
-import forms
+from . import forms
 
 
 logger = logging.getLogger(__name__)
@@ -114,4 +120,77 @@ def su(request, username, redirect_url='/'):
 class RedirectToHomepageView(RedirectView):
     url = app_settings.A2_HOMEPAGE_URL
 
+
 redirect_to_homepage = RedirectToHomepageView.as_view()
+
+
+class EmailChangeView(FormView):
+    form_class = forms.EmailChangeForm
+    template_name = 'profiles/email_change.html'
+    subject_template = 'profiles/email_change_subject.txt'
+    body_template = 'profiles/email_change_body.txt'
+    success_url = '../..'
+
+    def form_valid(self, form):
+        email = form.cleaned_data['email']
+        site = get_current_site(self.request)
+        token = signing.dumps({
+            'email': email,
+            'site_pk': site.pk,
+            'user_pk': self.request.user.pk,
+        })
+        link = '{0}?token={1}'.format(
+                reverse('email-change-verify'),
+                token)
+        link = self.request.build_absolute_uri(link)
+        ctx = {'email': email,
+               'site': site,
+               'user': self.request.user,
+               'link': link
+        }
+        subject = render_to_string(self.subject_template, ctx).strip()
+        body = render_to_string(self.body_template, ctx)
+
+        mail.EmailMessage(subject=subject,
+                body=body, to=[email]).send()
+        messages.info(self.request,
+                _('Your request for changing your email '
+                  'is received. An email of validation '
+                  'was sent to you. Pleas click on the '
+                  'link contained inside.'))
+        return super(EmailChangeView, self).form_valid(form)
+
+email_change = EmailChangeView.as_view()
+
+class EmailChangeVerifyView(TemplateView):
+    def get(self, request, *args, **kwargs):
+        if 'token' in request.GET:
+            User = get_user_model()
+            try:
+                token = signing.loads(request.GET['token'], max_age=7200)
+                user_pk = token['user_pk']
+                email = token['email']
+                site_pk = token['site_pk']
+                site = get_current_site(request)
+                if site.pk != site_pk:
+                    raise ValueError
+                user = User.objects.get(pk=user_pk)
+                user.email = email
+                user.save()
+                messages.info(request, _('your request for changing your email '
+                    'is successful'))
+            except signing.SignatureExpired:
+                messages.error(request, _('your request for changing your email is too '
+                    'old, try again'))
+            except signing.BadSignature:
+                messages.error(request, _('your request for changing your email is '
+                    'invalid, try again'))
+            except ValueError:
+                messages.error(request, _('your request for changing your email was not '
+                    'on this site, try again'))
+            except User.DoesNotExist:
+                messages.error(request, _('your request for changing your email is for '
+                    'an unknown user, try again'))
+        return shortcuts.redirect(settings.LOGIN_REDIRECT_URL)
+
+email_change_verify = EmailChangeVerifyView.as_view()
