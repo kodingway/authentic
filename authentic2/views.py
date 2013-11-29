@@ -156,7 +156,7 @@ class EmailChangeView(FormView):
         messages.info(self.request,
                 _('Your request for changing your email '
                   'is received. An email of validation '
-                  'was sent to you. Pleas click on the '
+                  'was sent to you. Please click on the '
                   'link contained inside.'))
         return super(EmailChangeView, self).form_valid(form)
 
@@ -177,8 +177,8 @@ class EmailChangeVerifyView(TemplateView):
                 user = User.objects.get(pk=user_pk)
                 user.email = email
                 user.save()
-                messages.info(request, _('your request for changing your email '
-                    'is successful'))
+                messages.info(request, _('your request for changing your email for {0} '
+                    'is successful').format(email))
             except signing.SignatureExpired:
                 messages.error(request, _('your request for changing your email is too '
                     'old, try again'))
