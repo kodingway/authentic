@@ -11,9 +11,8 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.generic.edit import UpdateView
 from django.views.generic import RedirectView
-from django.shortcuts import get_object_or_404
 from django.contrib.auth import SESSION_KEY
-from django import http
+from django import http, shortcuts
 
 
 from authentic2.idp.decorators import prevent_access_to_transient_users
@@ -103,7 +102,7 @@ def su(request, username, redirect_url='/'):
        url(r'^su/(?P<username>.*)/$', 'authentic2.views.su', {'redirect_url': '/'}),
     '''
     if request.user.is_superuser or request.session.get('has_superuser_power'):
-        su_user = get_object_or_404(get_user_model(), username=username)
+        su_user = shortcuts.get_object_or_404(get_user_model(), username=username)
         if su_user.is_active:
             request.session[SESSION_KEY] = su_user.id
             request.session['has_superuser_power'] = True
