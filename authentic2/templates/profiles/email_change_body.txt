@@ -1,0 +1,17 @@
+{% load i18n %}{% blocktrans with name=user.get_short_name site=site.name old_email=user.email %}Hi {{ name }} !
+
+You asked for changing your email on {{ site }} from:
+
+  {{ old_email }}
+
+to:
+
+  {{ email }}
+
+To validate this change please click on the following link:
+
+  {{ link }}
+
+--
+{{ site }}
+{% endblocktrans %}

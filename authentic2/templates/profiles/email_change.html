@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Email change" %}{% endblock %}
+
+{% block content %}
+<p>{% blocktrans with email=user.email %}Your current email is {{ email }}{% endblocktrans %}</p>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <input type="submit" value="{% trans "Validate" %}"/>
+</form>
+{% endblock %}
