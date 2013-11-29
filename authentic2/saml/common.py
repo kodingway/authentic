@@ -246,6 +246,7 @@ def load_federation(request, entity_id, login, user = None):
     '''Load an identity dump from the database'''
     if not user:
         user = request.user
+    assert user is not None
     logger.debug('load_federation: user is %r' % user)
     identity_dump = federations_to_identity_dump(entity_id,
             LibertyFederation.objects.filter(user=user))
