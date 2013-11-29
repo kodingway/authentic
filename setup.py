@@ -96,7 +96,6 @@ def get_version():
         result = p.communicate()[0]
         assert p.returncode == 0, 'git returned non-zero'
         new_version = result.split()[0][1:]
-        assert not new_version.endswith('-dirty'), 'git workdir is not clean'
         assert new_version.split('-')[0] == version, '__version__ must match the last git annotated tag'
         version = new_version.replace('-', '.')
     return version
