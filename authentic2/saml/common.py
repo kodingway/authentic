@@ -247,11 +247,10 @@ def load_federation(request, entity_id, login, user = None):
     if not user:
         user = request.user
     assert user is not None
-    logger.debug('load_federation: user is %r' % user)
+
     identity_dump = federations_to_identity_dump(entity_id,
             LibertyFederation.objects.filter(user=user))
     login.setIdentityFromDump(identity_dump)
-    logger.debug('load_federation: set identity from dump done %s' % identity_dump)
 
 def load_session(request, login, session_key = None,
         kind=LIBERTY_SESSION_DUMP_KIND_IDP):
