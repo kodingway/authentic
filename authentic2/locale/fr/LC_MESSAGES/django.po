@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-07 23:53+0100\n"
+"POT-Creation-Date: 2013-11-29 16:25+0100\n"
 "PO-Revision-Date: 2013-11-08 15:44+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -53,29 +53,29 @@ msgstr "Utilisateurs et groupes"
 msgid "Services"
 msgstr "Services"
 
-#: dashboard.py:61 dashboard.py:108
+#: dashboard.py:61 dashboard.py:101
 msgid "Recent Actions"
 msgstr ""
 
 #: dashboard.py:65
-msgid "Latest Authentic News"
-msgstr "Dernières actualités sur Authentic"
-
-#: dashboard.py:72
 msgid "Support"
 msgstr ""
 
-#: dashboard.py:75
+#: dashboard.py:68
 msgid "Authentic2 documentation"
 msgstr "Documentation sur authentic2"
 
-#: dashboard.py:80
+#: dashboard.py:73
 msgid "Authentic2 project"
 msgstr "Projet Authentic2"
 
-#: dashboard.py:85
+#: dashboard.py:78
 msgid "Authentic Mailing List"
 msgstr "List de diffusion sur Authentic"
+
+#: forms.py:40
+msgid "New email"
+msgstr ""
 
 #: hashers.py:80 hashers.py:109
 msgid "algorithm"
@@ -151,24 +151,54 @@ msgid "users to delete"
 msgstr ""
 
 #: models.py:185
+msgid "source"
+msgstr ""
+
+#: models.py:187
 msgid "external id"
 msgstr ""
 
-#: models.py:189
+#: models.py:192
 msgid "user external id"
 msgstr ""
 
-#: models.py:190
+#: models.py:193
 msgid "user external ids"
 msgstr ""
 
-#: settings.py:45
+#: settings.py:46
 msgid "English"
 msgstr "Anglais"
 
-#: settings.py:46
+#: settings.py:47
 msgid "French"
 msgstr "Français"
+
+#: views.py:157
+msgid ""
+"Your request for changing your email is received. An email of validation was "
+"sent to you. Pleas click on the link contained inside."
+msgstr ""
+
+#: views.py:180
+msgid "your request for changing your email is successful"
+msgstr ""
+
+#: views.py:183
+msgid "your request for changing your email is too old, try again"
+msgstr ""
+
+#: views.py:186
+msgid "your request for changing your email is invalid, try again"
+msgstr ""
+
+#: views.py:189
+msgid "your request for changing your email was not on this site, try again"
+msgstr ""
+
+#: views.py:192
+msgid "your request for changing your email is for an unknown user, try again"
+msgstr ""
 
 #: templates/404.html:4 templates/404.html.py:8
 msgid "Error: page not found"
@@ -239,6 +269,64 @@ msgstr "Modifier"
 #: templates/profiles/edit_profile.html:13
 msgid "Create"
 msgstr "Creer"
+
+#: templates/profiles/email_change.html:4
+msgid "Email change"
+msgstr "Changement d'adresse de courriel"
+
+#: templates/profiles/email_change.html:7
+#, python-format
+msgid "Your current email is %(email)s"
+msgstr "Votre courriel actuel est %(email)s"
+
+#: templates/profiles/email_change.html:11
+msgid "Validate"
+msgstr "Valider"
+
+#: templates/profiles/email_change_body.txt:1
+#, python-format
+msgid ""
+"Hi %(name)s !\n"
+"\n"
+"You asked for changing your email on %(site)s from:\n"
+"\n"
+"  %(old_email)s\n"
+"\n"
+"to:\n"
+"\n"
+"  %(email)s\n"
+"\n"
+"To validate this change please click on the following link:\n"
+"\n"
+"  %(link)s\n"
+"\n"
+"--\n"
+"%(site)s\n"
+msgstr ""
+"Bonojour %(name)s !\n"
+"\n"
+"Vous avez demandé le changement de votre address de courriel sur %(site)s:\n"
+"\n"
+"  %(old_email)s\n"
+"\n"
+"pour:\n"
+"\n"
+"  %(email)s\n"
+"\n"
+"Pour valider ce changement veuillez cliquer sur le lien suivant:\n"
+"\n"
+"  %(link)s\n"
+"\n"
+"Ce lien est valide pendant 2 heures.\n"
+"\n"
+"--\n"
+"%(site)s\n"
+
+
+#: templates/profiles/email_change_subject.txt:1
+#, python-format
+msgid "Change email on %(site_name)s"
+msgstr "Changement d'adresse de courriel sur %(site_name)s"
 
 #: templates/registration/activate.html:5
 msgid "Account activation"
@@ -378,3 +466,194 @@ msgstr "Vous êtes maintenant inscrit. Un courriel d'activation a été envoyé.
 #: templates/registration/registration_form.html:16
 msgid "Registration"
 msgstr "Inscription"
+
+#, fuzzy
+#~ msgid "Server"
+#~ msgstr "Services"
+
+#, fuzzy
+#~ msgid "Password"
+#~ msgstr "Mot de passe modifié"
+
+#, fuzzy
+#~ msgid "user attribute profile"
+#~ msgstr "Creer votre profile"
+
+#, fuzzy
+#~ msgid "user attribute profiles"
+#~ msgstr "Creer votre profile"
+
+#, fuzzy
+#~ msgid "shadowInactive"
+#~ msgstr "actif"
+
+#, fuzzy
+#~ msgid "ipServicePort"
+#~ msgstr "Services"
+
+#, fuzzy
+#~ msgid "sn surname"
+#~ msgstr "Identifiant"
+
+#, fuzzy
+#~ msgid "member"
+#~ msgstr "Pas un membre ?"
+
+#, fuzzy
+#~ msgid "userClass"
+#~ msgstr "utilisateurs"
+
+#, fuzzy
+#~ msgid "documentLocation"
+#~ msgstr "Documentation sur authentic2"
+
+#, fuzzy
+#~ msgid "personalTitle"
+#~ msgstr "Informations personnelles"
+
+#, fuzzy
+#~ msgid "personalSignature"
+#~ msgstr "Informations personnelles"
+
+#, fuzzy
+#~ msgid "administrativeRole"
+#~ msgstr "Administration d'Authentic"
+
+#, fuzzy
+#~ msgid "name"
+#~ msgstr "Identifiant"
+
+#, fuzzy
+#~ msgid "userPassword"
+#~ msgstr "Réinitialisation du mot de passe"
+
+#, fuzzy
+#~ msgid "description"
+#~ msgstr "Inscription"
+
+#, fuzzy
+#~ msgid "supannActivite"
+#~ msgstr "actif"
+
+#, fuzzy
+#~ msgid "A new account"
+#~ msgstr "Supprimer le compte"
+
+#, fuzzy
+#~ msgid "Username"
+#~ msgstr "Identifiant"
+
+#, fuzzy
+#~ msgid "Create account"
+#~ msgstr "Supprimer le compte"
+
+#, fuzzy
+#~ msgid "An existing account"
+#~ msgstr "Supprimer le compte"
+
+#, fuzzy
+#~ msgid "Set password"
+#~ msgstr "Modifier votre mot de passe"
+
+#, fuzzy
+#~ msgid "New password:"
+#~ msgstr "Modifier votre mot de passe"
+
+#, fuzzy
+#~ msgid "Confirm password:"
+#~ msgstr "Modification du mot de passe"
+
+#, fuzzy
+#~ msgid "Change my password"
+#~ msgstr "Modifier votre mot de passe"
+
+#, fuzzy
+#~ msgid "Password change"
+#~ msgstr "Mot de passe modifié"
+
+#, fuzzy
+#~ msgid "Old password:"
+#~ msgstr "Modifier votre mot de passe"
+
+#, fuzzy
+#~ msgid "Successful certificate deletion."
+#~ msgstr "Inscription réussie"
+
+#, fuzzy
+#~ msgid "Username:"
+#~ msgstr "Identifiant"
+
+#, fuzzy
+#~ msgid "Password:"
+#~ msgstr "Mot de passe modifié"
+
+#, fuzzy
+#~ msgid "Delete"
+#~ msgstr "Supprimer le compte"
+
+#, fuzzy
+#~ msgid "Authentication failure"
+#~ msgstr "Échec à l'activation du compte"
+
+#, fuzzy
+#~ msgid "Successful federation deletion."
+#~ msgstr "Inscription réussie"
+
+#, fuzzy
+#~ msgid "Log in to link your account"
+#~ msgstr "S'identifier avec un compte fédéré ?"
+
+#, fuzzy
+#~ msgid "Log in to link with your existing account"
+#~ msgstr "S'identifier avec un compte fédéré ?"
+
+#, fuzzy
+#~ msgid "Server error"
+#~ msgstr "Erreur du serveur"
+
+#, fuzzy
+#~ msgid "Authentic - Account Management"
+#~ msgstr "Administration du site Authentic"
+
+#, fuzzy
+#~ msgid "Account Management"
+#~ msgstr "Activation de compte"
+
+#, fuzzy
+#~ msgid "Edit profile"
+#~ msgstr "Creer votre profile"
+
+#, fuzzy
+#~ msgid "Delete profile"
+#~ msgstr "Creer votre profile"
+
+#, fuzzy
+#~ msgid "Authentic"
+#~ msgstr "Projet Authentic2"
+
+#, fuzzy
+#~ msgid "Administration"
+#~ msgstr "Administration d'Authentic"
+
+#, fuzzy
+#~ msgid "Do you accept to federate your account ?"
+#~ msgstr "S'identifier avec un compte fédéré ?"
+
+#, fuzzy
+#~ msgid "Account linking by authentication"
+#~ msgstr "Activation de compte"
+
+#, fuzzy
+#~ msgid "Create new account"
+#~ msgstr "Supprimer le compte"
+
+#, fuzzy
+#~ msgid "Ask authentication"
+#~ msgstr "Documentation sur authentic2"
+
+#, fuzzy
+#~ msgid "Authentication request signed"
+#~ msgstr "Administration du site Authentic"
+
+#~ msgid "Latest Authentic News"
+#~ msgstr "Dernières actualités sur Authentic"
