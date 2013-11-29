@@ -75,7 +75,7 @@ msgstr "List de diffusion sur Authentic"
 
 #: forms.py:40
 msgid "New email"
-msgstr ""
+msgstr "Nouveau courriel"
 
 #: hashers.py:80 hashers.py:109
 msgid "algorithm"
@@ -83,7 +83,7 @@ msgstr "algorithme"
 
 #: hashers.py:81
 msgid "iterations"
-msgstr ""
+msgstr "itérations"
 
 #: hashers.py:82 hashers.py:110
 msgid "salt"
