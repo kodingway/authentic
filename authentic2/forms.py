@@ -32,4 +32,5 @@ class UserProfileForm(forms.ModelForm):
         fields = [ field_name
                 for field_name in field_names
                 if field_name in all_field_names
-                    and not field_name == model.USERNAME_FIELD ]
+                    and field_name != model.USERNAME_FIELD
+                    and field_name != 'email' ]
