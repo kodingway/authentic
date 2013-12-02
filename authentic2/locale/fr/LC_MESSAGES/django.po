@@ -103,12 +103,12 @@ msgstr "Tableau de bord"
 msgid "username"
 msgstr "Identifiant"
 
+# already translated by django, do nothing
 #: models.py:54
 msgid ""
 "Required. 30 characters or fewer. Letters, numbers and @/./+/-/_ characters"
 msgstr ""
-"Requis. 30 caractères ou moins, les lettres, chiffres et caractères @/./+/-/"
-"_ sont acceptés"
+""
 
 #: models.py:57
 msgid "Enter a valid username."
