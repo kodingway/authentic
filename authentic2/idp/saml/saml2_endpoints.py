@@ -309,8 +309,7 @@ def build_assertion(request, login, nid_format='transient', attributes=None):
     fill_assertion(request, login.request, assertion, login.remoteProviderId,
         nid_format)
     # Save federation and new session
-    if login.assertion.subject.nameID.format == \
-            lasso.SAML2_NAME_IDENTIFIER_FORMAT_PERSISTENT:
+    if nid_format == 'persistent':
         logger.debug("nameID persistent, get or create "
             "federation")
         kwargs = nameid2kwargs(login.assertion.subject.nameID)
