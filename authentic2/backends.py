@@ -143,7 +143,7 @@ class LDAPUser(object):
 
     def set_ldap_password(self, password):
         shared_cache = get_shared_cache('ldap')
-        shared_cache.set(self.get_ldap_password_cache_key(), password)
+        shared_cache.set(self.get_ldap_password_cache_key(), password, 86400)
 
     def get_cache_key(self):
         return hashlib.md5(self.dn).hexdigest()
@@ -621,7 +621,7 @@ class LDAPBackend():
         self.populate_user(user, uri, dn, conn, block)
         shared_cache = get_shared_cache('ldap')
         shared_cache.set('ldap-pk-{0}'.format(user.pk), (uri, dn, username,
-            password, block, attributes))
+            password, block, attributes), 86400)
         user.save()
         return user
 
