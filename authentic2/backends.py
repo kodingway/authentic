@@ -579,6 +579,7 @@ class LDAPBackend():
         attribute_map = results[0][1]
         # add mandatory attributes
         for key, mandatory_values in mandatory_attributes_values.iteritems():
+            key = str(key)
             old = attribute_map.setdefault(key, [])
             new = set(old) | set(mandatory_values)
             attribute_map[key] = list(new)
@@ -586,6 +587,7 @@ class LDAPBackend():
         for from_attribute, to_attribute in attribute_mappings:
             if from_attribute not in attribute_map:
                 continue
+            to_attribute = str(to_attribute)
             old = attribute_map.setdefault(to_attribute, [])
             new = set(old) | set(attribute_map[from_attribute])
             attribute_map[to_attribute] = list(new)
