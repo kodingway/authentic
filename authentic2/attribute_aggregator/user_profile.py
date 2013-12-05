@@ -19,11 +19,11 @@
 
 
 import logging
-from operator import attrgetter
+from operator import attrgetter, __or__
 
 
-from authentic2.attribute_aggregator.core import get_profile_field_name_from_definition, \
-    get_definitions_from_profile_field_name
+from authentic2.attribute_aggregator.core import (get_profile_field_name_from_definition,
+    get_definitions_from_profile_field_name, is_definition, get_def_name_from_alias, get_aliases)
 
 
 logger = logging.getLogger(__name__)
@@ -94,6 +94,7 @@ def get_attributes(user, definitions=None, source=None, auth_source=False, **kwa
                     for definition in get_definitions_from_profile_field_name(field_name)
                     for field_name in field_names]
     logger.debug('retrieving fields %r from USER_PROFILE', fields)
+    data = {}
     for field_name, definition in fields:
         try:
             value = attrgetter(field_name)(user)
@@ -104,15 +105,37 @@ def get_attributes(user, definitions=None, source=None, auth_source=False, **kwa
             if callable(value):
                 value = value()
             logger.debug('field %r has value %r', field_name, value)
-            attr = {}
-            attr['definition'] = definition
+            old = data.get(definition, [])
             if not isinstance(value, basestring) and hasattr(value,
                     '__iter__'):
-                attr['values'] = map(unicode, value)
+                new = map(unicode, value)
             else:
-                attr['values'] = [unicode(value)]
-            data.append(attr)
+                new = [unicode(value)]
+            data[definition] = list(set(old) | set(new))
         else:
             logger.debug('get_attributes: no value found')
+    if hasattr(user, 'get_attributes') and callable(user.get_attributes):
+        attributes = user.get_attributes()
+        if not definitions:
+            definitions = []
+            for key in attributes:
+                if is_definition(key):
+                    definitions.add(key)
+                else:
+                    definition = get_def_name_from_alias(key)
+                    if definition:
+                        definitions.add(definition)
+        for definition in definitions:
+            new = []
+            for key in get_aliases(definition):
+                if key in attributes:
+                    new.append(set(attributes[key]))
+            if not new:
+                break
+            new = reduce(__or__, new)
+            old = data.get(definition, [])
+            data[definition] = list(set(old) | set(new))
+    data = [{'definition': definition, 'values': values} for definition, values in 
+            data.iteritems()]
     attributes[SOURCE_NAME] = data
     return attributes
