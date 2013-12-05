@@ -136,6 +136,5 @@ def get_attributes(user, definitions=None, source=None, auth_source=False, **kwa
             old = data.get(definition, [])
             data[definition] = list(set(old) | set(new))
     data = [{'definition': definition, 'values': values} for definition, values in 
-            data.iteritems()]
-    attributes[SOURCE_NAME] = data
-    return attributes
+            data.items()]
+    return {SOURCE_NAME: data}
