@@ -131,7 +131,7 @@ def get_attributes(user, definitions=None, source=None, auth_source=False, **kwa
                 if key in attributes:
                     new.append(set(attributes[key]))
             if not new:
-                break
+                continue
             new = reduce(__or__, new)
             old = data.get(definition, [])
             data[definition] = list(set(old) | set(new))
