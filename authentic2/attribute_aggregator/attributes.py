@@ -205,6 +205,9 @@ def provide_attributes_at_sso(request, user, audience, **kwargs):
         logger.error('provide_attributes_at_sso: unable to load or create a '
             'profile for %s' % user)
         return None
+    # XXX: hack so that UserAttributeProfile.user is the same as request.user
+    # which can contain monkey patched fields
+    p.user = user
     logger.debug('provide_attributes_at_sso: profile loaded %s' % p)
 
     '''Returned dictionnary'''
