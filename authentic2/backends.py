@@ -71,6 +71,12 @@ _DEFAULTS = {
     'is_active': True,
     # create missing group if needed
     'create_group': False,
+    # attributes to retrieve and store with the user object
+    'attributes': [],
+    # default value for some attributes
+    'mandatory_attributes_values': {},
+    # mapping from LDAP attributes name to other names
+    'attribute_mappings': [],
 }
 
 _REQUIRED = ('url', 'basedn')
@@ -124,6 +130,7 @@ class LDAPException(Exception):
 class LDAPUser(object):
     is_staff = False
     is_superuser = False
+    attributes = {}
 
     USERNAME_FIELD = 'dn'
 
@@ -231,6 +238,8 @@ class LDAPUser(object):
     def get_principal(self):
         return self.dn
 
+    def get_attributes(self):
+        return self.attributes
 
 class LDAPBackendError(Exception):
     pass
@@ -276,6 +285,12 @@ class LDAPBackend():
                     if isinstance(_DEFAULTS[d], bool) and not isinstance(block[d], bool):
                         raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: '
                                 'attribute %r must be a boolean' % d)
+                    if isinstance(_DEFAULTS[d], (list, tuple)) and not isinstance(block[d], (list, tuple)):
+                        raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: '
+                                'attribute %r must be a list or a tuple' % d)
+                    if isinstance(_DEFAULTS[d], dict) and not isinstance(block[d], dict):
+                        raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: '
+                                'attribute %r must be a dictionary' % d)
 
             for i in _TO_ITERABLE:
                 if isinstance(block[i], basestring):
@@ -377,12 +392,13 @@ class LDAPBackend():
                 shared_cache = get_shared_cache('ldap')
                 value = shared_cache.get('ldap-pk-{0}'.format(user_id))
                 if value is not None:
-                    uri, dn, username, password, block = value
+                    uri, dn, username, password, block, attributes = value
                     user.ldap_uri = uri
                     user.ldap_dn = dn
                     user.ldap_username = username
                     user.ldap_password = password
                     user.ldap_block = block
+                    user.get_attributes = lambda: attributes
         return user
 
     def _parse_simple_config(self):
@@ -549,6 +565,32 @@ class LDAPBackend():
         self.populate_mandatory_groups(user, uri, dn, conn, block)
         self.populate_user_groups(user, uri, dn, conn, block)
 
+    def get_ldap_attributes(self, uri, dn, conn, block):
+        '''Retrieve some attributes from LDAP, add mandatory values then apply
+           defined mappings between atrribute names'''
+        attributes = block['attributes']
+        attribute_mappings = block['attribute_mappings']
+        mandatory_attributes_values = block['mandatory_attributes_values']
+        try:
+            results = conn.search_s(dn, ldap.SCOPE_BASE, '(objectclass=*)', attributes)
+        except ldap.LDAPError, e:
+            log.warning('unable to retrieve attributes of user with dn %r '
+                    'from server %r: %s', dn, uri, e)
+        attribute_map = results[0][1]
+        # add mandatory attributes
+        for key, mandatory_values in mandatory_attributes_values.iteritems():
+            old = attribute_map.setdefault(key, [])
+            new = set(old) | set(mandatory_values)
+            attribute_map[key] = list(new)
+        # apply mappings
+        for from_attribute, to_attribute in attribute_mappings:
+            if from_attribute not in attribute_map:
+                continue
+            old = attribute_map.setdefault(to_attribute, [])
+            new = set(old) | set(attribute_map[from_attribute])
+            attribute_map[to_attribute] = list(new)
+        return attribute_map
+
     def _return_user(self, uri, dn, username, password, conn, block):
         if block['transient']:
             return self._return_transient_user(uri, dn, username, password, conn, block)
@@ -574,10 +616,12 @@ class LDAPBackend():
             log.debug('found user %r for dn %r from server %r', user, dn, uri)
         else:
             raise NotImplementedError
+        attributes = self.get_ldap_attributes(uri, dn, conn, block)
+        log.debug('retrieved attributes for %r: %r', dn, attributes)
+        self.populate_user(user, uri, dn, conn, block)
         shared_cache = get_shared_cache('ldap')
         shared_cache.set('ldap-pk-{0}'.format(user.pk), (uri, dn, username,
-            password, block))
-        self.populate_user(user, uri, dn, conn, block)
+            password, block, attributes))
         user.save()
         return user
 
