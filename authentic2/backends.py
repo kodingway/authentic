@@ -568,7 +568,7 @@ class LDAPBackend():
     def get_ldap_attributes(self, uri, dn, conn, block):
         '''Retrieve some attributes from LDAP, add mandatory values then apply
            defined mappings between atrribute names'''
-        attributes = block['attributes']
+        attributes = map(str, block['attributes'])
         attribute_mappings = block['attribute_mappings']
         mandatory_attributes_values = block['mandatory_attributes_values']
         try:
