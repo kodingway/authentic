@@ -354,3 +354,13 @@ def set_user_alias_in_source(user, source, name, force_change=False):
         logger.error('set_user_alias_in_source: unable to create alias due \
             to %s.' % str(err))
         return None
+
+def is_definition(definition):
+    '''Return whether a definition is known'''
+    return definition in ATTRIBUTE_MAPPING
+
+def get_aliases(definition):
+    if definition in ATTRIBUTE_MAPPING:
+        if 'alias' in ATTRIBUTE_MAPPING[definition]:
+            return [definition] + ATTRIBUTE_MAPPING[definition]['alias']
+        return [definition]
