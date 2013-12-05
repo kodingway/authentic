@@ -21,8 +21,6 @@
 import logging
 from operator import attrgetter
 
-from django.contrib.auth.models import SiteProfileNotAvailable
-from django.core.exceptions import ObjectDoesNotExist
 
 from authentic2.attribute_aggregator.core import get_profile_field_name_from_definition, \
     get_definitions_from_profile_field_name
@@ -70,55 +68,51 @@ def get_attributes(user, definitions=None, source=None, auth_source=False, **kwa
 
     attributes = dict()
     data = []
-    try:
-        field_names = set()
-        user_profile_fields = getattr(user, 'USER_PROFILE', [])
-        if not user_profile_fields:
-            user_profile_fields = user._meta.get_all_field_names()
-        for field in user_profile_fields:
-            if isinstance(field, (tuple, list)):
-                field_names.add(field[0])
-            else:
-                field_names.add(field)
-        fields = []
-        if definitions:
-            for definition in definitions:
-                field_name = get_profile_field_name_from_definition(definition)
-                if not field_name:
-                    #
-                    #  Profile model may be extended without modifying the
-                    #  mapping file if the attribute name is the same as the
-                    #  definition
-                    #
-                    field_name = definition
-                fields.append((field_name, definition))
+    field_names = set()
+    user_profile_fields = getattr(user, 'USER_PROFILE', [])
+    if not user_profile_fields:
+        user_profile_fields = user._meta.get_all_field_names()
+    for field in user_profile_fields:
+        if isinstance(field, (tuple, list)):
+            field_names.add(field[0])
         else:
-            fields = [(field_name, definition)
-                        for definition in get_definitions_from_profile_field_name(field_name)
-                        for field_name in field_names]
-        logger.debug('retrieving fields %r from USER_PROFILE', fields)
-        for field_name, definition in fields:
-            try:
-                value = attrgetter(field_name)(user)
-            except AttributeError:
-                logger.debug('field %r not found in USER_PROFILE', field_name)
-                continue
-            if value:
-                if callable(value):
-                    value = value()
-                logger.debug('field %r has value %r', field_name, value)
-                attr = {}
-                attr['definition'] = definition
-                if not isinstance(value, basestring) and hasattr(value,
-                        '__iter__'):
-                    attr['values'] = map(unicode, value)
-                else:
-                    attr['values'] = [unicode(value)]
-                data.append(attr)
+            field_names.add(field)
+    fields = []
+    if definitions:
+        for definition in definitions:
+            field_name = get_profile_field_name_from_definition(definition)
+            if not field_name:
+                #
+                #  Profile model may be extended without modifying the
+                #  mapping file if the attribute name is the same as the
+                #  definition
+                #
+                field_name = definition
+            fields.append((field_name, definition))
+    else:
+        fields = [(field_name, definition)
+                    for definition in get_definitions_from_profile_field_name(field_name)
+                    for field_name in field_names]
+    logger.debug('retrieving fields %r from USER_PROFILE', fields)
+    for field_name, definition in fields:
+        try:
+            value = attrgetter(field_name)(user)
+        except AttributeError:
+            logger.debug('field %r not found in USER_PROFILE', field_name)
+            continue
+        if value:
+            if callable(value):
+                value = value()
+            logger.debug('field %r has value %r', field_name, value)
+            attr = {}
+            attr['definition'] = definition
+            if not isinstance(value, basestring) and hasattr(value,
+                    '__iter__'):
+                attr['values'] = map(unicode, value)
             else:
-                logger.debug('get_attributes: no value found')
-    except (SiteProfileNotAvailable, ObjectDoesNotExist):
-        logger.debug('get_attributes: No user profile')
-        return None
+                attr['values'] = [unicode(value)]
+            data.append(attr)
+        else:
+            logger.debug('get_attributes: no value found')
     attributes[SOURCE_NAME] = data
     return attributes
