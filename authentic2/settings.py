@@ -329,7 +329,7 @@ LOGGING = {
             'filters': ['cleaning'],
         },
         'syslog': {
-            'level':'INFO',
+            'level': 'DEBUG' if DEBUG else 'INFO',
             'address': '/dev/log',
             'class':'logging.handlers.SysLogHandler',
             'filters': ['cleaning'],
