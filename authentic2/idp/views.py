@@ -80,8 +80,8 @@ def profile(request):
     # Credentials management
     blocks = [ frontend.profile(request, next='/profile') for frontend in frontends \
             if hasattr(frontend, 'profile') ]
-    return render_to_response('idp/account_management.html', { 
-        'frontends_block': blocks, 
+    return render_to_response('idp/account_management.html', {
+        'frontends_block': blocks,
         'profile': profile,
         'allow_account_deletion': app_settings.A2_REGISTRATION_CAN_DELETE_ACCOUNT,
         },
@@ -103,14 +103,7 @@ def logout(request, next_page='/', redirect_field_name=REDIRECT_FIELD_NAME,
         l = logout_list(request)
         if l:
             # Full logout
-            ok_icon_url = '%s/authentic2/images/ok.png' % settings.STATIC_URL
-            next_is_ok = '?local=ok&next=%s' % urllib.quote(ok_icon_url)
-            code = '<div>'
-            code += _('Local logout...')
-            code += '<iframe src="/logout/%s" marginwidth="0" marginheight="0" \
-                scrolling="no" style="border: none" width="16" height="16"> \
-                </iframe></div>' % next_is_ok
-            l += [code]
+            next_page = '/logout?local=ok&next=%s' % urllib.quote(next_page)
             context['logout_list'] = l
             logger.debug('logout: %r' % unicode(context['logout_list']))
             context['next_page'] = next_page
