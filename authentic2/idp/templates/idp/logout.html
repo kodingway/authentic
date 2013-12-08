@@ -4,7 +4,7 @@
 {% block title %}
 {% trans "Logout" %}
 {% endblock %}
-{% block bodyargs %}onload="setTimeout(function () {window.location='{{ next_page }}'}, 300)"{% endblock %}
+{% block bodyargs %}onload="setTimeout(function () {window.location='{{ next_page }}'}, {{ redir_timeout }})"{% endblock %}
 
 {% block content %}
 
