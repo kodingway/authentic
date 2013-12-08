@@ -650,8 +650,8 @@ def sso_after_process_request(request, login, consent_obtained=False,
         return error_page(request,
             _('Provider %s is unknown') % login.remoteProviderId,
             logger=logger)
-    policy = get_sp_options_policy(provider)
-    if not policy:
+    saml_policy = get_sp_options_policy(provider)
+    if not saml_policy:
         logger.error('No policy defined for '
             'provider %s' % login.remoteProviderId)
         return error_page(request, _('No service provider policy defined'),
@@ -708,7 +708,7 @@ def sso_after_process_request(request, login, consent_obtained=False,
 
     if not consent_obtained and not transient:
         consent_obtained = \
-                not policy.ask_user_consent
+                not saml_policy.ask_user_consent
         logger.debug('the policy says %s' \
             % str(consent_obtained))
         if consent_obtained:
@@ -749,8 +749,6 @@ def sso_after_process_request(request, login, consent_obtained=False,
         logger.debug('ask the user consent now')
         return need_consent_for_federation(request, login, save, nid_format)
 
-    policy = get_attribute_policy(provider)
-
     attributes_provided = \
         idp_signals.add_attributes_to_response.send(sender=None,
             request=request, user=request.user,
@@ -769,21 +767,23 @@ def sso_after_process_request(request, login, consent_obtained=False,
             for key in dic['attributes'].keys():
                 attributes[key] = dic['attributes'][key]
 
-    if not policy and attributes:
+    attribute_policy = get_attribute_policy(provider)
+
+    if not attribute_policy and attributes:
         logger.info('no attribute policy, we do '
             'not forward attributes')
         attributes = None
-    elif policy and policy.ask_consent_attributes and attributes:
+    elif attribute_policy and attribute_policy.ask_consent_attributes and attributes:
         if not consent_attribute_answer:
             logger.info('consent for attribute '
                 'propagation')
             request.session['attributes_to_send'] = attributes
             request.session['allow_attributes_selection'] = \
-                policy.allow_attributes_selection
+                attribute_policy.allow_attributes_selection
             return need_consent_for_attributes(request, login,
                 consent_obtained, save, nid_format)
         if consent_attribute_answer == 'accepted' and \
-                policy.allow_attributes_selection:
+                attribute_policy.allow_attributes_selection:
             attributes = request.session['attributes_to_send']
         elif consent_attribute_answer == 'refused':
             attributes = None
