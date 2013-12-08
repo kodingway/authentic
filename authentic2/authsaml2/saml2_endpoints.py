@@ -1859,8 +1859,8 @@ def setAuthnrequestOptions(provider, login, force_authn, is_passive):
         login.request.protocolBinding = p.binding_for_sso_response
 
     if force_authn is None:
-        force_authn = p.binding_for_sso_response
-    login.request.protocolBinding = force_authn
+        force_authn = p.want_force_authn_request
+    login.request.forceAuthn = force_authn
 
     if is_passive is None:
         is_passive = p.want_is_passive_authn_request
