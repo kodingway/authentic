@@ -610,8 +610,27 @@ def sso_after_process_request(request, login, consent_obtained=False,
             lasso.SAML2_NAME_IDENTIFIER_FORMAT_TRANSIENT:
         transient = True
 
+    attributes_provided = \
+        idp_signals.add_attributes_to_response.send(sender=None,
+            request=request, user=request.user,
+            audience=login.remoteProviderId)
+    logger.info(''
+        'signal add_attributes_to_response sent')
+
+    attributes = {}
+    for attrs in attributes_provided:
+        logger.info('add_attributes_to_response '
+            'connected to function %s' % attrs[0].__name__)
+        if attrs[1] and 'attributes' in attrs[1]:
+            dic = attrs[1]
+            logger.info('attributes provided are '
+                '%s' % str(dic['attributes']))
+            for key in dic['attributes'].keys():
+                attributes[key] = dic['attributes'][key]
+
     decisions = idp_signals.authorize_service.send(sender=None,
-         request=request, user=request.user, audience=login.remoteProviderId)
+         request=request, user=request.user, audience=login.remoteProviderId,
+         attributes=attributes)
     logger.info('signal authorize_service sent')
 
     # You don't dream. By default, access granted.
@@ -748,24 +767,6 @@ def sso_after_process_request(request, login, consent_obtained=False,
     if not consent_obtained and not transient:
         logger.debug('ask the user consent now')
         return need_consent_for_federation(request, login, save, nid_format)
-
-    attributes_provided = \
-        idp_signals.add_attributes_to_response.send(sender=None,
-            request=request, user=request.user,
-            audience=login.remoteProviderId)
-    logger.info(''
-        'signal add_attributes_to_response sent')
-
-    attributes = {}
-    for attrs in attributes_provided:
-        logger.info('add_attributes_to_response '
-            'connected to function %s' % attrs[0].__name__)
-        if attrs[1] and 'attributes' in attrs[1]:
-            dic = attrs[1]
-            logger.info('attributes provided are '
-                '%s' % str(dic['attributes']))
-            for key in dic['attributes'].keys():
-                attributes[key] = dic['attributes'][key]
 
     attribute_policy = get_attribute_policy(provider)
 

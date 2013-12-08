@@ -5,7 +5,8 @@ Expect a dictionnaries as return with:
  - the authorization decision e.g. dic['authz'] = True or False
  - optionnaly a message e.g. dic['message'] = message
 '''
-authorize_service = Signal(providing_args = ["request", "user", "audience"])
+authorize_service = Signal(providing_args = ["request", "user", "audience",
+        "attributes"])
 
 '''add_attributes_to_response
 This signal is used by asynchronous bindings that do not receive attribute
