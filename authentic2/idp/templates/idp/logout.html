@@ -4,9 +4,11 @@
 {% block title %}
 {% trans "Logout" %}
 {% endblock %}
-{% block bodyargs %}onload="setTimeout(function () {window.location='{{ next_page }}'}, {{ redir_timeout }})"{% endblock %}
 
 {% block content %}
+<script>
+  var iframe_count = 0;
+</script>
 
 <h1>{% trans message %}</h1>
 <ul class="logout-list">
@@ -14,6 +16,15 @@
         {{ fragment|safe }}
     {% endfor %}
 </ul>
+
+<script>
+  iframe_count += document.getElementsByTagName("iframe").length;
+  setInterval(function () {
+    if (iframe_count == 0) {
+      window.location = '{{ next_page }}';
+    }
+  }, {{ redir_timeout }})
+</script>
 
 <div id="continue-link"><a href="{{ next_page }}">{% trans "Continue logout" %}</div>
 
