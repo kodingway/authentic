@@ -145,6 +145,7 @@ SESSION_COOKIE_AGE = int(os.environ.get('SESSION_COOKIE_AGE', 36000)) # one day 
 SESSION_COOKIE_NAME = os.environ.get('SESSION_COOKIE_NAME', 'sessionid')
 SESSION_COOKIE_PATH = os.environ.get('SESSION_COOKIE_PATH', '/')
 SESSION_COOKIE_SECURE = 'SESSION_COOKIE_SECURE' in os.environ
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
 # email settings
 EMAIL_HOST = os.environ.get('EMAIL_HOST', 'localhost')
