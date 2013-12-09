@@ -558,6 +558,10 @@ def continue_sso(request):
             nid_format=nid_format)
 
 
+def needs_persistence(nid_format):
+    return nid_format not in ['transient', 'email', 'username', 'edupersontargetedid']
+
+
 def sso_after_process_request(request, login, consent_obtained=False,
         consent_attribute_answer=False, user=None, save=True,
         nid_format='transient', return_profile=False):
@@ -740,19 +744,20 @@ def sso_after_process_request(request, login, consent_obtained=False,
             #The user consent is bypassed by the policy
             consent_value = 'urn:oasis:names:tc:SAML:2.0:consent:unspecified'
 
-    try:
-        LibertyFederation.objects.get(
-                user=request.user,
-                sp__liberty_provider__entity_id=login.remoteProviderId)
-        logger.debug('consent already '
-            'given (existing federation) for %s' % login.remoteProviderId)
-        consent_obtained = True
-        '''This is abusive since a federation may exist even if we have
-        not previously asked the user consent.'''
-        consent_value = 'urn:oasis:names:tc:SAML:2.0:consent:prior'
-    except ObjectDoesNotExist:
-        logger.debug('consent not yet given \
-            (no existing federation) for %s' % login.remoteProviderId)
+    if needs_persistence(nid_format):
+        try:
+            LibertyFederation.objects.get(
+                    user=request.user,
+                    sp__liberty_provider__entity_id=login.remoteProviderId)
+            logger.debug('consent already '
+                'given (existing federation) for %s' % login.remoteProviderId)
+            consent_obtained = True
+            '''This is abusive since a federation may exist even if we have
+            not previously asked the user consent.'''
+            consent_value = 'urn:oasis:names:tc:SAML:2.0:consent:prior'
+        except ObjectDoesNotExist:
+            logger.debug('consent not yet given \
+                (no existing federation) for %s' % login.remoteProviderId)
 
     if not consent_obtained and not transient:
         logger.debug('signal avoid_consent sent')
@@ -798,7 +803,7 @@ def sso_after_process_request(request, login, consent_obtained=False,
     logger.debug(''
         'login dump before processing %s' % login.dump())
     try:
-        if not transient:
+        if needs_persistence(nid_format):
             logger.debug('load identity dump')
             load_federation(request, get_entity_id(request, reverse(metadata)), login, user)
         utils.load_session(request, login)
@@ -967,11 +972,22 @@ def idp_sso(request, provider_id=None, user_id=None, nid_format=None,
     else:
         user = request.user
         logger.info('sso by %r' % user)
-    load_federation(request, get_entity_id(request, reverse(metadata)), login, user)
+    policy = get_sp_options_policy(liberty_provider)
+    if nid_format:
+        logger.debug('nameId format is %r' % nid_format)
+        if not nid_format in policy.accepted_name_id_format:
+            logger.error('name id format %r is not supported by %r' \
+                % (nid_format, provider_id))
+            raise Http404('Provider %r does not support this name id format' \
+                % provider_id)
+    if not nid_format:
+        nid_format = policy.default_name_id_format
+        logger.debug('nameId format is %r' % nid_format)
+    if needs_persistence(nid_format):
+        load_federation(request, get_entity_id(request, reverse(metadata)), login, user)
     logger.debug('federation loaded')
     login.initIdpInitiatedAuthnRequest(provider_id)
     # Control assertion consumer binding
-    policy = get_sp_options_policy(liberty_provider)
     if not policy:
         logger.error('No policy defined, \
             unable to set protocol binding')
@@ -990,16 +1006,6 @@ def idp_sso(request, provider_id=None, user_id=None, nid_format=None,
         return error_page(request, _('Server error'), logger=logger)
     # Control nid format policy
     # XXX: if a federation exist, we should use transient
-    if nid_format:
-        logger.debug('nameId format is %r' % nid_format)
-        if not nid_format in policy.accepted_name_id_format:
-            logger.error('name id format %r is not supported by %r' \
-                % (nid_format, provider_id))
-            raise Http404('Provider %r does not support this name id format' \
-                % provider_id)
-    if not nid_format:
-        nid_format = policy.default_name_id_format
-        logger.debug('nameId format is %r' % nid_format)
     login.request.nameIdPolicy.format = nidformat_to_saml2_urn(nid_format)
     login.request.nameIdPolicy.allowCreate = True
 
