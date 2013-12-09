@@ -107,19 +107,12 @@ def metadata(request):
 #####
 # SSO
 #####
-def register_new_saml2_session(request, login, federation=None):
+def register_new_saml2_session(request, login):
     '''Persist the newly created session for emitted assertion'''
-    logger.info("assertion and saml session "
-        "registration")
-    lib_assertion = LibertyAssertion(saml2_assertion=login.assertion)
-    lib_assertion.save()
-    logger.debug('assertion saved')
     lib_session = LibertySession(provider_id=login.remoteProviderId,
-            saml2_assertion=login.assertion, federation=federation,
-            django_session_key=request.session.session_key,
-            assertion=lib_assertion)
+            saml2_assertion=login.assertion,
+            django_session_key=request.session.session_key)
     lib_session.save()
-    logger.debug('session saved')
 
 
 def fill_assertion(request, saml_request, assertion, provider_id, nid_format):
@@ -336,7 +329,7 @@ def build_assertion(request, login, nid_format='transient', attributes=None):
     if attributes:
         logger.debug("add attributes to the assertion")
         saml2_add_attribute_values(login.assertion, attributes)
-    register_new_saml2_session(request, login, federation=federation)
+    register_new_saml2_session(request, login)
 
 
 @csrf_exempt
