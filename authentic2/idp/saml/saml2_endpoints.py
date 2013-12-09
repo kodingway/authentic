@@ -52,7 +52,8 @@ from authentic2.saml.common import redirect_next, asynchronous_bindings, \
     soap_bindings, load_provider, get_saml2_request_message, \
     error_page, set_saml2_response_responder_status_code, \
     AUTHENTIC_STATUS_CODE_MISSING_DESTINATION, \
-    load_federation, return_saml2_response, \
+    load_federation, load_session, \
+    return_saml2_response, save_session, \
     get_soap_message, soap_fault, return_saml_soap_response, \
     AUTHENTIC_STATUS_CODE_UNKNOWN_PROVIDER, \
     AUTHENTIC_STATUS_CODE_MISSING_NAMEID, \
@@ -75,8 +76,6 @@ from authentic2.idp import signals as idp_signals
 
 from authentic2.authsaml2.models import SAML2TransientUser
 from authentic2.utils import cache_and_validate
-
-from . import utils
 
 logger = logging.getLogger('authentic2.idp.saml')
 
@@ -806,7 +805,7 @@ def sso_after_process_request(request, login, consent_obtained=False,
         if needs_persistence(nid_format):
             logger.debug('load identity dump')
             load_federation(request, get_entity_id(request, reverse(metadata)), login, user)
-        utils.load_session(request, login)
+        load_session(request, login)
         logger.debug('load session')
         login.validateRequestMsg(not user.is_anonymous(), consent_obtained)
         logger.debug('validateRequestMsg %s' \
@@ -862,7 +861,7 @@ def finish_sso(request, login, user=None, save=False, return_profile=False):
         user = request.user
     response = return_login_response(request, login)
     if save:
-        utils.save_session(request, login)
+        save_session(request, login)
         logger.debug('session saved')
     logger.info('sso treatment ended, send response')
     if return_profile:
