@@ -25,7 +25,6 @@ from authentic2.saml.models import LibertyFederation, LibertyProvider, \
     LIBERTY_SESSION_DUMP_KIND_IDP
 from authentic2.saml import models
 from authentic2.saml import saml2utils
-from authentic2.saml import saml11utils
 
 from authentic2.authsaml2 import signals
 from authentic2.http_utils import get_url
