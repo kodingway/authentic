@@ -1291,10 +1291,11 @@ def slo_soap(request):
         server = saml2_endpoints.create_server(request)
         logout2 = lasso.Logout(server)
         for s in q:
+            logger.debug('IdP session found %s' % s.session_dump)
             try:
-                lib_session = lasso.Session().newFromDump(s.session_dump)
+                lib_session = lasso.Session().newFromDump(s.session_dump.encode('utf-8'))
             except lasso.Error:
-                logger.debug('Unable to load session %s' % s)
+                logger.debug('Unable to load session %s' % s.session_dump)
             else:
                 try:
                     pid = lib_session.get_assertions().keys()[0]
@@ -1307,7 +1308,7 @@ def slo_soap(request):
                         logger.error('No policy found for %s'\
                              % provider)
                     elif not policy.forward_slo:
-                        logger.info('%s configured to not reveive \
+                        logger.info('%s configured to not receive \
                             slo' % provider)
                     else:
                         '''
@@ -1317,7 +1318,7 @@ def slo_soap(request):
                         logout2.initRequest(None, lasso.HTTP_METHOD_SOAP)
                         logout2.buildRequestMsg()
                         soap_response = send_soap_request(request, logout2)
-                        logout2.processRequestMsg(soap_response)
+                        logout2.processResponseMsg(soap_response)
                         logger.info('successful SLO with %s' \
                             % pid)
                 except Exception, e:

@@ -900,7 +900,7 @@ def sp_slo(request, provider_id=None):
              % provider_id)
         return HttpResponseRedirect(next) or ko_icon(request)
     if not policy.forward_slo:
-        logger.warn('sp_slo: slo asked for %s configured to not reveive slo' \
+        logger.warn('sp_slo: slo asked for %s configured to not receive slo' \
              % provider_id)
         return HttpResponseRedirect(next) or ko_icon(request)
     if policy.enable_http_method_for_slo_request \
@@ -969,10 +969,10 @@ def sp_slo(request, provider_id=None):
 
 def process_logout_response(request, logout, soap_response, next):
     try:
-        logout.processRequestMsg(soap_response)
+        logout.processResponseMsg(soap_response)
     except:
         logger.exception('process_logout_response: \
-            processRequestMsg raised an exception')
+            processResponseMsg raised an exception')
         return redirect_next(request, next) or ko_icon(request)
     else:
         delete_session(request)
