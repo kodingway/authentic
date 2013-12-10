@@ -543,6 +543,11 @@ class LibertyArtifact(models.Model):
         verbose_name = _('liberty artifact')
         verbose_name_plural = _('liberty artifacts')
 
+def nameid2kwargs_federation(name_id):
+    return {
+        'name_id_content': name_id.content,
+        'name_id_format': name_id.format }
+
 def nameid2kwargs(name_id):
     return {
         'name_id_qualifier': name_id.nameQualifier,
@@ -611,7 +616,7 @@ class LibertyFederation(models.Model):
         saml2_assertion = kwargs.pop('saml2_assertion', None)
         if saml2_assertion:
             name_id = saml2_assertion.subject.nameID
-            kwargs.update(nameid2kwargs(name_id))
+            kwargs.update(nameid2kwargs_federation(name_id))
         models.Model.__init__(self, *args, **kwargs)
 
     def is_unique(self, for_format=True):
