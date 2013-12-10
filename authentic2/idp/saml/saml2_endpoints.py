@@ -1162,6 +1162,7 @@ def build_session_dump(liberty_sessions):
     session = [u'<Session xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns="http://www.entrouvert.org/namespaces/lasso/0.0" Version="2">']
     for liberty_session in liberty_sessions:
         session.append(u'<NidAndSessionIndex ProviderID="{0.provider_id}" '
+                       u'AssertionID="xxx" '
                        u'SessionIndex="{0.session_index}">'.format(liberty_session))
         session.append(u'<saml:NameID Format="{0.name_id_format}" '
                        u'NameQualifier="{0.name_id_qualifier}" '
