@@ -1164,10 +1164,12 @@ def build_session_dump(liberty_sessions):
         session.append(u'<NidAndSessionIndex ProviderID="{0.provider_id}" '
                        u'AssertionID="xxx" '
                        u'SessionIndex="{0.session_index}">'.format(liberty_session))
-        session.append(u'<saml:NameID Format="{0.name_id_format}" '
-                       u'NameQualifier="{0.name_id_qualifier}" '
-                       u'SPNameQualifier="{0.name_id_sp_name_qualifier}">'
-                       u'{0.name_id_content}</saml:NameID>'.format(liberty_session))
+        session.append(u'<saml:NameID Format="{0.name_id_format}" '.format(liberty_session))
+        if liberty_session.name_id_qualifier:
+            session.append(u'NameQualifier="{0.name_id_qualifier}" '.format(liberty_session))
+        if liberty_session.name_id_sp_name_qualifier:
+            session.append(u'SPNameQualifier="{0.name_id_sp_name_qualifier}" '.format(liberty_session))
+        session.append(u'{0.name_id_content}</saml:NameID>'.format(liberty_session))
         session.append(u'</NidAndSessionIndex>')
     session.append(u'</Session>')
     s = ''.join(session)
