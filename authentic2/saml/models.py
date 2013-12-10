@@ -545,6 +545,8 @@ class LibertyArtifact(models.Model):
 
 def nameid2kwargs(name_id):
     return {
+        'name_id_qualifier': name_id.nameQualifier,
+        'name_id_sp_name_qualifier': name_id.spNameQualifier,
         'name_id_content': name_id.content,
         'name_id_format': name_id.format }
 
