@@ -3,6 +3,8 @@ import hashlib
 import datetime as dt
 import logging
 
+from importlib import import_module
+
 from django.views.decorators.http import condition
 from django.conf import settings
 from django.http import HttpResponse
@@ -115,3 +117,9 @@ def cache_and_validate(timeout, hashing=hashlib.md5):
 def import_from(module, name):
     module = __import__(module, fromlist=[name])
     return getattr(module, name)
+
+def get_session_store():
+    return import_module(settings.SESSION_ENGINE).SessionStore
+
+def flush_django_session(django_session_key):
+    get_session_store()(session_key=django_session_key).flush()
