@@ -1201,10 +1201,8 @@ def slo_soap_as_idp(request, logout, session=None):
                         reveive slo' % lib_session.provider_id)
                 else:
                     try:
-                        l = [(lib_session.provider_id,
-                            lib_session.assertion.assertion)]
-                        logout2.setSessionFromDump(saml2_endpoints.\
-                            build_session_dump(l).encode('utf8'))
+                        session_dump = saml2_endpoints.build_session_dump([lib_session])
+                        logout2.setSessionFromDump(session_dump.encode('utf8'))
                         logout2.initRequest(None, lasso.HTTP_METHOD_SOAP)
                         logout2.buildRequestMsg()
                         soap_response = send_soap_request(request, logout2)

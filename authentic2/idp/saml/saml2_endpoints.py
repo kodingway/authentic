@@ -1156,12 +1156,18 @@ def get_only_last_session(name_id, session_indexes, but_provider):
     return lib_session1, result, django_session_keys
 
 
-def build_session_dump(elements):
+def build_session_dump(liberty_sessions):
     '''Build a session dump from a list of pairs
        (provider_id,assertion_content)'''
-    session = [u'<Session xmlns="http://www.entrouvert.org/namespaces/lasso/0.0" Version="2">']
-    for x in elements:
-        session.append(u'<Assertion RemoteProviderID="%s">%s</Assertion>' % x)
+    session = [u'<Session xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns="http://www.entrouvert.org/namespaces/lasso/0.0" Version="2">']
+    for liberty_session in liberty_sessions:
+        session.append(u'<NidAndSessionIndex ProviderID="{0.provider_id}"'
+                       u'SessionIndex="{0.session_index}">'.format(liberty_session))
+        session.append(u'<saml:NameID Format="{0.name_id_format}" '
+                       u' NameQualifier="{0.name_id_qualifier}" '
+                       u' SPNameQualifier="{0.name_id_sp_name_qualifier">'
+                       u'{0.name_id_content}</saml:NameID>'.format(liberty_session))
+        session.append(u'</NidAndSessionIndex>')
     session.append(u'</Session>')
     s = ''.join(session)
     logger.debug('session built %s' % s)
@@ -1173,9 +1179,8 @@ def set_session_dump_from_liberty_sessions(profile, lib_sessions):
     dump from them'''
     logger.debug('lib_sessions %s' \
         % lib_sessions)
-    l = [(lib_session.provider_id, lib_session.assertion.assertion) \
-            for lib_session in lib_sessions]
-    profile.setSessionFromDump(build_session_dump(l).encode('utf8'))
+    session_dump = build_session_dump(lib_sessions).encode('utf8')
+    profile.setSessionFromDump(session_dump)
     logger.debug('profile %s' \
         % profile.session.dump())
 
