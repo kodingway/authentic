@@ -1169,7 +1169,7 @@ def build_session_dump(liberty_sessions):
             session.append(u'NameQualifier="{0.name_id_qualifier}" '.format(liberty_session))
         if liberty_session.name_id_sp_name_qualifier:
             session.append(u'SPNameQualifier="{0.name_id_sp_name_qualifier}" '.format(liberty_session))
-        session.append(u'{0.name_id_content}</saml:NameID>'.format(liberty_session))
+        session.append(u'>{0.name_id_content}</saml:NameID>'.format(liberty_session))
         session.append(u'</NidAndSessionIndex>')
     session.append(u'</Session>')
     s = ''.join(session)
