@@ -49,7 +49,7 @@ from authentic2.authsaml2.utils import error_page, register_next_target, \
     load_federation_temp
 from authentic2.authsaml2 import signals
 from authentic2.authsaml2.backends import AuthSAML2PersistentBackend
-from authentic2.utils import cache_and_validate
+from authentic2.utils import cache_and_validate, flush_django_session
 
 __logout_redirection_timeout = getattr(settings, 'IDP_LOGOUT_TIMEOUT', 600)
 
@@ -871,7 +871,7 @@ def sp_slo(request, provider_id=None):
     '''
     next = request.REQUEST.get('next')
 
-    logger.debug('idp_slo: provider_id in parameter %s' % str(provider_id))
+    logger.debug('sp_slo: provider_id in parameter %s' % str(provider_id))
 
     if request.method == 'GET' and 'provider_id' in request.GET:
         provider_id = request.GET.get('provider_id')
@@ -1251,7 +1251,7 @@ def singleLogoutSOAP(request):
     logout = lasso.Logout(server)
     if not logout:
         return http_response_forbidden_request('singleLogoutSOAP: \
-        Unable to create Login object')
+        Unable to create Logout object')
 
     provider_loaded = None
     while True:
@@ -1365,10 +1365,9 @@ def singleLogoutSOAP(request):
     slo_soap_as_idp(request, logout, session)
 
     '''Break local session and respond to the IdP initiating the SLO'''
-    from django.contrib.sessions.models import Session
+
     try:
-        Session.objects.\
-            filter(session_key=session.django_session_key).delete()
+        flush_django_session(session.django_session_key)
         session.delete()
     except Exception, e:
         logger.error('singleLogoutSOAP: Error at session deletion due to %s' \
