@@ -279,11 +279,13 @@ def save_session(request, login, session_key=None,
             q.session_dump = None
         q.save()
 
-def delete_session(request):
+def delete_session(request, session_key=None):
     '''Delete all liberty sessions for a django session'''
+    if not session_key:
+        session_key = request.session.session_key
     try:
         LibertySessionDump.objects.\
-            filter(django_session_key = request.session.session_key).delete()
+            filter(django_session_key = session_key).delete()
     except Exception, e:
         logger.error('delete_session: Exception %s' % str(e))
 
@@ -390,19 +392,13 @@ def load_provider(request, provider_id, server=None, sp_or_idp='sp',
 # Federation management
 def add_federation(user, login=None, name_id=None, provider_id=None):
     if not name_id:
-        if not login:
-            return None
-        if not login.nameIdentifier:
-            return None
-        if not login.nameIdentifier.content or not login.nameIdentifier.nameQualifier:
+        if not (login and login.nameIdentifier):
             return None
         name_id=login.nameIdentifier
-    fed = LibertyFederation()
-    fed.user = user
-    fed.name_id_content = name_id.content
-    fed.name_id_format = name_id.format
+    kwargs = models.nameid2kwargs(name_id)
     if provider_id:
-        fed.idp = LibertyProvider.objects.get(entity_id=provider_id).identity_provider
+        kwargs['idp'] = LibertyProvider.objects.get(entity_id=provider_id).identity_provider
+    fed = LibertyFederation(user=user, **kwargs)
     fed.save()
     return fed
 
@@ -529,10 +525,12 @@ def get_session_index(request):
     except:
         return None
 
-def remove_liberty_session_sp(request):
+def remove_liberty_session_sp(request, session_key=None):
+    if not session_key:
+        session_key = request.session.session_key
     try:
         LibertySessionSP.objects.\
-            filter(django_session_key=request.session.session_key).delete()
+            filter(django_session_key=session_key).delete()
     except Exception, e:
         logger.error('remove_liberty_session_sp: Exception %s' % str(e))
 
