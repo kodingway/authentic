@@ -46,7 +46,6 @@ from authentic2.idp.models import get_attribute_policy
 from authentic2.saml.models import LibertyAssertion, LibertyArtifact, \
     LibertySession, LibertyFederation, LibertySessionDump, \
     nameid2kwargs, saml2_urn_to_nidformat, LIBERTY_SESSION_DUMP_KIND_SP, \
-    nameid2kwargs_federation, \
     nidformat_to_saml2_urn, save_key_values, get_and_delete_key_values, \
     LibertyProvider, LibertyServiceProvider, NAME_ID_FORMATS
 from authentic2.saml.common import redirect_next, asynchronous_bindings, \
@@ -306,7 +305,7 @@ def build_assertion(request, login, nid_format='transient', attributes=None):
     if nid_format == 'persistent':
         logger.debug("nameID persistent, get or create "
             "federation")
-        kwargs = nameid2kwargs_federation(login.assertion.subject.nameID)
+        kwargs = nameid2kwargs(login.assertion.subject.nameID)
         service_provider = LibertyServiceProvider.objects \
                 .get(liberty_provider__entity_id=login.remoteProviderId)
         federation, new = LibertyFederation.objects.get_or_create(
