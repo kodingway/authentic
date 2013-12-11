@@ -88,6 +88,7 @@ __settings = dict(
                 definition='Can user self delete their account and all their data'),
     A2_HOMEPAGE_URL = Setting(default=None, definition='IdP has no homepage, '
         'redirect to this one.'),
+    A2_CAN_RESET_PASSWORD = Setting(default=True, definition='Allow online reset of passwords'),
 )
 
 for key, value in __settings.iteritems():

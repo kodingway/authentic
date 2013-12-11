@@ -20,6 +20,7 @@ from authentic2.auth2_auth import NONCE_FIELD_NAME
 from authentic2.idp import get_backends
 
 from .. import app_settings
+
 def add_arg(url, key, value = None):
     '''Add a parameter to an URL'''
     key = urllib.quote(key)
@@ -85,6 +86,7 @@ def login(request, template_name='auth/login.html',
         context = { 'cancel': nonce is not None,
                     'submit_name': 'submit-%s' % d['backend'].id(),
                     redirect_field_name: redirect_to,
+                    'can_reset_password': app_settings.A2_CAN_RESET_PASSWORD,
                     'registration_authorized': app_settings.A2_REGISTRATION_AUTHORIZED,
                     'form': d['form'] }
         if hasattr(d['backend'], 'get_context'):
