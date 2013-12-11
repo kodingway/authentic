@@ -1,50 +1,12 @@
-'''Package to hold default settings for authentic2'''
+import sys
 
-import os
-
-
-from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
 
-__sentinel = object()
-
-
-def setting(names, default=__sentinel, definition=''):
-    '''Try to retrieve a setting whose name is among names,
-       if not return default, if default is not set raise
-       an ImproperlyConfigured exception.
-    '''
-    if isinstance(names, basestring):
-        names = (names,)
-    for name in names:
-        result = getattr(settings, name, __sentinel)
-        if result is not __sentinel:
-            return result
-    if default is __sentinel:
-        if definition:
-            definition = ' (%s)' % definition
-        msg = 'Missing '\
-                'setting%(definition)s: %(names)s' % {
-                        'definition': definition,
-                        'names': ', '.join(names) }
-        raise ImproperlyConfigured(msg)
-    return default
-
-# SSL Certificate verification settings
-CAFILE = setting(('AUTHENTIC2_CAFILE', 'CAFILE'),
-        default='/etc/ssl/certs/ca-certificates.crt',
-        definition='File containing certificate chains as PEM certificates')
-CAPATH = setting(('AUTHENTIC2_CAPATH', 'CAPATH'), default='/etc/ssl/certs/',
-        definition='Directory containing PEM certificates named'
-        ' using OpenSSL certificate directory convention. '
-        'See http://www.openssl.org/docs/apps/verify.html#item__CApath')
-
-
 class Setting(object):
-    __SENTINEL = object()
+    SENTINEL = object()
 
-    def __init__(self, default=__SENTINEL, definition='', names=None):
+    def __init__(self, default=SENTINEL, definition='', names=None):
         self.names = names or []
         if isinstance(self.names, basestring):
             self.names = [self.names]
@@ -52,29 +14,45 @@ class Setting(object):
         self.default = default
         self.definition = definition
 
-    def get(self):
-        for name in self.names:
-            result = getattr(settings, name, self.__SENTINEL)
-            if result is not self.__SENTINEL:
-                return result
-        for name in self.names:
-            key = name
-            if  key in os.environ:
-                return os.environ[key]
-        if self.default is self.__SENTINEL:
-            if self.definition:
-                self.definition = ' (%s)' % self.definition
-            msg = 'Missing '\
-                    'setting%(definition)s: %(names)s' % {
-                            'definition': self.definition,
-                            'names': ', '.join(self.names) }
-            raise ImproperlyConfigured(msg)
-        return self.default
+    def has_default(self):
+        return self.default != self.SENTINEL
 
+class AppSettings(object):
+    def __init__(self, defaults):
+        self.defaults = defaults
+
+    @property
+    def settings(self):
+        if not hasattr(self, '_settings'):
+            from django.conf import settings
+            self._settings = settings
+        return self._settings
+
+
+    def __getattr__(self, key):
+        if key not in self.defaults:
+            raise AttributeError('unknown key %s' % key)
+        if hasattr(self.settings, key):
+            return getattr(self.settings, key)
+        if self.defaults[key].names:
+            for other_key in self.defaults[other_key].names:
+                if hasattr(self.settings, other_key):
+                    return getattr(self.settings, other_key)
+        if self.defaults[key].has_default():
+            return self.defaults[key].default
+        raise ImproperlyConfigured('missing setting %s(%s) is mandatory' %
+                (key, self.defaults[key].description))
 
 
 # Registration
-__settings = dict(
+default_settings = dict(
+    CAFILE = Setting(names=('AUTHENTIC2_CAFILE', 'CAFILE'),
+            default='/etc/ssl/certs/ca-certificates.crt',
+            definition='File containing certificate chains as PEM certificates'),
+    CAPATH = Setting(names=('AUTHENTIC2_CAPATH', 'CAPATH'), default='/etc/ssl/certs/',
+            definition='Directory containing PEM certificates named'
+            ' using OpenSSL certificate directory convention. '
+            'See http://www.openssl.org/docs/apps/verify.html#item__CApath'),
     A2_REGISTRATION_AUTHORIZED = Setting(default=True, definition='Allow online registration of users'),
     A2_REGISTRATION_URLCONF = Setting(default='authentic2.registration_backend.urls',
                 definition='Root urlconf for the /accounts endpoints'),
@@ -91,6 +69,6 @@ __settings = dict(
     A2_CAN_RESET_PASSWORD = Setting(default=True, definition='Allow online reset of passwords'),
 )
 
-for key, value in __settings.iteritems():
-    value.names.add(key)
-    globals()[key] = value.get()
+app_settings = AppSettings(default_settings)
+app_settings.__name__ = __name__
+sys.modules[__name__] = app_settings
