@@ -1,6 +1,38 @@
 NEWS
 ====
 
+2.1.0 - December 15th 2013
+--------------------------
+
+506 commits, 370 files changed, 18136 insertions, 10906 deletions
+
+Changes:
+- New discovery service
+- Improved OpendID idp
+- OpenID trusted root whitelist
+- New internal LDAP authentication backend (no more depend upon
+	django-auth-ldap), with support for AD and password change
+- New LDAP only user mode, allow to work with a read-only DB
+- Many settings can be extracted from process environment variables
+- No homepage mode, for a technical IdP
+- Single logout improvements in proxy settings
+- Improved translations
+- Federation deletion can be propagated and inercepted using a signal
+- Adaptation for Django 1.5 custom user models
+- Email change form with token-by-mail validation
+- Improvement in sync-metadata for loading federation metadata files
+- Improvement of the user_profile source of attribute aggregator
+- Using attribute as federation id in the service provider
+- Added signals to modify attribute loading
+- Attribute mapping module is customizable through a setting
+- Improvements for supporting legacy CAS clients
+- Remove of auth2_oath authentication backend for copyright reasons
+- Support for Drupal 7 hashed passwords
+- Support for attributes in CAS tickets
+
+Bugs:
+- Too much to be listed
+
 2.0.2 - May 11th 2012
 ---------------------
 
