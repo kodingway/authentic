@@ -931,6 +931,7 @@ def sp_slo(request, provider_id=None):
             except:
                 logger.exception('sp_slo: sp_slo init error')
                 return redirect_next(request, next) or ko_icon(request)
+            logout.msgRelayState = logout.request.id
             try:
                 logout.buildRequestMsg()
             except:
