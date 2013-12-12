@@ -18,21 +18,24 @@ class SamlBackend(object):
         for service_provider in q:
             liberty_provider = service_provider.liberty_provider
             policy = common.get_sp_options_policy(liberty_provider)
-            if policy and policy.idp_initiated_sso:
+            if policy:
                 actions = []
                 entity_id = liberty_provider.entity_id
                 protocol = 'saml2'
-                actions.append(('login', 'POST',
-                    '/idp/%s/idp_sso/' % protocol,
-                    (('provider_id', entity_id ),)))
-                if models.LibertySession.objects.filter(
-                        django_session_key=request.session.session_key,
-                        provider_id=entity_id).exists():
+                if policy.idp_initiated_sso:
+                    actions.append(('login', 'POST',
+                        '/idp/%s/idp_sso/' % protocol,
+                        (('provider_id', entity_id ),)))
+                if policy.accept_slo and \
+                        models.LibertySession.objects.filter(
+                            django_session_key=request.session.session_key,
+                            provider_id=entity_id).exists():
                     actions.append(('logout', 'POST',
                         '/idp/%s/idp_slo/' % protocol,
                         (( 'provider_id', entity_id ),)))
-                ls.append(Service(url=None, name=liberty_provider.name,
-                    actions=actions))
+                if actions:
+                    ls.append(Service(url=None, name=liberty_provider.name,
+                        actions=actions))
         return ls
 
     def logout_list(self, request):
