@@ -881,7 +881,7 @@ def sp_slo(request, provider_id=None):
         logger.debug('sp_slo: provider_id from POST %s' % str(provider_id))
     if not provider_id:
         logger.info('sp_slo: to initiate a slo we need a provider_id')
-        return HttpResponseRedirect(next) or ko_icon(request)
+        return redirect_next(request, next) or ko_icon(request)
     logger.info('sp_slo: slo initiated with %(provider_id)s' \
         % {'provider_id': provider_id})
 
@@ -893,16 +893,16 @@ def sp_slo(request, provider_id=None):
         server=server, sp_or_idp='idp')
     if not provider:
         logger.error('sp_slo: sp_slo failed to load provider')
-        return HttpResponseRedirect(next) or ko_icon(request)
+        return redirect_next(request, next) or ko_icon(request)
     policy = get_idp_options_policy(provider)
     if not policy:
         logger.error('sp_slo: No policy found for %s'\
              % provider_id)
-        return HttpResponseRedirect(next) or ko_icon(request)
+        return redirect_next(request, next) or ko_icon(request)
     if not policy.forward_slo:
         logger.warn('sp_slo: slo asked for %s configured to not receive slo' \
              % provider_id)
-        return HttpResponseRedirect(next) or ko_icon(request)
+        return redirect_next(request, next) or ko_icon(request)
     if policy.enable_http_method_for_slo_request \
             and policy.http_method_for_slo_request:
         if policy.http_method_for_slo_request == lasso.HTTP_METHOD_SOAP:
@@ -911,17 +911,17 @@ def sp_slo(request, provider_id=None):
                 logout.initRequest(None, lasso.HTTP_METHOD_SOAP)
             except:
                 logger.exception('sp_slo: sp_slo init error')
-                return HttpResponseRedirect(next) or ko_icon(request)
+                return redirect_next(request, next) or ko_icon(request)
             try:
                 logout.buildRequestMsg()
             except:
                 logger.exception('sp_slo: sp_slo build error')
-                return HttpResponseRedirect(next) or ko_icon(request)
+                return redirect_next(request, next) or ko_icon(request)
             try:
                 soap_response = send_soap_request(request, logout)
             except:
                 logger.exception('sp_slo: sp_slo SOAP failure')
-                return HttpResponseRedirect(next) or ko_icon(request)
+                return redirect_next(request, next) or ko_icon(request)
             logger.info('sp_slo: successful soap call')
             return process_logout_response(request,
                 logout, soap_response, next)
@@ -930,12 +930,12 @@ def sp_slo(request, provider_id=None):
                 logout.initRequest(None, lasso.HTTP_METHOD_REDIRECT)
             except:
                 logger.exception('sp_slo: sp_slo init error')
-                return HttpResponseRedirect(next) or ko_icon(request)
+                return redirect_next(request, next) or ko_icon(request)
             try:
                 logout.buildRequestMsg()
             except:
                 logger.exception('sp_slo: sp_slo build error')
-                return HttpResponseRedirect(next) or ko_icon(request)
+                return redirect_next(request, next) or ko_icon(request)
             logger.info('sp_slo: sp_slo by redirect')
             save_key_values(logout.request.id,
                 logout.dump(), provider_id, next)
@@ -945,13 +945,13 @@ def sp_slo(request, provider_id=None):
     except lasso.ProfileMissingAssertionError:
         logger.error('sp_slo: \
             sp_slo failed because no sessions exists for %r' % provider_id)
-        return HttpResponseRedirect(next) or ko_icon(request)
+        return redirect_next(request, next) or ko_icon(request)
     logout.msgRelayState = logout.request.id
     try:
         logout.buildRequestMsg()
     except:
         logger.exception('sp_slo: sp_slo misc error')
-        return HttpResponseRedirect(next) or ko_icon(request)
+        return redirect_next(request, next) or ko_icon(request)
      # SOAP case
     if logout.msgBody:
         logger.info('sp_slo: sp_slo by SOAP')
@@ -959,7 +959,7 @@ def sp_slo(request, provider_id=None):
             soap_response = send_soap_request(request, logout)
         except:
             logger.exception('sp_slo: sp_slo SOAP failure')
-            return HttpResponseRedirect(next) or ko_icon(request)
+            return redirect_next(request, next) or ko_icon(request)
         return process_logout_response(request, logout, soap_response, next)
     else:
         logger.info('sp_slo: sp_slo by redirect')
