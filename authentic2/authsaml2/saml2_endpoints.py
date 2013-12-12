@@ -1024,27 +1024,14 @@ def singleLogoutReturn(request):
         logout.processResponseMsg(query)
     except lasso.Error:
         # Silent local logout
-        return local_logout(request)
+        pass
     if logout.isSessionDirty:
         if logout.session:
             save_session(request, logout, kind=LIBERTY_SESSION_DUMP_KIND_SP)
         else:
             delete_session(request)
     remove_liberty_session_sp(request)
-    return local_logout(request)
-
-
-def local_logout(request):
-    global __logout_redirection_timeout
-    "Logs out the user and displays 'You are logged out' message."
-    context = RequestContext(request)
-    context['redir_timeout'] = __logout_redirection_timeout
-    context['message'] = 'You are logged out'
-    template = 'auth/saml2/logout.html'
-    context['next_page'] = '/'
-    signals.auth_logout.send(sender=None, user=request.user)
-    auth_logout(request)
-    return render_to_response(template, context_instance=context)
+    return redirect_next(request, next) or ok_icon(request)
 
 
 def slo_soap_as_idp(request, logout, session=None):
