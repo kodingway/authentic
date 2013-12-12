@@ -7,6 +7,14 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}jquery/css/jquery-ui.custom.css" />
     <link rel="stylesheet" href="{{ STATIC_URL }}ulx/css/ulx.css" />
     <title>{% block title %}User test{% endblock %}</title>
+    <script>
+      // define console
+      if (!window.console) console = {};
+      console.log = console.log || function(){};
+      console.warn = console.warn || function(){};
+      console.error = console.error || function(){};
+      console.info = console.info || function(){};
+    </script>
     {{ openid_meta }}
     {% block extra_scripts %}
     {% endblock %}
