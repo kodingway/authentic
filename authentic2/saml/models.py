@@ -204,7 +204,7 @@ _("This IdP sends a transient NameID but you want a persistent behaviour for you
             _('HTTP method for federation termination request \
             (taken from metadata if not enabled)'))
     http_method_for_defederation_request = models.IntegerField(
-            verbose_name = _("HTTP method for the SLO requests"),
+            verbose_name = _("HTTP method for the defederation requests"),
             max_length = 200, choices = HTTP_METHOD,
             default = lasso.HTTP_METHOD_SOAP)
     force_user_consent = models.BooleanField(\
