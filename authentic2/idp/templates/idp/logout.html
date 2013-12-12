@@ -7,7 +7,7 @@
 
 {% block content %}
 <script>
-  var iframe_count = 0;
+  window.iframe_count = 0;
 </script>
 
 <h1>{% trans message %}</h1>
@@ -18,8 +18,10 @@
 </ul>
 
 <script>
-  iframe_count += document.getElementsByTagName("iframe").length;
+  window.iframe_count += document.getElementsByTagName("iframe").length;
+  console.log('logout iframe count: ' + window.iframe_count);
   setInterval(function () {
+    console.log('logout check iframe count: ' + window.iframe_count);
     if (iframe_count == 0) {
       window.location = '{{ next_page }}';
     }
