@@ -1528,7 +1528,7 @@ def idp_slo(request, provider_id=None):
 
 
 def process_logout_response(request, logout, soap_response, next):
-    logger.info('soap_response is %s' % str(soap_response))
+    logger.info('Response is %s' % str(soap_response))
     try:
         logout.processResponseMsg(soap_response)
     except getattr(lasso, 'ProfileRequestDeniedError', lasso.LogoutRequestDeniedError):
