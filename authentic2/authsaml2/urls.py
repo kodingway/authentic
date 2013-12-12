@@ -3,7 +3,7 @@ from django.conf import settings
 from django.conf.urls import patterns, url
 
 from authentic2.authsaml2.saml2_endpoints import metadata, sso, finish_federation, \
-    singleSignOnArtifact, singleSignOnPost, sp_slo, logout, singleLogoutReturn, \
+    singleSignOnArtifact, singleSignOnPost, sp_slo, singleLogoutReturn, \
     singleLogoutSOAP, singleLogout, federationTermination, manageNameIdReturn, \
     manageNameIdSOAP, manageNameId, delete_federation, redirect_to_disco, \
     disco_response
@@ -17,8 +17,6 @@ urlpatterns = patterns('',
     (r'^singleSignOnPost$', singleSignOnPost),
     # Receive request from functions
     (r'^sp_slo/(.*)$', sp_slo),
-    # Receive request from user interface
-    (r'^logout$', logout),
     # Receive response from Redirect SP initiated
     (r'^singleLogoutReturn$', singleLogoutReturn),
     # Receive request from SOAP IdP initiated
