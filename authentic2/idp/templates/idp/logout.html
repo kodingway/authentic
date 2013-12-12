@@ -16,7 +16,8 @@
         {{ fragment|safe }}
     {% endfor %}
 </ul>
-
+<!-- Hack alert !!! block loading indefinitely by loading an inacessible IP -->
+<img src="http://1.0.0.1/">
 <script>
   window.iframe_count += document.getElementsByTagName("iframe").length;
   console.log(window.location.href + ' logout iframe count: ' + window.iframe_count);
