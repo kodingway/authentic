@@ -1001,30 +1001,46 @@ def singleLogoutReturn(request):
     '''
     server = build_service_provider(request)
     if not server:
-        return error_page(request,
-            _('singleLogoutReturn: Service provider not configured'),
-            logger=logger)
-
+        logger.warn('singleLogoutReturn: Service provider not configured')
+        return ko_icon(request)
     query = get_saml2_query_request(request)
     if not query:
-        return error_page(request,
-            _('singleLogoutReturn: \
-            Unable to handle Single Logout by Redirect without request'),
-            logger=logger)
-
+        logger.warn('singleLogoutReturn: \
+            Unable to handle SLO by Redirect return without LogoutResponse')
+        return ko_icon(request)
     logout = lasso.Logout(server)
     if not logout:
-        return error_page(request,
-            _('singleLogoutReturn: Unable to create Login object'),
-            logger=logger)
-
+        logger.warn('singleLogoutReturn: Unable to create Login object')
+        return ko_icon(request)
     load_session(request, logout, kind=LIBERTY_SESSION_DUMP_KIND_SP)
-
-    try:
-        logout.processResponseMsg(query)
-    except lasso.Error:
-        # Silent local logout
-        pass
+    id =  request.REQUEST.get('RelayState', None)
+    if not id:
+        logger.error('singleLogoutReturn: missing id argument')
+        return ko_icon(request)
+    logout_dump, provider_id_saved, next = get_and_delete_key_values(id)
+    provider_loaded = None
+    provider_id = None
+    while True:
+        try:
+            logout.processResponseMsg(query)
+            break
+        except (lasso.ServerProviderNotFoundError,
+                lasso.ProfileUnknownProviderError):
+            provider_id = logout.remoteProviderId
+            provider_loaded = load_provider(request, provider_id,
+                    server=server, sp_or_idp='idp')
+            if not provider_loaded:
+                logger.warn('singleLogoutReturn: provider %r unknown' \
+                    % provider_id)
+                return redirect_next(request, next) or ko_icon(request)
+            else:
+                continue
+        except lasso.Error, error:
+            return redirect_next(request, next) or ko_icon(request)
+    if provider_id != provider_id_saved:
+        logger.warn('singleLogoutReturn: provider mistmatch between %s and %s' \
+            % (provider_id, provider_id_saved))
+        return redirect_next(request, next) or ko_icon(request)
     if logout.isSessionDirty:
         if logout.session:
             save_session(request, logout, kind=LIBERTY_SESSION_DUMP_KIND_SP)
