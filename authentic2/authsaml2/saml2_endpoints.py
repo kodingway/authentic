@@ -1020,12 +1020,8 @@ def singleLogoutReturn(request):
 
     load_session(request, logout, kind=LIBERTY_SESSION_DUMP_KIND_SP)
 
-    return slo_return(request, logout, query)
-
-
-def slo_return(request, logout, message):
     try:
-        logout.processResponseMsg(message)
+        logout.processResponseMsg(query)
     except lasso.Error:
         # Silent local logout
         return local_logout(request)
