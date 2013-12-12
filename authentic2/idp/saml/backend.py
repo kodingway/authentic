@@ -65,7 +65,7 @@ class SamlBackend(object):
                     code = '<div>'
                     code += _('Sending logout to %(name)s....') % { 'name': name or provider_id}
                     code += '''<iframe src="%s?provider_id=%s" marginwidth="0" marginheight="0" \
-        scrolling="no" style="border: none" width="16" height="16" onload="window.iframe_count -= 1;console.log(windows.location.href + ' decrement iframe_count');"></iframe></div>''' % \
+        scrolling="no" style="border: none" width="16" height="16" onload="window.iframe_count -= 1;console.log(window.location.href + ' decrement iframe_count');"></iframe></div>''' % \
                             (reverse(saml2_endpoints.idp_slo, args=[provider_id]), provider_id)
                     logger.debug("logout_list: code %r" % code)
                     result.append(code)
