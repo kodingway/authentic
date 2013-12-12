@@ -6,7 +6,7 @@ from authentic2.authsaml2.saml2_endpoints import metadata, sso, finish_federatio
     singleSignOnArtifact, singleSignOnPost, sp_slo, singleLogoutReturn, \
     singleLogoutSOAP, singleLogout, federationTermination, manageNameIdReturn, \
     manageNameIdSOAP, manageNameId, delete_federation, redirect_to_disco, \
-    disco_response
+    disco_response, finish_slo
 
 urlpatterns = patterns('',
     (r'^metadata$', metadata),
@@ -23,6 +23,8 @@ urlpatterns = patterns('',
     (r'^singleLogoutSOAP$', singleLogoutSOAP),
     # Receive request from Redirect IdP initiated
     (r'^singleLogout$', singleLogout),
+    # Back of SLO treatment by the IdP Side
+    (r'^finish_slo$', finish_slo),
     # Receive request from user interface
     (r'^federationTermination$', federationTermination),
     # Receive response from Redirect SP initiated
