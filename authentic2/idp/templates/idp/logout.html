@@ -19,9 +19,9 @@
 
 <script>
   window.iframe_count += document.getElementsByTagName("iframe").length;
-  console.log('logout iframe count: ' + window.iframe_count);
+  console.log(window.location.href + ' logout iframe count: ' + window.iframe_count);
   setInterval(function () {
-    console.log('logout check iframe count: ' + window.iframe_count);
+    console.log(window.location.href + ' logout check iframe count: ' + window.iframe_count);
     if (iframe_count == 0) {
       window.location = '{{ next_page }}';
     }

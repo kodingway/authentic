@@ -66,7 +66,7 @@ class AuthSAML2Backend:
             code = '<div>'
             code += _('Sending logout to %(pid)s....') % { 'pid': name or provider_id }
             code += '''<iframe src="%s?provider_id=%s" marginwidth="0" marginheight="0" \
-    scrolling="no" style="border: none" width="16" height="16" onload="window.iframe_count -= 1; console.log('decrement iframe_count');"></iframe></div>''' \
+    scrolling="no" style="border: none" width="16" height="16" onload="window.iframe_count -= 1; console.log(windows.location.href + ' decrement iframe_count');"></iframe></div>''' \
                 % (reverse(saml2_endpoints.sp_slo,
                     args=[provider_id]), provider_id)
             return [ code ]
