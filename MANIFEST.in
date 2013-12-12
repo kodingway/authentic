@@ -28,6 +28,7 @@ recursive-include authentic2/auth2_auth/auth2_oath/locale *.po *.mo
 recursive-include authentic2/auth2_auth/auth2_openid/locale *.po *.mo
 recursive-include authentic2/authsaml2/locale *.po *.mo
 recursive-include authentic2/attribute_aggregator/locale *.po *.mo
+recursive-include authentic2/disco_service/locale *.po *.mo
 recursive-include authentic2 README  xrds.xml *.txt yadis.xrdf
 
 include doc/*.rst
