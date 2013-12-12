@@ -405,7 +405,7 @@ def singleSignOnPost(request):
                 Unable to process Authnresponse - load another provider')
             provider_id = login.remoteProviderId
             provider_loaded = load_provider(request, provider_id,
-                    server=server, sp_or_idp='idp', autoload=True)
+                    server=server, sp_or_idp='idp')
 
             if not provider_loaded:
                 message = _('singleSignOnPost: provider %r unknown' \
@@ -1150,16 +1150,16 @@ def common_processing_slo_idp_init_bindings(request, message):
         logger.warning('common_processing: unknown user for %s' \
             % logout.request.dump())
         return return_logout_error(request, logout,
-                lasso.LOGOUT_ERROR_FEDERATION_NOT_FOUND), None, None
+                lasso.SAML2_STATUS_CODE_UNKNOWN_PRINCIPAL), None, None
 
     session = None
     try:
         session = LibertySessionSP. \
             objects.get(federation=fed, session_index=session_index)
-    except:
+    except LibertySessionSP.DoesNotExist:
         logger.warning('common_processing: No Liberty session found')
         return return_logout_error(request, logout,
-                lasso.LOGOUT_ERROR_UNKNOWN_PRINCIPAL), None, None
+                lasso.SAML2_STATUS_CODE_UNKNOWN_PRINCIPAL), None, None
 
     q = LibertySessionDump. \
         objects.filter(django_session_key=session.django_session_key)
@@ -1167,23 +1167,17 @@ def common_processing_slo_idp_init_bindings(request, message):
         logger.warning('common_processing: \
             No session dump for this session')
         return return_logout_error(request, logout,
-                lasso.LOGOUT_ERROR_UNKNOWN_PRINCIPAL), None, None
+                lasso.SAML2_STATUS_CODE_UNKNOWN_PRINCIPAL), None, None
     logger.info('common_processing: from %s, \
         for session index %s and session %s' % \
         (logout.remoteProviderId, session_index, session.id))
-    try:
-        logout.setSessionFromDump(q[0].session_dump.encode('utf8'))
-    except:
-        q.delete()
-        logger.error('common_processing: unable to set session from dump')
-        return return_logout_error(request, logout,
-                lasso.LOGOUT_ERROR_UNKNOWN_PRINCIPAL), None, None
+    logout.setSessionFromDump(q[0].session_dump.encode('utf8'))
     q.delete()
 
     try:
         logout.validateRequest()
     except lasso.Error, error:
-        msg = 'singleLogoutSOAP validateRequest: %s' \
+        msg = 'common_processing: error validateRequest: %s' \
             % lasso.strError(error[0])
         logger.info(msg)
         # We continue the process
@@ -1249,10 +1243,11 @@ def finish_slo(request):
     if not id:
         logger.error('finish_slo: missing id argument')
         return HttpResponseBadRequest('finish_slo: missing id argument')
-    logout_dump, session_key = get_and_delete_key_values(id)
+    logout_dump, session_key, provider_id = get_and_delete_key_values(id)
     server = create_server(request)
     logout = lasso.Logout.newFromDump(server, logout_dump)
-    load_provider(request, logout.remoteProviderId, server=logout.server)
+    load_provider(request, provider_id, server=logout.server,
+        sp_or_idp='idp')
     #Break local session and respond to the IdP initiating the SLO
     if logout.isSessionDirty:
         if logout.session:
@@ -1280,7 +1275,7 @@ def singleLogout(request):
 
     if settings.IDP_SAML2:
         save_key_values(logout.request.id, logout.dump(),
-                request.session.session_key)
+                request.session.session_key, logout.remoteProviderId)
         return idp_views.redirect_to_logout(request, next_page='%s?id=%s' %
                 (reverse(finish_slo), urllib.quote(logout.request.id)))
 
@@ -1298,8 +1293,8 @@ def slo_return_response(logout):
     try:
         logout.buildResponseMsg()
     except lasso.Error, error:
-        return http_response_forbidden_request('slo_return_response: %s') \
-            % lasso.strError(error[0])
+        return http_response_forbidden_request('slo_return_response: %s' \
+            % lasso.strError(error[0]))
     else:
         logger.info('slo_return_response: redirect to %s' % logout.msgUrl)
         return HttpResponseRedirect(logout.msgUrl)
