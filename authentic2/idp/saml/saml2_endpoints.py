@@ -1468,7 +1468,7 @@ def idp_slo(request, provider_id=None):
         logger.debug('provider_id from POST %s' % str(provider_id))
     if not provider_id:
         logger.info('to initiate a slo we need a provider_id')
-        return HttpResponseRedirect(next) or ko_icon(request)
+        return redirect_next(request, next) or ko_icon(request)
     logger.info('slo initiated with %(provider_id)s' \
         % {'provider_id': provider_id})
 
@@ -1482,11 +1482,11 @@ def idp_slo(request, provider_id=None):
     if not policy:
         logger.error('No policy found for %s'\
              % provider_id)
-        return HttpResponseRedirect(next) or ko_icon(request)
+        return redirect_next(request, next) or ko_icon(request)
     if not policy.forward_slo:
         logger.warn('slo asked for %s configured to not reveive '
             'slo' % provider_id)
-        return HttpResponseRedirect(next) or ko_icon(request)
+        return redirect_next(request, next) or ko_icon(request)
 
     lib_sessions = LibertySession.objects.filter(
         django_session_key=request.session.session_key,
