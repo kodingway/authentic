@@ -131,6 +131,13 @@ class EmailChangeView(FormView):
     body_template = 'profiles/email_change_body.txt'
     success_url = '../..'
 
+    def get_form_kwargs(self):
+        kwargs = super(EmailChangeView, self).get_form_kwargs()
+        kwargs.update({
+            'user': self.request.user,
+        })
+        return kwargs
+
     def form_valid(self, form):
         email = form.cleaned_data['email']
         site = get_current_site(self.request)
@@ -160,7 +167,7 @@ class EmailChangeView(FormView):
                   'link contained inside.'))
         return super(EmailChangeView, self).form_valid(form)
 
-email_change = EmailChangeView.as_view()
+email_change = prevent_access_to_transient_users(EmailChangeView.as_view())
 
 class EmailChangeVerifyView(TemplateView):
     def get(self, request, *args, **kwargs):
