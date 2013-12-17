@@ -117,6 +117,7 @@ setup(name="authentic2",
         'south>=0.8,<0.9',
         'requests',
         'django-registration==0.8.0final',
+        'django-admin-tools',
         'django-debug-toolbar<1.0.0'],
       zip_safe=False,
       classifiers=[
