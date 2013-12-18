@@ -115,11 +115,16 @@ do_reload() {
 	return 0
 }
 
+do_migrate() {
+    log_action_msg "Applying new migrations .."
+    su $USER -p -c "/usr/bin/authentic2-ctl syncdb --migrate --noinput"
+    log_action_msg ".. done"
+}
+
+
 case "$1" in
   start)
-    log_action_msg "Applying new migrations .."
-    su authentic -p -c "/usr/bin/authentic2-ctl syncdb --migrate --noinput"
-    log_action_msg ".. done"
+    do_migrate
     log_daemon_msg "Starting $DESC " "$NAME"
     do_start
     case "$?" in
@@ -154,6 +159,7 @@ case "$1" in
 	#
 	log_daemon_msg "Restarting $DESC" "$NAME"
 	do_stop
+    do_migrate
 	case "$?" in
 	  0|1)
 		do_start
@@ -170,7 +176,6 @@ case "$1" in
 	esac
 	;;
   *)
-	#echo "Usage: $SCRIPTNAME {start|stop|restart|reload|force-reload}" >&2
 	echo "Usage: $SCRIPTNAME {start|stop|status|restart|force-reload}" >&2
 	exit 3
 	;;
