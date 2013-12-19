@@ -1,10 +1,11 @@
 NEWS
 ====
 
-2.1.1 - December 17th 2013
---------------------------
+2.1.1 - TBD
+-----------
 
 - Fix missing dependency upon django-admin-tools in setup.py
+- Raise dependency on south to 0.8.4
 
 2.1.0 - December 15th 2013
 --------------------------
