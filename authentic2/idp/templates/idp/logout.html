@@ -4,12 +4,18 @@
 {% block title %}
 {% trans "Logout" %}
 {% endblock %}
+{% block bodyargs %}
+onload="window.iframe_count -= 1"
+{% endblock %}
+
+{% comment %}Initialize iframe coutndown {% endcomment %}
+{% block extra_scripts %}
+<script>
+  window.iframe_count = 1;
+</script>
+{% endblock %}
 
 {% block content %}
-<script>
-  window.iframe_count = 0;
-</script>
-
 <h1>{% trans message %}</h1>
 <ul class="logout-list">
     {% for fragment in logout_list %}
@@ -17,14 +23,15 @@
     {% endfor %}
 </ul>
 <!-- Hack alert !!! block loading indefinitely by loading an inacessible IP -->
-<img src="http://1.0.0.1/">
 <script>
   window.iframe_count += document.getElementsByTagName("iframe").length;
-  console.log(window.location.href + ' logout iframe count: ' + window.iframe_count);
+  var refresh_launched = 0;
   setInterval(function () {
-    console.log(window.location.href + ' logout check iframe count: ' + window.iframe_count);
     if (iframe_count == 0) {
-      window.location = '{{ next_page }}';
+      if (refresh_launched == 0) {
+        refresh_launched = 1;
+        setTimeout(function () { window.location = '{{ next_page }}' }, 300);
+      }
     }
   }, {{ redir_timeout }})
 </script>

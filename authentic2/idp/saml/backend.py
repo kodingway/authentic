@@ -1,7 +1,9 @@
 import logging
+import urllib
 
+from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext as _
+from django.template.loader import render_to_string
 
 import authentic2.saml.models as models
 import authentic2.idp.saml.saml2_endpoints as saml2_endpoints
@@ -62,12 +64,14 @@ class SamlBackend(object):
                     logger.info('logout_list: %s configured to not reveive slo' \
                         % provider_id)
                 else:
-                    code = '<div>'
-                    code += _('Sending logout to %(name)s....') % { 'name': name or provider_id}
-                    code += '''<iframe src="%s?provider_id=%s" marginwidth="0" marginheight="0" \
-        scrolling="no" style="border: none" width="16" height="16" onload="window.iframe_count -= 1;console.log(window.location.href + ' decrement iframe_count');"></iframe></div>''' % \
-                            (reverse(saml2_endpoints.idp_slo, args=[provider_id]), provider_id)
-                    logger.debug("logout_list: code %r" % code)
+                    url = reverse(saml2_endpoints.idp_slo, args=[provider_id])
+                    url = '{0}?provider_id={1}'.format(url,
+                            urllib.quote(provider_id))
+                    name = name or provider_id
+                    iframe_timeout = getattr(settings, 'IDP_SAML_LOGOUT_TIMEOUT', 300)
+                    code = render_to_string('idp/saml/logout_fragment.html', {
+                        'name': name, 'url': url,
+                        'iframe_timeout': iframe_timeout})
                     result.append(code)
         return result
 
