@@ -227,6 +227,10 @@ END_IDENTITY_DUMP = '''</Identity>'''
 def federations_to_identity_dump(self_entity_id, federations):
     l = [ START_IDENTITY_DUMP ]
     for federation in federations:
+        if federation.sp:
+            sp_id = federation.sp.liberty_provider.entity_id
+        elif federation.idp:
+            sp_id = self_entity_id
         qualifiers = []
         if federation.name_id_qualifier:
             qualifiers.append('NameQualifier="%s"' % federation.name_id_qualifier)
@@ -235,6 +239,7 @@ def federations_to_identity_dump(self_entity_id, federations):
         l.append(MIDDLE_IDENTITY_DUMP.format(
             content=federation.name_id_content,
             format=federation.name_id_format,
+            sp_id=sp_id,
             qualifiers=' '.join(qualifiers)))
     l.append(END_IDENTITY_DUMP)
     return ''.join(l)
