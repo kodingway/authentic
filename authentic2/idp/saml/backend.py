@@ -1,7 +1,6 @@
 import logging
 import urllib
 
-from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 
@@ -68,10 +67,10 @@ class SamlBackend(object):
                     url = '{0}?provider_id={1}'.format(url,
                             urllib.quote(provider_id))
                     name = name or provider_id
-                    iframe_timeout = getattr(settings, 'IDP_SAML_LOGOUT_TIMEOUT', 300)
                     code = render_to_string('idp/saml/logout_fragment.html', {
+                        'needs_iframe': policy.needs_iframe_logout,
                         'name': name, 'url': url,
-                        'iframe_timeout': iframe_timeout})
+                        'iframe_timeout': policy.iframe_logout_timeout})
                     result.append(code)
         return result
 

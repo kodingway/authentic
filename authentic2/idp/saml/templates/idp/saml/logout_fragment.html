@@ -1,0 +1,10 @@
+{% load i18n %}
+<div>{% blocktrans %}Sending logout to {{ name }}....{% endblocktrans %}
+  {% if needs_iframe %}
+    <iframe src="{{ url }}" marginwidth="0" marginheight="0" scrolling="no" style="border: none"
+      width="16" height="16" onload="setTimeout(function () { window.iframe_count -= 1; }, {{ iframe_timeout }})">
+    </iframe>
+  {% else %}
+    <img src="{{ url }}" width="16" height="16">
+  {% endif %}
+</div>
