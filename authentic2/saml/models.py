@@ -285,6 +285,16 @@ class SPOptionsIdPPolicy(models.Model):
     forward_slo = models.BooleanField(\
             verbose_name = _("Forward Single Logout requests"),
             default=True)
+    needs_iframe_logout = models.BooleanField(
+            verbose_name=_('needs iframe logout'),
+            help_text=_('logout URL are normally loaded inside an <img> HTML tag, some service provider need to use an iframe'),
+            default=False)
+    iframe_logout_timeout = models.PositiveIntegerField(
+            verbose_name=_('iframe logout timeout'),
+            help_text=_('if iframe logout is used, it\'s the time between the '
+                'onload event for this iframe and the moment we consider its '
+                'loading to be really finished'),
+            default=300)
     federation_mode = models.PositiveIntegerField(_('federation mode'),
             choices=app_settings.FEDERATION_MODE.get_choices(app_settings),
             default=app_settings.FEDERATION_MODE.get_default(app_settings))
