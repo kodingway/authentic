@@ -217,7 +217,7 @@ START_IDENTITY_DUMP = '''<Identity xmlns="http://www.entrouvert.org/namespaces/l
 '''
 MIDDLE_IDENTITY_DUMP = '''<lasso:Federation xmlns:lasso="http://www.entrouvert.org/namespaces/lasso/0.0" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" RemoteProviderID="{sp_id}" FederationDumpVersion="2">
     <lasso:LocalNameIdentifier>
-        <saml:NameID Format="{format}" NameQualifier="{idp_id}" SPNameQualifier="{sp_id}">{content}</saml:NameID>
+        <saml:NameID Format="{format}" {qualifiers}>{content}</saml:NameID>
     </lasso:LocalNameIdentifier>
 </lasso:Federation>
 '''
@@ -227,17 +227,15 @@ END_IDENTITY_DUMP = '''</Identity>'''
 def federations_to_identity_dump(self_entity_id, federations):
     l = [ START_IDENTITY_DUMP ]
     for federation in federations:
-        if federation.sp:
-            sp_id = federation.sp.liberty_provider.entity_id
-            idp_id = self_entity_id
-        elif federation.idp:
-            idp_id = federation.idp.liberty_provider.entity_id
-            sp_id = self_entity_id
+        qualifiers = []
+        if federation.name_id_qualifier:
+            qualifiers.append('NameQualifier="%s"' % federation.name_id_qualifier)
+        if federation.name_id_sp_name_qualifier:
+            qualifiers.append('SPNameQualifier="%s"' % federation.name_id_sp_name_qualifier)
         l.append(MIDDLE_IDENTITY_DUMP.format(
             content=federation.name_id_content,
             format=federation.name_id_format,
-            sp_id=sp_id,
-            idp_id=idp_id))
+            qualifiers=' '.join(qualifiers)))
     l.append(END_IDENTITY_DUMP)
     return ''.join(l)
 
