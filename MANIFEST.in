@@ -10,6 +10,7 @@ recursive-include authentic2/saml/templates *.html *.txt *.xml
 recursive-include authentic2/templates *.html *.txt *.xml
 recursive-include authentic2/idp/templates *.html *.txt *.xml
 recursive-include authentic2/idp/idp_openid/templates *.html *.txt *.xml
+recursive-include authentic2/idp/saml/templates *.html *.txt *.xml
 recursive-include authentic2/auth2_auth/auth2_ssl/templates *.html *.txt *.xml
 recursive-include authentic2/auth2_auth/templates *.html *.txt *.xml
 recursive-include authentic2/auth2_auth/auth2_oath/templates *.html *.txt *.xml
