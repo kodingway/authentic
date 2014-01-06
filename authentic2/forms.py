@@ -14,19 +14,12 @@ class UserProfileForm(forms.ModelForm):
     error_css_class = 'form-field-error'
     required_css_class = 'form-field-required'
 
-    def __init__(self, user=None, *args, **kwargs):
-        self.user = user
-        super(UserProfileForm, self).__init__(**kwargs)
+    def __init__(self, *args, **kwargs):
+        super(UserProfileForm, self).__init__(*args, **kwargs)
         for field in get_user_model().REQUIRED_FIELDS:
             if field in self.fields:
                 self.fields[field].required = True
 
-    def save(self, commit=True):
-        instance = super(UserProfileForm, self).save(commit=False)
-        instance.user = self.user
-        if commit:
-            instance.save()
-        return instance
 
     class Meta:
         model = User
