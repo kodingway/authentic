@@ -10,8 +10,13 @@ from django.template.defaultfilters import slugify
 from authentic2.saml.models import *
 
 
+SAML2_METADATA_UI_HREF = 'urn:oasis:names:tc:SAML:metadata:ui'
+
 def md_element_name(tag_name):
     return '{%s}%s' % (lasso.SAML2_METADATA_HREF, tag_name)
+
+def mdui_element_name(tag_name):
+    return '{%s}%s' % (SAML2_METADATA_UI_HREF, tag_name)
 
 ENTITY_DESCRIPTOR_TN = md_element_name('EntityDescriptor')
 ENTITIES_DESCRIPTOR_TN = md_element_name('EntitiesDescriptor')
@@ -20,6 +25,9 @@ SP_SSO_DESCRIPTOR_TN = md_element_name('SPSSODescriptor')
 ORGANIZATION_DISPLAY_NAME = md_element_name('OrganizationDisplayName')
 ORGANIZATION_NAME = md_element_name('OrganizationName')
 ORGANIZATION = md_element_name('Organization')
+EXTENSIONS = md_element_name('Extensions')
+UI_INFO = mdui_element_name('UIInfo')
+DISPLAY_NAME = mdui_element_name('DisplayName')
 ENTITY_ID = 'entityID'
 PROTOCOL_SUPPORT_ENUMERATION = 'protocolSupportEnumeration'
 
@@ -31,15 +39,21 @@ def check_support_saml2(tree):
 def load_one_entity(tree, options, sp_policy=None, idp_policy=None):
     '''Load or update an EntityDescriptor into the database'''
     entity_id = tree.get(ENTITY_ID)
-    organization = tree.find(ORGANIZATION)
-    name, org = None, None
-    if organization is not None:
-        organization_display_name = organization.find(ORGANIZATION_DISPLAY_NAME)
-        organization_name = organization.find(ORGANIZATION_NAME)
-        if organization_display_name is not None:
-            name = organization_display_name.text
-        elif organization_name is not None:
-            name = organization_name.text
+    name = None
+    # try mdui nodes
+    display_name = tree.find('.//%s/%s/%s' % (EXTENSIONS, UI_INFO, DISPLAY_NAME))
+    if display_name is not None:
+        name = display_name.text
+    # try "old" organization node
+    if not name:
+        organization = tree.find(ORGANIZATION)
+        if organization is not None:
+            organization_display_name = organization.find(ORGANIZATION_DISPLAY_NAME)
+            organization_name = organization.find(ORGANIZATION_NAME)
+            if organization_display_name is not None:
+                name = organization_display_name.text
+            elif organization_name is not None:
+                name = organization_name.text
     if not name:
         name = entity_id
     idp, sp = False, False
