@@ -54,7 +54,13 @@ def load_one_entity(tree, options, sp_policy=None, idp_policy=None):
         print 'Deleted', entity_id
         return
     if idp or sp:
-        slug = slugify(name)
+        # build an unique slug
+        baseslug = slug = slugify(name)
+        n = 1
+        while LibertyProvider.objects.filter(slug=slug).exclude(entity_id=entity_id):
+            n += 1
+            slug = '%s-%d' % (baseslug, n)
+        # get or create the provider
         provider, created = LibertyProvider.objects.get_or_create(entity_id=entity_id,
                 protocol_conformance=3, defaults={'name': name, 'slug': slug})
         if options['verbosity'] == '2':
