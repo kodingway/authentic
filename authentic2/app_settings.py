@@ -1,5 +1,9 @@
 import sys
 
+
+from django.utils.translation import ugettext_lazy as _
+
+
 from django.core.exceptions import ImproperlyConfigured
 
 
@@ -53,20 +57,25 @@ default_settings = dict(
             definition='Directory containing PEM certificates named'
             ' using OpenSSL certificate directory convention. '
             'See http://www.openssl.org/docs/apps/verify.html#item__CApath'),
-    A2_REGISTRATION_AUTHORIZED = Setting(default=True, definition='Allow online registration of users'),
     A2_REGISTRATION_URLCONF = Setting(default='authentic2.registration_backend.urls',
                 definition='Root urlconf for the /accounts endpoints'),
     A2_REGISTRATION_FORM_CLASS = Setting(default='authentic2.registration_backend.forms.RegistrationForm',
                 definition='Default registration form'),
-    A2_REGISTRATION_SET_PASSWORD_FORM_CLASS = Setting(default='registration.auth_urls.SetPasswordForm',
+    A2_REGISTRATION_SET_PASSWORD_FORM_CLASS = Setting(default='django.contrib.auth.forms.SetPasswordForm',
                 definition='Default set password form'),
-    A2_REGISTRATION_CHANGE_PASSWORD_FORM_CLASS = Setting(default='registration.auth_urls.PasswordChangeForm',
+    A2_REGISTRATION_CHANGE_PASSWORD_FORM_CLASS = Setting(default='django.contrib.auth.forms.PasswordChangeForm',
                 definition='Default change password form'),
     A2_REGISTRATION_CAN_DELETE_ACCOUNT = Setting(default=True,
                 definition='Can user self delete their account and all their data'),
     A2_HOMEPAGE_URL = Setting(default=None, definition='IdP has no homepage, '
         'redirect to this one.'),
     A2_CAN_RESET_PASSWORD = Setting(default=True, definition='Allow online reset of passwords'),
+    A2_REGISTRATION_EMAIL_IS_UNIQUE = Setting(default=False,
+        definition='Email of accounts must be unique'),
+    A2_REGISTRATION_FORM_USERNAME_REGEX=Setting(default=r'^[\w.@+-]+$', definition='Regex to validate usernames'),
+    A2_REGISTRATION_FORM_USERNAME_HELP_TEXT=Setting(default=_('Required. At most '
+        '30 characters. Letters, digits, and @/./+/-/_ only.')),
+    A2_REGISTRATION_FORM_USERNAME_LABEL=Setting(default=_('username')),
 )
 
 app_settings = AppSettings(default_settings)

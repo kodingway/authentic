@@ -5,6 +5,31 @@ import json
 
 gettext_noop = lambda s: s
 
+def to_boolean(name, default=True):
+    try:
+        value = os.environ[name]
+    except KeyError:
+        return default
+    try:
+        i = int(value)
+        return bool(i)
+    except ValueError:
+        if value.lower() in ('true', 't'):
+            return True
+        if value.lower() in ('false', 'f'):
+            return False
+    return default
+
+def to_int(name, default):
+    try:
+        value = os.environ[name]
+        return int(value)
+    except KeyError:
+        return default
+    except ValueError:
+        raise ImproperlyConfigured('environ variable %s must be an integer' % name)
+
+
 DEBUG = 'DEBUG' in os.environ
 DEBUG_PROPAGATE_EXCEPTIONS = 'DEBUG_PROPAGATE_EXCEPTIONS' in os.environ
 USE_DEBUG_TOOLBAR = 'USE_DEBUG_TOOLBAR' in os.environ
@@ -127,12 +152,6 @@ INSTALLED_APPS = (
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 
-
-# Registration settings
-ACCOUNT_ACTIVATION_DAYS = int(os.environ.get('ACCOUNT_ACTIVATION_DAYS', 3))
-PASSWORD_RESET_TIMEOUT_DAYS = int(os.environ.get('PASSWORD_RESET_TIMEOUT_DAYS', 3))
-if 'AUTHENTIC2_ALLOW_ACCOUNT_DELETION' in os.environ:
-    AUTHENTIC2_ALLOW_ACCOUNT_DELETION = True
 
 # authentication
 AUTHENTICATION_BACKENDS = (
@@ -293,6 +312,16 @@ else:
     SENTRY_DSN = None
 
 SOUTH_TESTS_MIGRATE = False
+
+############################
+# Registration
+############################
+A2_CAN_RESET_PASSWORD = to_boolean('A2_CAN_RESET_PASSWORD')
+A2_REGISTRATION_CAN_DELETE_ACCOUNT = to_boolean('A2_REGISTRATION_CAN_DELETE_ACCOUNT')
+A2_REGISTRATION_EMAIL_IS_UNIQUE = to_boolean('A2_REGISTRATION_EMAIL_IS_UNIQUE')
+REGISTRATION_OPEN = to_boolean('REGISTRATION_OPEN')
+ACCOUNT_ACTIVATION_DAYS = to_int('ACCOUNT_ACTIVATION_DAYS', 3)
+PASSWORD_RESET_TIMEOUT_DAYS = to_int('PASSWORD_RESET_TIMEOUT_DAYS', 3)
 
 # Admin tools
 ADMIN_TOOLS_INDEX_DASHBOARD = 'authentic2.dashboard.CustomIndexDashboard'

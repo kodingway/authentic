@@ -5,29 +5,30 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.utils.translation import ugettext as _
-from django.views.generic import TemplateView
-from django.contrib.auth.views import password_change, password_reset_confirm
 
 
-from registration.views import activate
-from registration.views import register
+from registration.backends.default.views import RegistrationView as BaseRegistrationView
 
 
-from .. import models
-from .. import app_settings
+from .. import models, app_settings, compat
+from . import urls
 
 
 logger = logging.getLogger(__name__)
 
 
+class RegistrationView(BaseRegistrationView):
+    form_class = urls.get_form_class(app_settings.A2_REGISTRATION_FORM_CLASS)
 
-activate_complete = TemplateView.as_view(template_name='registration/activation_complete.html')
+    def register(self, request, **cleaned_data):
+        User = compat.get_user_model()
+        new_user = super(RegistrationView, self).register(request, **cleaned_data)
+        for field in User.REQUIRED_FIELDS:
+            setattr(new_user, field, cleaned_data.get(field))
+        new_user.save()
+        return new_user
 
-
-register_complete = TemplateView.as_view(template_name='registration/registration_complete.html')
-
-
-register_closed = TemplateView.as_view(template_name='registration/registration_closed.html')
+register = RegistrationView.as_view()
 
 
 @login_required

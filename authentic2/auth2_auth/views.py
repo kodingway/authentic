@@ -87,7 +87,7 @@ def login(request, template_name='auth/login.html',
                     'submit_name': 'submit-%s' % d['backend'].id(),
                     redirect_field_name: redirect_to,
                     'can_reset_password': app_settings.A2_CAN_RESET_PASSWORD,
-                    'registration_authorized': app_settings.A2_REGISTRATION_AUTHORIZED,
+                    'registration_authorized': getattr(settings, 'REGISTRATION_OPEN', True),
                     'form': d['form'] }
         if hasattr(d['backend'], 'get_context'):
             context.update(d['backend'].get_context())
