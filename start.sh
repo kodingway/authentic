@@ -14,9 +14,10 @@ if [ "$VIRTUAL_ENV" = "" ]; then
 		. $VENV/bin/activate
 	fi
 fi
-easy_install -U pip distribute
+easy_install -U setuptools
+easy_install -U pip
 pip install -U 'django>1.5.0,<1.6'
-pip install -U -r requirements.txt
+pip install -U --allow-all-external --allow-unverified django-admin-tools -r requirements.txt
 if [ ! -f $PROJECT.db ]; then
 	$CTL syncdb --migrate --noinput
 	$BASE/load-base-data.sh
