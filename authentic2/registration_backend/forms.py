@@ -22,12 +22,14 @@ class RegistrationForm(forms.Form):
         User = compat.get_user_model()
         insert_idx = 0
         field_names = compat.get_registration_fields()
+        required_fields = set(compat.get_required_fields())
         for field_name in field_names:
             if field_name not in self.fields:
                 field = User._meta.get_field(field_name).formfield()
                 self.fields.insert(insert_idx, field_name, field)
                 insert_idx += 1
-            self.fields[field_name].required = True
+            if field_name in required_fields:
+                self.fields[field_name].required = True
         if 'username' in self.fields:
             self.fields['username'].regex = app_settings.A2_REGISTRATION_FORM_USERNAME_REGEX
             self.fields['username'].help_text = app_settings.A2_REGISTRATION_FORM_USERNAME_HELP_TEXT
