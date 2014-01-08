@@ -3,6 +3,7 @@
 pip install --upgrade pip
 pip install --upgrade pylint
 pip install --upgrade -v -r requirements.txt
+pip install --upgrade django-authopenid
 export SECRET_KEY='coin'
 ./authentic2-ctl syncdb --noinput --all
 ./authentic2-ctl migrate --fake
