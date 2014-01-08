@@ -1,8 +1,19 @@
 NEWS
 ====
 
-2.1.1 - TBD
------------
+2.1.2 - January 8th 2014
+------------------------
+
+17 commits, 24 files changed, 549 insertions, 3300 deletions
+
+Changes:
+- we abandonned our fork of django-registration to use the upstream 1.0 release
+- fixed bug in sync-metadata in the building of the slug when two providers share the same name
+- added support of new mdui: namespace for building provider names in sync-metadata
+- you can now choose to send logout request using iframe or img on a provider basis
+
+2.1.1 - January 8th 2014
+------------------------
 
 - Fix missing dependency upon django-admin-tools in setup.py
 - Raise dependency on south to 0.8.4
