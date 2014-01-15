@@ -295,6 +295,9 @@ class SPOptionsIdPPolicy(models.Model):
                 'onload event for this iframe and the moment we consider its '
                 'loading to be really finished'),
             default=300)
+    http_method_for_slo_request = models.IntegerField(
+            verbose_name = _("HTTP binding for the SLO requests"),
+            choices = HTTP_METHOD, default = lasso.HTTP_METHOD_REDIRECT)
     federation_mode = models.PositiveIntegerField(_('federation mode'),
             choices=app_settings.FEDERATION_MODE.get_choices(app_settings),
             default=app_settings.FEDERATION_MODE.get_default(app_settings))
