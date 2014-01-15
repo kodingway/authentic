@@ -1495,7 +1495,7 @@ def idp_slo(request, provider_id=None):
         logger.debug('%d lib_sessions found', lib_sessions.count())
         set_session_dump_from_liberty_sessions(logout, [lib_sessions[0]])
     try:
-        logout.initRequest(provider_id)
+        logout.initRequest(provider_id, policy.http_method_for_slo_request)
     except (lasso.ProfileMissingAssertionError,
             lasso.ProfileSessionNotFoundError):
         logger.error('slo failed because no sessions exists for %r' \
