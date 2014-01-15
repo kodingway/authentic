@@ -4,7 +4,7 @@ NEWS
 2.1.2 - January 8th 2014
 ------------------------
 
-17 commits, 24 files changed, 549 insertions, 3300 deletions
+20 commits, 25 files changed, 683 insertions, 3308 deletions
 
 Changes:
 - we abandonned our fork of django-registration to use the upstream 1.0 release
