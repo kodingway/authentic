@@ -54,7 +54,8 @@ def login(request, template_name='auth/login.html',
     frontends = get_backends('AUTH_FRONTENDS')
 
     # If already logged, leave now
-    if not request.user.is_anonymous() \
+    if not request.user.is_staff \
+            and not request.user.is_anonymous() \
             and nonce is None \
             and request.method != 'POST':
         return HttpResponseRedirect(redirect_to)
