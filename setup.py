@@ -35,7 +35,7 @@ class compile_translations(Command):
                     continue
                 curdir = os.getcwd()
                 os.chdir(os.path.realpath(path))
-                compile_messages(stderr=sys.stderr)
+                compile_messages(sys.stderr)
                 os.chdir(curdir)
         except ImportError:
             print
