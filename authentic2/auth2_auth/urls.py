@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url, include
 from django.conf import settings
 
 urlpatterns = patterns('',
-    (r'^login/$', 'authentic2.auth2_auth.views.login'),
+    url(r'^login/$', 'authentic2.auth2_auth.views.login', name='auth_login'),
 )
 
 if settings.AUTH_OPENID:
