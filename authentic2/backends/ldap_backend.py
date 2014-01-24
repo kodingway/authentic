@@ -81,6 +81,8 @@ _DEFAULTS = {
     'realm': 'ldap',
     # template for building username
     'username_template': '{username}@{realm}',
+    # allow to match multiple user records
+    'multimatch': True,
 }
 
 _REQUIRED = ('url', 'basedn')
@@ -337,18 +339,18 @@ class LDAPBackend():
             log.debug('try to bind user on %r', uri)
             conn = ldap.initialize(uri)
             conn.set_option(ldap.OPT_REFERRALS, 1 if block['referrals'] else 0)
-            authz_id = None
+            authz_ids = []
             user_basedn = block.get('user_basedn', block['basedn'])
 
             try:
                 # if necessary bind as admin
                 self.try_admin_bind(conn, block)
                 if block['user_dn_template']:
-                    authz_id = block['user_dn_template'].format(username=username)
+                    authz_ids.append(block['user_dn_template'].format(username=username))
                 else:
                     try:
                         if block.get('bind_with_username'):
-                            authz_id = utf8_username
+                            authz_ids.append(utf8_username)
                         elif block['user_filter']:
                             try:
                                 query = filter_format(block['user_filter'], (utf8_username,))
@@ -363,11 +365,11 @@ class LDAPBackend():
                             results = [ result for result in results if result[0] is not None]
                             if len(results) == 0:
                                 log.debug('user bind failed: not entry found')
-                            elif len(results) > 1:
-                                log.warning('user bind failed: too many (%d) '
+                            elif not block['multimatch'] and len(results) > 1:
+                                log.error('user bind failed: too many (%d) '
                                         'entries found', len(results))
                             else:
-                                authz_id = results[0][0]
+                                authz_ids.extend(result[0] for result in results)
                         else:
                             raise NotImplementedError
                     except ldap.NO_SUCH_OBJECT:
@@ -381,18 +383,26 @@ class LDAPBackend():
                         log.error('user bind failed: unable to lookup user %r: '
                                 '%s', username, e)
                         continue
-                if authz_id is None:
+                if not authz_ids:
                     continue
+
                 try:
-                    conn.simple_bind_s(authz_id, utf8_password)
-                except ldap.INVALID_CREDENTIALS:
-                    log.debug('user bind failed: %r invalid credentials', uri)
+                    for authz_id in authz_ids:
+                        try:
+                            conn.simple_bind_s(authz_id, utf8_password)
+                            break
+                        except ldap.INVALID_CREDENTIALS:
+                            pass
+                    else:
+                        log.debug('user bind failed: invalid credentials' % uri)
+                        if block['replicas']:
+                            break
+                        continue
+                except ldap.NO_SUCH_OBJECT:
+                    # should not happen as we just searched for this object !
+                    log.error('user bind failed: authz_id not found %s' % ', '.join(authz_ids))
                     if block['replicas']:
                         break
-                    continue
-                except ldap.LDAPError, e:
-                    log.error('Got error from LDAP library: %s' % str(e))
-                    return None
                 return self._return_user(uri, authz_id, username, password, conn, block)
             except ldap.SERVER_DOWN:
                 log.error('ldap authentication error: %r is down', uri)
