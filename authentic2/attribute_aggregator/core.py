@@ -248,7 +248,6 @@ def convert_from_string(definition_name, value):
     return None
 
 
-@transaction.commit_manually
 def load_or_create_user_profile(user=None, no_cleanup=False):
     '''
         If the user has a profile, remove assertions outdated and return
@@ -259,51 +258,17 @@ def load_or_create_user_profile(user=None, no_cleanup=False):
         If no_cleanup: return profile if any without removing outdated
         assertions
     '''
-    from authentic2.attribute_aggregator.models import UserAttributeProfile
-    profile = None
-    try:
-        if user:
-            try:
-                logger.debug('load_or_create_user_profile: \
-                    search profile for %s' \
-                    % user)
-                profile = UserAttributeProfile.objects.get(user=user)
-            except ObjectDoesNotExist:
-                try:
-                    profile = UserAttributeProfile(user=user)
-                    profile.save()
-                    logger.info('load_or_create_user_profile: \
-                        profile with id %s for user %s created' \
-                        % (str(profile.id), user))
-                except:
-                    profile = UserAttributeProfile()
-                    profile.save()
-                    logger.debug('load_or_create_user_profile: \
-                        profile with id %s for an anonymous user created' \
-                        % str(profile.id))
-            else:
-                if no_cleanup:
-                    logger.debug('load_or_create_user_profile: Existing user \
-                        profile %s for %s - No cleanup' % (profile, user))
-                else:
-                    profile.cleanup()
-                    profile.save()
-        elif not user:
-            profile = UserAttributeProfile()
-            profile.save()
-            logger.debug('load_or_create_user_profile: \
-                profile with id %s for an anonymous user created' \
-                % str(profile.id))
-    except Exception, err:
-        transaction.rollback()
-        logger.error('load_or_create_user_profile: An error occured %s' \
-            % str(err))
-        return None
+    from . import models
+    if not user:
+        # XXX: do we need to save it ?
+        profile, created = models.UserAttributeProfile(), True
     else:
-        transaction.commit()
-        logger.debug('load_or_create_user_profile: everything successfully \
-            performed')
-        return profile
+        profile, created = models.UserAttributeProfile.objects.get_or_create(user=user)
+    if not no_cleanup:
+        if not created:
+            profile.cleanup()
+            profile.save()
+    return profile
 
 
 def get_user_alias_in_source(user, source):
