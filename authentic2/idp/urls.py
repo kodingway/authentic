@@ -1,7 +1,6 @@
-from django.conf.urls import patterns, include
+from django.conf.urls import url, patterns, include
 
 from django.conf import settings
-from interactions import consent_federation, consent_attributes
 
 urlpatterns = patterns('',)
 
@@ -14,6 +13,8 @@ if settings.IDP_CAS:
     urlpatterns += patterns('',
             ('^cas/', include(Authentic2CasProvider().url)))
 
-urlpatterns += patterns('',
-        (r'^consent_federation', consent_federation),
-        (r'^consent_attributes', consent_attributes),)
+urlpatterns += patterns('authentic2.idp.interactions',
+        url(r'^consent_federation', 'consent_federation',
+            name='a2-consent-federation'),
+        url(r'^consent_attributes', 'consent_attributes',
+            name='a2-consent-attributes'))

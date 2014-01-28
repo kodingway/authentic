@@ -69,7 +69,6 @@ import authentic2.saml.saml2utils as saml2utils
 from authentic2.auth2_auth.models import AuthenticationEvent
 from common import redirect_to_login, kill_django_sessions
 from authentic2.auth2_auth import NONCE_FIELD_NAME
-from authentic2.idp.interactions import consent_federation, consent_attributes
 
 from authentic2.idp import signals as idp_signals
 # from authentic2.idp.models import *
@@ -467,7 +466,7 @@ def need_consent_for_federation(request, login, save, nid_format):
     if not display_name:
         display_name = urllib.quote(login.request.issuer.content)
     url = '%s?%s=%s&next=%s&provider_id=%s' \
-        % (reverse(consent_federation), NONCE_FIELD_NAME,
+        % (reverse('a2-consent-federation'), NONCE_FIELD_NAME,
             nonce, get_url_with_nonce(request, continue_sso, nonce),
             display_name)
     logger.debug('redirect to url %s' % url)
@@ -488,7 +487,7 @@ def need_consent_for_attributes(request, login, consent_obtained, save,
     if not display_name:
         display_name = urllib.quote(login.request.issuer.content)
     url = '%s?%s=%s&next=%s&provider_id=%s' \
-        % (reverse(consent_attributes), NONCE_FIELD_NAME,
+        % (reverse('a2-consent-attributes'), NONCE_FIELD_NAME,
             nonce, get_url_with_nonce(request, continue_sso, nonce),
             display_name)
     logger.debug('redirect to url %s' % url)
