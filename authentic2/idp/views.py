@@ -1,5 +1,7 @@
 import urllib
 import logging
+import re
+
 
 from django.utils.translation import ugettext as _
 from django.conf import settings
@@ -11,15 +13,101 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.core.exceptions import ObjectDoesNotExist
+from django.views.decorators.csrf import csrf_protect
+from django.contrib.sites.models import Site, RequestSite
+from django.views.decorators.cache import never_cache
+from django.template.loader import render_to_string
+
 
 from authentic2.idp import get_backends
 from authentic2.authsaml2.models import SAML2TransientUser
-
 from authentic2 import app_settings
+from authentic2.auth2_auth import NONCE_FIELD_NAME
+
+
+from . import utils
 
 logger = logging.getLogger('authentic2.idp.views')
 
 __logout_redirection_timeout = getattr(settings, 'IDP_LOGOUT_TIMEOUT', 600)
+
+@csrf_protect
+@never_cache
+def login(request, template_name='auth/login.html',
+          login_form_template='auth/login_form.html',
+          redirect_field_name=REDIRECT_FIELD_NAME):
+    """Displays the login form and handles the login action."""
+
+    redirect_to = request.REQUEST.get(redirect_field_name)
+    if not redirect_to or ' ' in redirect_to:
+        redirect_to = settings.LOGIN_REDIRECT_URL
+    # Heavier security check -- redirects to http://example.com should
+    # not be allowed, but things like /view/?param=http://example.com
+    # should be allowed. This regex checks if there is a '//' *before* a
+    # question mark.
+    elif '//' in redirect_to and re.match(r'[^\?]*//', redirect_to):
+            redirect_to = settings.LOGIN_REDIRECT_URL
+    nonce = request.REQUEST.get(NONCE_FIELD_NAME)
+
+    frontends = get_backends('AUTH_FRONTENDS')
+
+    # If already logged, leave now
+    if not request.user.is_staff \
+            and not request.user.is_anonymous() \
+            and nonce is None \
+            and request.method != 'POST':
+        return HttpResponseRedirect(redirect_to)
+
+    if request.method == "POST":
+        if 'cancel' in request.POST:
+            redirect_to = utils.add_arg(redirect_to, 'cancel')
+            return HttpResponseRedirect(redirect_to)
+        else:
+            forms = []
+            for frontend in frontends:
+                if not frontend.enabled():
+                    continue
+                if 'submit-%s' % frontend.id() in request.POST:
+                    form = frontend.form()(data=request.POST)
+                    if form.is_valid():
+                        if request.session.test_cookie_worked():
+                            request.session.delete_test_cookie()
+                        return frontend.post(request, form, nonce, redirect_to)
+                    forms.append((frontend.name(), {'form': form, 'backend': frontend}))
+                else:
+                    forms.append((frontend.name(), {'form': frontend.form()(), 'backend': frontend}))
+    else:
+        forms = [(frontend.name(), { 'form': frontend.form()(), 'backend': frontend }) \
+                for frontend in frontends if frontend.enabled()]
+
+    rendered_forms = []
+    for name, d in forms:
+        context = { 'cancel': nonce is not None,
+                    'submit_name': 'submit-%s' % d['backend'].id(),
+                    redirect_field_name: redirect_to,
+                    'can_reset_password': app_settings.A2_CAN_RESET_PASSWORD,
+                    'registration_authorized': getattr(settings, 'REGISTRATION_OPEN', True),
+                    'form': d['form'] }
+        if hasattr(d['backend'], 'get_context'):
+            context.update(d['backend'].get_context())
+        rendered_forms.append((name,
+            render_to_string(d['backend'].template(),
+                RequestContext(request, context))))
+
+    request.session.set_test_cookie()
+
+    if Site._meta.installed:
+        current_site = Site.objects.get_current()
+    else:
+        current_site = RequestSite(request)
+
+    return render_to_response(template_name, {
+        'methods': rendered_forms,
+        redirect_field_name: redirect_to,
+        'site': current_site,
+        'site_name': current_site.name,
+    }, context_instance=RequestContext(request))
+
 
 def accumulate_from_backends(request, method_name):
     list = []

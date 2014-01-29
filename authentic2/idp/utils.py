@@ -1,3 +1,5 @@
+import urllib
+
 class Service(object):
     url = None
     name = None
@@ -12,3 +14,16 @@ def get_username(user):
         return getattr(user, user.USERNAME_FIELD)
     else:
         return user.username
+
+def add_arg(url, key, value = None):
+    '''Add a parameter to an URL'''
+    key = urllib.quote(key)
+    if value is not None:
+        add = '%s=%s' % (key, urllib.quote(value))
+    else:
+        add = key
+    if '?' in url:
+        return '%s&%s' % (url, add)
+    else:
+        return '%s?%s' % (url, add)
+

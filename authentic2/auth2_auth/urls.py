@@ -1,9 +1,7 @@
 from django.conf.urls import patterns, url, include
 from django.conf import settings
 
-urlpatterns = patterns('',
-    url(r'^login/$', 'authentic2.auth2_auth.views.login', name='auth_login'),
-)
+urlpatterns = patterns('')
 
 if settings.AUTH_OPENID:
     urlpatterns += patterns('',

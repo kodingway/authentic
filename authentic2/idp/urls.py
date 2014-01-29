@@ -2,7 +2,9 @@ from django.conf.urls import url, patterns, include
 
 from django.conf import settings
 
-urlpatterns = patterns('',)
+urlpatterns = patterns('authentic2.idp.views',
+    url(r'^login/$', 'login', name='auth_login'),
+)
 
 if settings.IDP_SAML2:
     urlpatterns += patterns('',
