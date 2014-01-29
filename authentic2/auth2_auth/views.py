@@ -1,16 +1,13 @@
 import urllib
 import re
 
-from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.http import HttpResponseRedirect
 from django.views.decorators.csrf import csrf_protect
-from django.contrib.auth.decorators import login_required
 from django.utils.http import urlencode
 from django.contrib.sites.models import Site, RequestSite
 from django.views.decorators.cache import never_cache
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.template.loader import render_to_string
@@ -110,30 +107,6 @@ def login(request, template_name='auth/login.html',
         'site_name': current_site.name,
     }, context_instance=RequestContext(request))
 
-
-@csrf_protect
-@login_required
-def password_change(request, template = 'authopenid/password_change_form.html',
-        post_change_redirect = None, password_change_form  = PasswordChangeForm):
-    if post_change_redirect is None:
-        post_change_redirect = reverse('django.contrib.auth.views.password_change_done')
-    if request.method == 'POST':
-        form = password_change_form(user=request.user, data=request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(post_change_redirect)
-    else:
-        form = password_change_form(user=request.user)
-
-    if request.user.password == '!':
-        context = RequestContext(request)
-        context['set_password'] = True
-    else:
-        context = RequestContext(request)
-
-    return render_to_response(template, {
-        'form': form,
-    }, context_instance=context)
 
 def login_password_profile(request, next):
     return render_to_string('auth/login_password_profile.html', {},
