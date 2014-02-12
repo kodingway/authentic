@@ -4,11 +4,11 @@ from django.conf import settings
 
 urlpatterns = patterns('')
 
-if settings.IDP_SAML2:
+if getattr(settings, 'IDP_SAML2', False):
     urlpatterns += patterns('',
         (r'^saml2/', include('authentic2.idp.saml.urls')),)
 
-if settings.IDP_CAS:
+if getattr(settings, 'IDP_CAS', False):
     from authentic2.idp.idp_cas.views import Authentic2CasProvider
     urlpatterns += patterns('',
             ('^cas/', include(Authentic2CasProvider().url)))
