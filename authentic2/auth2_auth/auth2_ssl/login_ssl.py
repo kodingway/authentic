@@ -18,7 +18,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import REDIRECT_FIELD_NAME
 
-from authentic2.auth2_auth import NONCE_FIELD_NAME
+from authentic2.constants import NONCE_FIELD_NAME
 
 from models import ClientCertificate
 from util import SSLInfo

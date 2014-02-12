@@ -3,7 +3,7 @@ import urllib
 from django.utils.translation import gettext_noop
 from django.http import HttpResponseRedirect
 from django.contrib.auth import REDIRECT_FIELD_NAME
-from authentic2.auth2_auth import NONCE_FIELD_NAME
+from authentic2.constants import NONCE_FIELD_NAME
 from authentic2.auth2_auth.auth2_ssl.login_ssl import *
 import django.forms
 

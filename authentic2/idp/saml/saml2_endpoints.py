@@ -67,7 +67,7 @@ from authentic2.saml.common import redirect_next, asynchronous_bindings, \
 import authentic2.saml.saml2utils as saml2utils
 from authentic2.auth2_auth.models import AuthenticationEvent
 from common import redirect_to_login, kill_django_sessions
-from authentic2.auth2_auth import NONCE_FIELD_NAME
+from authentic2.constants import NONCE_FIELD_NAME
 
 from authentic2.idp import signals as idp_signals
 # from authentic2.idp.models import *

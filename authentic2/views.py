@@ -33,10 +33,9 @@ from django.contrib.auth.decorators import login_required
 # FIXME: this decorator has nothing to do with an idp, should be moved in the
 # a2 package
 # FIXME: this constant should be moved in the a2 package
-from authentic2.auth2_auth import NONCE_FIELD_NAME
 
 
-from . import utils, app_settings, forms, compat, decorators
+from . import utils, app_settings, forms, compat, decorators, constants
 
 
 logger = logging.getLogger(__name__)
@@ -234,7 +233,7 @@ def login(request, template_name='auth/login.html',
     # question mark.
     elif '//' in redirect_to and re.match(r'[^\?]*//', redirect_to):
             redirect_to = settings.LOGIN_REDIRECT_URL
-    nonce = request.REQUEST.get(NONCE_FIELD_NAME)
+    nonce = request.REQUEST.get(constants.NONCE_FIELD_NAME)
 
     frontends = utils.get_backends('AUTH_FRONTENDS')
 
