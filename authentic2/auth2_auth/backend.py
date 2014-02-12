@@ -1,10 +1,7 @@
-import urllib
-
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login
 from django.utils.translation import gettext_noop
 from django.http import HttpResponseRedirect
-import django.forms
 
 import authentic2.auth2_auth.models as models
 import views
