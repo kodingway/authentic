@@ -4,7 +4,7 @@ from django.utils.http import urlencode
 from django.template import RequestContext
 from django.template.loader import render_to_string
 
-from authentic2.auth2_auth import NONCE_FIELD_NAME
+from authentic2.constants import NONCE_FIELD_NAME
 
 
 def login_password_profile(request, next):
