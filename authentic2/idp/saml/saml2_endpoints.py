@@ -38,7 +38,6 @@ from django.utils.encoding import smart_unicode
 from django.contrib.auth import load_backend
 
 
-from authentic2.idp.utils import get_username
 from authentic2.compat import get_user_model
 import authentic2.idp as idp
 import authentic2.idp.views as idp_views
@@ -74,7 +73,8 @@ from authentic2.idp import signals as idp_signals
 # from authentic2.idp.models import *
 
 from authentic2.authsaml2.models import SAML2TransientUser
-from authentic2.utils import cache_and_validate
+from authentic2.utils import (cache_and_validate, get_backends as
+        get_idp_backends, get_username)
 
 logger = logging.getLogger('authentic2.idp.saml')
 
@@ -1113,7 +1113,7 @@ def validate_logout_request(request, logout, idp=True):
 
 
 def logout_synchronous_other_backends(request, logout, django_sessions_keys):
-    backends = idp.get_backends()
+    backends = get_idp_backends()
     if backends:
         logger.info('backends %s' \
             % str(backends))

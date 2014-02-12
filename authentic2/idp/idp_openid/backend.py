@@ -2,11 +2,13 @@ import logging
 
 from django.core.urlresolvers import reverse
 from django.conf import settings
-from authentic2.idp.utils import Service
 
-import models
+from authentic2.utils import Service
 
-logger = logging.getLogger('authentic2.idp.idp_openid.backend')
+from . import models
+
+
+logger = logging.getLogger(__name__)
 
 
 class OpenIDBackend(object):

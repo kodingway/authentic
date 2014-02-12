@@ -8,9 +8,11 @@ import authentic2.saml.models as models
 import authentic2.idp.saml.saml2_endpoints as saml2_endpoints
 import authentic2.saml.common as common
 
-from authentic2.idp.utils import Service
+from authentic2.utils import Service
 
-logger = logging.getLogger('authentic2.idp.saml.backend')
+
+logger = logging.getLogger(__name__)
+
 
 class SamlBackend(object):
     def service_list(self, request):

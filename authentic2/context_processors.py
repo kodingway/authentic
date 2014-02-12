@@ -1,4 +1,4 @@
-from idp.views import accumulate_from_backends
+from . import utils
 
 class UserFederations(object):
     '''Provide access to all federations of the current user'''
@@ -13,7 +13,7 @@ class UserFederations(object):
             except ValueError:
                 pass
             else:
-                links = accumulate_from_backends(self.request, 'links')
+                links = utils.accumulate_from_backends(self.request, 'links')
                 for provider, link in links:
                     if provider.id != provider_id:
                         continue

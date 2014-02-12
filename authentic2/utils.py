@@ -2,12 +2,14 @@ import time
 import hashlib
 import datetime as dt
 import logging
+import urllib
 
 from importlib import import_module
 
 from django.views.decorators.http import condition
 from django.conf import settings
 from django.http import HttpResponse
+from django.core.exceptions import ImproperlyConfigured
 
 from authentic2.saml.saml2utils import filter_attribute_private_key, \
     filter_element_private_key
@@ -132,3 +134,61 @@ class IterableFactory(object):
 
     def __iter__(self):
         return iter(self.f())
+
+def accumulate_from_backends(request, method_name):
+    list = []
+    for backend in get_backends():
+        method = getattr(backend, method_name, None)
+        if callable(method):
+            list += method(request)
+    return list
+
+def load_backend(path):
+    '''Load an IdP backend by its module path'''
+    i = path.rfind('.')
+    module, attr = path[:i], path[i+1:]
+    try:
+        mod = import_module(module)
+    except ImportError, e:
+        raise ImproperlyConfigured('Error importing idp backend %s: "%s"' % (module, e))
+    except ValueError, e:
+        raise ImproperlyConfigured('Error importing idp backends. Is IDP_BACKENDS a correctly defined list or tuple?')
+    try:
+        cls = getattr(mod, attr)
+    except AttributeError:
+        raise ImproperlyConfigured('Module "%s" does not define a "%s" idp backend' % (module, attr))
+    return cls()
+
+def get_backends(setting_name='IDP_BACKENDS'):
+    '''Return the list of IdP backends'''
+    backends = []
+    for backend_path in getattr(settings, setting_name, ()):
+        backends.append(load_backend(backend_path))
+    return backends
+
+def add_arg(url, key, value = None):
+    '''Add a parameter to an URL'''
+    key = urllib.quote(key)
+    if value is not None:
+        add = '%s=%s' % (key, urllib.quote(value))
+    else:
+        add = key
+    if '?' in url:
+        return '%s&%s' % (url, add)
+    else:
+        return '%s?%s' % (url, add)
+
+def get_username(user):
+    '''Retrieve the username from a user model'''
+    if hasattr(user, 'USERNAME_FIELD'):
+        return getattr(user, user.USERNAME_FIELD)
+    else:
+        return user.username
+
+class Service(object):
+    url = None
+    name = None
+    actions = []
+
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
