@@ -3,8 +3,7 @@ from django.contrib.auth import login
 from django.utils.translation import gettext_noop
 from django.http import HttpResponseRedirect
 
-import authentic2.auth2_auth.models as models
-import views
+from . import views, models
 
 class LoginPasswordBackend(object):
     def enabled(self):

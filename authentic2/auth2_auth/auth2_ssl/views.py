@@ -21,7 +21,6 @@ from django.contrib.auth import REDIRECT_FIELD_NAME
 import registration.views
 
 
-import authentic2.auth2_auth.models as auth_models
 from authentic2.constants import NONCE_FIELD_NAME
 
 from . import forms, models, util
@@ -99,7 +98,7 @@ def handle_request(request,):
     if not request.user.is_authenticated():
         try:
             login(request, user)
-            auth_models.AuthenticationEvent.objects.create(who=user.username,
+            models.AuthenticationEvent.objects.create(who=user.username,
                     how='ssl', nonce=request.GET.get(NONCE_FIELD_NAME,''))
         except:
             logger.error('auth2_ssl: login() failed')
@@ -153,7 +152,7 @@ def post_account_linking(request):
             user = form.get_user()
             try:
                 login(request, user)
-                auth_models.AuthenticationEvent.objects.create(who=user.username,
+                models.AuthenticationEvent.objects.create(who=user.username,
                 how='password', nonce=request.GET.get(NONCE_FIELD_NAME,''))
             except:
                 logger.error('auth2_ssl: login() failed')

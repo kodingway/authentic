@@ -13,9 +13,9 @@ from django.conf.urls import patterns, url
 from django.conf import settings
 
 from models import CasTicket
-from authentic2.auth2_auth.views import redirect_to_login as \
+from authentic2.views import redirect_to_login as \
     auth2_redirect_to_login
-import authentic2.auth2_auth.models as auth2_auth_models
+from authentic2.models import AuthenticationEvent
 from constants import SERVICE_PARAM, RENEW_PARAM, GATEWAY_PARAM, ID_PARAM, \
     CANCEL_PARAM, SERVICE_TICKET_PREFIX, TICKET_PARAM, \
     CAS10_VALIDATION_FAILURE, CAS10_VALIDATION_SUCCESS, PGT_URL_PARAM, \
@@ -397,11 +397,10 @@ is possible''')
 
     def check_authentication(self, request, st):
         try:
-            ae = auth2_auth_models.AuthenticationEvent.objects \
-                    .get(nonce=st.ticket_id)
+            ae = AuthenticationEvent.objects.get(nonce=st.ticket_id)
             st.user = ae.who
             st.validity = True
             st.save()
             return True
-        except auth2_auth_models.AuthenticationEvent.DoesNotExist:
+        except AuthenticationEvent.DoesNotExist:
             return False

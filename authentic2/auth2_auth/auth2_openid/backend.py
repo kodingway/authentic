@@ -6,7 +6,6 @@ from django_authopenid.forms import OpenidSigninForm
 from django_authopenid.utils import *
 from django.core.urlresolvers import reverse
 
-import authentic2.auth2_auth.models as models
 from authentic2.constants import NONCE_FIELD_NAME
 from views import ask_openid, signin_failure
 import views

@@ -14,7 +14,7 @@ from django.utils.http import urlquote
 from django.conf import settings
 
 
-import managers
+from . import managers
 
 
 class UserManager(BaseUserManager):
@@ -192,3 +192,15 @@ class UserExternalId(models.Model):
         verbose_name = _('user external id')
         verbose_name_plural = _('user external ids')
 
+class AuthenticationEvent(models.Model):
+    '''Record authentication events whatever the source'''
+    when = models.DateTimeField(auto_now=True)
+    who = models.CharField(max_length=80)
+    how = models.CharField(max_length=10)
+    nonce = models.CharField(max_length=255)
+
+    objects = managers.AuthenticationEventManager()
+
+    def __unicode__(self):
+        return _('Authentication of %(who)s by %(how)s at %(when)s') % \
+            self.__dict__

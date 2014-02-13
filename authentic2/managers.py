@@ -4,6 +4,7 @@ import logging
 
 from django.db import models
 from django.utils.timezone import now
+from django.conf import settings
 
 
 logger = logging.getLogger(__name__)
@@ -22,3 +23,9 @@ class DeletedUserManager(models.Manager):
             deleted_user.delete()
             user.delete()
             logger.info(u'deleted account %s' % user)
+
+class AuthenticationEventManager(models.Manager):
+    def cleanup(self):
+        expire = getattr(settings, 'AUTHENTICATION_EVENT_EXPIRATION',
+                3600*24*7)
+        self.filter(when__lt=now()-timedelta(seconds=expire)).delete()

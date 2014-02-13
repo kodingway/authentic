@@ -19,6 +19,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.sites.models import get_current_site
 from django.contrib import messages
 from django.utils.translation import ugettext as _
+from django.utils.http import urlencode
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.models import SiteProfileNotAvailable
@@ -393,3 +394,21 @@ def logout(request, next_page='/', redirect_field_name=REDIRECT_FIELD_NAME,
 
 def redirect_to_logout(request, next_page='/'):
     return HttpResponseRedirect('%s?next=%s' % (reverse(logout), urllib.quote(next_page)))
+
+
+def login_password_profile(request, next):
+    return render_to_string('auth/login_password_profile.html', {},
+            RequestContext(request))
+
+
+def redirect_to_login(request, next=None, nonce=None, keep_qs=False):
+    '''Redirect to the login, eventually adding a nonce'''
+    if next is None:
+        if keep_qs:
+            next = request.get_full_path()
+        else:
+            next = request.path
+    qs = { REDIRECT_FIELD_NAME: next }
+    if nonce is not None:
+        qs.update({ constants.NONCE_FIELD_NAME: nonce })
+    return HttpResponseRedirect('/login?%s' % urlencode(qs))

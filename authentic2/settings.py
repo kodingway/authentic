@@ -220,7 +220,7 @@ USE_DISCO_SERVICE = 'USE_DISCO_SERVICE' in os.environ
 ###########################
 
 # Only RSA private keys are currently supported
-AUTH_FRONTENDS = ( 'authentic2.auth2_auth.backend.LoginPasswordBackend',)
+AUTH_FRONTENDS = ( 'authentic2.auth_frontends.LoginPasswordBackend',)
 SSLAUTH_CREATE_USER = 'SSLAUTH_CREATE_USER' in os.environ
 AUTHENTICATION_EVENT_EXPIRATION = int(os.environ.get('AUTHENTICATION_EVENT_EXPIRATION', 3600*24*7))
 

@@ -19,12 +19,21 @@ not_homepage_patterns = patterns('authentic2.views',
 )
 
 not_homepage_patterns += patterns('',
-    url(r'^', include('authentic2.auth2_auth.urls')),
     url(r'^accounts/', include(app_settings.A2_REGISTRATION_URLCONF)),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^admin_tools/', include('admin_tools.urls')),
     url(r'^idp/', include('authentic2.idp.urls')),
 )
+
+if settings.AUTH_OPENID:
+    not_homepage_patterns += patterns('',
+        (r'^accounts/openid/',
+            include('authentic2.auth2_auth.auth2_openid.urls')),
+    )
+
+if settings.AUTH_SSL:
+    not_homepage_patterns += patterns('',
+        url(r'^sslauth/', include('authentic2.auth2_auth.auth2_ssl.urls')))
 
 urlpatterns += not_homepage_patterns
 
