@@ -3,8 +3,8 @@ from django.db import transaction
 import logging
 
 from authentic2.compat import get_user_model
-from util import settings_get
-from models import ClientCertificate, DistinguishedName
+
+from . import models, app_settings
 
 class AuthenticationError(Exception):
     pass
@@ -27,7 +27,6 @@ class SSLBackend:
         else:
             return cert.user
 
-
     def get_user(self, user_id):
         """
         simply return the user object. That way, we only need top look-up the
@@ -39,14 +38,13 @@ class SSLBackend:
         except User.DoesNotExist:
             return None
 
-
     def get_certificate(self, ssl_info):
         """
         returns a ClientCertificate object for the passed
         cert data or None if not found
         """
 
-        if settings_get('SSLAUTH_STRICT_MATCH'):
+        if app_settings.STRICT_MATCH:
             # compare complete certificate in strict match
             if not ssl_info.cert:
                 logging.error('SSLAuth: strict match required but PEM encoded \
@@ -56,10 +54,10 @@ settings')
             query = Q(cert=ssl_info.cert)
         else:
             # compare according to SSLAUTH_SUBJECT_MATCH_KEYS
-            if settings_get('SSLAUTH_SUBJECT_MATCH_KEYS'):
-                match_keys = settings_get('SSLAUTH_SUBJECT_MATCH_KEYS')
+            if app_settings.SUBJECT_MATCH_KEYS:
+                match_keys = app_settings.SUBJECT_MATCH_KEYS
             else:
-                match_keys = ( 'subject_email', 'subject_cn', 'subject_o' )
+                match_keys = ( 'subject_dn', 'issuer_dn')
 
             query_args = {}
             for key in match_keys:
@@ -67,13 +65,13 @@ settings')
                     logging.error('SSLAuth: key %s is missing from ssl_info' \
                         % key)
                     return None
-                query_args[key.replace('_', '__')] = ssl_info.get(key)
+                query_args[key] = ssl_info.get(key)
 
             query = Q(**query_args)
         try:
-            cert = ClientCertificate.objects.select_related().get(query)
+            cert = models.ClientCertificate.objects.select_related().get(query)
             return cert
-        except ClientCertificate.DoesNotExist:
+        except models.ClientCertificate.DoesNotExist:
             return None
 
 
@@ -86,15 +84,10 @@ settings')
         """
         # auto creation only created a DN for the subject, not the issuer
         User = get_user_model()
-        subject = DistinguishedName()
-        for attr,val in ssl_info.get_subject().iteritems():
-            if not val: val = ''
-            subject.__setattr__(attr.replace('subject_',''), val)
-        subject.save()
 
         # get username and check if the user exists already
-        if settings_get('SSLAUTH_CREATE_USERNAME_CALLBACK'):
-            build_username = settings_get('SSLAUTH_CREATE_USERNAME_CALLBACK')
+        if app_settings.CREATE_USERNAME_CALLBACK:
+            build_username = app_settings.CEATE_USERNAME_CALLBACK
         else:
             build_username = self.build_username
 
@@ -103,20 +96,19 @@ settings')
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:
-            if settings_get('SSLAUTH_CREATE_USER_CALLBACK'):
-                build_user = settings_get('SSLAUTH_CREATE_USER_CALLBACK')
+            if app_settings.CREATE_USER_CALLBACK:
+                build_user = app_settings.CREATE_USER_CALLBACK
             else:
                 build_user = self.build_user
             user = build_user(username, ssl_info)
 
         # create the certificate record and save
-        cert = ClientCertificate()
+        cert = models.ClientCertificate()
         cert.user = user
-        cert.subject = subject
-        if ssl_info.cert:
-            cert.cert = ssl_info.cert
-        if ssl_info.serial:
-            cert.serial = ssl_info.serial
+        cert.subject_dn = ssl_info.subject_dn
+        cert.issuer_dn = ssl_info.issuer_dn
+        cert.cert = ssl_info.cert
+        cert.serial = ssl_info.serial
         cert.save()
 
         return user
@@ -131,21 +123,13 @@ settings')
         if not user:
             return None
 
-        # auto creation only created a DN for the subject, not the issuer
-        subject = DistinguishedName()
-        for attr,val in ssl_info.get_subject().iteritems():
-            if not val: val = ''
-            subject.__setattr__(attr.replace('subject_',''), val)
-        subject.save()
-
         # create the certificate record and save
-        cert = ClientCertificate()
+        cert = models.ClientCertificate()
         cert.user = user
-        cert.subject = subject
-        if ssl_info.cert:
-            cert.cert = ssl_info.cert
-        if ssl_info.serial:
-            cert.serial = ssl_info.serial
+        cert.subject_dn = ssl_info.subject_dn
+        cert.issuer_dn = ssl_info.issuer_dn
+        cert.serial = ssl_info.serial
+        cert.cert = ssl_info.cert
         cert.save()
 
         return user
@@ -156,8 +140,7 @@ settings')
         can be "overwritten" by using the SSLAUTH_CREATE_USERNAME_CALLBACK
         setting
         """
-        import re
-        return re.sub(r'[^a-zA-Z0-9_-]', '_', ssl_info.subject_email)
+        raise NotImplementedError
 
 
     def build_user(self, username, ssl_info):
@@ -171,8 +154,6 @@ settings')
         setattr(user, User.USERNAME_FIELD, username)
         if hasattr(User, 'set_unusable_password'):
             user.set_unusable_password()
-        if hasattr(User, 'email'):
-            user.email = ssl_info.subject_email
         user.is_active = True
         user.save()
         return user

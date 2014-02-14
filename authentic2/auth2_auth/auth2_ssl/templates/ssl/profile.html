@@ -1,22 +1,33 @@
 {% load i18n %}
-<h4>{% trans "SSL Certificates" %}</h4>
+<h4 id="a2-ssl-certificate-profile" class="a2-ssl-certificate-profile-title">
+  {% trans "SSL Certificates" %}
+</h4>
 
-<div>
-
-{% for certificate in certificates %}
+<div class="a2-ssl-certificate-profile-body">
+  <ul class="a2-ssl-certificate-list">
+  {% for certificate in certificates %}
+    <li class="a2-ssl-certificate-item">
+      <form action="{% url "delete_certificate" certificate_pk=certificate.pk %}"
+            method="post">
+        {% csrf_token %}
+        <p class="a2-ssl-certificate-dn">
+          <dl class="a2-ssl-certificate-dn-parts">
+            {% for k, v in certificate.explode_subject_dn %}
+              <dt class="a2-ssl-certificate-dn-part-name">{{ k }}</dt>
+              <dd class="a2-ssl-certificate-dn-part-value">{{ v }}</dd>
+            {% endfor %}
+          </dl>
+        </p>
+        <input type="submit" class="submit-button a2-ssl-certificate-submit-button" value="{% trans "Delete" %}">
+      </form>
+    </p>
+  {% endfor %}
+  </ul>
   <p>
-    <form action="sslauth/delete_certificate" method="post">
-      <label for="id_del_cert">{{ certificate }}</label>
-      <input type="hidden" name="cert_name" value="{{ certificate }}" />
-      <input type="submit" class="submit-link" value="{% trans "Delete" %}">
+    <form action="{% url "user_signin_ssl" %}" method="get">
+      <label for="id_del_cert">{% trans "Add a certificate?" %}</label>
+      <input type="hidden" name="next" value="{% url "account_management" %}#a2-ssl-certificate-profile" />
+      <input type="submit" class="submit-button a2-ssl-certificate-submit-button" value="{% trans "Add" %}">
     </form>
   </p>
-{% endfor %}
-<p>
-  <form action="sslauth" method="get">
-    <label for="id_del_cert">{% trans "Add a certificate?" %}</label>
-    <input type="hidden" name="next" value="/profile" />
-    <input type="submit" class="submit-link" value="{% trans "Add" %}">
-  </form>
-</p>
 </div>

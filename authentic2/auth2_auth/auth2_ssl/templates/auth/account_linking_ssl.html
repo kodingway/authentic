@@ -8,7 +8,7 @@
 {% block content %}
 <p>* {% trans "Log in to link your certificate with an existing account" %}</p>
 <div id="login-actions">
-<form id="login-form" method="post" action="post_account_linking">
+  <form id="login-form" method="post" action="{% url "post_account_linking" %}">
   {% csrf_token %}
   <ul class="errorlist">
     {% for error in form.non_field_errors %}

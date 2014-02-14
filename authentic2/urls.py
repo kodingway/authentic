@@ -33,7 +33,7 @@ if settings.AUTH_OPENID:
 
 if settings.AUTH_SSL:
     not_homepage_patterns += patterns('',
-        url(r'^sslauth/', include('authentic2.auth2_auth.auth2_ssl.urls')))
+        url(r'^accounts/sslauth/', include('authentic2.auth2_auth.auth2_ssl.urls')))
 
 urlpatterns += not_homepage_patterns
 

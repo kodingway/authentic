@@ -1,6 +1,8 @@
-from authentic2.auth2_auth.auth2_ssl.models import DistinguishedName
-from authentic2.auth2_auth.auth2_ssl.models import ClientCertificate
 from django.contrib import admin
 
-admin.site.register(DistinguishedName)
-admin.site.register(ClientCertificate)
+from . import models
+
+class ClientCertificateAdmin(admin.ModelAdmin):
+    list_display = ('user', 'subject_dn', 'issuer_dn', 'serial')
+
+admin.site.register(models.ClientCertificate, ClientCertificateAdmin)
