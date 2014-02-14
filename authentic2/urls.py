@@ -49,4 +49,9 @@ try:
 except:
     pass
 
+if settings.DEBUG:
+    urlpatterns += patterns('django.contrib.staticfiles.views',
+        url(r'^static/(?P<path>.*)$', 'serve'),
+    )
+
 urlpatterns = plugins.register_plugins_urls('authentic2.plugin', urlpatterns)
