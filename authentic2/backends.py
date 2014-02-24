@@ -64,11 +64,9 @@ _DEFAULTS = {
     # shuffle replicas
     'shuffle_replicas': True,
     # all users from this LDAP are superusers
-    'is_superuser': False,
+    'is_superuser': None,
     # all users from this LDAP are staff
-    'is_staff': False,
-    # all users from this LDAP are active
-    'is_active': True,
+    'is_staff': None,
     # create missing group if needed
     'create_group': False,
     # attributes to retrieve and store with the user object
@@ -555,9 +553,10 @@ class LDAPBackend():
                 user.groups.add(group)
 
     def populate_admin_fields(self, user, uri, dn, conn, block):
-        user.is_active = block['is_active']
-        user.is_staff = block['is_staff']
-        user.is_superuser = block['is_superuser']
+        if block['is_staff'] is not None:
+            user.is_staff = block['is_staff']
+        if block['is_superuser'] is not None:
+            user.is_superuser = block['is_superuser']
 
     def populate_user(self, user, uri, dn, conn, block):
         self.populate_user_attributes(user, uri, dn, conn, block)
