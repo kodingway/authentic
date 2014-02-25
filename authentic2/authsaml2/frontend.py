@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.utils.translation import ugettext as _
 
-from authentic2.authsaml2.saml2_endpoints import view_profile
+from . import saml2_endpoints
 
 class AuthSAML2Form(forms.Form):
     def __init__(self, *args, **kwargs):
@@ -50,5 +50,5 @@ class AuthSAML2Frontend(object):
     def template(self):
         return 'auth/saml2/login_form.html'
 
-    def profile(self, request, next=''):
-        return view_profile(request, next)
+    def profile(self, request):
+        return saml2_endpoints.profile(request)

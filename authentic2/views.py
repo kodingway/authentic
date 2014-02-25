@@ -355,7 +355,7 @@ def profile(request):
     except (SiteProfileNotAvailable, ObjectDoesNotExist):
         pass
     # Credentials management
-    blocks = [ frontend.profile(request, next='/profile') for frontend in frontends \
+    blocks = [ frontend.profile(request) for frontend in frontends \
             if hasattr(frontend, 'profile') ]
     return render_to_response('idp/account_management.html', {
         'frontends_block': blocks,
@@ -396,7 +396,7 @@ def redirect_to_logout(request, next_page='/'):
     return HttpResponseRedirect('%s?next=%s' % (reverse(logout), urllib.quote(next_page)))
 
 
-def login_password_profile(request, next):
+def login_password_profile(request):
     return render_to_string('auth/login_password_profile.html', {},
             RequestContext(request))
 

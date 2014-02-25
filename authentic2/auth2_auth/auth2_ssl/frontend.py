@@ -36,5 +36,5 @@ class SSLFrontend(object):
     def template(self):
         return 'auth/login_form_ssl.html'
 
-    def profile(self, request, next=None):
+    def profile(self, request):
         return views.profile(request)

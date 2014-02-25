@@ -38,5 +38,5 @@ class OpenIDFrontend(object):
     def template(self):
         return 'auth/login_form_openid.html'
 
-    def profile(self, request, next=''):
-        return views.openid_profile(request, next)
+    def profile(self, request):
+        return views.profile(request)

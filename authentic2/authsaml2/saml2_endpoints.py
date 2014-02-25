@@ -1695,7 +1695,7 @@ def setAuthnrequestOptions(provider, login, force_authn, is_passive):
     return p
 
 
-def view_profile(request, next='', template_name='profile.html'):
+def profile(request, template_name='profile.html'):
     if 'next' in request.session:
         next = request.session['next']
     else:
@@ -1704,7 +1704,6 @@ def view_profile(request, next='', template_name='profile.html'):
         or not request.user.is_authenticated() \
         or not hasattr(request.user, '_meta'):
         return HttpResponseRedirect(next)
-
     logger.info('view_profile: View profile of user %s' % str(request.user))
 
     #Add creation date

@@ -363,7 +363,7 @@ def get_associate_openid(user):
     nb_associated_openids = len(associated_openids)
     return nb_associated_openids, associated_openids
 
-def openid_profile(request, next, template_name='auth/openid_profile.html'):
+def profile(request, template_name='auth/openid_profile.html'):
     nb, associated_openids = get_associate_openid(request.user)
     return render_to_string(template_name,
             { 'idp_openid': getattr(settings, 'IDP_OPENID', False),
