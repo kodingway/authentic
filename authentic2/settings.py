@@ -213,7 +213,6 @@ DISCO_USE_OF_METADATA = 'DISCO_USE_OF_METADATA' in os.environ
 DISCO_SERVICE_NAME = os.environ.get('DISCO_SERVICE_NAME', "http://www.identity-hub.com/disco_service/disco")
 DISCO_RETURN_ID_PARAM = "entityID"
 SHOW_DISCO_IN_MD = 'SHOW_DISCO_IN_MD' in os.environ
-USE_DISCO_SERVICE = 'USE_DISCO_SERVICE' in os.environ
 
 ###########################
 # Authentication settings
@@ -339,7 +338,6 @@ ADMIN_TOOLS_INDEX_DASHBOARD = 'authentic2.dashboard.CustomIndexDashboard'
 ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'authentic2.dashboard.CustomAppIndexDashboard'
 ADMIN_TOOLS_MENU = 'authentic2.menu.CustomMenu'
 
-AUTH_SAML2 = 'AUTH_SAML2' in os.environ
 AUTH_OPENID = 'AUTH_OPENID' in os.environ
 AUTH_SSL = 'AUTH_SSL' in os.environ
 IDP_SAML2 = 'IDP_SAML2' in os.environ
@@ -434,15 +432,6 @@ if USE_DEBUG_TOOLBAR:
         INSTALLED_APPS += ('debug_toolbar',)
     except ImportError:
         print "Debug toolbar missing, not loaded"
-
-if AUTH_SAML2:
-    INSTALLED_APPS += ('authentic2.authsaml2',)
-    AUTHENTICATION_BACKENDS += (
-            'authentic2.authsaml2.backends.AuthSAML2PersistentBackend',
-            'authentic2.authsaml2.backends.AuthSAML2TransientBackend')
-    AUTH_FRONTENDS += ('authentic2.authsaml2.frontend.AuthSAML2Frontend',)
-    IDP_BACKENDS += ('authentic2.authsaml2.backends.AuthSAML2Backend',)
-    DISPLAY_MESSAGE_ERROR_PAGE = True
 
 if AUTH_OPENID:
     INSTALLED_APPS += ('authentic2.auth2_auth.auth2_openid', 'django_authopenid',)

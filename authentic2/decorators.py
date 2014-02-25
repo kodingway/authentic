@@ -2,12 +2,10 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from functools import wraps
 
-from authentic2.authsaml2.models import SAML2TransientUser
-
-TRANSIENT_USER_TYPES = (SAML2TransientUser, )
+TRANSIENT_USER_TYPES = []
 
 def is_transient_user(user):
-    return isinstance(user, TRANSIENT_USER_TYPES)
+    return isinstance(user, tuple(TRANSIENT_USER_TYPES))
 
 def prevent_access_to_transient_users(view_func):
     def _wrapped_view(request, *args, **kwargs):

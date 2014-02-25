@@ -37,10 +37,6 @@ if settings.AUTH_SSL:
 
 urlpatterns += not_homepage_patterns
 
-urlpatterns += patterns('',
-    (r'^authsaml2/', include('authentic2.authsaml2.urls')),
-)
-
 try:
     if settings.DISCO_SERVICE:
         urlpatterns += patterns('',

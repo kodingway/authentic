@@ -26,7 +26,6 @@ from authentic2.saml.models import LibertyFederation, LibertyProvider, \
 from authentic2.saml import models
 from authentic2.saml import saml2utils
 
-from authentic2.authsaml2 import signals
 from authentic2.http_utils import get_url
 from .. import nonce
 
@@ -438,31 +437,6 @@ def lookup_federation_by_user(user, qualifier):
         return None
     return fed[0]
 
-# List Idp providers - Use from display in templates
-# WARNING: No way for multiple federation by user with a single IdP (is it a problem??)
-def get_idp_list():
-    return LibertyProvider.objects.exclude(identity_provider=None) \
-            .values('entity_id','name')
-
-def get_idp_list_sorted():
-    return LibertyProvider.objects.exclude(identity_provider=None) \
-            .order_by('name').values('entity_id','name')
-
-def get_idp_user_federated_list(request):
-    user = request.user
-    if request.user.is_anonymous():
-        return None
-    return [p for p in get_idp_list() \
-        if lookup_federation_by_user(user, p.entity_id)]
-
-def get_idp_user_not_federated_list(request):
-    user = request.user
-    if request.user.is_anonymous():
-        return None
-    return [p for p in get_idp_list() \
-        if not lookup_federation_by_user(user, p.entity_id)]
-
-
 # The session_index is the "session on the IdP" identifiers
 # One identifier is dedicated for each sp for each user session
 # to not be a factor of linkability between sp
@@ -723,9 +697,6 @@ def authz_decision_cb(sender, request=None, attributes={},
             dic['message'] = \
             _('Your access is denied. At least one attribute does not match.')
     return dic
-
-signals.authz_decision.connect(authz_decision_cb,
-    dispatch_uid='authz_decision_on_attributes')
 
 def get_session_not_on_or_after(assertion):
     '''Extract the minimal value for the SessionNotOnOrAfter found in the given

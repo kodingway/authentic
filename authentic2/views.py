@@ -310,9 +310,7 @@ def homepage(request):
 def _homepage(request):
     '''Homepage of the IdP'''
     tpl_parameters = {}
-    # FIXME: we should not refer to a specific authentication module here
-    from authentic2.authsaml2.models import SAML2TransientUser
-    if not isinstance(request.user, SAML2TransientUser):
+    if not decorators.is_transient_user(request.user):
         tpl_parameters['account_management'] = 'account_management'
         tpl_parameters['authorized_services'] = service_list(request)
     return render_to_response('idp/homepage.html',

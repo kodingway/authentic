@@ -61,16 +61,6 @@ Values:
 * False: deactivate SSL authentication
 * True: activate SSL authentication
 
-Activate or deactivate SAML2 authentication, Authentic 2 is a SAML2 service provider
-====================================================================================
-
-Variable: AUTH_SAML2
-
-Values:
-
-* False: deactivate SAML2 authentication
-* True: activate SAML2 authentication
-
 Activate or deactivate OpenID authentication, Authentic 2 is an OpenID relying party
 ====================================================================================
 

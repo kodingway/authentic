@@ -72,9 +72,9 @@ from authentic2.constants import NONCE_FIELD_NAME
 from authentic2.idp import signals as idp_signals
 # from authentic2.idp.models import *
 
-from authentic2.authsaml2.models import SAML2TransientUser
 from authentic2.utils import (cache_and_validate, get_backends as
         get_idp_backends, get_username)
+from authentic2.decorators import is_transient_user
 
 logger = logging.getLogger('authentic2.idp.saml')
 
@@ -252,13 +252,6 @@ def build_assertion(request, login, nid_format='transient', attributes=None):
             authn_context = lasso.SAML2_AUTHN_CONTEXT_PASSWORD
         elif backend == 'authentic2.auth2_auth.auth2_ssl.backend.SSLBackend':
             authn_context = lasso.SAML2_AUTHN_CONTEXT_X509
-        # XXX: grab context from the assertion received
-        elif backend == \
-                'authentic2.authsaml2.backends.AuthSAML2PersistentBackend':
-            authn_context = lasso.SAML2_AUTHN_CONTEXT_UNSPECIFIED
-        elif backend == \
-                'authentic2.authsaml2.backends.AuthSAML2TransientBackend':
-            authn_context = lasso.SAML2_AUTHN_CONTEXT_UNSPECIFIED
         else:
             backend = load_backend(backend)
             if hasattr(backend, 'get_saml2_authn_context'):
@@ -581,8 +574,7 @@ def sso_after_process_request(request, login, consent_obtained=False,
     #Deal with transient users
     transient_user = False
     # XXX: Deal with all kind of transient users
-    type(SAML2TransientUser)
-    if isinstance(request.user, SAML2TransientUser):
+    if is_transient_user(request.user):
         logger.debug('the user is transient')
         transient_user = True
     if transient_user and login.request.nameIdPolicy.format == \
@@ -1284,52 +1276,6 @@ def slo_soap(request):
             except lasso.Error:
                 logger.exception('slo, relaying to %s failed ' %
                         lib_session.provider_id)
-
-    #Send SLO to IdP
-    pid = None
-    q = LibertySessionDump. \
-            objects.filter(django_session_key__in=django_session_keys,
-                    kind=LIBERTY_SESSION_DUMP_KIND_SP)
-    if not q:
-        logger.info('No session found for a third IdP')
-    else:
-        from authentic2.authsaml2 import saml2_endpoints
-        server = saml2_endpoints.create_server(request)
-        logout2 = lasso.Logout(server)
-        for s in q:
-            logger.debug('IdP session found %s' % s.session_dump)
-            try:
-                lib_session = lasso.Session().newFromDump(s.session_dump.encode('utf-8'))
-            except lasso.Error:
-                logger.debug('Unable to load session %s' % s.session_dump)
-            else:
-                try:
-                    pid = lib_session.get_assertions().keys()[0]
-                    logger.debug('SLO to %s' % pid)
-                    logout2.setSessionFromDump(s.session_dump.encode('utf8'))
-                    provider = load_provider(request, pid,
-                        server=server, sp_or_idp='idp')
-                    policy = get_idp_options_policy(provider)
-                    if not policy:
-                        logger.error('No policy found for %s'\
-                             % provider)
-                    elif not policy.forward_slo:
-                        logger.info('%s configured to not receive \
-                            slo' % provider)
-                    else:
-                        '''
-                            As we are in a synchronous binding,
-                            we need SOAP support
-                        '''
-                        logout2.initRequest(None, lasso.HTTP_METHOD_SOAP)
-                        logout2.buildRequestMsg()
-                        soap_response = send_soap_request(request, logout2)
-                        logout2.processResponseMsg(soap_response)
-                        logger.info('successful SLO with %s' \
-                            % pid)
-                except Exception, e:
-                    logger.error('error treating SLO with IdP %s' \
-                        % str(e))
 
     '''
         Respond to the SP initiating SLO
