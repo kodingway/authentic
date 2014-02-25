@@ -6,10 +6,12 @@ import sys
 class AppSettings(object):
     '''Thanks django-allauth'''
     __DEFAULTS = dict(
+            # settings for TEST only, make it easy to simulate the SSL
+            # environment
             FORCE_ENV={},
             ACCEPT_SELF_SIGNED=False,
             STRICT_MATCH=False,
-            SUBJECT_MATCH_KEYS=(),
+            SUBJECT_MATCH_KEYS=('subject_dn', 'issuer_dn'),
             CREATE_USERNAME_CALLBACK=None,
             USE_COOKIE=False,
             CREATE_USER=False,

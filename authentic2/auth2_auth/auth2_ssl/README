@@ -103,6 +103,22 @@ Reload Apache.
 
 Configure Authentic
 ===================
+
+Key                        Description
+-------------------------- ----------------------------------------
+ACCEPT_SELF_SIGNED         accept certificate for which the validation failed,
+                           default: False
+STRICT_MATCH               do a binary compare to match certificate and users,
+                           default: False
+SUBJECT_MATCH_KEYS         SSL information to use to match recorded
+                           certificates. default: ('subject_dn', 'issuer_dn'),
+                           possible values: serial, subject_dn, issuer_dn, cert.
+CREATE_USERNAME_CALLBACK   function receiving a SSLInfo object as first
+                           parameter and returning a username, default: None
+CREATE_USER                function receiving a SSLInfo object as first
+                           parameter and returning a user, default: None
+USE_COOKIE                 to be described
+
 in settings.py:
 Set AUTH_SSL = True
 To create a user with the mail adress as identifier:
@@ -117,3 +133,48 @@ def myusernamegen(ssl_info):
 SSLAUTH_CREATE_USERNAME_CALLBACK = myusernamegen
 
 
+Nginx configuration
+===================
+
+You must be able to retrieve SSL environment variable, for example with the
+SCGI backend you must add those lines to /etc/nginx/scgi_params::
+
+    scgi_param SSL_CLIENT_CERT $ssl_client_cert;
+    scgi_param SSL_CLIENT_RAW_CERT $ssl_client_raw_cert;
+    scgi_param SSL_CLIENT_S_DN $ssl_client_s_dn;
+    scgi_param SSL_CLIENT_I_DN $ssl_client_i_dn;
+    scgi_param SSL_CLIENT_SERIAL $ssl_client_serial;
+    scgi_param SSL_CLIENT_M_SERIAL $ssl_client_serial;
+    scgi_param SSL_CLIENT_VERIFY $ssl_client_verify;
+
+It would be the same with FCGI but using the fcgi_param directive in the
+fcgi_params file. It does not currently work when using proxy_pass.
+
+A virtualhost configuration example::
+
+    server {
+      listen 80;
+      server_name authentic.localhost;
+
+      rewrite ^ https://$server_name$request_uri? permanent;
+    }
+
+    server {
+      listen 443;
+      server_name authentic.localhost;
+
+      ssl on;
+      ssl_certificate /etc/ssl/certs/ssl-cert-snakeoil.pem;
+      ssl_certificate_key /etc/ssl/private/ssl-cert-snakeoil.key;
+      ssl_verify_client optional_no_ca;
+
+      location / {
+      include scgi_params;
+            scgi_pass localhost:8000;
+      }
+    }
+
+The serveur must be run using the SCGI protocol, with this command line for
+example::
+
+    ./manage.py runfcgi protocol=scgi method=threaded daemonize=false host=localhost port=8000

@@ -53,14 +53,8 @@ settings')
                 return None
             query = Q(cert=ssl_info.cert)
         else:
-            # compare according to SSLAUTH_SUBJECT_MATCH_KEYS
-            if app_settings.SUBJECT_MATCH_KEYS:
-                match_keys = app_settings.SUBJECT_MATCH_KEYS
-            else:
-                match_keys = ( 'subject_dn', 'issuer_dn')
-
             query_args = {}
-            for key in match_keys:
+            for key in app_settings.SUBJECT_MATCH_KEYS:
                 if not ssl_info.get(key):
                     logging.error('SSLAuth: key %s is missing from ssl_info' \
                         % key)
@@ -103,14 +97,7 @@ settings')
             user = build_user(username, ssl_info)
 
         # create the certificate record and save
-        cert = models.ClientCertificate()
-        cert.user = user
-        cert.subject_dn = ssl_info.subject_dn
-        cert.issuer_dn = ssl_info.issuer_dn
-        cert.cert = ssl_info.cert
-        cert.serial = ssl_info.serial
-        cert.save()
-
+        self.link_user(ssl_info, user)
         return user
 
     @transaction.commit_on_success
@@ -120,9 +107,6 @@ settings')
         for the passed certificate info. It does not create an issuer record,
         just a subject for the ClientCertificate.
         """
-        if not user:
-            return None
-
         # create the certificate record and save
         cert = models.ClientCertificate()
         cert.user = user
@@ -133,14 +117,6 @@ settings')
         cert.save()
 
         return user
-
-    def build_username(self, ssl_info):
-        """
-        create a valid django username from the certificate info. this method
-        can be "overwritten" by using the SSLAUTH_CREATE_USERNAME_CALLBACK
-        setting
-        """
-        raise NotImplementedError
 
 
     def build_user(self, username, ssl_info):
