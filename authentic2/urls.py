@@ -7,7 +7,7 @@ from authentic2.idp.decorators import prevent_access_to_transient_users
 import authentic2.idp.views
 
 from .admin import admin
-from . import app_settings
+from . import app_settings, plugins
 
 admin.autodiscover()
 handler500 = 'authentic2.views.server_error'
@@ -56,3 +56,5 @@ try:
         )
 except:
     pass
+
+urlpatterns = plugins.register_plugins_urls('authentic2.plugin', urlpatterns)

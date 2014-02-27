@@ -1,7 +1,10 @@
 # Django settings for authentic project.
 import os
-from django.core.exceptions import ImproperlyConfigured
 import json
+
+from django.core.exceptions import ImproperlyConfigured
+
+from . import plugins
 
 gettext_noop = lambda s: s
 
@@ -148,6 +151,9 @@ INSTALLED_APPS = (
     'registration',
     'south',
 )
+
+INSTALLED_APPS = plugins.register_plugins_installed_apps('authentic2.plugin',
+        INSTALLED_APPS)
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
