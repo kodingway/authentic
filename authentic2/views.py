@@ -7,7 +7,7 @@ import re
 
 
 from django.conf import settings
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, render
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.views.generic.edit import UpdateView, FormView
@@ -58,9 +58,7 @@ def server_error(request, template_name='500.html'):
     Templates: `500.html`
     Context: None
     """
-    return render_to_response(template_name,
-        context_instance = RequestContext(request)
-    )
+    return render(request, template_name)
 
 
 class EditProfile(UpdateView):
