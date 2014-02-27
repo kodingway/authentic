@@ -123,3 +123,12 @@ def get_session_store():
 
 def flush_django_session(django_session_key):
     get_session_store()(session_key=django_session_key).flush()
+
+class IterableFactory(object):
+    '''Return an new iterable using a generator function each time this object
+       is iterated.'''
+    def __init__(self, f):
+        self.f = f
+
+    def __iter__(self):
+        return iter(self.f())
