@@ -344,6 +344,8 @@ class LDAPBackend():
                             log.debug('looking up dn for username %r using '
                                     'query %r', username, query)
                             results = conn.search_s(user_basedn, ldap.SCOPE_SUBTREE, query)
+                            # remove search references
+                            results = [ result for result in results if result[0] is not None]
                             if len(results) == 0:
                                 log.debug('user bind failed: not entry found')
                             elif len(results) > 1:
@@ -360,6 +362,7 @@ class LDAPBackend():
                             break
                         continue
                     except ldap.LDAPError, e:
+                        raise
                         log.error('user bind failed: unable to lookup user %r: '
                                 '%s', username, e)
                         continue
