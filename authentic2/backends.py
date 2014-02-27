@@ -49,7 +49,7 @@ _DEFAULTS = {
     'email_field': 'mail',
     'fname_field': 'givenName',
     'lname_field': 'sn',
-    'timeout': 1,
+    'timeout': -1,
     'referrals': False,
     'disable_update': False,
     'use_for_data' : None,
@@ -312,8 +312,9 @@ class LDAPBackend():
                 raise
 
     def authenticate_block(self, block, username, password):
-        for opt in ('NETWORK_TIMEOUT', 'TIMELIMIT', 'TIMEOUT'):
-            ldap.set_option(getattr(ldap, 'OPT_%s' % opt), block['timeout'])
+        if block['timeout'] != -1:
+            for opt in ('NETWORK_TIMEOUT', 'TIMELIMIT', 'TIMEOUT'):
+                ldap.set_option(getattr(ldap, 'OPT_%s' % opt), block['timeout'])
         utf8_username = username.encode('utf-8')
         utf8_password = password.encode('utf-8')
 
