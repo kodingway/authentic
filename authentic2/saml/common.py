@@ -45,7 +45,7 @@ AUTHENTIC_STATUS_CODE_INTERNAL_SERVER_ERROR = AUTHENTIC_STATUS_CODE_NS + \
 AUTHENTIC_STATUS_CODE_UNAUTHORIZED = AUTHENTIC_STATUS_CODE_NS + \
     "Unauthorized"
 
-logger = logging.getLogger('authentic2.saml.common')
+logger = logging.getLogger(__name__)
 
 # timeout for messages and assertions issue instant
 NONCE_TIMEOUT = getattr(settings, 'SAML2_NONCE_TIMEOUT',
