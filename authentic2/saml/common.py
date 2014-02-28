@@ -552,22 +552,22 @@ def soap_call(url, msg, client_cert = None):
         host, query = urllib.splithost(url[6:])
         conn = httplib.HTTPSConnection(host,
                 key_file = client_cert, cert_file = client_cert)
-    logger.debug('soap_call: host %s' % host)
-    logger.debug('soap_call: query %s' % query)
-    logger.debug('soap_call: msg %s' % msg)
+    logger.debug('host %s' % host)
+    logger.debug('query %s' % query)
+    logger.debug('msg %s' % msg)
     try:
         conn.request('POST', query, msg, {'Content-Type': 'text/xml'})
         response = conn.getresponse()
     except Exception, err:
         logging.error('SOAP error (on %s): %s' % (url, err))
         raise SOAPException(url)
-    logger.debug('soap_call: response %s' % str(response))
+    logger.debug('response %s' % str(response))
     try:
         data = response.read()
     except Exception, err:
         logging.error('SOAP error (on %s): %s' % (url, err))
         raise SOAPException(url)
-    logger.debug('soap_call: data %s' % str(data))
+    logger.debug('data %s' % str(data))
     conn.close()
     if response.status not in (200, 204): # 204 ok for federation termination
         logging.warning('SOAP error (%s) (on %s)' % (response.status, url))
