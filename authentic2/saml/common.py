@@ -157,6 +157,10 @@ def return_saml2_request(request, profile, title = ''):
 def return_saml2(request, profile, field_name, title = ''):
     '''Helper to handle SAMLv2 bindings to emit request and responses'''
     context_instance = RequestContext(request)
+    logger.debug('profile.msgBody: %r', profile.msgBody)
+    logger.debug('profile.msgUrl: %r', profile.msgUrl)
+    logger.debug('profile.msgRelayState: %r', profile.msgRelayState)
+    logger.debug('field_name: %r', field_name)
     if profile.msgBody:
         if profile.msgUrl:
             return render_to_response('saml/post_form.html',{
