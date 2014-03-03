@@ -257,14 +257,14 @@ def iso8601_to_datetime(date_string):
     return datetime.datetime.fromtimestamp(time.mktime(tm))
 
 def authnresponse_checking(login, subject_confirmation, logger, saml_request_id=None):
-    logger.debug('authnresponse_checking: beginning...')
+    logger.debug('beginning...')
     # If there is no inResponseTo: IDP initiated
     # else, check that the response id is the same
     assertion = login.assertion
     if not assertion:
-        logger.error('authnresponse_checking: Assertion missing')
+        logger.error('Assertion missing')
         return False
-    logger.debug('authnresponse_checking: assertion %s' % assertion.dump())
+    logger.debug('assertion %s' % assertion.dump())
 
     irt = None
     try:
@@ -272,40 +272,40 @@ def authnresponse_checking(login, subject_confirmation, logger, saml_request_id=
             subjectConfirmation.subjectConfirmationData.inResponseTo
     except:
         pass
-    logger.debug('authnresponse_checking: inResponseTo: %s' % irt)
+    logger.debug('inResponseTo: %s' % irt)
 
     if irt and (not saml_request_id or saml_request_id != irt):
-        logger.error('authnresponse_checking: Request and Response ID do not match')
+        logger.error('Request and Response ID do not match')
         return False
 
     # Check: SubjectConfirmation
     try:
         if assertion.subject.subjectConfirmation.method != \
                 'urn:oasis:names:tc:SAML:2.0:cm:bearer':
-            logger.error('authnresponse_checking: Unknown \
+            logger.error('Unknown \
                 SubjectConfirmation Method')
             return False
     except:
-        logger.error('authnresponse_checking: Error checking \
+        logger.error('Error checking \
             SubjectConfirmation Method')
         return False
-    logger.debug('authnresponse_checking: subjectConfirmation method known')
+    logger.debug('subjectConfirmation method known')
 
     # Check: Check that the url is the same as in the assertion
     try:
         if assertion.subject. \
                 subjectConfirmation.subjectConfirmationData.recipient != \
                 subject_confirmation:
-            logger.error('authnresponse_checking: SubjectConfirmation \
+            logger.error('SubjectConfirmation \
                 Recipient Mismatch, %s is not %s' % (assertion.subject. \
                 subjectConfirmation.subjectConfirmationData.recipient,
                 subject_confirmation))
             return False
     except:
-        logger.error('authnresponse_checking: Error checking \
+        logger.error('Error checking \
             SubjectConfirmation Recipient')
         return False
-    logger.debug('authnresponse_checking: \
+    logger.debug('\
         the url is the same as in the assertion')
 
     # Check: AudienceRestriction
@@ -313,16 +313,16 @@ def authnresponse_checking(login, subject_confirmation, logger, saml_request_id=
         audience_ok = False
         for audience_restriction in assertion.conditions.audienceRestriction:
             if audience_restriction.audience != login.server.providerId:
-                logger.error('authnresponse_checking: Incorrect AudienceRestriction')
+                logger.error('Incorrect AudienceRestriction')
                 return False
             audience_ok = True
         if not audience_ok:
-            logger.error('authnresponse_checking: Incorrect AudienceRestriction')
+            logger.error('Incorrect AudienceRestriction')
             return False
     except:
-        logger.error('authnresponse_checking: Error checking AudienceRestriction')
+        logger.error('Error checking AudienceRestriction')
         return False
-    logger.debug('authnresponse_checking: audience restriction respected')
+    logger.debug('audience restriction respected')
 
     # Check: notBefore, notOnOrAfter
     now = datetime.datetime.utcnow()
@@ -330,7 +330,7 @@ def authnresponse_checking(login, subject_confirmation, logger, saml_request_id=
         not_before = assertion.subject. \
             subjectConfirmation.subjectConfirmationData.notBefore
     except:
-        logger.error('authnresponse_checking: missing subjectConfirmationData')
+        logger.error('missing subjectConfirmationData')
         return False
 
     not_on_or_after = assertion.subject.subjectConfirmation. \
@@ -338,31 +338,31 @@ def authnresponse_checking(login, subject_confirmation, logger, saml_request_id=
 
     if irt:
         if not_before is not None:
-            logger.error('authnresponse_checking: assertion in response to an AuthnRequest, \
+            logger.error('assertion in response to an AuthnRequest, \
                 notBefore MUST not be present in SubjectConfirmationData')
             return False
     elif not_before is not None and not not_before.endswith('Z'):
-        logger.error('authnresponse_checking: invalid notBefore value ' + not_before)
+        logger.error('invalid notBefore value ' + not_before)
         return False
     if not_on_or_after is None or not not_on_or_after.endswith('Z'):
-        logger.error('authnresponse_checking: invalid notOnOrAfter format')
+        logger.error('invalid notOnOrAfter format')
         return False
     try:
         if not_before and now < iso8601_to_datetime(not_before):
-            logger.error('authnresponse_checking: Assertion received too early')
+            logger.error('Assertion received too early')
             return False
     except:
-        logger.error('authnresponse_checking: invalid notBefore value ' + not_before)
+        logger.error('invalid notBefore value ' + not_before)
         return False
     try:
         if not_on_or_after and now > iso8601_to_datetime(not_on_or_after):
-            logger.error('authnresponse_checking: Assertion expired')
+            logger.error('Assertion expired')
             return False
     except:
-        logger.error('authnresponse_checking: invalid notOnOrAfter value')
+        logger.error('invalid notOnOrAfter value')
         return False
 
-    logger.debug('authnresponse_checking: assertion validity timeslice respected \
+    logger.debug('assertion validity timeslice respected \
         %s <= %s < %s ' % (not_before, str(now), not_on_or_after))
 
     return True
