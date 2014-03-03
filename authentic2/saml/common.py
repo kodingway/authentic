@@ -112,7 +112,10 @@ def create_saml2_server(request, metadata, idp_map=None, sp_map=None, options={}
 
 def get_saml2_post_response(request):
     '''Extract the SAMLRequest field from the POST'''
-    return request.POST.get(lasso.SAML2_FIELD_RESPONSE, '')
+    msg = request.POST.get(lasso.SAML2_FIELD_RESPONSE, '')
+    assert msg is not None, 'no message received'
+    logger.debug('%r: %r', lasso.SAML2_FIELD_RESPONSE, msg)
+    return msg
 
 def get_saml2_post_request(request):
     '''Extract the SAMLRequest field from the POST'''
@@ -138,11 +141,13 @@ def get_saml2_request_message(request):
     '''Return SAMLv2 message whatever the HTTP binding used'''
     binding = get_http_binding(request)
     if binding == 'GET':
-        return get_saml2_query_request(request)
+        msg = get_saml2_query_request(request)
     elif binding == 'POST':
-        return get_saml2_post_request(request)
+        msg = get_saml2_post_request(request)
     elif binding == 'SOAP':
-        return get_saml2_soap_request(request)
+        msg = get_saml2_soap_request(request)
+    assert msg, 'no saml2 request message found'
+    return msg
 
 def return_saml2_response(request, profile, title = ''):
     '''Finish your SAMLv2 views with this method to return a SAML
