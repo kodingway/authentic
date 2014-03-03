@@ -562,18 +562,20 @@ def soap_call(url, msg, client_cert = None):
         response = conn.getresponse()
     except Exception, err:
         logging.error('SOAP error (on %s): %s' % (url, err))
-        raise SOAPException(url)
+        raise SOAPException(url, err)
     logger.debug('response %s' % str(response))
     try:
         data = response.read()
     except Exception, err:
         logging.error('SOAP error (on %s): %s' % (url, err))
-        raise SOAPException(url)
+        raise SOAPException(url, err)
     logger.debug('data %s' % str(data))
     conn.close()
     if response.status not in (200, 204): # 204 ok for federation termination
         logging.warning('SOAP error (%s) (on %s)' % (response.status, url))
-        raise SOAPException(url)
+        raise SOAPException(url, 'http status code error', response.status)
+    if not data:
+        raise SOAPException(url, 'no content returned')
     return data
 
 def send_soap_request(request, profile):
