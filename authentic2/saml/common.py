@@ -352,25 +352,25 @@ for entity id %r are invalid, %s' % (provider_id, e.args))
         s.save()
     return p
 
-def load_provider(request, provider_id, server=None, sp_or_idp='sp',
+def load_provider(request, entity_id, server=None, sp_or_idp='sp',
         autoload=False):
     '''Look up a provider in the database, and verify it handles wanted
        role be it sp or idp.
 
        Arguments:
        request -- the currently handled request
-       provider_id -- the entity ID of the searched provider
+       entity_id -- the entity ID of the searched provider
        Keyword arguments:
        server -- a lasso.Server object into which to load the given provider
        sp_or_idp -- kind of the provider we are looking for, can be 'sp' or 'idp',
        default to 'sp'
     '''
     try:
-        liberty_provider = LibertyProvider.objects.get(entity_id=provider_id)
+        liberty_provider = LibertyProvider.objects.get(entity_id=entity_id)
     except LibertyProvider.DoesNotExist:
         autoload = getattr(settings, 'SAML_METADATA_AUTOLOAD', 'none')
         if autoload and (autoload == 'sp' or autoload == 'both'):
-            liberty_provider = retrieve_metadata_and_create(request, provider_id, sp_or_idp)
+            liberty_provider = retrieve_metadata_and_create(request, entity_id, sp_or_idp)
             if not liberty_provider:
                 return False
         else:
