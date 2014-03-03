@@ -539,9 +539,7 @@ def get_provider_of_active_session_name(request):
     return urlparse(p.entity_id)[1]
 
 class SOAPException(Exception):
-    url = None
-    def __init__(self, url):
-        self.url = url
+    pass
 
 def soap_call(url, msg, client_cert = None):
     if not client_cert:
