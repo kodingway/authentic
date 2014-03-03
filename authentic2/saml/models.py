@@ -2,7 +2,6 @@ import xml.etree.ElementTree as etree
 import hashlib
 import binascii
 import base64
-import datetime
 
 import lasso
 from django.db import models
@@ -10,13 +9,10 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ObjectDoesNotExist
-from django.utils.importlib import import_module
-from django.utils.timezone import now
-from django.dispatch import Signal
 
 from fields import PickledObjectField, MultiSelectField
 
-from . import app_settings
+from . import app_settings, managers
 
 def metadata_validator(meta):
     provider=lasso.Provider.newFromBuffer(lasso.PROVIDER_ROLE_ANY, meta.encode('utf8'))
@@ -352,11 +348,6 @@ class AuthorizationSPPolicy(models.Model):
         return self.name
 
 
-class GetBySlugManager(models.Manager):
-    def get_by_natural_key(self, slug):
-        return self.get(slug=slug)
-
-
 class LibertyProvider(models.Model):
     name = models.CharField(max_length = 140,
             help_text = _("Internal nickname for the service provider"),
@@ -373,7 +364,7 @@ class LibertyProvider(models.Model):
     ca_cert_chain = models.TextField(blank=True)
     federation_source = models.CharField(max_length=64, blank=True, null=True)
 
-    objects = GetBySlugManager()
+    objects = managers.GetBySlugManager()
 
     def __unicode__(self):
         return self.name
@@ -383,21 +374,6 @@ class LibertyProvider(models.Model):
         if self.protocol_conformance == 3:
             self.entity_id_sha1 = hashlib.sha1(self.entity_id).hexdigest()
         super(LibertyProvider, self).save(*args, **kwargs)
-
-    @classmethod
-    def get_provider_by_samlv2_artifact(cls, artifact):
-        '''Find a provider whose SHA-1 hash of its entityID is the 5-th to the
-           25-th byte of the given artifact'''
-        try:
-            artifact = base64.b64decode(artifact)
-        except:
-            raise ValueError('Artifact is not a base64 encoded value')
-        entity_id_sha1 = artifact[4:24]
-        entity_id_sha1 = binascii.hexlify(entity_id_sha1)
-        try:
-            return cls.objects.get(entity_id_sha1=entity_id_sha1)
-        except cls.DoesNotExist:
-            return None
 
     def clean(self):
         super(LibertyProvider, self).clean()
@@ -494,15 +470,6 @@ class LibertyIdentityProvider(models.Model):
         verbose_name = _('liberty identity provider')
         verbose_name_plural = _('liberty identity providers')
 
-class SessionLinkedManager(models.Manager):
-    def cleanup(self):
-        engine = import_module(settings.SESSION_ENGINE)
-        store = engine.SessionStore()
-        for o in self.all():
-            key = o.django_session_key
-            if not store.exists(key):
-                o.delete()
-
 LIBERTY_SESSION_DUMP_KIND_SP = 0
 LIBERTY_SESSION_DUMP_KIND_IDP = 1
 LIBERTY_SESSION_DUMP_KIND = { LIBERTY_SESSION_DUMP_KIND_SP: 'sp',
@@ -517,7 +484,7 @@ class LibertySessionDump(models.Model):
     session_dump = models.TextField(blank = True)
     kind = models.IntegerField(choices = LIBERTY_SESSION_DUMP_KIND.items())
 
-    objects = SessionLinkedManager()
+    objects = managers.SessionLinkedManager()
 
     class Meta:
         verbose_name = _('liberty session dump')
@@ -531,17 +498,11 @@ class LibertyManageDump(models.Model):
     django_session_key = models.CharField(max_length = 128)
     manage_dump = models.TextField(blank = True)
 
-    objects = SessionLinkedManager()
+    objects = managers.SessionLinkedManager()
 
     class Meta:
         verbose_name = _('liberty manage dump')
         verbose_name_plural = _('liberty manage dumps')
-
-class LibertyArtifactManager(models.Manager):
-    def cleanup(self):
-        expire = getattr(settings, 'SAML2_ARTIFACT_EXPIRATION', 600)
-        before = now()-datetime.timedelta(seconds=expire)
-        self.filter(creation__lt=before).delete()
 
 class LibertyArtifact(models.Model):
     """Store an artifact and the associated XML content"""
@@ -550,7 +511,7 @@ class LibertyArtifact(models.Model):
     content = models.TextField()
     provider_id = models.CharField(max_length = 256)
 
-    objects = LibertyArtifactManager()
+    objects = managers.LibertyArtifactManager()
 
     class Meta:
         verbose_name = _('liberty artifact')
@@ -562,13 +523,6 @@ def nameid2kwargs(name_id):
         'name_id_sp_name_qualifier': name_id.spNameQualifier,
         'name_id_content': name_id.content,
         'name_id_format': name_id.format }
-
-class LibertyAssertionManager(models.Manager):
-    def cleanup(self):
-        # keep assertions 1 week
-        expire = getattr(settings, 'SAML2_ASSERTION_EXPIRATION', 3600*24*7)
-        before = now()-datetime.timedelta(seconds=expire)
-        self.filter(creation__lt=before).delete()
 
 class LibertyAssertion(models.Model):
     assertion_id = models.CharField(max_length = 128)
@@ -590,18 +544,8 @@ class LibertyAssertion(models.Model):
         verbose_name = _('liberty assertion')
         verbose_name_plural = _('liberty assertions')
 
-
-federation_delete = Signal()
-
-class LibertyFederationManager(models.Manager):
-    def cleanup(self):
-        for federation in self.filter(user__isnull=True):
-            results = federation_delete.send_robust(sender=federation)
-            for callback, result in results:
-                if not result:
-                    return
-            federation.delete()
-
+# XXX: for retrocompatibility
+federation_delete = managers.federation_delete
 
 class LibertyFederation(models.Model):
     """Store a federation, i.e. an identifier shared with another provider, be
@@ -622,7 +566,7 @@ class LibertyFederation(models.Model):
     creation = models.DateTimeField(auto_now_add=True)
     last_modification = models.DateTimeField(auto_now=True)
 
-    objects = LibertyFederationManager()
+    objects = managers.LibertyFederationManager()
 
     def __init__(self, *args, **kwargs):
         saml2_assertion = kwargs.pop('saml2_assertion', None)
@@ -668,7 +612,7 @@ class LibertySession(models.Model):
             verbose_name = _("SPNameQualifier"), null = True)
     creation = models.DateTimeField(auto_now_add=True)
 
-    objects = SessionLinkedManager()
+    objects = managers.SessionLinkedManager()
 
     def __init__(self, *args, **kwargs):
         saml2_assertion = kwargs.pop('saml2_assertion', None)
