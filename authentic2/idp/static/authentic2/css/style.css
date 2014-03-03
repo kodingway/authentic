@@ -325,3 +325,16 @@ ul.messages >li.error {
   background: #bd362f;
   color: black;
 }
+
+/* log table on error pages */
+.a2-log-line:nth-child(odd) {
+  background: lightgrey;
+}
+.a2-log-time, .a2-log-level, .a2-log-message {
+  vertical-align: top;
+  padding: 5px;
+}
+
+.a2-log-message {
+  white-space: pre-wrap;
+}

@@ -7,6 +7,24 @@
 
 <h2>{% trans "Server Error" %}</h2>
 
-<p>{% trans "We're sorry but a server error has occurred." %}
+<p>{% trans "We're sorry but a server error has occurred." %}</p>
+
+{% if request.logs %}
+  <h2>Logs</h2>
+  <table class='a2-log-table'>
+    {% for log in request.logs %}
+      <tr class="a2-log-line">
+        <td class="a2-log-time">{{ log.time|time:"H:i:s" }}</td>
+        <td class="a2-log-level">{{ log.level }}</td>
+        <td class="a2-log-message">{{ log.message }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endif %}
+
+{% if request.exception %}
+  <h2>Exception</h2>
+  <p>{{ request.exception }}</p>
+{% endif %}
 
 {% endblock %}
