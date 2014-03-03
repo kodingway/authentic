@@ -50,6 +50,7 @@ _DEFAULTS = {
     'fname_field': 'givenName',
     'lname_field': 'sn',
     'timeout': 1,
+    'referrals': False,
     'disable_update': False,
     'use_for_data' : None,
     'bind_with_username': False,
@@ -85,6 +86,7 @@ def get_connection(block, credentials=()):
         raise ImproperlyConfigured("block['url'] must contain at least one url")
     for url in block['url']:
         conn = ldap.initialize(url)
+        conn.set_option(ldap.OPT_REFERRALS, 1 if block['referrals'] else 0)
         try:
             conn.whoami_s()
         except ldap.SERVER_DOWN:
@@ -318,6 +320,7 @@ class LDAPBackend():
         for uri in block['url']:
             log.debug('try to bind user on %r', uri)
             conn = ldap.initialize(uri)
+            conn.set_option(ldap.OPT_REFERRALS, 1 if block['referrals'] else 0)
             authz_id = None
             user_basedn = block.get('user_basedn', block['basedn'])
 
