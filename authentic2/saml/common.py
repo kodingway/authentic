@@ -397,7 +397,7 @@ def load_provider(request, entity_id, server=None, sp_or_idp='sp',
                     liberty_provider.metadata.encode('utf8'))
     else:
         raise Exception('unsupported option sp_or_idp = %r' % sp_or_idp)
-
+    logger.debug('loaded provider %r', entity_id)
     return liberty_provider
 
 # Federation management
@@ -411,6 +411,7 @@ def add_federation(user, login=None, name_id=None, provider_id=None):
         kwargs['idp'] = LibertyProvider.objects.get(entity_id=provider_id).identity_provider
     fed = LibertyFederation(user=user, **kwargs)
     fed.save()
+    logger.debug('federation %r linked to user %r', fed.name_id_content, user)
     return fed
 
 def lookup_federation_by_name_identifier(name_id=None, profile=None):
