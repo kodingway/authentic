@@ -402,10 +402,8 @@ def load_provider(request, entity_id, server=None, sp_or_idp='sp',
 
 # Federation management
 def add_federation(user, login=None, name_id=None, provider_id=None):
-    if not name_id:
-        if not (login and login.nameIdentifier):
-            return None
-        name_id=login.nameIdentifier
+    assert name_id or (login and login.nameIdentifier), 'missing name identifier'
+    name_id = name_id or login.nameIdentifier
     kwargs = models.nameid2kwargs(name_id)
     if provider_id:
         kwargs['idp'] = LibertyProvider.objects.get(entity_id=provider_id).identity_provider
