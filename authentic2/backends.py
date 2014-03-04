@@ -371,7 +371,7 @@ class LDAPBackend():
                 try:
                     conn.simple_bind_s(authz_id, utf8_password)
                 except ldap.INVALID_CREDENTIALS:
-                    log.debug('user bind failed: invalid credentials' % uri)
+                    log.debug('user bind failed: %r invalid credentials', uri)
                     if block['replicas']:
                         break
                     continue
