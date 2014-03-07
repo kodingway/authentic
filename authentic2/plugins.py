@@ -20,7 +20,7 @@ PLUGIN_CACHE = {}
 class PluginError(Exception):
     pass
 
-def get_plugins(group_name, use_cache=True, *args, **kwargs):
+def get_plugins(group_name='authentic2.plugin', use_cache=True, *args, **kwargs):
     '''Traverse all entry points for group_name and instantiate them using args
        and kwargs.
     '''
