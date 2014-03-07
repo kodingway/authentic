@@ -3,8 +3,11 @@ from copy import deepcopy
 from django.contrib import admin
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.admin import GroupAdmin
+from django.contrib.auth.models import Group
 
 from .nonce.models import Nonce
+from . import forms
 
 if settings.DEBUG:
     class NonceModelAdmin(admin.ModelAdmin):
@@ -45,3 +48,10 @@ if settings.AUTH_USER_MODEL == 'authentic2.User':
 
 
     admin.site.register(models.User, AuthenticUserAdmin)
+
+class A2GroupAdmin(GroupAdmin):
+    form = forms.GroupAdminForm
+
+
+admin.site.unregister(Group)
+admin.site.register(Group, A2GroupAdmin)

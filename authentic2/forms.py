@@ -46,3 +46,34 @@ class EmailChangeForm(forms.Form):
                 code='password_incorrect',
             )
         return password
+
+from django import forms
+from django.contrib.admin.widgets import FilteredSelectMultiple
+from django.contrib.auth.models import Group
+from . import compat
+
+class GroupAdminForm(forms.ModelForm):
+    users = forms.ModelMultipleChoiceField(
+            queryset=compat.get_user_model().objects.all(),
+            widget=FilteredSelectMultiple(
+                verbose_name=_('users'),
+                is_stacked=False),
+            required=False)
+
+    class Meta:
+        model = Group
+
+    def __init__(self, *args, **kwargs):
+        super(GroupAdminForm, self).__init__(*args, **kwargs)
+        if self.instance and self.instance.pk:
+            self.fields['users'].initial = self.instance.user_set.all()
+
+    def save(self, commit=True):
+        group = super(GroupAdminForm, self).save(commit=False)
+
+        if commit:
+            group.save()
+        if group.pk:
+            group.users = self.cleaned_data['users']
+            self.save_m2m()
+        return group
