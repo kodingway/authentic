@@ -1,5 +1,6 @@
 import warnings
 import re
+import urlparse
 
 from django.core.exceptions import ImproperlyConfigured
 from django.utils import timezone
@@ -12,6 +13,12 @@ from django.contrib.auth.models import (AbstractBaseUser, PermissionsMixin,
 from django.contrib.auth import load_backend
 from django.utils.http import urlquote
 from django.conf import settings
+
+try:
+    from django.contrib.contenttypes.fields import GenericForeignKey
+except ImportError:
+    from django.contrib.contenttypes.generic import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 
 from . import managers
@@ -204,3 +211,30 @@ class AuthenticationEvent(models.Model):
     def __unicode__(self):
         return _('Authentication of %(who)s by %(how)s at %(when)s') % \
             self.__dict__
+
+class LogoutUrlAbstract(models.Model):
+    logout_url = models.URLField(verbose_name=_('url'), help_text=_('you can use a {} '
+        'to pass the URL of the success icon, ex.: '
+        'http://example.com/logout?next={}'), max_length=255, blank=True, null=True)
+    logout_use_iframe = models.BooleanField(
+            verbose_name=_('use an iframe instead of an img tag for logout'))
+    logout_use_iframe_timeout = models.PositiveIntegerField(
+            verbose_name=_('iframe logout timeout (ms)'),
+            help_text=_('if iframe logout is used, it\'s the time between the '
+                'onload event for this iframe and the moment we consider its '
+                'loading to be really finished'),
+            default=300)
+
+    def get_logout_url(self):
+        ok_icon_url = urlparse.urljoin(settings.STATIC_URL,
+                'authentic2/images/ok.png')
+        return self.url.format(urlquote(ok_icon_url))
+
+    class Meta:
+        abstract = True
+
+
+class LogoutUrl(LogoutUrlAbstract):
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    provider = GenericForeignKey('content_type', 'object_id')
