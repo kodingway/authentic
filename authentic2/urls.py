@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib import admin
 from django.conf.urls import patterns, url, include
 from django.conf import settings
 
@@ -6,7 +7,6 @@ from authentic2.idp.decorators import prevent_access_to_transient_users
 
 import authentic2.idp.views
 
-from .admin import admin
 from . import app_settings, plugins
 
 admin.autodiscover()
