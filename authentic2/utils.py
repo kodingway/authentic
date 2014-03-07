@@ -14,6 +14,8 @@ from django.core.exceptions import ImproperlyConfigured
 from authentic2.saml.saml2utils import filter_attribute_private_key, \
     filter_element_private_key
 
+from . import plugins
+
 
 class CleanLogMessage(logging.Filter):
     def filter(self, record):
@@ -141,6 +143,12 @@ def accumulate_from_backends(request, method_name):
         method = getattr(backend, method_name, None)
         if callable(method):
             list += method(request)
+    # now try plugins
+    for plugin in plugins.get_plugins():
+        if hasattr(plugin, method_name):
+            method = getattr(plugin, method_name)
+            if callable(method):
+                list += method(request)
     return list
 
 def load_backend(path):
