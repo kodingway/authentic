@@ -238,3 +238,12 @@ class LogoutUrl(LogoutUrlAbstract):
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     provider = GenericForeignKey('content_type', 'object_id')
+
+class FederatedId(models.Model):
+    provider = models.CharField(max_length=255)
+    about = models.CharField(max_length=255)
+    service = models.CharField(max_length=255)
+    id_format = models.CharField(max_length=128)
+    id_value = models.TextField()
+
+    objects = managers.FederatedIdManager()
