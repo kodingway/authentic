@@ -343,7 +343,6 @@ AUTH_OPENID = 'AUTH_OPENID' in os.environ
 AUTH_SSL = 'AUTH_SSL' in os.environ
 IDP_SAML2 = 'IDP_SAML2' in os.environ
 IDP_OPENID = 'IDP_OPENID' in os.environ
-IDP_CAS = 'IDP_CAS' in os.environ
 
 # extract any key starting with setting
 for key in os.environ:
@@ -451,9 +450,6 @@ if IDP_OPENID:
     INSTALLED_APPS += ('authentic2.idp.idp_openid',)
     TEMPLATE_CONTEXT_PROCESSORS += ('authentic2.idp.idp_openid.context_processors.openid_meta',)
     # OPENID_ACTIONS = {"http://rp.example.com" : 'my-template.html', }
-
-if IDP_CAS:
-    INSTALLED_APPS += ('authentic2.idp.idp_cas',)
 
 if LDAP_AUTH_SETTINGS:
     AUTHENTICATION_BACKENDS += ('authentic2.backends.LDAPBackend',)
