@@ -120,6 +120,9 @@ MIDDLEWARE_CLASSES = (
     'authentic2.idp.middleware.DebugMiddleware'
 )
 
+MIDDLEWARE_CLASSES = plugins.register_plugins_middleware('authentic2.plugin',
+        MIDDLEWARE_CLASSES)
+
 ROOT_URLCONF = 'authentic2.urls'
 
 if os.environ.get('TEMPLATE_DIRS'):

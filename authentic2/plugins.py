@@ -75,3 +75,18 @@ def register_plugins_installed_apps(group_name, installed_apps):
                     installed_apps.append(app)
     return installed_apps
 
+def register_plugins_middleware(group_name, middleware_classes):
+    middleware_classes = list(middleware_classes)
+    for plugin in get_plugins(group_name):
+        if hasattr(plugin, 'get_before_middleware'):
+            apps = plugin.get_before_middleware()
+            for app in reversed(apps):
+                if app not in middleware_classes:
+                    middleware_classes.insert(0, app)
+        if hasattr(plugin, 'get_after_middleware'):
+            apps = plugin.get_after_middleware()
+            for app in apps:
+                if app not in middleware_classes:
+                    middleware_classes.append(app)
+    return tuple(middleware_classes)
+
