@@ -16,6 +16,7 @@ from django.core.urlresolvers import reverse
 from admin_tools.dashboard import modules, Dashboard, AppIndexDashboard
 from admin_tools.utils import get_admin_site_name
 
+from . import plugins
 
 class CustomIndexDashboard(Dashboard):
     """
@@ -45,7 +46,7 @@ class CustomIndexDashboard(Dashboard):
                 'django.contrib.auth.models.*'),
         ))
         self.children.append(modules.ModelList(
-            _('Services'),
+            _('SAML2'),
             models=(
                 'authentic2.saml.models.LibertyProvider',
                 'authentic2.saml.models.SPOptionsIdPPolicy',
@@ -56,6 +57,11 @@ class CustomIndexDashboard(Dashboard):
                 'authentic2.attribute_aggregator.models.AttributeSource',
             ),
         ))
+        for plugin in plugins.get_plugins():
+            if hasattr(plugin, 'get_admin_modules') and callable(plugin.get_admin_modules):
+                plugin_modules = plugin.get_admin_modules()
+                for module in plugin_modules:
+                    self.children.append(module)
 
         # append a recent actions module
         self.children.append(modules.RecentActions(_('Recent Actions'), 5))
