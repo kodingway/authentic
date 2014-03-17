@@ -187,6 +187,8 @@ DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'webmaster@localhost')
 if 'ALLOWED_HOSTS' in os.environ:
     ALLOWED_HOSTS = os.environ['ALLOWED_HOSTS'].split(':')
 USE_X_FORWARDED_HOST = 'USE_X_FORWARDED_HOST' in os.environ
+if 'SECURE_PROXY_SSL_HEADER' in os.environ:
+    SECURE_PROXY_SSL_HEADER = os.environ['SECURE_PROXY_SSL_HEADER'].split(':', 1)
 LOGIN_REDIRECT_URL = os.environ.get('LOGIN_REDIRECT_URL', '/')
 LOGIN_URL = os.environ.get('LOGIN_URL', '/login')
 LOGOUT_URL = os.environ.get('LOGOUT_URL', '/accounts/logout')
