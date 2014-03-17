@@ -346,6 +346,17 @@ IDP_SAML2 = 'IDP_SAML2' in os.environ
 IDP_OPENID = 'IDP_OPENID' in os.environ
 IDP_CAS = 'IDP_CAS' in os.environ
 
+# extract any key starting with setting
+for key in os.environ:
+    if key.startswith('SETTING_'):
+        setting_key = key[len('SETTING_'):]
+        value = os.environ[key]
+        try:
+             value = int(value)
+        except ValueError:
+             pass
+        globals()[setting_key] = value
+
 try:
     from local_settings import *
 except ImportError, e:
