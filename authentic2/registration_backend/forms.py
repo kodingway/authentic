@@ -25,7 +25,11 @@ class RegistrationForm(forms.Form):
         required_fields = set(compat.get_required_fields())
         for field_name in field_names:
             if field_name not in self.fields:
-                field = User._meta.get_field(field_name).formfield()
+                model_field = User._meta.get_field(field_name)
+                kwargs = {}
+                if hasattr(model_field, 'validators'):
+                    kwargs['validators'] = model_field.validators
+                field = model_field.formfield(**kwargs)
                 self.fields.insert(insert_idx, field_name, field)
                 insert_idx += 1
             if field_name in required_fields:
