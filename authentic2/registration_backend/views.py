@@ -39,6 +39,7 @@ class RegistrationView(BaseRegistrationView):
             if field == 'email':
                 user_fields[field] = BaseUserManager.normalize_email(user_fields[field])
         new_user = User(is_active=False, **user_fields)
+        new_user.clean()
         new_user.set_password(cleaned_data['password1'])
         new_user.save()
         registration_profile = RegistrationProfile.objects.create_profile(new_user)
