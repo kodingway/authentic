@@ -39,6 +39,17 @@ class RegistrationForm(forms.Form):
             self.fields['username'].help_text = app_settings.A2_REGISTRATION_FORM_USERNAME_HELP_TEXT
             self.fields['username'].label = app_settings.A2_REGISTRATION_FORM_USERNAME_LABEL
 
+    def clean_username(self):
+        """
+        Validate that the username is alphanumeric and is not already
+        in use.
+        """
+        User = compat.get_user_model()
+        existing = User.objects.filter(username__iexact=self.cleaned_data['username'])
+        if existing.exists():
+            raise forms.ValidationError(_("A user with that username already exists."))
+        else:
+            return self.cleaned_data['username']
 
     def clean_email(self):
         """
