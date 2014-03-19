@@ -53,14 +53,11 @@ NONCE_TIMEOUT = getattr(settings, 'SAML2_NONCE_TIMEOUT',
 # do we check id on SAML2 messages ?
 CHECKS_ID = getattr(settings, 'SAML2_CHECKS_ID', True)
 
-def get_soap_message(request, on_error_raise = True):
+def get_soap_message(request):
     '''Verify that POST content looks like a SOAP message and returns it'''
-    if request.method != 'POST' or \
-            'text/xml' not in request.META['CONTENT_TYPE']:
-       if on_error_raise:
-           raise Http404('Only SOAP messages here')
-       else:
-           return None
+    assert request.method == 'POST' \
+            and 'CONTENT_TYPE' in request.META \
+            and 'text/xml' in request.META['CONTENT_TYPE'], 'not a SOAP message'
     return request.raw_post_data
 
 def get_http_binding(request):
