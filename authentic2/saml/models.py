@@ -1,7 +1,5 @@
 import xml.etree.ElementTree as etree
 import hashlib
-import binascii
-import base64
 
 import lasso
 from django.db import models
