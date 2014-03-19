@@ -362,7 +362,7 @@ class LibertyProvider(models.Model):
     ca_cert_chain = models.TextField(blank=True)
     federation_source = models.CharField(max_length=64, blank=True, null=True)
 
-    objects = managers.GetBySlugManager()
+    objects = managers.LibertyProviderManager()
 
     def __unicode__(self):
         return self.name
