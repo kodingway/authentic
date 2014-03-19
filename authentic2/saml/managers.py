@@ -69,5 +69,17 @@ class LibertyProviderQueryset(GetBySlugQuerySet):
         entity_id_sha1 = binascii.hexlify(entity_id_sha1)
         return self.filter(entity_id_sha1=entity_id_sha1)
 
+    def idp_enabled(self):
+        return self.filter(identity_provider__enabled=True)
+
+    def sp_enabled(self):
+        return self.filter(service_provider__enabled=True)
+
+    def with_federation(self, user):
+        return self.filter(identity_provider__liberty_federation__user=user)
+
+    def without_federation(self, user):
+        return self.exclude(identity_provider__liberty_federation__user=user)
+
 LibertyProviderManager = managers.PassThroughManager \
         .for_queryset_class(LibertyProviderQueryset)
