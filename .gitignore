@@ -3,6 +3,7 @@ MANIFEST
 *.pyo
 *.db
 .*.swp
+cache/
 dist/
 static/
 doc/_build
