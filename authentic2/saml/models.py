@@ -598,8 +598,10 @@ class LibertySession(models.Model):
     django_session_key = models.CharField(max_length = 128)
     session_index = models.CharField(max_length = 80)
     provider_id = models.CharField(max_length = 256)
-    federation = models.ForeignKey(LibertyFederation, null = True)
-    assertion = models.ForeignKey(LibertyAssertion, null = True)
+    federation = models.ForeignKey(LibertyFederation, blank=True,
+            null = True)
+    assertion = models.ForeignKey(LibertyAssertion, blank=True, null
+            = True)
     name_id_qualifier = models.CharField(max_length = 256,
             verbose_name = _("Qualifier"), null = True)
     name_id_format = models.CharField(max_length = 100,
