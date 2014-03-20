@@ -20,7 +20,9 @@ PLUGIN_CACHE = {}
 class PluginError(Exception):
     pass
 
-def get_plugins(group_name='authentic2.plugin', use_cache=True, *args, **kwargs):
+DEFAULT_GROUP_NAME = 'authentic2.plugin'
+
+def get_plugins(group_name=DEFAULT_GROUP_NAME, use_cache=True, *args, **kwargs):
     '''Traverse all entry points for group_name and instantiate them using args
        and kwargs.
     '''
@@ -38,7 +40,8 @@ def get_plugins(group_name='authentic2.plugin', use_cache=True, *args, **kwargs)
     PLUGIN_CACHE[group_name] = plugins
     return plugins
 
-def register_plugins_urls(group_name, urlpatterns):
+def register_plugins_urls(urlpatterns,
+        group_name=DEFAULT_GROUP_NAME):
     '''Call get_before_urls and get_after_urls on all plugins providing them
        and add those urls to the given urlpatterns.
 
@@ -60,7 +63,7 @@ def register_plugins_urls(group_name, urlpatterns):
     after_patterns = patterns('', *after_urls)
     return before_patterns + urlpatterns + after_patterns
 
-def register_plugins_installed_apps(group_name, installed_apps):
+def register_plugins_installed_apps(installed_apps, group_name=DEFAULT_GROUP_NAME):
     '''Call get_apps() on all plugins of group_name and add the returned
        applications path to the installed_apps sequence. 
 
@@ -75,7 +78,8 @@ def register_plugins_installed_apps(group_name, installed_apps):
                     installed_apps.append(app)
     return installed_apps
 
-def register_plugins_middleware(group_name, middleware_classes):
+def register_plugins_middleware(middleware_classes,
+        group_name=DEFAULT_GROUP_NAME):
     middleware_classes = list(middleware_classes)
     for plugin in get_plugins(group_name):
         if hasattr(plugin, 'get_before_middleware'):

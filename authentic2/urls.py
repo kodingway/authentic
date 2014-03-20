@@ -50,4 +50,4 @@ if settings.DEBUG:
         url(r'^static/(?P<path>.*)$', 'serve'),
     )
 
-urlpatterns = plugins.register_plugins_urls('authentic2.plugin', urlpatterns)
+urlpatterns = plugins.register_plugins_urls(urlpatterns)

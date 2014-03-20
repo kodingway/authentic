@@ -121,8 +121,7 @@ MIDDLEWARE_CLASSES = (
     'authentic2.idp.middleware.DebugMiddleware'
 )
 
-MIDDLEWARE_CLASSES = plugins.register_plugins_middleware('authentic2.plugin',
-        MIDDLEWARE_CLASSES)
+MIDDLEWARE_CLASSES = plugins.register_plugins_middleware(MIDDLEWARE_CLASSES)
 
 ROOT_URLCONF = 'authentic2.urls'
 
@@ -156,8 +155,7 @@ INSTALLED_APPS = (
     'authentic2',
 )
 
-INSTALLED_APPS = plugins.register_plugins_installed_apps('authentic2.plugin',
-        INSTALLED_APPS)
+INSTALLED_APPS = plugins.register_plugins_installed_apps(INSTALLED_APPS)
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
