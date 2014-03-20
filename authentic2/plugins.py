@@ -94,3 +94,35 @@ def register_plugins_middleware(middleware_classes,
                     middleware_classes.append(app)
     return tuple(middleware_classes)
 
+def register_plugins_authentication_backends(authentication_backends,
+        group_name=DEFAULT_GROUP_NAME):
+    authentication_backends = list(authentication_backends)
+    for plugin in get_plugins(group_name):
+        if hasattr(plugin, 'get_authentication_backends'):
+            cls = plugin.get_authentication_backends()
+            for cls in cls:
+                if cls not in authentication_backends:
+                    authentication_backends.append(cls)
+    return tuple(authentication_backends)
+
+def register_plugins_auth_frontends(auth_frontends,
+        group_name=DEFAULT_GROUP_NAME):
+    auth_frontends = list(auth_frontends)
+    for plugin in get_plugins(group_name):
+        if hasattr(plugin, 'get_auth_frontends'):
+            cls = plugin.get_auth_frontends()
+            for cls in cls:
+                if cls not in auth_frontends:
+                    auth_frontends.append(cls)
+    return tuple(auth_frontends)
+
+def register_plugins_idp_backends(idp_backends,
+        group_name=DEFAULT_GROUP_NAME):
+    idp_backends = list(idp_backends)
+    for plugin in get_plugins(group_name):
+        if hasattr(plugin, 'get_idp_backends'):
+            cls = plugin.get_idp_backends()
+            for cls in cls:
+                if cls not in idp_backends:
+                    idp_backends.append(cls)
+    return tuple(idp_backends)

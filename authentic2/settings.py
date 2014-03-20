@@ -165,6 +165,8 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
+AUTHENTICATION_BACKENDS = plugins.register_plugins_authentication_backends(
+        AUTHENTICATION_BACKENDS)
 
 # sessions
 SESSION_EXPIRE_AT_BROWSER_CLOSE =  'SESSION_EXPIRE_AT_BROWSER_CLOSE' in os.environ
@@ -219,6 +221,7 @@ SHOW_DISCO_IN_MD = 'SHOW_DISCO_IN_MD' in os.environ
 
 # Only RSA private keys are currently supported
 AUTH_FRONTENDS = ( 'authentic2.auth_frontends.LoginPasswordBackend',)
+AUTH_FRONTENDS = plugins.register_plugins_auth_frontends(AUTH_FRONTENDS)
 SSLAUTH_CREATE_USER = 'SSLAUTH_CREATE_USER' in os.environ
 AUTHENTICATION_EVENT_EXPIRATION = int(os.environ.get('AUTHENTICATION_EVENT_EXPIRATION', 3600*24*7))
 
@@ -228,7 +231,7 @@ AUTHENTICATION_EVENT_EXPIRATION = int(os.environ.get('AUTHENTICATION_EVENT_EXPIR
 
 # List of IdP backends, mainly used to show available services in the homepage
 # of user, and to handle SLO for each protocols
-IDP_BACKENDS = [ ]
+IDP_BACKENDS = plugins.register_plugins_idp_backends(())
 
 # You MUST changes these keys, they are just for testing !
 LOCAL_METADATA_CACHE_TIMEOUT = int(os.environ.get('LOCAL_METADATA_CACHE_TIMEOUT', 600))
