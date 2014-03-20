@@ -612,7 +612,7 @@ class LibertySession(models.Model):
             verbose_name = _("SPNameQualifier"), null = True)
     creation = models.DateTimeField(auto_now_add=True)
 
-    objects = managers.SessionLinkedManager()
+    objects = managers.LibertySessionManager()
 
     def __init__(self, *args, **kwargs):
         saml2_assertion = kwargs.pop('saml2_assertion', None)

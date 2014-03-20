@@ -13,11 +13,11 @@ from django.utils.importlib import import_module
 
 from model_utils import managers
 
+from . import lasso_helper
 
 federation_delete = Signal()
 
-
-class SessionLinkedManager(models.Manager):
+class SessionLinkedQuerySet(QuerySet):
     def cleanup(self):
         engine = import_module(settings.SESSION_ENGINE)
         store = engine.SessionStore()
@@ -25,6 +25,9 @@ class SessionLinkedManager(models.Manager):
             key = o.django_session_key
             if not store.exists(key):
                 o.delete()
+
+SessionLinkedManager = managers.PassThroughManager \
+        .for_queryset_class(SessionLinkedQuerySet)
 
 class GetBySlugQuerySet(QuerySet):
     def get_by_natural_key(self, slug):
@@ -83,3 +86,16 @@ class LibertyProviderQueryset(GetBySlugQuerySet):
 
 LibertyProviderManager = managers.PassThroughManager \
         .for_queryset_class(LibertyProviderQueryset)
+
+class LibertySessionQuerySet(SessionLinkedQuerySet):
+    def to_session_dump(self):
+        sessions = self.values('provider_id',
+                'session_index',
+                'name_id_qualifier',
+                'name_id_format',
+                'name_id_content',
+                'name_id_sp_name_qualifier')
+        return lasso_helper.build_session_dump(sessions)
+
+LibertySessionManager = managers.PassThroughManager \
+        .for_queryset_class(LibertySessionQuerySet)
