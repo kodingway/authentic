@@ -126,3 +126,8 @@ def register_plugins_idp_backends(idp_backends,
                 if cls not in idp_backends:
                     idp_backends.append(cls)
     return tuple(idp_backends)
+
+def init():
+    for plugin in get_plugins():
+        if hasattr(plugin, 'init'):
+            plugin.init()
