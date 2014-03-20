@@ -133,3 +133,8 @@ settings')
         user.is_active = True
         user.save()
         return user
+
+    @classmethod
+    def get_saml2_authn_context(cls):
+        import lasso
+        return lasso.SAML2_AUTHN_CONTEXT_X509

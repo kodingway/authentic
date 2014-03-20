@@ -250,8 +250,6 @@ def build_assertion(request, login, nid_format='transient', attributes=None):
                 'authentic2.idp.auth_backends.LogginBackend',
                 'django_auth_ldap.backend.LDAPBackend'):
             authn_context = lasso.SAML2_AUTHN_CONTEXT_PASSWORD
-        elif backend == 'authentic2.auth2_auth.auth2_ssl.backend.SSLBackend':
-            authn_context = lasso.SAML2_AUTHN_CONTEXT_X509
         else:
             backend = load_backend(backend)
             if hasattr(backend, 'get_saml2_authn_context'):
