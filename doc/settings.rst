@@ -71,16 +71,6 @@ Values:
 * False: deactivate OpenID authentication
 * True: activate OpenID authentication
 
-Activate or deactivate one-time password authentication
-=======================================================
-
-Variable: AUTH_OATH
-
-Values:
-
-* False: deactivate one-time password authentication
-* True: activate one-time password authentication
-
 Activate or deactivate Authentic 2 as a SAML2 identity provider
 ===============================================================
 
