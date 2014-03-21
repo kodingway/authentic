@@ -75,7 +75,7 @@ default_settings = dict(
     A2_REGISTRATION_FORM_USERNAME_REGEX=Setting(default=r'^[\w.@+-]+$', definition='Regex to validate usernames'),
     A2_REGISTRATION_FORM_USERNAME_HELP_TEXT=Setting(default=_('Required. At most '
         '30 characters. Letters, digits, and @/./+/-/_ only.')),
-    A2_REGISTRATION_FORM_USERNAME_LABEL=Setting(default=_('username')),
+    A2_REGISTRATION_FORM_USERNAME_LABEL=Setting(default=_('Username')),
 )
 
 app_settings = AppSettings(default_settings)
