@@ -38,7 +38,8 @@ DEBUG_PROPAGATE_EXCEPTIONS = 'DEBUG_PROPAGATE_EXCEPTIONS' in os.environ
 USE_DEBUG_TOOLBAR = 'USE_DEBUG_TOOLBAR' in os.environ
 TEMPLATE_DEBUG = DEBUG
 
-PROJECT_PATH = os.path.join(os.path.dirname(__file__), '..')
+BASE_DIR = os.path.dirname(__file__)
+PROJECT_PATH = os.path.join(BASE_DIR, '..')
 PROJECT_NAME = 'authentic2'
 
 ADMINS = ()
@@ -80,10 +81,6 @@ USE_L10N = True
 
 STATIC_ROOT = os.environ.get('STATIC_ROOT', '/var/lib/%s/static' % PROJECT_NAME)
 STATIC_URL = os.environ.get('STATIC_URL', '/static/')
-if 'STATICFILES_DIRS' in os.environ:
-    STATICFILES_DIRS = os.environ['STATICFILES_DIRS'].split(':')
-else:
-    STATICFILES_DIRS = ('/var/lib/%s/extra-static/' % PROJECT_NAME,)
 
 if DEBUG:
     TEMPLATE_LOADERS = (
@@ -125,10 +122,23 @@ MIDDLEWARE_CLASSES = plugins.register_plugins_middleware(MIDDLEWARE_CLASSES)
 
 ROOT_URLCONF = 'authentic2.urls'
 
+VAR_DIR = os.path.join('/var/lib/', PROJECT_NAME)
+
+TEMPLATE_DIRS = (
+        os.path.join(VAR_DIR, 'templates'),
+        os.path.join(BASE_DIR, 'templates'),
+)
+
+STATICFILES_DIRS = (
+        os.path.join(VAR_DIR, 'extra-static'),
+        os.path.join(BASE_DIR, 'static'),
+)
+
 if os.environ.get('TEMPLATE_DIRS'):
-    TEMPLATE_DIRS = os.environ['TEMPLATE_DIRS'].split(':')
-else:
-    TEMPLATE_DIRS = ('/var/lib/%s/templates' % PROJECT_NAME,)
+    TEMPLATE_DIRS = tuple(os.environ['TEMPLATE_DIRS'].split(':')) + TEMPLATE_DIRS
+
+if os.environ.get('STATICFILES_DIRS'):
+    STATICFILES_DIRS = tuple(os.environ['STATICFILES_DIRS'].split(':')) + STATICFILES_DIRS
 
 
 INSTALLED_APPS = (
