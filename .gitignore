@@ -5,7 +5,7 @@ MANIFEST
 .*.swp
 cache/
 dist/
-static/
+./static/
 doc/_build
 authentic.egg-info
 local_settings.py
