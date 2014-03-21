@@ -77,6 +77,7 @@ default_settings = dict(
         '30 characters. Letters, digits, and @/./+/-/_ only.')),
     A2_REGISTRATION_FORM_USERNAME_LABEL=Setting(default=_('Username')),
     IDP_BACKENDS=[],
+    AUTH_FRONTENDS=[],
 )
 
 app_settings = AppSettings(default_settings)
