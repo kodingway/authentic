@@ -317,6 +317,16 @@ CACHES = {
 if 'CACHE_BACKEND' in os.environ:
     CACHES['default'] = json.loads(os.environ['CACHE_BACKEND'])
 
+if 'USE_MEMCACHED' in os.environ:
+    CACHES = {
+            'default': {
+                'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+                'LOCATION': '127.0.0.1:11211',
+                'KEY_PREFIX': 'authentic2',
+                }
+            }
+    SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+
 # Logging settings
 
 # add sentry handler if environment contains SENTRY_DSN
