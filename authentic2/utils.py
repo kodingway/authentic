@@ -14,8 +14,7 @@ from django.core.exceptions import ImproperlyConfigured
 from authentic2.saml.saml2utils import filter_attribute_private_key, \
     filter_element_private_key
 
-from . import plugins
-
+from . import plugins, app_settings
 
 class CleanLogMessage(logging.Filter):
     def filter(self, record):
@@ -170,7 +169,7 @@ def load_backend(path):
 def get_backends(setting_name='IDP_BACKENDS'):
     '''Return the list of IdP backends'''
     backends = []
-    for backend_path in getattr(settings, setting_name, ()):
+    for backend_path in getattr(app_settings, setting_name, ()):
         backends.append(load_backend(backend_path))
     return backends
 
