@@ -25,20 +25,20 @@ not_homepage_patterns += patterns('',
     url(r'^idp/', include('authentic2.idp.urls')),
 )
 
-if settings.AUTH_OPENID:
+if getattr(settings, 'AUTH_OPENID', False):
     not_homepage_patterns += patterns('',
         (r'^accounts/openid/',
             include('authentic2.auth2_auth.auth2_openid.urls')),
     )
 
-if settings.AUTH_SSL:
+if getattr(settings, 'AUTH_SSL', False):
     not_homepage_patterns += patterns('',
         url(r'^accounts/sslauth/', include('authentic2.auth2_auth.auth2_ssl.urls')))
 
 urlpatterns += not_homepage_patterns
 
 try:
-    if settings.DISCO_SERVICE:
+    if getattr(settings, 'DISCO_SERVICE', False):
         urlpatterns += patterns('',
             (r'^disco_service/', include('disco_service.disco_responder')),
         )

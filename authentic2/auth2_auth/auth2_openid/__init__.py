@@ -33,7 +33,7 @@ def LogAssociatedOI(sender, user, openid, **kwargs):
     msg = user.username + ' has associated his user with ' + openid
     logging.info(msg)
 
-if settings.AUTH_OPENID:
+if getattr(settings, 'AUTH_OPENID', False):
     from django_authopenid.signals import oid_register
     from django_authopenid.signals import oid_associate
     oid_register.connect(LogRegisteredOI, dispatch_uid = "authentic2.idp")
