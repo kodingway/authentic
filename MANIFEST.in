@@ -2,7 +2,7 @@ recursive-include data *
 recursive-include tests *
 
 # static
-recursive-include authentic2/idp/static *.css *.js *.ico *.gif *.png *.jpg
+recursive-include authentic2/static *.css *.js *.ico *.gif *.png *.jpg
 recursive-include authentic2/auth2_auth/auth2_openid/static *.css *.js *.ico *.gif *.png *.jpg
 
 # templates
