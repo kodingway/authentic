@@ -40,7 +40,7 @@ from django.contrib.auth import load_backend
 
 from authentic2.compat import get_user_model
 import authentic2.idp as idp
-import authentic2.idp.views as idp_views
+import authentic2.views as a2_views
 from authentic2.idp.models import get_attribute_policy
 from authentic2.saml.models import LibertyAssertion, LibertyArtifact, \
     LibertySession, LibertyFederation, LibertySessionDump, \
@@ -1374,7 +1374,7 @@ def slo(request):
     # Save some values for cleaning up
     save_key_values(logout.request.id, logout.dump(),
             request.session.session_key)
-    return idp_views.redirect_to_logout(request, next_page='%s?id=%s' %
+    return a2_views.redirect_to_logout(request, next_page='%s?id=%s' %
             (reverse(finish_slo), urllib.quote(logout.request.id)))
 
 
