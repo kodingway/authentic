@@ -71,3 +71,8 @@ class FederatedIdManager(managers.PassThroughManager \
                     'id_format': id_format,
                     'id_value': id_value})
 
+class AttributeValueQuerySet(QuerySet):
+    pass
+
+AttributeValueManager = managers.PassThroughManager \
+        .for_queryset_class(AttributeValueQuerySet)

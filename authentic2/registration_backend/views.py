@@ -42,6 +42,11 @@ class RegistrationView(BaseRegistrationView):
         new_user.clean()
         new_user.set_password(cleaned_data['password1'])
         new_user.save()
+        attributes = models.Attribute.objects.filter(
+                asked_on_registration=True)
+        if attributes:
+            for attribute in attributes:
+                attribute.set_value(new_user, cleaned_data[attribute.name])
         registration_profile = RegistrationProfile.objects.create_profile(new_user)
         registration_profile.send_activation_email(site)
 

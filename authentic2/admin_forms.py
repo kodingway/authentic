@@ -1,21 +1,23 @@
-from django import forms
-
-
-from django.contrib.auth.forms import UserChangeForm as AuthUserChangeForm, UserCreationForm as AuthUserCreationForm
-
+from django.core.exceptions import ValidationError
+from django.contrib.auth.forms import (UserChangeForm as
+        AuthUserChangeForm, UserCreationForm as
+        AuthUserCreationForm)
 
 from authentic2.compat import get_user_model
 
+from . import forms
 
-class UserChangeForm(AuthUserChangeForm):
+class UserChangeForm(forms.UserAttributeFormMixin,
+        AuthUserChangeForm):
+
     class Meta(AuthUserChangeForm.Meta):
         model = get_user_model()
 
+class UserCreationForm(forms.UserAttributeFormMixin,
+        AuthUserCreationForm):
 
-class UserCreationForm(AuthUserCreationForm):
     class Meta(AuthUserCreationForm.Meta):
         model = get_user_model()
-
 
     def clean_username(self):
         # Since User.username is unique, this check is redundant,
@@ -26,4 +28,4 @@ class UserCreationForm(AuthUserCreationForm):
             User._default_manager.get(username=username)
         except User.DoesNotExist:
             return username
-        raise forms.ValidationError(self.error_messages['duplicate_username'])
+        raise ValidationError(self.error_messages['duplicate_username'])

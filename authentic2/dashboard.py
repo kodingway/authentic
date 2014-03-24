@@ -43,7 +43,8 @@ class CustomIndexDashboard(Dashboard):
         self.children.append(modules.ModelList(
             _('Users and groups'),
             models=('authentic2.models.User',
-                'django.contrib.auth.models.*'),
+                'django.contrib.auth.models.*',
+                'authentic2.models.Attribute'),
         ))
         self.children.append(modules.ModelList(
             _('SAML2'),

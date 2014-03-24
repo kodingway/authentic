@@ -1,18 +1,17 @@
+from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
-from django import forms
+from django.forms import Form, CharField, PasswordInput
 
 
-from .. import app_settings, compat
+from .. import app_settings, compat, forms
 
 
-class RegistrationForm(forms.Form):
+class RegistrationForm(forms.UserAttributeFormMixin, Form):
     error_css_class = 'form-field-error'
     required_css_class = 'form-field-required'
 
-    password1 = forms.CharField(widget=forms.PasswordInput,
-                                label=_("Password"))
-    password2 = forms.CharField(widget=forms.PasswordInput,
-                                label=_("Password (again)"))
+    password1 = CharField(widget=PasswordInput, label=_("Password"))
+    password2 = CharField(widget=PasswordInput, label=_("Password (again)"))
 
     def __init__(self, *args, **kwargs):
         """
@@ -47,7 +46,7 @@ class RegistrationForm(forms.Form):
         User = compat.get_user_model()
         existing = User.objects.filter(username__iexact=self.cleaned_data['username'])
         if existing.exists():
-            raise forms.ValidationError(_("A user with that username already exists."))
+            raise ValidationError(_("A user with that username already exists."))
         else:
             return self.cleaned_data['username']
 
@@ -58,7 +57,7 @@ class RegistrationForm(forms.Form):
         User = compat.get_user_model()
         if app_settings.A2_REGISTRATION_EMAIL_IS_UNIQUE:
             if User.objects.filter(email__iexact=self.cleaned_data['email']):
-                raise forms.ValidationError(_('This email address is already in '
+                raise ValidationError(_('This email address is already in '
                     'use. Please supply a different email address.'))
         return self.cleaned_data['email']
 
@@ -71,5 +70,5 @@ class RegistrationForm(forms.Form):
         """
         if 'password1' in self.cleaned_data and 'password2' in self.cleaned_data:
             if self.cleaned_data['password1'] != self.cleaned_data['password2']:
-                raise forms.ValidationError(_("The two password fields didn't match."))
+                raise ValidationError(_("The two password fields didn't match."))
         return self.cleaned_data

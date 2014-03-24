@@ -4,6 +4,8 @@ import urlparse
 
 from django.core.exceptions import ImproperlyConfigured
 from django.utils import timezone
+from django.utils.http import urlquote
+from django.conf import settings
 from django.core import validators
 from django.db import models
 from django.core.mail import send_mail
@@ -11,8 +13,12 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import (AbstractBaseUser, PermissionsMixin,
         BaseUserManager, SiteProfileNotAvailable)
 from django.contrib.auth import load_backend
-from django.utils.http import urlquote
-from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
+
+from model_utils.managers import QueryManager
+
+from . import attribute_kinds
+
 
 try:
     from django.contrib.contenttypes.fields import GenericForeignKey
@@ -248,3 +254,82 @@ class FederatedId(models.Model):
     id_value = models.TextField()
 
     objects = managers.FederatedIdManager()
+
+class Attribute(models.Model):
+    label = models.CharField(verbose_name=_('label'), max_length=63,
+            unique=True)
+    description = models.TextField(verbose_name=_('description'), blank=True)
+    name = models.SlugField(verbose_name=_('name'), max_length=256,
+            unique=True)
+    required = models.BooleanField(
+            verbose_name=_('required'),
+            blank=True)
+    asked_on_registration = models.BooleanField(
+            verbose_name=_('asked on registration'),
+            blank=True)
+    user_editable = models.BooleanField(
+            verbose_name=_('user editable'),
+            blank=True)
+    user_visible = models.BooleanField(
+            verbose_name=_('user visible'),
+            blank=True)
+    multiple = models.BooleanField(
+            verbose_name=_('multiple'),
+            blank=True)
+    kind = models.CharField(max_length=16,
+            verbose_name=_('kind'),
+            choices=attribute_kinds.get_choices())
+
+    objects = models.Manager()
+    registration_attributes = QueryManager(asked_on_registration=True)
+    user_attributes = QueryManager(user_editable=True)
+
+    def get_form_field(self, **kwargs):
+        kwargs['label'] = self.label
+        kwargs['required'] = self.required
+        if self.description:
+            kwargs['help_text'] = self.description
+        return attribute_kinds.get_form_field(self.kind, **kwargs)
+
+    def get_kind(self):
+        return attribute_kinds.get_kind(self.kind)
+
+    def contribute_to_form(self, form, **kwargs):
+        form.fields[self.name] = self.get_form_field(**kwargs)
+
+    def set_value(self, owner, value):
+        serialize = self.get_kind()['serialize']
+        content = serialize(value)
+        av, created = AttributeValue.objects.get_or_create(
+                content_type=ContentType.objects.get_for_model(owner),
+                object_id=owner.pk,
+                attribute=self,
+                defaults={'content': content})
+        if not created:
+            av.content = content
+            av.save()
+
+    def __unicode__(self):
+        return self.label
+
+    class Meta:
+        verbose_name = _('attribute definition')
+        verbose_name_plural = _('attribute definitions')
+
+class AttributeValue(models.Model):
+    content_type = models.ForeignKey('contenttypes.ContentType')
+    object_id = models.PositiveIntegerField()
+    owner = GenericForeignKey('content_type', 'object_id')
+
+    attribute = models.ForeignKey('Attribute',
+            verbose_name=_('attribute'))
+
+    content = models.TextField(verbose_name=_('content'))
+
+    def to_python(self):
+        deserialize = self.attribute.get_kind()['deserialize']
+        return deserialize(self.content)
+
+    class Meta:
+        verbose_name = _('attribute value')
+        verbose_name_plural = _('attribute values')
