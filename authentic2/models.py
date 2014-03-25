@@ -13,7 +13,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import (AbstractBaseUser, PermissionsMixin,
         BaseUserManager, SiteProfileNotAvailable)
 from django.contrib.auth import load_backend
-from django.contrib.contenttypes.models import ContentType
 
 from model_utils.managers import QueryManager
 
@@ -328,6 +327,8 @@ class AttributeValue(models.Model):
             verbose_name=_('attribute'))
 
     content = models.TextField(verbose_name=_('content'))
+
+    objects = managers.AttributeValueManager()
 
     def to_python(self):
         deserialize = self.attribute.get_kind()['deserialize']

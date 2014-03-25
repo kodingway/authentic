@@ -7,6 +7,7 @@ from django.db.models.query import QuerySet
 from django.utils.timezone import now
 from django.utils.http import urlquote
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 
 from model_utils import managers
 
@@ -79,7 +80,10 @@ class FederatedIdManager(managers.PassThroughManager \
                     'id_value': id_value})
 
 class AttributeValueQuerySet(QuerySet):
-    pass
+    def with_owner(self, owner):
+        content_type = ContentType.objects.get_for_model(owner)
+        return self.filter(content_type=content_type, object_id=owner.pk)
+
 
 AttributeValueManager = managers.PassThroughManager \
         .for_queryset_class(AttributeValueQuerySet)
