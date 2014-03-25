@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-07 18:39+0100\n"
-"PO-Revision-Date: 2013-11-08 15:44+0100\n"
+"POT-Creation-Date: 2014-03-24 17:33+0100\n"
+"PO-Revision-Date: 2014-03-25 10:19+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
 "Language: fr\n"
@@ -17,15 +17,22 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n>1;\n"
 
-#: admin.py:22
+#: __init__.py:27
+#, python-format
+msgid ""
+"Required, %s characters or fewer. Only letters, numbers, and @, ., +, -, or "
+"_ characters."
+msgstr ""
+
+#: admin.py:33
 msgid "Personal info"
 msgstr "Informations personnelles"
 
-#: admin.py:25
+#: admin.py:36
 msgid "Permissions"
 msgstr ""
 
-#: admin.py:27
+#: admin.py:38
 msgid "Important dates"
 msgstr "Dates importantes"
 
@@ -35,67 +42,73 @@ msgstr ""
 "Requis. 30 caractères maximum. Uniquement des lettres, nombres et les "
 "caractères « @ », « . », « + », « - » et « _ »."
 
-#: app_settings.py:78 models.py:53
-msgid "username"
+#: app_settings.py:78
+msgid "Username"
 msgstr "Identifiant"
 
-#: dashboard.py:28
+#: attribute_kinds.py:14
+msgid "string"
+msgstr "chaîne de caractère"
+
+#: auth_frontends.py:13 forms.py:33
+msgid "Password"
+msgstr "Mot de passe"
+
+#: dashboard.py:29
 msgid "Quick links"
 msgstr "Raccourcis"
 
-#: dashboard.py:34
+#: dashboard.py:35
 msgid "Return to site"
 msgstr "Retourner au site"
 
-#: dashboard.py:35
+#: dashboard.py:36
 msgid "Change password"
 msgstr "Modifier votre mot de passe"
 
-#: dashboard.py:37
+#: dashboard.py:38
 msgid "Log out"
 msgstr "Déconnecté"
 
-#: dashboard.py:43
+#: dashboard.py:44
 msgid "Users and groups"
 msgstr "Utilisateurs et groupes"
 
-#: dashboard.py:48
-msgid "Services"
-msgstr "Services"
+#: dashboard.py:49
+msgid "SAML2"
+msgstr ""
 
-#: dashboard.py:61 dashboard.py:101
+#: dashboard.py:67 dashboard.py:107
 msgid "Recent Actions"
 msgstr ""
 
-#: dashboard.py:65
+#: dashboard.py:71
 msgid "Support"
 msgstr ""
 
-#: dashboard.py:68
+#: dashboard.py:74
 msgid "Authentic2 documentation"
 msgstr "Documentation sur authentic2"
 
-#: dashboard.py:73
+#: dashboard.py:79
 msgid "Authentic2 project"
 msgstr "Projet Authentic2"
 
-#: dashboard.py:78
+#: dashboard.py:84
 msgid "Authentic Mailing List"
 msgstr "List de diffusion sur Authentic"
-
-#: forms.py:33
-#, fuzzy
-msgid "Password"
-msgstr "Mot de passe modifié"
 
 #: forms.py:35
 msgid "New email"
 msgstr "Nouveau courriel"
 
 #: forms.py:45
-#, fuzzy
 msgid "Incorrect password."
-msgstr "Modifier votre mot de passe"
+msgstr "Mot de passe incorrect."
+
+#: forms.py:59 models.py:89
+msgid "users"
+msgstr "utilisateurs"
 
 #: hashers.py:80 hashers.py:109
 msgid "algorithm"
@@ -117,79 +130,169 @@ msgstr "condensé"
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
+#: models.py:66
+msgid "username"
+msgstr "Identifiant"
+
 # already translated by django, do nothing
-#: models.py:54
+#: models.py:67
 msgid ""
 "Required. 30 characters or fewer. Letters, numbers and @/./+/-/_ characters"
 msgstr ""
 
-#: models.py:57
+#: models.py:70
 msgid "Enter a valid username."
 msgstr "Entrez un identifiant valide."
 
-#: models.py:59
+#: models.py:72
 msgid "staff status"
 msgstr "statut équipe"
 
-#: models.py:60
+#: models.py:73
 msgid "Designates whether the user can log into this admin site."
 msgstr "Indique si l'utilisateur peut accéder aux pages d'administration"
 
-#: models.py:62
+#: models.py:75
 msgid "active"
 msgstr "actif"
 
-#: models.py:63
+#: models.py:76
 msgid ""
 "Designates whether this user should be treated as active. Unselect this "
 "instead of deleting accounts."
 msgstr ""
 
-#: models.py:65
+#: models.py:78
 msgid "date joined"
 msgstr ""
 
-#: models.py:75 models.py:183
+#: models.py:88 models.py:196
 msgid "user"
 msgstr "utilisateur"
 
-#: models.py:76
-msgid "users"
-msgstr "utilisateurs"
-
-#: models.py:178
+#: models.py:191
 msgid "user to delete"
-msgstr ""
+msgstr "utilisateur à effacer"
 
-#: models.py:179
+#: models.py:192
 msgid "users to delete"
-msgstr ""
+msgstr "utilisateurs à effacer"
 
-#: models.py:185
+#: models.py:198
 msgid "source"
 msgstr ""
 
-#: models.py:187
+#: models.py:200
 msgid "external id"
-msgstr ""
+msgstr "identifiant externe"
 
-#: models.py:192
+#: models.py:205
 msgid "user external id"
-msgstr ""
+msgstr "identifiant externe d'un utilisateur"
 
-#: models.py:193
+#: models.py:206
 msgid "user external ids"
+msgstr "identifiants externes des utilisateurs"
+
+#: models.py:218
+#, python-format
+msgid "Authentication of %(who)s by %(how)s at %(when)s"
+msgstr "Authentification de %(who)s par %(how)s à %(when)s"
+
+#: models.py:222
+msgid "url"
 msgstr ""
 
-#: settings.py:71
+#: models.py:222
+msgid ""
+"you can use a {} to pass the URL of the success icon, ex.: http://example."
+"com/logout?next={}"
+msgstr ""
+"vous pouvez utiliser la chaîne {} pour passer l'URL de l'icône de succès,  "
+"ex.: http://example.com/logout?next={}"
+
+#: models.py:226
+msgid "use an iframe instead of an img tag for logout"
+msgstr "utiliser une iframe au lieu d'un tag img pour la déconnexion"
+
+#: models.py:228
+msgid "iframe logout timeout (ms)"
+msgstr "temps d'expiration pour les iframe de déconnexion (en ms)"
+
+#: models.py:229
+msgid ""
+"if iframe logout is used, it's the time between the onload event for this "
+"iframe and the moment we consider its loading to be really finished"
+msgstr ""
+"si la déconnexion est utilisées, c'est le temps entre l'émission de "
+"l'évènement onload pour cette iframe et le moment où l'on peut considérer "
+"que le chargement vraiment terminé."
+
+#: models.py:258
+msgid "label"
+msgstr "label"
+
+#: models.py:259
+msgid "description"
+msgstr ""
+
+#: models.py:260
+msgid "name"
+msgstr "identifiant"
+
+#: models.py:262
+msgid "required"
+msgstr "requis"
+
+#: models.py:265
+msgid "asked on registration"
+msgstr "demandé à l'enregistrement"
+
+#: models.py:268
+msgid "user editable"
+msgstr "éditable par l'utilisateur"
+
+#: models.py:271
+msgid "user visible"
+msgstr "visible de l'utilisateur"
+
+#: models.py:274
+msgid "multiple"
+msgstr ""
+
+#: models.py:277
+msgid "kind"
+msgstr "type"
+
+#: models.py:287 models.py:296
+msgid "attribute definition"
+msgstr "définition d'un attribut"
+
+#: models.py:288
+msgid "attribute definitions"
+msgstr "définition des attributs"
+
+#: models.py:298
+msgid "content"
+msgstr "contenu"
+
+#: models.py:301
+msgid "attribute value"
+msgstr "valeur d'un attribut"
+
+#: models.py:302
+msgid "attribute values"
+msgstr "valeurs des attributs"
+
+#: settings.py:75
 msgid "English"
 msgstr "Anglais"
 
-#: settings.py:72
+#: settings.py:76
 msgid "French"
 msgstr "Français"
 
-#: views.py:164
+#: views.py:174
 msgid ""
 "Your request for changing your email is received. An email of validation was "
 "sent to you. Please click on the link contained inside."
@@ -198,26 +301,38 @@ msgstr ""
 "courriel de validation vous a été envoyé. Veuillez cliquer sur le lien "
 "contenu dans ce courriel."
 
-#: views.py:187
+#: views.py:197
 msgid "your request for changing your email for {0} is successful"
 msgstr "Votre demande de changement d'adresse de courriel pour {0} est validée"
 
-#: views.py:190
+#: views.py:200
 msgid "your request for changing your email is too old, try again"
 msgstr ""
 "Votre demande de changement d'adresse de courriel est trop ancienne, "
 "veuillez réessayez"
 
-#: views.py:193
+#: views.py:203
 msgid "your request for changing your email is invalid, try again"
 msgstr ""
 "Votre demande de changement d'adresse de courriel est invalide, veuillez "
 "réessayer"
 
-#: views.py:196
+#: views.py:206
 msgid "your request for changing your email was not on this site, try again"
 msgstr ""
+"Votre demande de changement d'adresse de courriel vient d'un autre site que "
+"celui-ci."
 
-#: views.py:199
+#: views.py:209
 msgid "your request for changing your email is for an unknown user, try again"
 msgstr ""
+"Votre demande de changement d'adresse de courriel concerne un utilisateur "
+"inconnu."
+
+#: views.py:383
+msgid "Logging out from all your services"
+msgstr "Déconnexion de tous vos services"
+
+#: views.py:388
+msgid "Logged out"
+msgstr "Déconnecté"
