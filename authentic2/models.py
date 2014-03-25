@@ -280,7 +280,7 @@ class Attribute(models.Model):
             verbose_name=_('kind'),
             choices=attribute_kinds.get_choices())
 
-    objects = models.Manager()
+    objects = managers.GetByNameManager()
     registration_attributes = QueryManager(asked_on_registration=True)
     user_attributes = QueryManager(user_editable=True)
 
@@ -308,6 +308,9 @@ class Attribute(models.Model):
         if not created:
             av.content = content
             av.save()
+
+    def natural_key(self):
+        return (self.name,)
 
     def __unicode__(self):
         return self.label

@@ -12,6 +12,13 @@ from model_utils import managers
 
 logger = logging.getLogger(__name__)
 
+class GetByNameQuerySet(QuerySet):
+    def get_by_natural_key(self, name):
+        return self.get(name=name)
+
+GetByNameManager = managers.PassThroughManager.for_queryset_class(
+        GetByNameQuerySet)
+
 class DeletedUserManager(models.Manager):
     def delete_user(self, user):
         user.is_active = False
