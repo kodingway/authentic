@@ -4,10 +4,10 @@ from django.contrib import admin
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.admin import GroupAdmin, UserAdmin
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import Group
 
 from .nonce.models import Nonce
-from . import forms, models, admin_forms
+from . import forms, models, admin_forms, compat
 
 if settings.DEBUG:
     class NonceModelAdmin(admin.ModelAdmin):
@@ -56,6 +56,7 @@ class AuthenticUserAdmin(UserAdmin):
                     (_('Attributes'), {'fields': [at.name for at in qs]}))
         return fieldsets
 
+User = compat.get_user_model()
 admin.site.unregister(User)
 admin.site.register(User, AuthenticUserAdmin)
 

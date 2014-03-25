@@ -17,7 +17,7 @@ from django.core.urlresolvers import reverse
 from admin_tools.dashboard import modules, Dashboard, AppIndexDashboard
 from admin_tools.utils import get_admin_site_name
 
-from . import plugins
+from . import plugins, compat
 
 class CustomIndexDashboard(Dashboard):
     """
@@ -41,9 +41,11 @@ class CustomIndexDashboard(Dashboard):
         ))
 
         # append an app list module for "Applications"
+        User = compat.get_user_model()
+        user_class = '{0}.{1}'.format(User.__module__, User.__name__)
         self.children.append(modules.ModelList(
             _('Users and groups'),
-            models=('authentic2.models.User',
+            models=(user_class,
                 'django.contrib.auth.models.*',
                 'authentic2.models.Attribute'),
         ))
