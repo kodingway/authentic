@@ -11,6 +11,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'vendor'))
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import MaxLengthValidator
 from django.db.models.signals import class_prepared
+from django.db.models import FieldDoesNotExist
 
 MAX_USERNAME_LENGTH = 255
 
@@ -21,7 +22,10 @@ def longer_username_signal(sender, *args, **kwargs):
 class_prepared.connect(longer_username_signal)
 
 def patch_user_model(model):
-    field = model._meta.get_field("username")
+    try:
+        field = model._meta.get_field("username")
+    except FieldDoesNotExist:
+        return
 
     field.max_length = MAX_USERNAME_LENGTH
     field.help_text = _("Required, %s characters or fewer. Only letters, "
