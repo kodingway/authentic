@@ -39,7 +39,7 @@ class AppSettings(object):
         if hasattr(self.settings, key):
             return getattr(self.settings, key)
         if self.defaults[key].names:
-            for other_key in self.defaults[other_key].names:
+            for other_key in self.defaults[key].names:
                 if hasattr(self.settings, other_key):
                     return getattr(self.settings, other_key)
         if self.defaults[key].has_default():
