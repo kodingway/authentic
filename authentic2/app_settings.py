@@ -70,6 +70,13 @@ class AppSettings(object):
 
 # Registration
 default_settings = dict(
+    ATTRIBUTE_BACKENDS = Setting(
+        names=('A2_ATTRIBUTE_BACKENDS',),
+        default=('authentic2.attributes_ng.sources.format',
+                 'authentic2.attributes_ng.sources.function',
+                 'authentic2.attributes_ng.sources.django_user',),
+        definition='List of attribute backend classes or modules',
+    ),
     CAFILE = Setting(names=('AUTHENTIC2_CAFILE', 'CAFILE'),
             default='/etc/ssl/certs/ca-certificates.crt',
             definition='File containing certificate chains as PEM certificates'),
