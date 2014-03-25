@@ -79,10 +79,10 @@ class LibertyProviderQueryset(GetBySlugQuerySet):
         return self.filter(service_provider__enabled=True)
 
     def with_federation(self, user):
-        return self.filter(identity_provider__liberty_federation__user=user)
+        return self.filter(identity_provider__libertyfederation__user=user)
 
     def without_federation(self, user):
-        return self.exclude(identity_provider__liberty_federation__user=user)
+        return self.exclude(identity_provider__libertyfederation__user=user)
 
 LibertyProviderManager = managers.PassThroughManager \
         .for_queryset_class(LibertyProviderQueryset)
