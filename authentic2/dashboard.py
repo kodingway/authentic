@@ -10,6 +10,7 @@ And to activate the app index dashboard::
     ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'authentic2.dashboard.CustomAppIndexDashboard'
 """
 
+from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 
@@ -58,6 +59,18 @@ class CustomIndexDashboard(Dashboard):
                 'authentic2.attribute_aggregator.models.AttributeSource',
             ),
         ))
+        if settings.DEBUG:
+            self.children.append(modules.ModelList(
+                _('Debug'),
+                models=(
+                    'authentic2.models.AttributeValue',
+                    'authentic2.nonce.models.Nonce',
+                    'authentic2.models.FederatedId',
+                    'authentic2.models.LogoutUrl',
+                    'authentic2.models.AuthenticationEvent',
+                    'Authentic2.models.UserExternalId',
+                ),
+            ))
         for plugin in plugins.get_plugins():
             if hasattr(plugin, 'get_admin_modules') and callable(plugin.get_admin_modules):
                 plugin_modules = plugin.get_admin_modules()
