@@ -15,3 +15,9 @@ def prevent_access_to_transient_users(view_func):
                 return HttpResponseRedirect('/')
         return view_func(request, *args, **kwargs)
     return login_required(wraps(view_func)(_wrapped_view))
+
+def to_list(func):
+    @wraps(func)
+    def f(*args, **kwargs):
+        return list(func(*args, **kwargs))
+    return f
