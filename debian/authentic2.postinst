@@ -55,7 +55,7 @@ case "$1" in
         fi
 
         echo -n "Generating static files.." >&2
-        su authentic -p -c "/usr/bin/authentic2-ctl collectstatic --noinput --link" >&2
+        su authentic -p -c "/usr/bin/authentic2-ctl collectstatic --noinput --traceback" >&2
         echo "..done" >&2
         ;;
 
