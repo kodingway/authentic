@@ -32,6 +32,11 @@ class AppSettings(object):
             self._settings = settings
         return self._settings
 
+    @property
+    def ACCEPT_EMAIL_AUTHENTICATION(self):
+        return getattr(self.settings,
+                'A2_ACCEPT_EMAIL_AUTHENTICATION', False)
+
 
     def __getattr__(self, key):
         if key not in self.defaults:
