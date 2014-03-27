@@ -382,6 +382,11 @@ for key in os.environ:
              pass
         globals()[setting_key] = value
 
+# Remove after Django 1.7
+SERIALIZATION_MODULES = {
+        'json': 'authentic2.serializers',
+}
+
 try:
     from local_settings import *
 except ImportError, e:
