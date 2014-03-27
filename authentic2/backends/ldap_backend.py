@@ -18,7 +18,7 @@ from django.conf import settings
 from django.contrib.auth.models import Group, Permission
 from django.db import IntegrityError
 
-from .cache import get_shared_cache
+from ..cache import get_shared_cache
 
 try:
     import lasso
@@ -26,10 +26,10 @@ except ImportError:
     pass
 
 
-from .compat import get_user_model
+from ..compat import get_user_model
 
 
-from .models import UserExternalId
+from ..models import UserExternalId
 
 _DEFAULTS = {
     'binddn': None,
