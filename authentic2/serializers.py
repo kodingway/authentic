@@ -1,4 +1,5 @@
 import json
+import sys
 
 from django.utils import six
 from django.core.serializers.json import Serializer as JSONSerializer
@@ -26,8 +27,12 @@ def Deserializer(stream_or_string, **options):
         for obj in objects:
             Model = _get_model(obj['model'])
             if isinstance(obj['pk'], (tuple, list)):
-                o = Model.objects.get_by_natural_key(*obj['pk'])
-                obj['pk'] = o.pk
+                try:
+                    o = Model.objects.get_by_natural_key(*obj['pk'])
+                except Model.DoesNotExist:
+                    obj['pk'] = None
+                else:
+                    obj['pk'] = o.pk
         for obj in PythonDeserializer(objects, **options):
             yield obj
     except GeneratorExit:
