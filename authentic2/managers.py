@@ -13,6 +13,13 @@ from model_utils import managers
 
 logger = logging.getLogger(__name__)
 
+class GetBySlugQuerySet(QuerySet):
+    def get_by_natural_key(self, slug):
+        return self.get(slug=slug)
+
+GetBySlugManager = managers.PassThroughManager \
+        .for_queryset_class(GetBySlugQuerySet)
+
 class GetByNameQuerySet(QuerySet):
     def get_by_natural_key(self, name):
         return self.get(name=name)

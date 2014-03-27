@@ -14,6 +14,7 @@ from django.utils.importlib import import_module
 from model_utils import managers
 
 from . import lasso_helper
+from ..managers import GetBySlugQuerySet
 
 federation_delete = Signal()
 
@@ -28,13 +29,6 @@ class SessionLinkedQuerySet(QuerySet):
 
 SessionLinkedManager = managers.PassThroughManager \
         .for_queryset_class(SessionLinkedQuerySet)
-
-class GetBySlugQuerySet(QuerySet):
-    def get_by_natural_key(self, slug):
-        return self.get(slug=slug)
-
-GetBySlugManager = managers.PassThroughManager \
-        .for_queryset_class(GetBySlugQuerySet)
 
 class LibertyAssertionManager(models.Manager):
     def cleanup(self):
