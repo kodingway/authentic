@@ -32,6 +32,7 @@ from django.http import HttpResponse, HttpResponseRedirect, \
     HttpResponseForbidden, HttpResponseBadRequest, Http404
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.cache import never_cache
 from django.contrib.auth import BACKEND_SESSION_KEY
 from django.conf import settings
 from django.utils.encoding import smart_unicode
@@ -323,6 +324,7 @@ def build_assertion(request, login, nid_format='transient', attributes=None):
     register_new_saml2_session(request, login)
 
 
+@never_cache
 @csrf_exempt
 def sso(request):
     """Endpoint for receiving saml2:AuthnRequests by POST, Redirect or SOAP.
@@ -486,6 +488,7 @@ def need_consent_for_attributes(request, login, consent_obtained, save,
     return HttpResponseRedirect(url)
 
 
+@never_cache
 def continue_sso(request):
     consent_answer = None
     consent_attribute_answer = None
@@ -873,6 +876,7 @@ def reload_artifact(login):
         pass
 
 
+@never_cache
 @csrf_exempt
 def artifact(request):
     '''Resolve a SAMLv2 ArtifactResolve request
@@ -915,6 +919,7 @@ def check_delegated_authentication_permission(request):
     return request.user.is_superuser()
 
 
+@never_cache
 @csrf_exempt
 @login_required
 def idp_sso(request, provider_id=None, user_id=None, nid_format=None,
@@ -998,6 +1003,7 @@ def idp_sso(request, provider_id=None, user_id=None, nid_format=None,
             nid_format=nid_format, return_profile=return_profile)
 
 
+@never_cache
 def finish_slo(request):
     id = request.REQUEST.get('id')
     if not id:
@@ -1178,6 +1184,7 @@ def set_session_dump_from_liberty_sessions(profile, lib_sessions):
         % profile.session.dump())
 
 
+@never_cache
 @csrf_exempt
 def slo_soap(request):
     """Endpoint for receiveing saml2:AuthnRequest by SOAP"""
@@ -1292,6 +1299,7 @@ def slo_soap(request):
         title=_('You are being redirected to "%s"') % provider.name)
 
 
+@never_cache
 @csrf_exempt
 def slo(request):
     """Endpoint for receiving SLO by POST, Redirect.
@@ -1389,6 +1397,7 @@ def ok_icon(request):
         % settings.STATIC_URL)
 
 
+@never_cache
 @csrf_exempt
 @login_required
 def idp_slo(request, provider_id=None):
@@ -1491,6 +1500,7 @@ def process_logout_response(request, logout, soap_response, next):
     return redirect_next(request, next) or ok_icon(request)
 
 
+@never_cache
 def slo_return(request):
     next = None
     logger.info('return from redirect')
