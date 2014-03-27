@@ -388,6 +388,8 @@ except ImportError, e:
     if 'local_settings' in e.args[0]:
         pass
 
+from . import fix_username_length
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
