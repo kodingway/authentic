@@ -76,6 +76,8 @@ _DEFAULTS = {
     'mandatory_attributes_values': {},
     # mapping from LDAP attributes name to other names
     'attribute_mappings': [],
+    # realm for selecting an ldap configuration or formatting usernames
+    'realm': 'ldap',
 }
 
 _REQUIRED = ('url', 'basedn')
@@ -258,9 +260,11 @@ class LDAPBackend():
             blocks = (self._parse_simple_config(),)
         return blocks
 
-    def authenticate(self, username=None, password=None):
+    def authenticate(self, username=None, password=None, realm=None):
         if username is None or password is None:
             return None
+        if realm is None and '@' in username:
+            username, realm = username.split('@', 1)
 
         blocks = self.get_blocks()
         # First get our configuration into a standard format
@@ -303,6 +307,8 @@ class LDAPBackend():
 
         # Now we can try to authenticate
         for block in blocks:
+            if realm and block.get('realm') != realm:
+                continue
             try:
                 user = self.authenticate_block(block, username, password)
                 if user is not None:
