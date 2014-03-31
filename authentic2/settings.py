@@ -68,7 +68,6 @@ for key in os.environ:
 # Hey Entr'ouvert is in France !!
 TIME_ZONE = 'Europe/Paris'
 LANGUAGE_CODE = 'fr'
-SITE_ID = 1
 USE_I18N = True
 
 LANGUAGES = (
@@ -147,7 +146,6 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.sites',
     'south',
     'admin_tools',
     'admin_tools.theming',
