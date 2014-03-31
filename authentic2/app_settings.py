@@ -81,6 +81,7 @@ default_settings = dict(
     A2_REGISTRATION_FORM_USERNAME_HELP_TEXT=Setting(default=_('Required. At most '
         '30 characters. Letters, digits, and @/./+/-/_ only.')),
     A2_REGISTRATION_FORM_USERNAME_LABEL=Setting(default=_('Username')),
+    A2_REGISTRATION_REALM=Setting(default=None, definition='Default realm to assign to self-registrated users'),
     IDP_BACKENDS=[],
     AUTH_FRONTENDS=[],
 )

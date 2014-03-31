@@ -44,6 +44,12 @@ class RegistrationForm(forms.UserAttributeFormMixin, Form):
         in use.
         """
         User = compat.get_user_model()
+        username = self.cleaned_data['username']
+        if app_settings.A2_REGISTRATION_REALM:
+            if '@' in username:
+                raise ValidationError(_('The character @ is forbidden in usernames.'))
+            username = u'{0}@{1}'.format(username, app_settings.A2_REGISTRATION_REALM)
+            self.cleaned_data['username'] = username
         existing = User.objects.filter(username__iexact=self.cleaned_data['username'])
         if existing.exists():
             raise ValidationError(_("A user with that username already exists."))
