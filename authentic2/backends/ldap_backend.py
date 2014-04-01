@@ -78,6 +78,8 @@ _DEFAULTS = {
     'attribute_mappings': [],
     # realm for selecting an ldap configuration or formatting usernames
     'realm': 'ldap',
+    # template for building username
+    'username_template': '{username}@{realm}',
 }
 
 _REQUIRED = ('url', 'basedn')
@@ -427,20 +429,25 @@ class LDAPBackend():
         return '{scheme}://{netloc}/{dn}??one?'.format(scheme=parsed_uri.scheme,
                 netloc=parsed_uri.netloc, dn=dn)
 
-    def create_user(self, uri, dn, username, password, conn, block):
+    def create_username(self, uri, dn, username, password, conn, block, attributes):
+        '''Build a username using the configured template'''
+        username_template = block['username_template']
+        return username_template.format(username=username, dn=dn, uri=uri,
+                block=block, realm=block['realm'], **attributes)
+
+    def create_user(self, uri, dn, username, password, conn, block, attributes):
         User = get_user_model()
         new_user_username = username
         count = 0
         while True:
             try:
-                user = User.objects.create(username=new_user_username)
+                user = User.objects.create(username=self.create_username(
+                    uri, dn, new_user_username, password, conn, block, attributes))
                 break
             except IntegrityError:
                 new_user_username = u'{0}-{1}'.format(username, count)
                 count += 1
-        if block['replicas']:
-            uri = block['url'][0]
-        UserExternalId.objects.create(user=user, source=uri, external_id=dn)
+        UserExternalId.objects.create(user=user, source=block['realm'], external_id=dn)
         user.set_unusable_password()
         user.save()
         return user
@@ -622,15 +629,15 @@ class LDAPBackend():
             uri = block['url'][0]
         user_external_ids = UserExternalId.objects.filter(source=uri, external_id=dn)
         count = len(user_external_ids)
+        attributes = self.get_ldap_attributes(uri, dn, conn, block)
         if count == 0:
             log.info('creating user %r with dn %r from server %r', username, dn, uri)
-            user = self.create_user(uri, dn, username, password, conn, block)
+            user = self.create_user(uri, dn, username, password, conn, block, attributes)
         elif count == 1:
             user = user_external_ids[0].user
             log.debug('found user %r for dn %r from server %r', user, dn, uri)
         else:
             raise NotImplementedError
-        attributes = self.get_ldap_attributes(uri, dn, conn, block)
         log.debug('retrieved attributes for %r: %r', dn, attributes)
         self.populate_user(user, uri, dn, conn, block)
         shared_cache = get_shared_cache('ldap')
