@@ -322,13 +322,9 @@ class LDAPBackend():
         for block in config:
             if realm and block.get('realm') != realm:
                 continue
-            try:
-                user = self.authenticate_block(block, username, password)
-                if user is not None:
-                    return user
-            except:
-                log.exception('unexpected exception')
-                raise
+            user = self.authenticate_block(block, username, password)
+            if user is not None:
+                return user
 
     def authenticate_block(self, block, username, password):
         if block['timeout'] != -1:
@@ -408,10 +404,12 @@ class LDAPBackend():
         if hasattr(user_id, 'startswith') and user_id.startswith('transient!'):
             user = pickle.loads(base64.b64decode(user_id[len('transient!'):]))
         else:
+            User = get_user_model()
             try:
-                user = get_user_model().objects.get(pk=user_id)
-            except:
-                pass
+                user = User.objects.get(pk=user_id)
+            except User.DoesNotExist:
+                log.warning('LDAPBackend.get_user: logged in user %s was deleted', user_id)
+                return None
             else:
                 shared_cache = get_shared_cache('ldap')
                 value = shared_cache.get('ldap-pk-{0}'.format(user_id))
