@@ -1,2 +1,2 @@
 from .ldap_backend import LDAPBackend
-from .models import ModelBackend
+from .models_backend import ModelBackend
