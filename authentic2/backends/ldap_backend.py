@@ -19,6 +19,7 @@ from django.contrib.auth.models import Group, Permission
 from django.db import IntegrityError
 
 from ..cache import get_shared_cache
+from ..decorators import to_list
 
 try:
     import lasso
@@ -254,6 +255,13 @@ class LDAPBackendError(RuntimeError):
 
 class LDAPBackend():
     @classmethod
+    @to_list
+    def get_realms(self):
+        config = self.get_config()
+        for block in config:
+            yield block['realm']
+
+    @classmethod
     def get_config(self):
         if isinstance(settings.LDAP_AUTH_SETTINGS[0], dict):
             log.debug('Using complex settings')
@@ -306,7 +314,7 @@ class LDAPBackend():
         if username is None or password is None:
             return None
         if realm is None and '@' in username:
-            username, realm = username.split('@', 1)
+            username, realm = username.rsplit('@', 1)
 
         config = self.get_config()
 

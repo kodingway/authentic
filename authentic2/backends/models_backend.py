@@ -29,11 +29,8 @@ class ModelBackend(ModelBackend):
         if realm is None:
             queries.append(models.Q(**{username_field: username}))
             if '@' not in username:
-                if app_settings.A2_REGISTRATION_REALM:
-                    queries.append(models.Q(**{username_field:
-                        upn(username, app_settings.A2_REGISTRATION_REALM)}))
-                if app_settings.A2_REALMS:
-                    for realm in app_settings.A2_REALMS:
+                if app_settings.REALMS:
+                    for realm, desc in app_settings.REALMS:
                         queries.append(models.Q(
                                 **{username_field: upn(username, realm)}))
         else:

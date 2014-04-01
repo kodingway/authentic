@@ -1,9 +1,6 @@
 import sys
 
-
 from django.utils.translation import ugettext_lazy as _
-
-
 from django.core.exceptions import ImproperlyConfigured
 
 
@@ -37,6 +34,24 @@ class AppSettings(object):
         return getattr(self.settings,
                 'A2_ACCEPT_EMAIL_AUTHENTICATION', False)
 
+    @property
+    def REALMS(self):
+        realms = {}
+        if self.A2_REGISTRATION_REALM:
+            realms[self.A2_REGISTRATION_REALM] = self.A2_REGISTRATION_REALM
+        def add_realms(new_realms):
+            for realm in new_realms:
+                if not isinstance(realm, (tuple, list)):
+                    realms[realm] = realm
+                else:
+                    realms[realm[0]] = realm[1]
+        from django.contrib.auth import get_backends
+        for backend in get_backends():
+            if hasattr(backend, 'get_realms'):
+                add_realms(backend.get_realms())
+        if self.A2_REALMS:
+            add_realms(self.A2_REALMS)
+        return realms.items()
 
     def __getattr__(self, key):
         if key not in self.defaults:
