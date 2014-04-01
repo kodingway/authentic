@@ -1,10 +1,12 @@
 from copy import deepcopy
+import pprint
 
 from django.contrib import admin
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.admin import GroupAdmin, UserAdmin
 from django.contrib.auth.models import Group
+from django.contrib.sessions.models import Session
 
 from .nonce.models import Nonce
 from . import forms, models, admin_forms, compat, app_settings
@@ -21,6 +23,17 @@ if settings.DEBUG:
     admin.site.register(models.LogoutUrl)
     admin.site.register(models.AuthenticationEvent)
     admin.site.register(models.UserExternalId)
+
+if settings.SESSION_ENGINE == 'django.contrib.sessions.backends.db':
+    class SessionAdmin(admin.ModelAdmin):
+        def _session_data(self, obj):
+            return pprint.pformat(obj.get_decoded()).replace('\n', '<br>\n')
+        _session_data.allow_tags = True
+        list_display = ['session_key', '_session_data', 'expire_date']
+        readonly_fields = ['_session_data']
+        exclude = ['session_data']
+        date_hierarchy = 'expire_date'
+    admin.site.register(Session, SessionAdmin)
 
 class UserRealmListFilter(admin.SimpleListFilter):
     # Human-readable title which will be displayed in the
