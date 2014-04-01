@@ -300,6 +300,10 @@ h4 + div, div#profile {
 	display: inline;
 }
 
+.helptext {
+  display: block;
+}
+
 /* messages blocks */
 ul.messages > li {
   display: block;
