@@ -253,22 +253,14 @@ class LDAPBackendError(RuntimeError):
     pass
 
 class LDAPBackend():
-    def get_blocks(self):
+    @classmethod
+    def get_config(self):
         if isinstance(settings.LDAP_AUTH_SETTINGS[0], dict):
             log.debug('Using complex settings')
             blocks = settings.LDAP_AUTH_SETTINGS
         else:
             log.debug('Using simple settings')
             blocks = (self._parse_simple_config(),)
-        return blocks
-
-    def authenticate(self, username=None, password=None, realm=None):
-        if username is None or password is None:
-            return None
-        if realm is None and '@' in username:
-            username, realm = username.split('@', 1)
-
-        blocks = self.get_blocks()
         # First get our configuration into a standard format
         for block in blocks:
             for r in _REQUIRED:
@@ -297,7 +289,9 @@ class LDAPBackend():
                     if isinstance(_DEFAULTS[d], dict) and not isinstance(block[d], dict):
                         raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: '
                                 'attribute %r must be a dictionary' % d)
-
+                    if not isinstance(_DEFAULTS[d], bool) and d in _REQUIRED and not block[d]:
+                        raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: '
+                                'attribute %r is required but is empty')
             for i in _TO_ITERABLE:
                 if isinstance(block[i], basestring):
                     block[i] = (block[i],)
@@ -306,9 +300,18 @@ class LDAPBackend():
             block['url'] = list(block['url'])
             if block['shuffle_replicas']:
                 random.shuffle(block['url'])
+        return blocks
+
+    def authenticate(self, username=None, password=None, realm=None):
+        if username is None or password is None:
+            return None
+        if realm is None and '@' in username:
+            username, realm = username.split('@', 1)
+
+        config = self.get_config()
 
         # Now we can try to authenticate
-        for block in blocks:
+        for block in config:
             if realm and block.get('realm') != realm:
                 continue
             try:
@@ -414,6 +417,7 @@ class LDAPBackend():
                     user.get_attributes = lambda: attributes
         return user
 
+    @classmethod
     def _parse_simple_config(self):
         if len(settings.LDAP_AUTH_SETTINGS) < 2:
             raise LDAPBackendError('In a minimal configuration, you must at least specify url and user DN')
