@@ -484,6 +484,7 @@ class LDAPBackend():
             else:
                 value = u''
             setattr(user, legacy_attribute, value)
+        user.attributes = attributes
 
     def try_admin_bind(self, conn, block):
         try:
