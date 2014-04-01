@@ -1,10 +1,17 @@
 # Django settings for authentic project.
 import os
 import json
+import glob
+import re
 
 from django.core.exceptions import ImproperlyConfigured
 
 from . import plugins
+
+try:
+    import yaml
+except ImportError:
+    yaml = None
 
 gettext_noop = lambda s: s
 
@@ -42,7 +49,7 @@ BASE_DIR = os.path.dirname(__file__)
 PROJECT_DIR = os.path.join(BASE_DIR, '..')
 PROJECT_NAME = 'authentic2'
 VAR_DIR = os.path.join('/var/lib/', PROJECT_NAME)
-
+ETC_DIR = os.path.join('/etc', PROJECT_NAME)
 
 ADMINS = ()
 if 'ADMINS' in os.environ:
@@ -383,6 +390,32 @@ SERIALIZATION_MODULES = {
 }
 
 DEBUG_LOG = os.environ.get('DEBUG_LOG')
+
+def load_dict_config(d):
+    for key in d:
+        if re.match('^[A-Z][_A-Z0-9]*$', key):
+            globals()[key] = d[key]
+
+CONFIG_DIRS = [ETC_DIR]
+if 'CONFIG_DIRS' in os.environ:
+    CONFIG_DIRS += os.environ['CONFIG_DIRS'].split(':')
+
+if yaml:
+    for config_dir in CONFIG_DIRS:
+        wildcard = os.path.join(config_dir, '*.yaml')
+        for path in sorted(glob.glob(wildcard)):
+            yaml_config = yaml.load(file(path))
+            if not isinstance(yaml_config, dict):
+                raise ImproperlyConfigured('YAML file %r is not a dictionnary' % path)
+            load_dict_config(yaml_config)
+
+for config_dir in CONFIG_DIRS:
+    wildcard = os.path.join(config_dir, '*.json')
+    for path in sorted(glob.glob(wildcard)):
+        json_config = json.load(file(path))
+        if not isinstance(json_config, dict):
+            raise ImproperlyConfigured('JSON file %r is not a dictionnary' % path)
+        load_dict_config(json_config)
 
 try:
     from local_settings import *
