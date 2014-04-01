@@ -7,7 +7,7 @@ from django.contrib.auth.admin import GroupAdmin, UserAdmin
 from django.contrib.auth.models import Group
 
 from .nonce.models import Nonce
-from . import forms, models, admin_forms, compat
+from . import forms, models, admin_forms, compat, app_settings
 
 if settings.DEBUG:
     class NonceModelAdmin(admin.ModelAdmin):
@@ -21,6 +21,34 @@ if settings.DEBUG:
     admin.site.register(models.LogoutUrl)
     admin.site.register(models.AuthenticationEvent)
     admin.site.register(models.UserExternalId)
+
+class UserRealmListFilter(admin.SimpleListFilter):
+    # Human-readable title which will be displayed in the
+    # right admin sidebar just above the filter options.
+    title = _('realm')
+
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = 'realm'
+
+    def lookups(self, request, model_admin):
+        """
+        Returns a list of tuples. The first element in each
+        tuple is the coded value for the option that will
+        appear in the URL query. The second element is the
+        human-readable name for the option that will appear
+        in the right sidebar.
+        """
+        return app_settings.REALMS
+
+    def queryset(self, request, queryset):
+        """
+        Returns the filtered queryset based on the value
+        provided in the query string and retrievable via
+        `self.value()`.
+        """
+        if self.value():
+            return queryset.filter(username__endswith=u'@' + self.value())
+        return queryset
 
 class AuthenticUserAdmin(UserAdmin):
     fieldsets = (
@@ -38,6 +66,7 @@ class AuthenticUserAdmin(UserAdmin):
                 'fields': ('username', 'first_name', 'last_name', 'email', 'password1', 'password2')}
             ),
         )
+    list_filter = UserAdmin.list_filter + (UserRealmListFilter,)
 
     def get_fieldsets(self, request, obj=None):
         fieldsets = deepcopy(super(AuthenticUserAdmin, self).get_fieldsets(request, obj))
