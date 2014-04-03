@@ -408,19 +408,19 @@ LOGGING = {
     },
     'handlers': {
         'null': {
-            'level':'DEBUG',
+            'level': 'DEBUG',
             'class':'django.utils.log.NullHandler',
         },
         'console': {
-            'level':'DEBUG',
+            'level': 'DEBUG',
             'class':'logging.StreamHandler',
             'formatter': 'verbose',
             'filters': ['cleaning'],
         },
         'syslog': {
-            'level': 'DEBUG' if DEBUG else 'INFO',
+            'level': 'DEBUG',
             'address': '/dev/log',
-            'class':'logging.handlers.SysLogHandler',
+            'class': 'logging.handlers.SysLogHandler',
             'filters': ['cleaning'],
         },
         'mail_admins': {
@@ -437,6 +437,7 @@ LOGGING = {
             'propagate': True,
         },
         'django.db': {
+            'handlers': ['null'],
             'propagate': True,
         },
         '': {
