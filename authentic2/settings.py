@@ -495,3 +495,6 @@ if IDP_OPENID:
 
 if LDAP_AUTH_SETTINGS:
     AUTHENTICATION_BACKENDS += ('authentic2.backends.LDAPBackend',)
+
+if DEBUG:
+    print 'Debugging mode is active'
