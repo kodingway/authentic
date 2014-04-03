@@ -16,6 +16,7 @@ DESC=authentic2
 NAME=authentic2
 DAEMON=/usr/bin/gunicorn
 PID_DIR=/var/run/$NAME
+CACHE_DIR=/var/cache/$NAME
 LOG_DIR=/var/log/$NAME
 PIDFILE=$PID_DIR/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
@@ -58,6 +59,11 @@ done
 # Create pid directory
 if [ ! -d $PID_DIR ]; then
     install -d -m 755 -o $USER -g $GROUP $PID_DIR
+fi
+
+# Create cache directory
+if [ ! -d $CACHE_DIR ]; then
+    install -d -m 755 -o $USER -g $GROUP $CACHE_DIR
 fi
 
 #
