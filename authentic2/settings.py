@@ -71,11 +71,6 @@ for key in os.environ:
 TIME_ZONE = 'Europe/Paris'
 LANGUAGE_CODE = 'fr'
 USE_I18N = True
-
-LANGUAGES = (
-    ('en', gettext_noop('English')),
-    ('fr', gettext_noop('French')),
-)
 USE_L10N = True
 
 # Static files
