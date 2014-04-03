@@ -39,8 +39,10 @@ USE_DEBUG_TOOLBAR = 'USE_DEBUG_TOOLBAR' in os.environ
 TEMPLATE_DEBUG = DEBUG
 
 BASE_DIR = os.path.dirname(__file__)
-PROJECT_PATH = os.path.join(BASE_DIR, '..')
+PROJECT_DIR = os.path.join(BASE_DIR, '..')
 PROJECT_NAME = 'authentic2'
+VAR_DIR = os.path.join('/var/lib/', PROJECT_NAME)
+
 
 ADMINS = ()
 if 'ADMINS' in os.environ:
@@ -56,7 +58,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(PROJECT_PATH, PROJECT_NAME + '.db'),
+        'NAME': os.path.join(PROJECT_DIR, PROJECT_NAME + '.db'),
     }
 }
 
@@ -78,7 +80,7 @@ USE_L10N = True
 
 # Static files
 
-STATIC_ROOT = os.environ.get('STATIC_ROOT', '/var/lib/%s/static' % PROJECT_NAME)
+STATIC_ROOT = os.environ.get('STATIC_ROOT', os.path.join(VAR_DIR, 'static'))
 STATIC_URL = os.environ.get('STATIC_URL', '/static/')
 
 if DEBUG:
@@ -120,8 +122,6 @@ MIDDLEWARE_CLASSES = (
 MIDDLEWARE_CLASSES = plugins.register_plugins_middleware(MIDDLEWARE_CLASSES)
 
 ROOT_URLCONF = 'authentic2.urls'
-
-VAR_DIR = os.path.join('/var/lib/', PROJECT_NAME)
 
 TEMPLATE_DIRS = (
         os.path.join(VAR_DIR, 'templates'),
@@ -311,14 +311,17 @@ else:
 ##################################
 # Cache configuration
 ##################################
-CACHE_PATH = os.path.join(VAR_DIR, 'cache')
-if not os.access(CACHE_PATH, os.W_OK):
-    CACHE_PATH = os.path.join(PROJECT_PATH, 'cache')
+CACHE_DIR = os.path.join('/var/cache/', PROJECT_NAME)
+if not os.access(CACHE_DIR, os.W_OK):
+    CACHE_DIR = os.path.join(PROJECT_DIR, 'cache')
+    print 'Cannot access global cache path, using in project cache directory', CACHE_DIR
+    if not os.path.isdir(CACHE_DIR):
+        os.makedirs(CACHE_DIR)
 
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': CACHE_PATH,
+        'LOCATION': CACHE_DIR,
     },
 }
 if 'CACHE_BACKEND' in os.environ:
