@@ -311,7 +311,6 @@ else:
 ##################################
 # Cache configuration
 ##################################
-VAR_DIR = '/var/lib/%s/cache/' % PROJECT_NAME
 CACHE_PATH = os.path.join(VAR_DIR, 'cache')
 if not os.access(CACHE_PATH, os.W_OK):
     CACHE_PATH = os.path.join(PROJECT_PATH, 'cache')
