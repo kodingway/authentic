@@ -382,6 +382,8 @@ SERIALIZATION_MODULES = {
         'json': 'authentic2.serializers',
 }
 
+DEBUG_LOG = os.environ.get('DEBUG_LOG')
+
 try:
     from local_settings import *
 except ImportError, e:
@@ -435,16 +437,27 @@ LOGGING = {
             'propagate': True,
         },
         'django.db': {
-            'handlers': ['mail_admins', 'syslog'] + (['console'] if DEBUG else []),
-            'level': 'INFO',
-            'propagate': False,
+            'propagate': True,
         },
         '': {
-                'handlers': ['mail_admins', 'syslog'] + (['console'] if DEBUG else []),
-                'level': 'DEBUG' if DEBUG else 'INFO',
+                'handlers': ['mail_admins', 'syslog'],
+                'level': 'INFO',
         }
     },
 }
+
+if DEBUG:
+    LOGGING['loggers']['']['handlers'] += ['console']
+    LOGGING['loggers']['']['level'] = 'DEBUG'
+
+if DEBUG_LOG:
+    domains = DEBUG_LOG.split()
+    for domain in domains:
+        logger = LOGGING['loggers'].setdefault(domain, {
+                'handlers': ['mail_admins', 'syslog'],
+                'level': 'DEBUG',
+        })
+        logger['level'] = 'DEBUG'
 
 if SENTRY_DSN is not None:
     LOGGING['handlers']['sentry'] = {
