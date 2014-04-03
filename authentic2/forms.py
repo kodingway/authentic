@@ -107,16 +107,21 @@ class GroupAdminForm(forms.ModelForm):
         model = Group
 
     def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance', None)
+        if instance is not None:
+            initial = kwargs.get('initial', {})
+            initial['users'] = instance.user_set.all()
+            kwargs['initial'] = initial
         super(GroupAdminForm, self).__init__(*args, **kwargs)
-        if self.instance and self.instance.pk:
-            self.fields['users'].initial = self.instance.user_set.all()
 
     def save(self, commit=True):
-        group = super(GroupAdminForm, self).save(commit=False)
-
+        group = super(GroupAdminForm, self).save(commit=commit)
         if commit:
-            group.save()
-        if group.pk:
-            group.users = self.cleaned_data['users']
-            self.save_m2m()
+            group.user_set = self.cleaned_data['users']
+        else:
+            old_save_m2m = self.save_m2m
+            def new_save_m2m():
+                old_save_m2m()
+                group.user_set = self.cleaned_data['users']
+            self.save_m2m = new_save_m2m
         return group
