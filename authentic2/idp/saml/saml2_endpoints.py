@@ -248,8 +248,8 @@ def build_assertion(request, login, nid_format='transient', attributes=None):
         logger.debug("authentication from session %s" \
             % backend)
         if backend in ('django.contrib.auth.backends.ModelBackend',
-                'authentic2.backends.models.ModelBackend',
-                'django_auth_ldap.models_backend.LDAPBackend'):
+                'authentic2.backends.models_backend.ModelBackend',
+                'django_auth_ldap.backend.LDAPBackend'):
             authn_context = lasso.SAML2_AUTHN_CONTEXT_PASSWORD
         else:
             backend = load_backend(backend)
