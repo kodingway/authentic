@@ -638,7 +638,7 @@ class LDAPBackend():
     def _return_django_user(self, uri, dn, username, password, conn, block):
         if block['replicas']:
             uri = block['url'][0]
-        user_external_ids = UserExternalId.objects.filter(source=uri, external_id=dn)
+        user_external_ids = UserExternalId.objects.filter(source=block['realm'], external_id=dn)
         count = len(user_external_ids)
         attributes = self.get_ldap_attributes(uri, dn, conn, block)
         if count == 0:
