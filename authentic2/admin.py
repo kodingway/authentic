@@ -19,10 +19,31 @@ if settings.DEBUG:
         list_display = ('content_type', 'owner', 'attribute',
                 'content')
     admin.site.register(models.AttributeValue, AttributeValueAdmin)
-    admin.site.register(models.FederatedId)
-    admin.site.register(models.LogoutUrl)
-    admin.site.register(models.AuthenticationEvent)
-    admin.site.register(models.UserExternalId)
+    class FederatedIdAdmin(admin.ModelAdmin):
+        list_display = ('provider', 'about', 'service', 'id_format', 'id_value')
+        list_filter = ('provider', 'about', 'service', 'id_format')
+
+    admin.site.register(models.FederatedId, FederatedIdAdmin)
+    class LogoutUrlAdmin(admin.ModelAdmin):
+        list_display = ('provider', 'logout_url', 'logout_use_iframe', 'logout_use_iframe_timeout')
+    admin.site.register(models.LogoutUrl, LogoutUrlAdmin)
+    class AuthenticationEventAdmin(admin.ModelAdmin):
+        list_display = ('when', 'who', 'how', 'nonce')
+        list_filter = ('how',)
+        date_hierarchy = 'when'
+        search_fields = ('who', 'nonce', 'how')
+
+    admin.site.register(models.AuthenticationEvent, AuthenticationEventAdmin)
+    class UserExternalIdAdmin(admin.ModelAdmin):
+        list_display = ('user', 'source', 'external_id', 'created', 'updated')
+        list_filter = ('source',)
+        date_hierarchy = 'created'
+        search_fields = ('user__username', 'source', 'external_id')
+    admin.site.register(models.UserExternalId, UserExternalIdAdmin)
+    class DeletedUserAdmin(admin.ModelAdmin):
+        list_display = ('user', 'creation')
+        date_hierarchy = 'creation'
+    admin.site.register(models.DeletedUser, DeletedUserAdmin)
 
 DB_SESSION_ENGINES = (
     'django.contrib.sessions.backends.db',
