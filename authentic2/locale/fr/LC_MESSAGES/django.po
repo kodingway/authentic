@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-04 00:34+0200\n"
-"PO-Revision-Date: 2014-04-04 00:50+0200\n"
+"POT-Creation-Date: 2014-04-07 09:07+0200\n"
+"PO-Revision-Date: 2014-04-07 09:09+0200\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
 "Language: fr\n"
@@ -17,23 +17,35 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n>1;\n"
 
-#: admin.py:41
+#: admin.py:65
+msgid "external"
+msgstr "identifiant externe"
+
+#: admin.py:71 templates/registration/delete_account.html:13
+msgid "Yes"
+msgstr "Oui"
+
+#: admin.py:72 templates/registration/delete_account.html:14
+msgid "No"
+msgstr "Non"
+
+#: admin.py:90
 msgid "realm"
 msgstr "domaine"
 
-#: admin.py:69
+#: admin.py:118
 msgid "Personal info"
 msgstr "Informations personnelles"
 
-#: admin.py:70
+#: admin.py:119
 msgid "Permissions"
 msgstr ""
 
-#: admin.py:72
+#: admin.py:121
 msgid "Important dates"
 msgstr "Dates importantes"
 
-#: admin.py:98
+#: admin.py:147
 msgid "Attributes"
 msgstr "Attributs"
 
@@ -96,23 +108,23 @@ msgstr ""
 msgid "Debug"
 msgstr "Débogage"
 
-#: dashboard.py:83 dashboard.py:123
+#: dashboard.py:84 dashboard.py:124
 msgid "Recent Actions"
 msgstr "Actions récentes"
 
-#: dashboard.py:87
+#: dashboard.py:88
 msgid "Support"
 msgstr ""
 
-#: dashboard.py:90
+#: dashboard.py:91
 msgid "Authentic2 documentation"
 msgstr "Documentation sur authentic2"
 
-#: dashboard.py:95
+#: dashboard.py:96
 msgid "Authentic2 project"
 msgstr "Projet Authentic2"
 
-#: dashboard.py:100
+#: dashboard.py:101
 msgid "Authentic Mailing List"
 msgstr "List de diffusion sur Authentic"
 
@@ -197,44 +209,76 @@ msgstr ""
 msgid "date joined"
 msgstr "date de création"
 
-#: models.py:88 models.py:196
+#: models.py:88 models.py:188 models.py:198
 msgid "user"
 msgstr "utilisateur"
 
-#: models.py:191
+#: models.py:190 models.py:204
+msgid "creation date"
+msgstr "date de création"
+
+#: models.py:193
 msgid "user to delete"
 msgstr "utilisateur à effacer"
 
-#: models.py:192
+#: models.py:194
 msgid "users to delete"
 msgstr "utilisateurs à effacer"
 
-#: models.py:198
+#: models.py:200
 msgid "source"
 msgstr ""
 
-#: models.py:200
+#: models.py:202
 msgid "external id"
 msgstr "identifiant externe"
 
-#: models.py:205
+#: models.py:206
+msgid "last update date"
+msgstr "dernière date de mise à jour"
+
+#: models.py:209
 msgid "user external id"
 msgstr "identifiant externe d'un utilisateur"
 
-#: models.py:206
+#: models.py:210
 msgid "user external ids"
 msgstr "identifiants externes des utilisateurs"
 
-#: models.py:218
+#: models.py:215
+msgid "when"
+msgstr "quand"
+
+#: models.py:217
+msgid "who"
+msgstr "qui"
+
+#: models.py:219
+msgid "how"
+msgstr "comment"
+
+#: models.py:221
+msgid "nonce"
+msgstr "numéro unique"
+
+#: models.py:226
+msgid "authentication log"
+msgstr "Journal des authentifications"
+
+#: models.py:227
+msgid "authentication logs"
+msgstr "Journaux des authentification"
+
+#: models.py:230
 #, python-format
 msgid "Authentication of %(who)s by %(how)s at %(when)s"
 msgstr "Authentification de %(who)s par %(how)s à %(when)s"
 
-#: models.py:222
+#: models.py:234
 msgid "url"
 msgstr ""
 
-#: models.py:222
+#: models.py:234
 msgid ""
 "you can use a {} to pass the URL of the success icon, ex.: http://example."
 "com/logout?next={}"
@@ -242,15 +286,15 @@ msgstr ""
 "vous pouvez utiliser la chaîne {} pour passer l'URL de l'icône de succès,  "
 "ex.: http://example.com/logout?next={}"
 
-#: models.py:226
+#: models.py:238
 msgid "use an iframe instead of an img tag for logout"
 msgstr "utiliser une iframe au lieu d'un tag img pour la déconnexion"
 
-#: models.py:228
+#: models.py:240
 msgid "iframe logout timeout (ms)"
 msgstr "temps d'expiration pour les iframe de déconnexion (en ms)"
 
-#: models.py:229
+#: models.py:241
 msgid ""
 "if iframe logout is used, it's the time between the onload event for this "
 "iframe and the moment we consider its loading to be really finished"
@@ -259,63 +303,103 @@ msgstr ""
 "l'évènement onload pour cette iframe et le moment où l'on peut considérer "
 "que le chargement vraiment terminé."
 
-#: models.py:258
+#: models.py:257 models.py:350
+msgid "content type"
+msgstr "type d'objet"
+
+#: models.py:259 models.py:352
+msgid "object identifier"
+msgstr "identifiant d'objet"
+
+#: models.py:263 models.py:264
+msgid "logout URL"
+msgstr "URL de déconnexion"
+
+#: models.py:268
+msgid "provider"
+msgstr "fournisseur"
+
+#: models.py:270
+msgid "about"
+msgstr "à propos"
+
+#: models.py:272
+msgid "service"
+msgstr ""
+
+#: models.py:274
+msgid "format identifier"
+msgstr "identifiant du format"
+
+#: models.py:276
+msgid "identifier"
+msgstr "identifiant"
+
+#: models.py:281
+msgid "federation identifier"
+msgstr "identifiant de fédération"
+
+#: models.py:282
+msgid "federation identifiers"
+msgstr "identifiants de fédération"
+
+#: models.py:285
 msgid "label"
 msgstr "label"
 
-#: models.py:260
+#: models.py:287
 msgid "description"
 msgstr ""
 
-#: models.py:261
+#: models.py:288
 msgid "name"
 msgstr "identifiant"
 
-#: models.py:264
+#: models.py:291
 msgid "required"
 msgstr "requis"
 
-#: models.py:267
+#: models.py:294
 msgid "asked on registration"
 msgstr "demandé à l'enregistrement"
 
-#: models.py:270
+#: models.py:297
 msgid "user editable"
 msgstr "éditable par l'utilisateur"
 
-#: models.py:273
+#: models.py:300
 msgid "user visible"
 msgstr "visible de l'utilisateur"
 
-#: models.py:276
+#: models.py:303
 msgid "multiple"
 msgstr ""
 
-#: models.py:279
+#: models.py:306
 msgid "kind"
 msgstr "type"
 
-#: models.py:318
+#: models.py:345
 msgid "attribute definition"
 msgstr "définition d'un attribut"
 
-#: models.py:319
+#: models.py:346
 msgid "attribute definitions"
 msgstr "définition des attributs"
 
-#: models.py:327
+#: models.py:356
 msgid "attribute"
 msgstr "attribut"
 
-#: models.py:329
+#: models.py:358
 msgid "content"
 msgstr "contenu"
 
-#: models.py:338
+#: models.py:367
 msgid "attribute value"
 msgstr "valeur d'un attribut"
 
-#: models.py:339
+#: models.py:368
 msgid "attribute values"
 msgstr "valeurs des attributs"
 
@@ -381,8 +465,8 @@ msgid ""
 "This email address is already in use. Please supply a different email "
 "address."
 msgstr ""
-"Cette adresse de courriel est déjà utilisée. Utilisez s'il vous plait "
-"une autre adresse de courriel."
+"Cette adresse de courriel est déjà utilisée. Utilisez s'il vous plait une "
+"autre adresse de courriel."
 
 #: registration_backend/forms.py:79
 msgid "The two password fields didn't match."
@@ -507,6 +591,7 @@ msgid "Email change"
 msgstr "Changer d'adresse de courriel"
 
 #: templates/profiles/email_change.html:7
+#, python-format
 msgid "Your current email is %(email)s"
 msgstr "Votre adresse de courriel actuelle est %(email)s"
 
@@ -593,14 +678,6 @@ msgstr "Supprimer mon compte"
 msgid "Delete my account and all my personal datas ?"
 msgstr "Supprimer mon compte et toutes mes données personnelles ?"
 
-#: templates/registration/delete_account.html:13
-msgid "Yes"
-msgstr "Oui"
-
-#: templates/registration/delete_account.html:14
-msgid "No"
-msgstr "Non"
-
 #: templates/registration/logout.html:5
 msgid "Logging out"
 msgstr "Déconnexion"
@@ -639,8 +716,9 @@ msgstr "Réinitialistion du mot de passe échouée"
 
 #: templates/registration/password_reset_done.html:10
 msgid "Email with password reset instructions has been sent."
-msgstr "Un courriel avec des instructions pour réinitialiser "
-"votre mot de passe vient de vous être envoyé."
+msgstr ""
+"Un courriel avec des instructions pour réinitialiser votre mot de passe "
+"vient de vous être envoyé."
 
 #: templates/registration/password_reset_email.html:2
 #, python-format
@@ -653,8 +731,9 @@ msgstr "Enregistrement réussi"
 
 #: templates/registration/registration_complete.html:9
 msgid "You are now registered. Activation email sent."
-msgstr "Vous êtes maintenant enregistré. Un courriel "
-"d'activation vient de vous être envoyé."
+msgstr ""
+"Vous êtes maintenant enregistré. Un courriel d'activation vient de vous être "
+"envoyé."
 
 #: templates/registration/registration_form.html:5
 #: templates/registration/registration_form.html:16
