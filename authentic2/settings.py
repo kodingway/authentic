@@ -447,7 +447,7 @@ LOGGING = {
     },
 }
 
-if DEBUG:
+if DEBUG and not DEBUG_LOG:
     LOGGING['loggers']['']['handlers'] += ['console']
     LOGGING['loggers']['']['level'] = 'DEBUG'
 
@@ -458,6 +458,10 @@ if DEBUG_LOG:
                 'handlers': ['mail_admins', 'syslog'],
                 'level': 'DEBUG',
         })
+        if 'syslog' not in logger['handlers']:
+            logger['handlers'] += ['syslog']
+        if 'console' not in logger['handlers']:
+            logger['handlers'] += ['console']
         logger['level'] = 'DEBUG'
 
 if SENTRY_DSN is not None:
