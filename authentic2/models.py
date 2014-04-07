@@ -184,8 +184,10 @@ class DeletedUser(models.Model):
 
     objects = managers.DeletedUserManager()
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
-    creation = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+            verbose_name=_('user'))
+    creation = models.DateTimeField(auto_now_add=True,
+            verbose_name=_('creation date'))
 
     class Meta:
         verbose_name = _('user to delete')
@@ -198,8 +200,10 @@ class UserExternalId(models.Model):
             verbose_name=_('source'))
     external_id = models.CharField(max_length=256,
             verbose_name=_('external id'))
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(auto_now_add=True,
+            verbose_name=_('creation date'))
+    updated = models.DateTimeField(auto_now=True,
+            verbose_name=_('last update date'))
 
     class Meta:
         verbose_name = _('user external id')
@@ -207,12 +211,20 @@ class UserExternalId(models.Model):
 
 class AuthenticationEvent(models.Model):
     '''Record authentication events whatever the source'''
-    when = models.DateTimeField(auto_now=True)
-    who = models.CharField(max_length=80)
-    how = models.CharField(max_length=10)
-    nonce = models.CharField(max_length=255)
+    when = models.DateTimeField(auto_now=True,
+            verbose_name=_('when'))
+    who = models.CharField(max_length=80,
+            verbose_name=_('who'))
+    how = models.CharField(max_length=10,
+            verbose_name=_('how'))
+    nonce = models.CharField(max_length=255,
+            verbose_name=_('nonce'))
 
     objects = managers.AuthenticationEventManager()
+
+    class Meta:
+        verbose_name = _('authentication log')
+        verbose_name_plural = _('authentication logs')
 
     def __unicode__(self):
         return _('Authentication of %(who)s by %(how)s at %(when)s') % \
@@ -241,18 +253,33 @@ class LogoutUrlAbstract(models.Model):
 
 
 class LogoutUrl(LogoutUrlAbstract):
-    content_type = models.ForeignKey(ContentType)
-    object_id = models.PositiveIntegerField()
+    content_type = models.ForeignKey(ContentType,
+            verbose_name=_('content type'))
+    object_id = models.PositiveIntegerField(
+            verbose_name=_('object identifier'))
     provider = GenericForeignKey('content_type', 'object_id')
 
+    class Meta:
+        verbose_name = _('logout URL')
+        verbose_name_plural = _('logout URL')
+
 class FederatedId(models.Model):
-    provider = models.CharField(max_length=255)
-    about = models.CharField(max_length=255)
-    service = models.CharField(max_length=255)
-    id_format = models.CharField(max_length=128)
-    id_value = models.TextField()
+    provider = models.CharField(max_length=255,
+            verbose_name=_('provider'))
+    about = models.CharField(max_length=255,
+            verbose_name=_('about'))
+    service = models.CharField(max_length=255,
+            verbose_name=_('service'))
+    id_format = models.CharField(max_length=128,
+            verbose_name=_('format identifier'))
+    id_value = models.TextField(
+            verbose_name=_('identifier'))
 
     objects = managers.FederatedIdManager()
+
+    class Meta:
+        verbose_name = _('federation identifier')
+        verbose_name_plural = _('federation identifiers')
 
 class Attribute(models.Model):
     label = models.CharField(verbose_name=_('label'), max_length=63,
@@ -319,8 +346,10 @@ class Attribute(models.Model):
         verbose_name_plural = _('attribute definitions')
 
 class AttributeValue(models.Model):
-    content_type = models.ForeignKey('contenttypes.ContentType')
-    object_id = models.PositiveIntegerField()
+    content_type = models.ForeignKey('contenttypes.ContentType',
+            verbose_name=_('content type'))
+    object_id = models.PositiveIntegerField(
+            verbose_name=_('object identifier'))
     owner = GenericForeignKey('content_type', 'object_id')
 
     attribute = models.ForeignKey('Attribute',
