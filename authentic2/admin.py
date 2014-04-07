@@ -35,6 +35,29 @@ if settings.SESSION_ENGINE == 'django.contrib.sessions.backends.db':
         date_hierarchy = 'expire_date'
     admin.site.register(Session, SessionAdmin)
 
+class ExternalUserListFilter(admin.SimpleListFilter):
+    title = _('external')
+
+    parameter_name = 'external'
+
+    def lookups(self, request, model_admin):
+        return (
+                ('1', _('Yes')),
+                ('0', _('No'))
+        )
+
+    def queryset(self, request, queryset):
+        """
+        Returns the filtered queryset based on the value
+        provided in the query string and retrievable via
+        `self.value()`.
+        """
+        if self.value() == '1':
+            return queryset.filter(userexternalid__isnull=False)
+        elif self.value() == '0':
+            return queryset.filter(userexternalid__isnull=True)
+        return queryset
+
 class UserRealmListFilter(admin.SimpleListFilter):
     # Human-readable title which will be displayed in the
     # right admin sidebar just above the filter options.
@@ -79,7 +102,7 @@ class AuthenticUserAdmin(UserAdmin):
                 'fields': ('username', 'first_name', 'last_name', 'email', 'password1', 'password2')}
             ),
         )
-    list_filter = UserAdmin.list_filter + (UserRealmListFilter,)
+    list_filter = UserAdmin.list_filter + (UserRealmListFilter,ExternalUserListFilter)
 
     def get_fieldsets(self, request, obj=None):
         fieldsets = deepcopy(super(AuthenticUserAdmin, self).get_fieldsets(request, obj))
