@@ -24,7 +24,12 @@ if settings.DEBUG:
     admin.site.register(models.AuthenticationEvent)
     admin.site.register(models.UserExternalId)
 
-if settings.SESSION_ENGINE == 'django.contrib.sessions.backends.db':
+DB_SESSION_ENGINES = (
+    'django.contrib.sessions.backends.db',
+    'django.contrib.sessions.backends.cached_db',
+)
+
+if settings.SESSION_ENGINE in DB_SESSION_ENGINES:
     class SessionAdmin(admin.ModelAdmin):
         def _session_data(self, obj):
             return pprint.pformat(obj.get_decoded()).replace('\n', '<br>\n')
