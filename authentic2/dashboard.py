@@ -70,7 +70,8 @@ class CustomIndexDashboard(Dashboard):
                     'authentic2.models.FederatedId',
                     'authentic2.models.LogoutUrl',
                     'authentic2.models.AuthenticationEvent',
-                    'Authentic2.models.UserExternalId',
+                    'authentic2.models.UserExternalId',
+                    'authentic2.models.DeletedUser',
                 ),
             ))
         for plugin in plugins.get_plugins():
