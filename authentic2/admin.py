@@ -55,10 +55,33 @@ if settings.SESSION_ENGINE in DB_SESSION_ENGINES:
         def _session_data(self, obj):
             return pprint.pformat(obj.get_decoded()).replace('\n', '<br>\n')
         _session_data.allow_tags = True
-        list_display = ['session_key', '_session_data', 'expire_date']
-        readonly_fields = ['_session_data']
-        exclude = ['session_data']
+        _session_data.short_description = _('session data')
+        list_display = ['session_key', 'ips', 'user', '_session_data', 'expire_date']
+        fields = ['session_key', 'ips', 'user', '_session_data', 'expire_date']
+        readonly_fields = ['ips', 'user', '_session_data']
         date_hierarchy = 'expire_date'
+
+        def ips(self, session):
+            content = session.get_decoded()
+            ips = content.get('ips', set())
+            return ', '.join(ips)
+        ips.short_description = _('IP adresses')
+
+        def user(self, session):
+            from django.contrib import auth
+            from django.contrib.auth import models as auth_models
+            content = session.get_decoded()
+            user_id = content[auth.SESSION_KEY]
+            backend_class = content[auth.BACKEND_SESSION_KEY]
+            backend = auth.load_backend(backend_class)
+            try:
+                user = backend.get_user(user_id) or auth_models.AnonymousUser()
+            except:
+                user = '<failure>'
+            return user
+        user.short_description = _('user')
+
+
     admin.site.register(Session, SessionAdmin)
 
 class ExternalUserListFilter(admin.SimpleListFilter):
