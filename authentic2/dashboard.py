@@ -72,6 +72,7 @@ class CustomIndexDashboard(Dashboard):
                     'authentic2.models.AuthenticationEvent',
                     'authentic2.models.UserExternalId',
                     'authentic2.models.DeletedUser',
+                    'django.contrib.sessions.*',
                 ),
             ))
         for plugin in plugins.get_plugins():
