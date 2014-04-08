@@ -79,3 +79,11 @@ class LoggingCollectorMiddleware(object):
         if self.show_logs(request):
             request.logs = collector.get_collection()
             request.exception = exception
+
+class CollectIPMiddleware(object):
+    def process_request(self, request):
+        ips = request.session.setdefault('ips', set())
+        ip = request.META.get('REMOTE_ADDR', None)
+        if ip and ip not in ips:
+            ips.add(ip)
+            request.session.modified = True

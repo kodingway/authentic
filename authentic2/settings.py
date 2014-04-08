@@ -118,7 +118,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
-    'authentic2.idp.middleware.DebugMiddleware'
+    'authentic2.idp.middleware.DebugMiddleware',
+    'authentic2.middleware.CollectIPMiddleware',
 )
 
 MIDDLEWARE_CLASSES = plugins.register_plugins_middleware(MIDDLEWARE_CLASSES)
