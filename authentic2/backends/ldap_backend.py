@@ -83,6 +83,9 @@ _DEFAULTS = {
     'username_template': '{username}@{realm}',
     # allow to match multiple user records
     'multimatch': True,
+    # update username on all login, use with CAUTION !! only if you know that
+    # generated username are unique
+    'update_username': False,
 }
 
 _REQUIRED = ('url', 'basedn')
@@ -659,6 +662,14 @@ class LDAPBackend():
         elif count == 1:
             user = user_external_ids[0].user
             log.debug('found existing user %r', user)
+            if block['update_username']:
+                full_username = self.create_username(
+                        uri, dn, username, password, conn, block, attributes)
+                if user.username != full_username:
+                    log.debug('updating username from %r to %r',
+                            user.username, full_username)
+                    user.username = full_username
+                    user.save()
         else:
             raise NotImplementedError
         log.debug('retrieved attributes for %r: %r', dn, attributes)
