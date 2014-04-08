@@ -61,20 +61,19 @@ class CustomIndexDashboard(Dashboard):
                 'authentic2.attribute_aggregator.models.AttributeSource',
             ),
         ))
-        if settings.DEBUG:
-            self.children.append(modules.ModelList(
-                _('Debug'),
-                models=(
-                    'authentic2.models.AttributeValue',
-                    'authentic2.nonce.models.Nonce',
-                    'authentic2.models.FederatedId',
-                    'authentic2.models.LogoutUrl',
-                    'authentic2.models.AuthenticationEvent',
-                    'authentic2.models.UserExternalId',
-                    'authentic2.models.DeletedUser',
-                    'django.contrib.sessions.*',
-                ),
-            ))
+        self.children.append(modules.ModelList(
+            _('Debug'),
+            models=(
+                'authentic2.models.AttributeValue',
+                'authentic2.nonce.models.Nonce',
+                'authentic2.models.FederatedId',
+                'authentic2.models.LogoutUrl',
+                'authentic2.models.AuthenticationEvent',
+                'authentic2.models.UserExternalId',
+                'authentic2.models.DeletedUser',
+                'django.contrib.sessions.*',
+            ),
+        ))
         for plugin in plugins.get_plugins():
             if hasattr(plugin, 'get_admin_modules') and callable(plugin.get_admin_modules):
                 plugin_modules = plugin.get_admin_modules()
