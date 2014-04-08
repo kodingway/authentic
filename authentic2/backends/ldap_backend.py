@@ -460,13 +460,15 @@ class LDAPBackend():
         new_user_username = username
         count = 0
         while True:
+            full_username = self.create_username(
+                    uri, dn, new_user_username, password, conn, block, attributes)
             try:
-                user = User.objects.create(username=self.create_username(
-                    uri, dn, new_user_username, password, conn, block, attributes))
+                user = User.objects.create(username=full_username)
                 break
             except IntegrityError:
                 new_user_username = u'{0}-{1}'.format(username, count)
                 count += 1
+            log.debug('created user with username %r', full_username)
         UserExternalId.objects.create(user=user, source=block['realm'], external_id=dn)
         user.set_unusable_password()
         user.save()
@@ -652,11 +654,11 @@ class LDAPBackend():
         count = len(user_external_ids)
         attributes = self.get_ldap_attributes(uri, dn, conn, block)
         if count == 0:
-            log.info('creating user %r with dn %r from server %r', username, dn, uri)
             user = self.create_user(uri, dn, username, password, conn, block, attributes)
+            log.debug('created user %r', user)
         elif count == 1:
             user = user_external_ids[0].user
-            log.debug('found user %r for dn %r from server %r', user, dn, uri)
+            log.debug('found existing user %r', user)
         else:
             raise NotImplementedError
         log.debug('retrieved attributes for %r: %r', dn, attributes)
