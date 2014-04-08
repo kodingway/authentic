@@ -16,7 +16,6 @@ log = logging.getLogger(__name__)
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
 from django.contrib.auth.models import Group, Permission
-from django.db import IntegrityError
 
 from ..cache import get_shared_cache
 from ..decorators import to_list
@@ -86,6 +85,10 @@ _DEFAULTS = {
     # update username on all login, use with CAUTION !! only if you know that
     # generated username are unique
     'update_username': False,
+    # lookup existing user with dn
+    'lookups': ('username', 'dn'),
+    # keep password around so that Django authentification also work
+    'keep_password': True,
 }
 
 _REQUIRED = ('url', 'basedn')
@@ -137,19 +140,19 @@ def modify_password(conn, block, dn, old_password, new_password):
 class LDAPException(Exception):
     pass
 
-class LDAPUser(object):
-    is_staff = False
-    is_superuser = False
+class LDAPUser(get_user_model()):
     attributes = {}
 
-    USERNAME_FIELD = 'dn'
+    class Meta:
+        proxy = True
 
-    def __init__(self, block, dn, password):
+    def ldap_init(self, block, dn, password, attributes, transient=False):
         self.block = block
         self.dn = dn
         self.is_active = True
         self.set_ldap_password(password)
-        self.groups = set()
+        self.attributes = attributes
+        self.transient = transient
 
     def set_ldap_password(self, password):
         shared_cache = get_shared_cache('ldap')
@@ -168,88 +171,30 @@ class LDAPUser(object):
             raise LDAPException('missing password for dn %r', self.dn)
         return password
 
-    def get_username(self):
-        return self.dn
-
-    def get_full_name(self):
-        block = self.block
-        if block['fname_field'] and block['lname_field']:
-            return u'{first_name} {last_name}'.format(**self.__dict__)
-        if block['email_field']:
-            return self.email
-        return self.get_username()
-
-    def get_short_name(self):
-        block = self.block
-        if block['fname_field']:
-            return self.first_name
-        if block['email_field']:
-            return self.email
-        dn = self.dn
-        l = dn.split(',', 1)[0].split('=')
-        if len(l) > 1:
-            return l[1]
-        return l[0]
-
-    def is_authenticated(self):
-        return True
-
-    def is_anonymous(self):
-        return False
-
     def set_password(self, new_password):
-        conn = self.get_connection()
-        modify_password(conn, self.block, self.dn, self.get_password(),
-                new_password)
+        old_password = self.get_password()
+        if old_password != new_password:
+            conn = self.get_connection()
+            modify_password(conn, self.block, self.dn, self.get_password(),
+                    new_password)
         self.set_ldap_password(new_password)
-
-    def set_unusable_password(self):
-        raise NotImplementedError
-
-    def has_usable_password(self):
-        return True
+        super(LDAPUser, self).set_password(new_password)
 
     def get_connection(self):
         return get_connection(self.block, (self.dn, self.get_password()))
 
-    def save(self, **kwargs):
-        pass
-
-    def get_group_permissions(self, obj=None):
-        if not hasattr(self, '_group_perm_cache'):
-            if self.is_superuser:
-                perms = Permission.objects.all()
-            else:
-                group_pks = (group.pk for group in self.groups)
-                perms = Permission.objects.filter(group__pk__in=group_pks)
-            perms = perms.values_list('content_type__app_label', 'codename').order_by()
-            self._group_perm_cache = set(["%s.%s" % (ct, name) for ct, name in perms])
-        return self._group_perm_cache
-
-    def get_all_permissions(self, obj=None):
-        return self.get_group_permissions(obj)
-
-    def has_perm(self, perm, obj=None):
-        if not self.is_active:
-            return False
-        return perm in self.get_all_permissions(obj)
-
-    def has_perms(self, perm_list, obj=None):
-        pass
-
-    def has_module_perms(self, app_label):
-        if not self.is_active:
-            return False
-        for perm in self.get_all_permissions():
-            if perm[:perm.index('.')] == app_label:
-                return True
-        return False
-
-    def get_principal(self):
-        return self.dn
-
     def get_attributes(self):
         return self.attributes
+
+    def save(self, *args, **kwargs):
+        if self.transient:
+            return
+        if hasattr(self, 'keep_pk'):
+            pk = self.pk
+            self.pk = self.keep_pk
+        super(LDAPUser, self).save(*args, **kwargs)
+        if hasattr(self, 'keep_pk'):
+            self.pk = pk
 
 class LDAPBackendError(Exception):
     pass
@@ -269,10 +214,8 @@ class LDAPBackend():
     @classmethod
     def get_config(self):
         if isinstance(settings.LDAP_AUTH_SETTINGS[0], dict):
-            log.debug('Using complex settings')
             blocks = settings.LDAP_AUTH_SETTINGS
         else:
-            log.debug('Using simple settings')
             blocks = (self._parse_simple_config(),)
         # First get our configuration into a standard format
         for block in blocks:
@@ -313,6 +256,7 @@ class LDAPBackend():
             block['url'] = list(block['url'])
             if block['shuffle_replicas']:
                 random.shuffle(block['url'])
+        log.debug('got config %r', blocks)
         return blocks
 
     def authenticate(self, username=None, password=None, realm=None):
@@ -414,26 +358,13 @@ class LDAPBackend():
         return None
 
     def get_user(self, user_id):
-        if hasattr(user_id, 'startswith') and user_id.startswith('transient!'):
-            user = pickle.loads(base64.b64decode(user_id[len('transient!'):]))
-        else:
-            User = get_user_model()
+        pickle_dump = user_id.split('!', 1)[1]
+        user = pickle.loads(base64.b64decode(pickle_dump))
+        if not user_id.startswith('transient!'):
             try:
-                user = User.objects.get(pk=user_id)
-            except User.DoesNotExist:
-                log.warning('LDAPBackend.get_user: logged in user %s was deleted', user_id)
+                user.__dict__.update(LDAPUser.objects.get(pk=user.pk).__dict__)
+            except LDAPUser.DoesNotExist:
                 return None
-            else:
-                shared_cache = get_shared_cache('ldap')
-                value = shared_cache.get('ldap-pk-{0}'.format(user_id))
-                if value is not None:
-                    uri, dn, username, password, block, attributes = value
-                    user.ldap_uri = uri
-                    user.ldap_dn = dn
-                    user.ldap_username = username
-                    user.ldap_password = password
-                    user.ldap_block = block
-                    user.get_attributes = lambda: attributes
         return user
 
     @classmethod
@@ -459,36 +390,10 @@ class LDAPBackend():
                 block=block, realm=block['realm'], **attributes)
 
     def create_user(self, uri, dn, username, password, conn, block, attributes):
-        User = get_user_model()
-        new_user_username = username
-        count = 0
-        while True:
-            full_username = self.create_username(
-                    uri, dn, new_user_username, password, conn, block, attributes)
-            try:
-                user = User.objects.create(username=full_username)
-                break
-            except IntegrityError:
-                new_user_username = u'{0}-{1}'.format(username, count)
-                count += 1
-            log.debug('created user with username %r', full_username)
-        UserExternalId.objects.create(user=user, source=block['realm'], external_id=dn)
-        user.set_unusable_password()
-        user.save()
+        user = LDAPUser(**{User.USERNAME_FIELD: username})
         return user
 
-    def populate_user_attributes(self, user, uri, dn, conn, block):
-        try:
-            results = conn.search_s(dn, ldap.SCOPE_BASE, '(objectclass=*)',
-                    [block['email_field'], block['fname_field'],
-                        block['lname_field']])
-        except ldap.LDAPError, e:
-            log.warning('unable to retrieve attributes of user with dn %r '
-                    'from server %r: %s', dn, uri, e)
-        if len(results) > 1:
-            log.warning('unable to retrieve attributes of user with dn %r '
-                    'from server %r: too many records', dn, uri)
-        attributes = results[0][1]
+    def populate_user_attributes(self, user, uri, dn, conn, block, attributes):
         for legacy_attribute, legacy_field in (('email', 'email_field'), 
                 ('first_name', 'fname_field'), ('last_name', 'lname_field')):
             ldap_attribute = block[legacy_field]
@@ -586,7 +491,7 @@ class LDAPBackend():
         else:
             try:
                 return Group.objects.get(name=group_name)
-            except Group.ObjectDoesNotExist:
+            except Group.DoesNotExist:
                 return None
 
     def populate_mandatory_groups(self, user, uri, dn, conn, block):
@@ -604,8 +509,10 @@ class LDAPBackend():
         if block['is_superuser'] is not None:
             user.is_superuser = block['is_superuser']
 
-    def populate_user(self, user, uri, dn, conn, block):
-        self.populate_user_attributes(user, uri, dn, conn, block)
+    def populate_user(self, user, uri, dn, username, conn, block, attributes):
+        self.update_user_identifiers(user, uri, dn, username, conn, block,
+                attributes)
+        self.populate_user_attributes(user, uri, dn, conn, block, attributes)
         self.populate_admin_fields(user, uri, dn, conn, block)
         self.populate_mandatory_groups(user, uri, dn, conn, block)
         self.populate_user_groups(user, uri, dn, conn, block)
@@ -619,8 +526,7 @@ class LDAPBackend():
         try:
             results = conn.search_s(dn, ldap.SCOPE_BASE, '(objectclass=*)', attributes)
         except ldap.LDAPError, e:
-            log.warning('unable to retrieve attributes of user with dn %r '
-                    'from server %r: %s', dn, uri, e)
+            log.warning('unable to retrieve attributes of dn %r: %s', dn, e)
         attribute_map = results[0][1]
         # add mandatory attributes
         for key, mandatory_values in mandatory_attributes_values.iteritems():
@@ -638,46 +544,75 @@ class LDAPBackend():
             attribute_map[to_attribute] = list(new)
         return attribute_map
 
-    def _return_user(self, uri, dn, username, password, conn, block):
-        if block['transient']:
-            return self._return_transient_user(uri, dn, username, password, conn, block)
-        else:
-            return self._return_django_user(uri, dn, username, password, conn, block)
+    def lookup_existing_user(self, uri, dn, username, password, conn, block, attributes):
+        User = get_user_model()
+        for lookup_type in block['lookups']:
+            if lookup_type == 'username':
+                try:
+                    log.debug('lookup using username %r', username)
+                    return LDAPUser.objects.get(**{User.USERNAME_FIELD: username})
+                except User.DoesNotExist:
+                    pass
+            elif lookup_type == 'dn':
+                try:
+                    log.debug('lookup using dn %r', dn)
+                    return LDAPUser.objects.get(userexternalid__external_id=dn,
+                            userexternalid__source=block['realm'])
+                except User.DoesNotExist:
+                    pass
 
-    def _return_transient_user(self, uri, dn, username, password, conn, block):
-        user = LDAPUser(block=block, dn=dn, password=password)
-        self.populate_user(user, uri, dn, conn, block)
+    def update_user_identifiers(self, user, uri, dn, username, conn,
+            block, attributes):
+        if block['transient']:
+            return
+        # if username has changed and we propagate those changes, update it
+        if block['update_username']:
+            if user.username != username:
+                log_msg = 'updating username from %r to %r'
+                log.debug(log_msg, user.username, username)
+                user.username = username
+                user.save()
+        # if dn lookup is used, update it
+        if 'dn' in block['lookups']:
+            UserExternalId.objects.get_or_create(user=user, external_id=dn,
+                    source=block['realm'])
+
+    def _return_user(self, uri, dn, username, password, conn, block):
+        attributes = self.get_ldap_attributes(uri, dn, conn, block)
+        username = self.create_username(uri, dn, username, password, conn,
+                block, attributes)
+        log.debug('retrieved attributes for %r: %r', dn, attributes)
+        if block['transient']:
+            return self._return_transient_user(uri, dn, username, password,
+                    conn, block, attributes)
+        else:
+            return self._return_django_user(uri, dn, username, password, conn,
+                    block, attributes)
+
+    def _return_transient_user(self, uri, dn, username, password, conn, block, attributes):
+        user = LDAPUser(username=username)
+        user.ldap_init(block, dn, password, attributes, transient=True)
+        self.populate_user(user, uri, dn, username, conn, block, attributes)
+        user.set_password(password)
         user.pk = 'transient!{0}'.format(base64.b64encode(pickle.dumps(user)))
         return user
 
-    def _return_django_user(self, uri, dn, username, password, conn, block):
-        if block['replicas']:
-            uri = block['url'][0]
-        user_external_ids = UserExternalId.objects.filter(source=block['realm'], external_id=dn)
-        count = len(user_external_ids)
-        attributes = self.get_ldap_attributes(uri, dn, conn, block)
-        if count == 0:
+    def _return_django_user(self, uri, dn, username, password, conn, block, attributes):
+        user = self.lookup_existing_user(uri, dn, username, password, conn, block, attributes)
+        if user:
+            log.debug('found existing user %r', user)
+        else:
             user = self.create_user(uri, dn, username, password, conn, block, attributes)
             log.debug('created user %r', user)
-        elif count == 1:
-            user = user_external_ids[0].user
-            log.debug('found existing user %r', user)
-            if block['update_username']:
-                full_username = self.create_username(
-                        uri, dn, username, password, conn, block, attributes)
-                if user.username != full_username:
-                    log.debug('updating username from %r to %r',
-                            user.username, full_username)
-                    user.username = full_username
-                    user.save()
+        user.ldap_init(block, dn, password, attributes)
+        if block['keep_password']:
+            user.set_password(password)
         else:
-            raise NotImplementedError
-        log.debug('retrieved attributes for %r: %r', dn, attributes)
-        self.populate_user(user, uri, dn, conn, block)
-        shared_cache = get_shared_cache('ldap')
-        shared_cache.set('ldap-pk-{0}'.format(user.pk), (uri, dn, username,
-            password, block, attributes), 86400)
+            user.set_unusable_password()
+        self.populate_user(user, uri, dn, username, conn, block, attributes)
         user.save()
+        user.keep_pk = user.pk
+        user.pk = 'persistent!{0}'.format(base64.b64encode(pickle.dumps(user)))
         return user
 
     def has_usable_password(self, user):
