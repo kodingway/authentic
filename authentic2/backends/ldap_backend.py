@@ -364,24 +364,24 @@ class LDAPBackend():
                             # remove search references
                             results = [ result for result in results if result[0] is not None]
                             if len(results) == 0:
-                                log.debug('user bind failed: not entry found')
+                                log.debug('user lookup failed: no entry found, %s' % query)
                             elif not block['multimatch'] and len(results) > 1:
-                                log.error('user bind failed: too many (%d) '
-                                        'entries found', len(results))
+                                log.error('user lookup failed: too many (%d) '
+                                        'entries found: %s', len(results), query)
                             else:
                                 authz_ids.extend(result[0] for result in results)
                         else:
                             raise NotImplementedError
                     except ldap.NO_SUCH_OBJECT:
-                        log.error('user bind failed: unable to lookup user '
-                                'basedn %s not found', user_basedn)
+                        log.error('user lookup failed: basedn %s not found',
+                                user_basedn)
                         if block['replicas']:
                             break
                         continue
                     except ldap.LDAPError, e:
                         raise
-                        log.error('user bind failed: unable to lookup user %r: '
-                                '%s', username, e)
+                        log.error('user lookup failed: with query %r got error '
+                                '%s', username, query, e)
                         continue
                 if not authz_ids:
                     continue
