@@ -4,6 +4,7 @@ import pprint
 from django.contrib import admin
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
 from django.contrib.auth.admin import GroupAdmin, UserAdmin
 from django.contrib.auth.models import Group
 from django.contrib.sessions.models import Session
@@ -59,6 +60,7 @@ if settings.SESSION_ENGINE in DB_SESSION_ENGINES:
         fields = ['session_key', 'ips', 'user', '_session_data', 'expire_date']
         readonly_fields = ['ips', 'user', '_session_data']
         date_hierarchy = 'expire_date'
+        actions = ['clear_expired']
 
         def ips(self, session):
             content = session.get_decoded()
@@ -84,6 +86,9 @@ if settings.SESSION_ENGINE in DB_SESSION_ENGINES:
             return user
         user.short_description = _('user')
 
+        def clear_expired(self, request, queryset):
+            queryset.filter(expire_date__lt=timezone.now()).delete()
+        clear_expired.short_description = _('clear expired sessions')
 
     admin.site.register(Session, SessionAdmin)
 
