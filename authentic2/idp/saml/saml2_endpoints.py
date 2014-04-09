@@ -419,7 +419,7 @@ def sso(request):
            default_nid_format != nid_format:
             set_saml2_response_responder_status_code(login.response,
                 lasso.SAML2_STATUS_CODE_INVALID_NAME_ID_POLICY)
-            logger.error('NameID format required is not accepted')
+            logger.warning('NameID format required is not accepted')
             return finish_sso(request, login)
     else:
         logger.debug('no nameID policy format')
