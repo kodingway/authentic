@@ -70,13 +70,17 @@ if settings.SESSION_ENGINE in DB_SESSION_ENGINES:
             from django.contrib import auth
             from django.contrib.auth import models as auth_models
             content = session.get_decoded()
+            if auth.SESSION_KEY not in content:
+                return
             user_id = content[auth.SESSION_KEY]
+            if auth.BACKEND_SESSION_KEY not in content:
+                return
             backend_class = content[auth.BACKEND_SESSION_KEY]
             backend = auth.load_backend(backend_class)
             try:
                 user = backend.get_user(user_id) or auth_models.AnonymousUser()
             except:
-                user = '<failure>'
+                user = _('deleted user %r') % user_id
             return user
         user.short_description = _('user')
 
