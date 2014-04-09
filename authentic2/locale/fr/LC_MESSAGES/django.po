@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-07 09:07+0200\n"
-"PO-Revision-Date: 2014-04-07 09:09+0200\n"
+"POT-Creation-Date: 2014-04-09 17:07+0200\n"
+"PO-Revision-Date: 2014-04-09 17:08+0200\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
 "Language: fr\n"
@@ -17,35 +17,56 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n>1;\n"
 
-#: admin.py:65
+#: admin.py:58
+msgid "session data"
+msgstr "données de session"
+
+#: admin.py:69
+msgid "IP adresses"
+msgstr "adresses IP"
+
+#: admin.py:85
+#, python-format
+msgid "deleted user %r"
+msgstr "utilisateur supprimé %r"
+
+#: admin.py:87 models.py:88 models.py:188 models.py:198
+msgid "user"
+msgstr "utilisateur"
+
+#: admin.py:91
+msgid "clear expired sessions"
+msgstr "Supprimer les sessions expirées"
+
+#: admin.py:96
 msgid "external"
 msgstr "identifiant externe"
 
-#: admin.py:71 templates/registration/delete_account.html:13
+#: admin.py:102 templates/registration/delete_account.html:13
 msgid "Yes"
 msgstr "Oui"
 
-#: admin.py:72 templates/registration/delete_account.html:14
+#: admin.py:103 templates/registration/delete_account.html:14
 msgid "No"
 msgstr "Non"
 
-#: admin.py:90
+#: admin.py:121
 msgid "realm"
 msgstr "domaine"
 
-#: admin.py:118
+#: admin.py:149
 msgid "Personal info"
 msgstr "Informations personnelles"
 
-#: admin.py:119
+#: admin.py:150
 msgid "Permissions"
 msgstr ""
 
-#: admin.py:121
+#: admin.py:152
 msgid "Important dates"
 msgstr "Dates importantes"
 
-#: admin.py:147
+#: admin.py:178
 msgid "Attributes"
 msgstr "Attributs"
 
@@ -104,7 +125,7 @@ msgstr "Utilisateurs et groupes"
 msgid "SAML2"
 msgstr ""
 
-#: dashboard.py:66
+#: dashboard.py:65
 msgid "Debug"
 msgstr "Débogage"
 
@@ -208,10 +229,6 @@ msgstr ""
 #: models.py:78
 msgid "date joined"
 msgstr "date de création"
-
-#: models.py:88 models.py:188 models.py:198
-msgid "user"
-msgstr "utilisateur"
 
 #: models.py:190 models.py:204
 msgid "creation date"
