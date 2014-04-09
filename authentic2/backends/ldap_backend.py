@@ -390,6 +390,7 @@ class LDAPBackend():
                 block=block, realm=block['realm'], **attributes)
 
     def create_user(self, uri, dn, username, password, conn, block, attributes):
+        User = get_user_model()
         user = LDAPUser(**{User.USERNAME_FIELD: username})
         return user
 
