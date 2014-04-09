@@ -349,6 +349,7 @@ if 'SENTRY_DSN' in os.environ:
     except ImportError:
         raise ImproperlyConfigured('SENTRY_DSN environment variable is set but raven is not installed.')
     SENTRY_DSN = os.environ['SENTRY_DSN']
+
 else:
     SENTRY_DSN = None
 
@@ -499,11 +500,18 @@ if DEBUG_LOG:
         logger['level'] = 'DEBUG'
 
 if SENTRY_DSN is not None:
+    try:
+        import raven
+    except ImportError:
+        raise ImproperlyConfigured('SENTRY_DSN present but raven is not installed')
+    RAVEN_CONFIG = {
+            'dsn': SENTRY_DSN,
+            }
+    INSTALLED_APPS += ('raven.contrib.django.raven_compat', )
     LOGGING['handlers']['sentry'] = {
             'level': 'ERROR',
-            'class': 'raven.handlers.logging.SentryHandler',
-            'dsn': SENTRY_DSN,
-    }
+            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
+            }
     LOGGING['loggers']['']['handlers'].append('sentry')
 
 if USE_DEBUG_TOOLBAR:
