@@ -15,7 +15,7 @@ log = logging.getLogger(__name__)
 
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
-from django.contrib.auth.models import Group, Permission
+from django.contrib.auth.models import Group
 
 from ..cache import get_shared_cache
 from ..decorators import to_list
