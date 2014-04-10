@@ -575,6 +575,8 @@ class LDAPBackend():
                 user.save()
         # if dn lookup is used, update it
         if 'dn' in block['lookups']:
+            if not user.pk:
+                user.save()
             UserExternalId.objects.get_or_create(user=user, external_id=dn,
                     source=block['realm'])
 
