@@ -8,6 +8,10 @@ from django.conf import settings
 from django.forms import ModelForm
 import django.forms
 from django.contrib import messages
+try:
+    from django.contrib.contenttypes.admin import GenericTabularInline
+except ImportError:
+    from django.contrib.contenttypes.generic import GenericTabularInline
 
 from authentic2.saml.models import LibertyProvider, LibertyServiceProvider
 from authentic2.saml.models import LibertyIdentityProvider, IdPOptionsSPPolicy
@@ -16,6 +20,7 @@ from authentic2.saml.models import LibertyProviderPolicy
 from authentic2.saml.models import LibertySessionDump, LibertyFederation
 from authentic2.saml.models import LibertyAssertion, LibertySessionSP, KeyValue
 from authentic2.saml.models import LibertySession
+from authentic2.saml.models import SAMLAttribute
 from authentic2.http_utils import get_url
 
 from . import admin_views
@@ -157,6 +162,10 @@ def update_metadata(modeladmin, request, queryset):
         messages.info(request, _('Metadata update for: %s') % updated)
 
 
+class SAMLAttributeInlineAdmin(GenericTabularInline):
+    model = SAMLAttribute
+
+
 class LibertyProviderAdmin(admin.ModelAdmin):
     form = LibertyProviderForm
     list_display = ('name', 'slug', 'entity_id', 'protocol_conformance')
@@ -174,7 +183,8 @@ class LibertyProviderAdmin(admin.ModelAdmin):
     )
     inlines = [
             LibertyServiceProviderInline,
-            LibertyIdentityProviderInline
+            LibertyIdentityProviderInline,
+            SAMLAttributeInlineAdmin,
     ]
     actions = [ update_metadata ]
     prepopulated_fields = {'slug': ('name',)}
@@ -194,7 +204,6 @@ class LibertyProviderPolicyAdmin(admin.ModelAdmin):
             LibertyServiceProviderInline,
     ]
 
-
 class LibertyFederationAdmin(admin.ModelAdmin):
     search_fields = ('name_id_content', 'user__username')
     list_display = ('user', 'creation', 'last_modification', 'name_id_content', 'format', 'idp', 'sp')
@@ -207,7 +216,11 @@ class LibertyFederationAdmin(admin.ModelAdmin):
         return name_id_format
 
 admin.site.register(IdPOptionsSPPolicy, IdPOptionsSPPolicyAdmin)
-admin.site.register(SPOptionsIdPPolicy)
+
+class SPOptionsIdPPolicyAdmin(admin.ModelAdmin):
+    inlines = [ SAMLAttributeInlineAdmin ]
+
+admin.site.register(SPOptionsIdPPolicy, SPOptionsIdPPolicyAdmin)
 admin.site.register(LibertyProvider, LibertyProviderAdmin)
 admin.site.register(LibertyProviderPolicy, LibertyProviderPolicyAdmin)
 
