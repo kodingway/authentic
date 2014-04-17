@@ -146,7 +146,7 @@ class UserRealmListFilter(admin.SimpleListFilter):
 class AuthenticUserAdmin(UserAdmin):
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
-        (_('Personal info'), {'fields': ('first_name', 'last_name',)}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
                                        'groups')}),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
