@@ -41,14 +41,13 @@ from django.shortcuts import render
 
 
 from authentic2.compat import get_user_model
-import authentic2.idp as idp
 import authentic2.views as a2_views
 from authentic2.idp.models import get_attribute_policy
-from authentic2.saml.models import LibertyAssertion, LibertyArtifact, \
-    LibertySession, LibertyFederation, LibertySessionDump, \
-    nameid2kwargs, saml2_urn_to_nidformat, LIBERTY_SESSION_DUMP_KIND_SP, \
-    nidformat_to_saml2_urn, save_key_values, get_and_delete_key_values, \
-    LibertyProvider, LibertyServiceProvider, NAME_ID_FORMATS
+from authentic2.saml.models import (LibertyArtifact,
+    LibertySession, LibertyFederation, 
+    nameid2kwargs, saml2_urn_to_nidformat,
+    nidformat_to_saml2_urn, save_key_values, get_and_delete_key_values,
+    LibertyProvider, LibertyServiceProvider, SAMLAttribute, NAME_ID_FORMATS)
 from authentic2.saml.common import redirect_next, asynchronous_bindings, \
     soap_bindings, load_provider, get_saml2_request_message, \
     error_page, set_saml2_response_responder_status_code, \
@@ -64,7 +63,7 @@ from authentic2.saml.common import redirect_next, asynchronous_bindings, \
     AUTHENTIC_STATUS_CODE_UNAUTHORIZED, \
     send_soap_request, get_saml2_query_request, \
     get_saml2_request_message_async_binding, create_saml2_server, \
-    get_saml2_metadata, get_sp_options_policy, get_idp_options_policy, \
+    get_saml2_metadata, get_sp_options_policy, \
     get_entity_id
 import authentic2.saml.saml2utils as saml2utils
 from authentic2.models import AuthenticationEvent
@@ -77,6 +76,7 @@ from authentic2.idp import signals as idp_signals
 from authentic2.utils import (cache_and_validate, get_backends as
         get_idp_backends, get_username)
 from authentic2.decorators import is_transient_user
+from authentic2.attributes_ng.engine import get_attributes
 
 logger = logging.getLogger('authentic2.idp.saml')
 
@@ -169,6 +169,23 @@ def fill_assertion(request, saml_request, assertion, provider_id, nid_format):
         logger.info('adding an eduPersonTargetedID attribute with value %s',
                 edu_person_targeted_id)
     assertion.subject.nameID.format = NAME_ID_FORMATS[nid_format]['samlv2']
+
+
+def add_attributes(assertion, provider, policy, ctx):
+    qs = SAMLAttribute.objects.for_generic_object(provider)
+    qs |= SAMLAttribute.objects.for_generic_object(policy)
+    qs |= qs.distinct()
+
+    if not assertion.attributeStatement:
+        assertion.attributeStatement = [lasso.Saml2AttributeStatement()]
+    attribute_statement = assertion.attributeStatement[0]
+    saml_attributes = list(attribute_statement.attribute)
+    for definition in qs:
+        saml_attribute = definition.to_lasso_attribute(ctx)
+        if not saml_attribute:
+            continue
+        saml_attributes.append(saml_attribute)
+    attribute_statement.attribute = saml_attributes
 
 
 def saml2_add_attribute_values(assertion, attributes):
@@ -821,6 +838,13 @@ def sso_after_process_request(request, login, consent_obtained=False,
 
     build_assertion(request, login, nid_format=nid_format,
             attributes=attributes)
+    ctx = get_attributes({
+        'request': request,
+        'user': request.user,
+        'provider': provider,
+        'policy': saml_policy,
+    })
+    add_attributes(login.assertion, provider, saml_policy, ctx)
     return finish_sso(request, login, user=user, save=save, return_profile=return_profile)
 
 
