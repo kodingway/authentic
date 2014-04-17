@@ -86,6 +86,14 @@ class FederatedIdManager(managers.PassThroughManager \
                     'id_format': id_format,
                     'id_value': id_value})
 
+class GenericQuerySet(QuerySet):
+    def for_generic_object(self, model):
+        content_type = ContentType.objects.get_for_model(model)
+        return self.filter(content_type=content_type, object_id=model.pk)
+
+GenericManager = managers.PassThroughManager \
+        .for_queryset_class(GenericQuerySet)
+
 class AttributeValueQuerySet(QuerySet):
     def with_owner(self, owner):
         content_type = ContentType.objects.get_for_model(owner)

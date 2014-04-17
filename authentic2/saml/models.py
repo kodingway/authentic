@@ -1,5 +1,7 @@
 import xml.etree.ElementTree as etree
 import hashlib
+import numbers
+import datetime
 
 import lasso
 from django.db import models
@@ -8,10 +10,23 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.contenttypes.models import ContentType
+try:
+    from django.contrib.contenttypes.fields import GenericForeignKey
+except ImportError:
+    from django.contrib.contenttypes.generic import GenericForeignKey
+try:
+    from django.contrib.contenttypes.fields import GenericRelation
+except ImportError:
+    from django.contrib.contenttypes.generic import GenericRelation
+
 
 from fields import PickledObjectField, MultiSelectField
 
 from . import app_settings, managers
+from ..decorators import to_iter
+from ..attributes_ng.engine import get_attribute_names
+from .. import managers as a2_managers
 
 def metadata_validator(meta):
     provider=lasso.Provider.newFromBuffer(lasso.PROVIDER_ROLE_ANY, meta.encode('utf8'))
@@ -296,6 +311,7 @@ class SPOptionsIdPPolicy(models.Model):
     federation_mode = models.PositiveIntegerField(_('federation mode'),
             choices=app_settings.FEDERATION_MODE.get_choices(app_settings),
             default=app_settings.FEDERATION_MODE.get_default(app_settings))
+    attributes = GenericRelation('SAMLAttribute')
 
     class Meta:
         verbose_name = _('service provider options policy')
@@ -303,6 +319,80 @@ class SPOptionsIdPPolicy(models.Model):
 
     def __unicode__(self):
         return self.name
+
+class SAMLAttribute(models.Model):
+    ATTRIBUTE_NAME_FORMATS = (
+            ('basic', 'Basic'),
+            ('uri', 'URI'),
+    )
+    objects = a2_managers.GenericManager()
+
+    content_type = models.ForeignKey(ContentType,
+            verbose_name=_('content type'))
+    object_id = models.PositiveIntegerField(
+            verbose_name=_('object identifier'))
+    provider = GenericForeignKey('content_type', 'object_id')
+    name_format = models.CharField(
+            max_length=64,
+            verbose_name=_('name format'),
+            default='basic',
+            choices=ATTRIBUTE_NAME_FORMATS)
+    name = models.CharField(
+            max_length=64,
+            verbose_name=_('name'),
+            blank=True,
+            help_text=_('the local attribute name is used if left blank'))
+    friendly_name = models.CharField(
+            max_length=64,
+            verbose_name=_('friendly name'),
+            blank=True)
+    attribute_name = models.CharField(max_length=64,
+            verbose_name=_('attribute name'),
+            choices=to_iter(get_attribute_names)({'user': None, 'request': None}))
+
+    def clean(self):
+        super(SAMLAttribute, self).clean()
+        if self.attribute_name and not self.name:
+            self.name = self.attribute_name
+
+    def name_format_uri(self):
+        if self.name_format == 'basic':
+            return lasso.SAML2_ATTRIBUTE_NAME_FORMAT_BASIC
+        elif self.name.format == 'uri':
+            return lasso.SAML2_ATTRIBUTE_NAME_FORMAT_URI
+        else:
+            raise NotImplementedError
+
+    def to_lasso_attribute(self, ctx):
+        if not self.attribute_name in ctx:
+            return None
+        at = lasso.Saml2Attribute()
+        at.nameFormat = self.name_format_uri()
+        at.name = self.name.encode('utf-8')
+        if self.friendly_name:
+            at.friendlyName = self.friendly_name.encode('utf-8')
+        values = ctx.get(self.attribute_name)
+        if isinstance(values, (basestring, numbers.Number, datetime.datetime, datetime.date)):
+            values = [values]
+        elif isinstance(values, (tuple, list)):
+            pass
+        else:
+            raise NotImplementedError
+        atv = lasso.Saml2AttributeValue()
+        atvs = []
+        for value in values:
+            value = value.encode('utf-8')
+            tn = lasso.MiscTextNode.newWithString(value)
+            tn.textChild = True
+            atv.any = [tn]
+            atvs.append(atv)
+        at.attributeValue = atvs
+        return at
+
+    def __unicode__(self):
+        ctx = {self.attribute_name: 'coin'}
+        return unicode(self.to_lasso_attribute(ctx).exportToXml(), 'utf-8')
+
 
 
 class AuthorizationAttributeMap(models.Model):
