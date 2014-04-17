@@ -2,6 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from functools import wraps
 
+from . import utils
+
 TRANSIENT_USER_TYPES = []
 
 def is_transient_user(user):
@@ -20,4 +22,10 @@ def to_list(func):
     @wraps(func)
     def f(*args, **kwargs):
         return list(func(*args, **kwargs))
+    return f
+
+def to_iter(func):
+    @wraps(func)
+    def f(*args, **kwargs):
+        return utils.IterableFactory(lambda: func(*args, **kwargs))
     return f
