@@ -12,7 +12,7 @@ Package: python-authentic2
 Architecture: all
 Pre-Depends: python-django (>= 1.5), python-django (< 1.6)
 Depends: ${misc:Depends}, ${python:Depends},
-    python-django-registration (>= 0.8),
+    python-django-registration (>= 1.0),
     python-requests,
     python-django-south (>= 0.7), python-django-south (<< 0.9),
     python-django-admin-tools, python-lasso
