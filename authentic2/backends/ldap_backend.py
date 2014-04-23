@@ -137,6 +137,10 @@ def modify_password(conn, block, dn, old_password, new_password):
     conn.modify_s(dn, ldap.modlist.modifyModlist(old_entry, new_entry))
     log.debug('modified password for dn %r', dn)
 
+def unicode_dict_of_list(attributes, encoding='utf-8'):
+    for key in attributes:
+        attributes[key] = map(lambda x: unicode(x, encoding), attributes[key])
+    return attributes
 
 class LDAPException(Exception):
     pass
@@ -532,6 +536,7 @@ class LDAPBackend():
         except ldap.LDAPError, e:
             log.warning('unable to retrieve attributes of dn %r: %s', dn, e)
         attribute_map = results[0][1]
+        attribute_map = unicode_dict_of_list(attribute_map)
         # add mandatory attributes
         for key, mandatory_values in mandatory_attributes_values.iteritems():
             key = str(key)
