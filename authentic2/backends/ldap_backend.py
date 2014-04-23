@@ -89,6 +89,7 @@ _DEFAULTS = {
     'lookups': ('username', 'dn'),
     # keep password around so that Django authentification also work
     'keep_password': True,
+    'limit_to_realm': True,
 }
 
 _REQUIRED = ('url', 'basedn')
@@ -269,9 +270,14 @@ class LDAPBackend():
 
         # Now we can try to authenticate
         for block in config:
-            if realm and block.get('realm') != realm:
-                continue
-            user = self.authenticate_block(block, username, password)
+            if block['limit_to_realm']:
+                if realm is None and '@' in username:
+                    uid, realm = username.rsplit('@', 1)
+                if realm and block.get('realm') != realm:
+                    continue
+            else:
+                uid = username
+            user = self.authenticate_block(block, uid, password)
             if user is not None:
                 return user
 
