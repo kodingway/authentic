@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-09 17:07+0200\n"
-"PO-Revision-Date: 2014-04-09 17:08+0200\n"
+"POT-Creation-Date: 2014-04-23 17:18+0200\n"
+"PO-Revision-Date: 2014-04-23 17:19+0200\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
 "Language: fr\n"
@@ -419,6 +419,22 @@ msgstr "valeur d'un attribut"
 #: models.py:368
 msgid "attribute values"
 msgstr "valeurs des attributs"
+
+#: validators.py:19 validators.py:48
+msgid "Enter a valid email address."
+msgstr "Entrez une adresse de courriel valide."
+
+#: validators.py:34
+msgid "Invalid email address."
+msgstr "Adresse de courriel invalide."
+
+#: validators.py:41
+msgid "Nonexistent domain."
+msgstr "Domaine inexistant."
+
+#: validators.py:43
+msgid "Nonexistent email address."
+msgstr "Adresse de courriel inexistante."
 
 #: views.py:174
 msgid ""
