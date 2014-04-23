@@ -541,7 +541,7 @@ if IDP_OPENID:
     # OPENID_ACTIONS = {"http://rp.example.com" : 'my-template.html', }
 
 if LDAP_AUTH_SETTINGS:
-    AUTHENTICATION_BACKENDS += ('authentic2.backends.LDAPBackend',)
+    AUTHENTICATION_BACKENDS = ('authentic2.backends.LDAPBackend',) + AUTHENTICATION_BACKENDS
 
 if DEBUG:
     print 'Debugging mode is active'
