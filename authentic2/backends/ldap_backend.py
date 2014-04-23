@@ -545,6 +545,7 @@ class LDAPBackend():
             attribute_map[key] = list(new)
         # apply mappings
         for from_attribute, to_attribute in attribute_mappings:
+            from_attribute = str(from_attribute)
             if from_attribute not in attribute_map:
                 continue
             to_attribute = str(to_attribute)
