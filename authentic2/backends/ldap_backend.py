@@ -263,20 +263,17 @@ class LDAPBackend():
     def authenticate(self, username=None, password=None, realm=None):
         if username is None or password is None:
             return None
-        if realm is None and '@' in username:
-            username, realm = username.rsplit('@', 1)
 
         config = self.get_config()
 
         # Now we can try to authenticate
         for block in config:
+            uid = username
             if block['limit_to_realm']:
                 if realm is None and '@' in username:
                     uid, realm = username.rsplit('@', 1)
                 if realm and block.get('realm') != realm:
                     continue
-            else:
-                uid = username
             user = self.authenticate_block(block, uid, password)
             if user is not None:
                 return user
