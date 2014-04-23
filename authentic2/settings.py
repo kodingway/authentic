@@ -425,7 +425,7 @@ except ImportError, e:
     if 'local_settings' in e.args[0]:
         pass
 
-from . import fix_username_length
+from . import fix_user_model
 
 LOGGING = {
     'version': 1,
