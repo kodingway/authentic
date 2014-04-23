@@ -4,6 +4,8 @@ from django.core.validators import MaxLengthValidator
 from django.db.models.signals import class_prepared
 from django.db.models import FieldDoesNotExist
 
+from . import validators
+
 MAX_USERNAME_LENGTH = 255
 
 def longer_username_signal(sender, *args, **kwargs):
@@ -13,6 +15,10 @@ def longer_username_signal(sender, *args, **kwargs):
 class_prepared.connect(longer_username_signal)
 
 def patch_user_model(model):
+    patch_username(model)
+    patch_email(model)
+
+def patch_username(model):
     try:
         field = model._meta.get_field("username")
     except FieldDoesNotExist:
@@ -28,3 +34,11 @@ def patch_user_model(model):
     for v in field.validators:
         if isinstance(v, MaxLengthValidator):
             v.limit_value = MAX_USERNAME_LENGTH
+
+def patch_email(model):
+    try:
+        field = model._meta.get_field("email")
+    except FieldDoesNotExist:
+        return
+
+    field.validators.append(validators.EmailValidator())
