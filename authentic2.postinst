@@ -41,7 +41,8 @@ case "$1" in
             /var/lib/authentic2/extra-static \
             /var/lib/authentic2/media \
             /var/run/authentic2 \
-            /var/log/authentic2
+            /var/log/authentic2 \
+            /var/cache/authentic2
 
         # source dbconfig-common shell library, and call the hook function
         if [ -f /usr/share/dbconfig-common/dpkg/postinst.pgsql ]; then
