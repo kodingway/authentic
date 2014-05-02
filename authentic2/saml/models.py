@@ -3,6 +3,7 @@ import hashlib
 
 import lasso
 from django.db import models
+from django.db.models import Q
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
@@ -627,10 +628,19 @@ class LibertySession(models.Model):
         self.__dict__.update(nameid2kwargs(name_id))
 
     @classmethod
-    def get_for_nameid_and_session_indexes(cls, name_id, session_indexes):
+    def get_for_nameid_and_session_indexes(cls, issuer_id, provider_id, name_id, session_indexes):
         kwargs = nameid2kwargs(name_id)
-        return LibertySession.objects.filter(session_index__in=session_indexes,
-                **kwargs)
+        name_id_qualifier = kwargs['name_id_qualifier']
+        qs = LibertySession.objects.filter(provider_id=provider_id,
+                session_index__in=session_indexes)
+        if name_id_qualifier and name_id_qualifier != issuer_id:
+            qs = qs.filter(**kwargs)
+        else:
+            kwargs.pop('name_id_qualifier')
+            qs = qs.filter(**kwargs) \
+                    .filter(Q(name_id_qualifier__isnull=True)|Q(name_id_qualifier=issuer_id))
+        qs = qs.filter(Q(name_id_sp_name_qualifier__isnull=True)|Q(name_id_sp_name_qualifier=provider_id))
+        return qs
 
     def __unicode__(self):
         return '<LibertySession %s>' % self.__dict__

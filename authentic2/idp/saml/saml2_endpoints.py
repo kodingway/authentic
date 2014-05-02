@@ -1129,7 +1129,7 @@ def logout_synchronous_other_backends(request, logout, django_sessions_keys):
     return None
 
 
-def get_only_last_session(name_id, session_indexes, but_provider):
+def get_only_last_session(issuer_id, provider_id, name_id, session_indexes):
     """Try to have a decent behaviour when receiving a logout request with
        multiple session indexes.
 
@@ -1139,14 +1139,14 @@ def get_only_last_session(name_id, session_indexes, but_provider):
     logger.debug('%s %s' % (name_id.dump(),
         session_indexes))
     lib_session1 = LibertySession.get_for_nameid_and_session_indexes(
-            name_id, session_indexes)
+            issuer_id, provider_id, name_id, session_indexes)
     django_session_keys = [s.django_session_key for s in lib_session1]
     lib_session = LibertySession.objects.filter(
             django_session_key__in=django_session_keys)
     providers = set([s.provider_id for s in lib_session])
     result = []
     for provider in providers:
-        if provider != but_provider:
+        if provider != provider_id:
             x = lib_session.filter(provider_id=provider)
             latest = x.latest('creation')
             result.append(latest)
@@ -1225,8 +1225,9 @@ def slo_soap(request):
 
     '''Find all active sessions on SPs but the SP initiating the SLO'''
     found, lib_sessions, django_session_keys = \
-            get_only_last_session(logout.request.nameId,
-                    logout.request.sessionIndexes, logout.remoteProviderId)
+            get_only_last_session(logout.server.providerId,
+                    logout.remoteProviderId, logout.request.nameId,
+                    logout.request.sessionIndexes)
     if not found:
         logger.debug('no third SP session found')
     else:
@@ -1362,17 +1363,15 @@ def slo(request):
     logger.info('asynchronous slo from %s' % logout.remoteProviderId)
     # Filter sessions
     all_sessions = LibertySession.get_for_nameid_and_session_indexes(
+            logout.server.providerId, logout.remoteProviderId,
             logout.request.nameId, logout.request.sessionIndexes)
-    # Does the request is valid ?
-    remote_provider_sessions = \
-            all_sessions.filter(provider_id=logout.remoteProviderId)
-    if not remote_provider_sessions.exists():
+    if not all_sessions.exists():
         logger.error('slo refused, since no session exists with the \
             requesting provider')
         return return_logout_error(request, logout,
                 AUTHENTIC_STATUS_CODE_UNKNOWN_SESSION)
     # Load session dump for the requesting provider
-    last_session = remote_provider_sessions.latest('creation')
+    last_session = all_sessions.latest('creation')
     set_session_dump_from_liberty_sessions(logout, [last_session])
     try:
         logout.validateRequest()
