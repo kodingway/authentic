@@ -368,10 +368,17 @@ def sso(request):
                 "answered because no valid protocol binding could be found")
             logger.error("the request cannot be answered because no "
                 "valid protocol binding could be found")
+            login.response.status.statusMessage = 'No valid protocol binding could be found'
             return HttpResponseBadRequest(message)
+        except lasso.ProviderMissingPublicKeyError, e:
+            log_info_authn_request_details(login)
+            logger.error('no public key found: %s', e)
+            login.response.status.statusMessage = 'The public key is unknown'
+            return return_login_response(request, login)
         except lasso.DsError, e:
             log_info_authn_request_details(login)
-            logger.error('digital signature treatment error: %s' % e)
+            logger.error('digital signature treatment error: %s', e)
+            login.response.status.statusMessage = 'Signature validation failed'
             return return_login_response(request, login)
         except (lasso.ServerProviderNotFoundError,
                 lasso.ProfileUnknownProviderError):
