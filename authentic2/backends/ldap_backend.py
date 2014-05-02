@@ -272,6 +272,8 @@ class LDAPBackend():
             return None
 
         config = self.get_config()
+        if not config:
+            return
 
         # Now we can try to authenticate
         for block in config:
