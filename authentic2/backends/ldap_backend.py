@@ -139,7 +139,10 @@ def modify_password(conn, block, dn, old_password, new_password):
 
 def unicode_dict_of_list(attributes, encoding='utf-8'):
     for key in attributes:
-        attributes[key] = map(lambda x: unicode(x, encoding), attributes[key])
+        try:
+            attributes[key] = map(lambda x: unicode(x, encoding), attributes[key])
+        except UnicodeDecodeError:
+            log.warning('unable to decode attribute %r to UTF-8', key)
     return attributes
 
 class LDAPException(Exception):
