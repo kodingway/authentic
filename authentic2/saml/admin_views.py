@@ -18,6 +18,13 @@ class AddLibertyProviderFromUrlView(AdminAddFormViewMixin, FormView):
     form_class = AddLibertyProviderFromUrlForm
     template_name = 'admin/saml/libertyprovider/add_from_url.html'
 
+    def get_form_kwargs(self, **kwargs):
+        kwargs = super(AddLibertyProviderFromUrlView, self).get_form_kwargs(**kwargs)
+        if 'entity_id' in self.request.GET:
+            initial = kwargs.setdefault('initial', {})
+            initial['url'] = self.request.GET['entity_id']
+        return kwargs
+
     def form_valid(self, form):
         form.save()
         self.success_url = reverse(

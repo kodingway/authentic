@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<p>{% blocktrans %}We were unable to load provider
+  <tt>{{ entity_id }}</tt>. 
+  You can <a href="{{ add_url }}">add</a> it now or <a href="">retry</a>.
+   {% endblocktrans %}
+</p>
+{% endblock %}

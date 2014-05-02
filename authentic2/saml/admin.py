@@ -184,7 +184,7 @@ class LibertyProviderAdmin(admin.ModelAdmin):
         urls = patterns('',
             url(r'^add-from-url/$',
                 self.admin_site.admin_view(admin_views.AddLibertyProviderFromUrlView.as_view(model_admin=self)),
-                name='eo_facture_facture_add_from_url'),
+                name='saml_libertyprovider_add_from_url'),
             ) + urls
         return urls
 

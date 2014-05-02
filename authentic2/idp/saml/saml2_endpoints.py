@@ -37,6 +37,7 @@ from django.contrib.auth import BACKEND_SESSION_KEY
 from django.conf import settings
 from django.utils.encoding import smart_unicode
 from django.contrib.auth import load_backend
+from django.shortcuts import render
 
 
 from authentic2.compat import get_user_model
@@ -381,10 +382,13 @@ def sso(request):
             provider_loaded = load_provider(request, provider_id,
                     server=login.server, autoload=True)
             if not provider_loaded:
-                message = _('sso: fail to load unknown provider %s' \
-                    % provider_id)
-                return error_page(request, message, logger=logger,
-                        warning=True)
+                add_url = reverse('admin:saml_libertyprovider_add_from_url')
+                add_url += '?' + urllib.urlencode({ 'entity_id': provider_id })
+                return render(request,
+                        'idp/saml/unknown_provider.html',
+                        { 'entity_id': provider_id,
+                          'add_url': add_url,
+                        })
             else:
                 policy = get_sp_options_policy(provider_loaded)
                 if not policy:
