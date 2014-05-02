@@ -1,7 +1,10 @@
-import ldap
-import ldap.modlist
-import ldap.sasl
-from ldap.filter import filter_format
+try:
+    import ldap
+    import ldap.modlist
+    import ldap.sasl
+    from ldap.filter import filter_format
+except ImportError:
+    ldap = None
 import logging
 import random
 import urlparse
@@ -274,6 +277,9 @@ class LDAPBackend():
         config = self.get_config()
         if not config:
             return
+
+        if not ldap:
+            raise ImproperlyConfigured('ldap is not available')
 
         # Now we can try to authenticate
         for block in config:
