@@ -104,6 +104,8 @@ def get_attributes(user, definitions=None, source=None, auth_source=False, **kwa
         if value:
             if callable(value):
                 value = value()
+            if hasattr(value, 'all') and callable(value.all):
+                value = value.all()
             logger.debug('field %r has value %r', field_name, value)
             old = data.get(definition, [])
             if not isinstance(value, basestring) and hasattr(value,
