@@ -30,18 +30,18 @@ from . import forms, models, util, app_settings
 logger = logging.getLogger(__name__)
 
 def get_next(request):
-    next = request.REQUEST.get(REDIRECT_FIELD_NAME)
-    if not next:
+    next_url = request.REQUEST.get(REDIRECT_FIELD_NAME)
+    if not next_url:
         if 'next' in request.session:
-            next = request.session['next']
+            next_url = request.session['next']
         elif settings.LOGIN_REDIRECT_URL:
-            next = settings.LOGIN_REDIRECT_URL
+            next_url = settings.LOGIN_REDIRECT_URL
         else:
-            next = '/'
-    return next
+            next_url = '/'
+    return next_url
 
 def handle_request(request):
-    next = get_next(request)
+    next_url = get_next(request)
 
     # Check certificate validity
     ssl_info  = util.SSLInfo(request)
@@ -53,14 +53,14 @@ def handle_request(request):
         messages.add_message(request, messages.ERROR,
             _('SSL Client Authentication failed. '
             'No client certificate found.'))
-        return redirect_to_login(next)
+        return redirect_to_login(next_url)
     elif not accept_self_signed and not ssl_info.verify:
         logger.error('SSL Client Authentication failed: '
             'SSL CGI variable VERIFY is not SUCCESS')
         messages.add_message(request, messages.ERROR,
             _('SSL Client Authentication failed. '
             'Your client certificate is not valid.'))
-        return redirect_to_login(next)
+        return redirect_to_login(next_url)
 
     # SSL entries for this certificate?
     user = authenticate(ssl_info=ssl_info)
@@ -79,7 +79,7 @@ def handle_request(request):
             logger.error('account creation failure')
             messages.add_message(request, messages.ERROR,
             _('SSL Client Authentication failed. Internal server error.'))
-            return HttpResponseRedirect(next)
+            return HttpResponseRedirect(next_url)
 
     # No SSL entries and no user session, redirect account linking page
     if not user and not request.user.is_authenticated():
@@ -91,12 +91,12 @@ def handle_request(request):
         from backend import SSLBackend
         if SSLBackend().link_user(ssl_info, request.user):
             logger.info('Successful linking of the SSL '
-               'Certificate to an account, redirection to %s' % next)
+               'Certificate to an account, redirection to %s' % next_url)
         else:
             logger.error('login() failed')
             messages.add_message(request, messages.ERROR,
             _('SSL Client Authentication failed. Internal server error.'))
-        return HttpResponseRedirect(next)
+        return HttpResponseRedirect(next_url)
 
     # SSL Entries found for this certificate,
     # if the user is logged out, we login
@@ -105,8 +105,8 @@ def handle_request(request):
         models.AuthenticationEvent.objects.create(who=user.username,
                 how='ssl', nonce=request.GET.get(NONCE_FIELD_NAME,''))
         logger.info('Successful SSL Client Authentication, '
-            'redirection to %s' % next)
-        return HttpResponseRedirect(next)
+            'redirection to %s' % next_url)
+        return HttpResponseRedirect(next_url)
 
     # SSL Entries found for this certificate, if the user is logged in, we
     # check that the SSL entry for the certificate is this user.
@@ -121,8 +121,8 @@ def handle_request(request):
         cert.save()
 
     logger.info('Successful SSL Client Authentication, '
-        'redirection to %s' % next)
-    return HttpResponseRedirect(next)
+        'redirection to %s' % next_url)
+    return HttpResponseRedirect(next_url)
 
 ###
  # post_account_linking
@@ -139,10 +139,10 @@ def post_account_linking(request):
             logger.info('account creation asked')
             request.session['do_creation'] = 'do_creation'
             if 'next' in request.session:
-                next = request.session['next']
+                next_url = request.session['next']
             else:
-                next = request.path
-            qs = { REDIRECT_FIELD_NAME: next }
+                next_url = request.path
+            qs = { REDIRECT_FIELD_NAME: next_url }
             url = '%s?%s' % (reverse('user_signin_ssl'), urllib.urlencode(qs))
             return HttpResponseRedirect(url)
         form = AuthenticationForm(data=request.POST)
@@ -187,8 +187,8 @@ error_ssl = SslErrorView.as_view()
 
 def register(request):
     '''Registration page for SSL auth without CA'''
-    next = request.GET.get(REDIRECT_FIELD_NAME, settings.LOGIN_REDIRECT_URL)
-    return registration.views.register(request, success_url=next,
+    next_url = request.GET.get(REDIRECT_FIELD_NAME, settings.LOGIN_REDIRECT_URL)
+    return registration.views.register(request, success_url=next_url,
             form_class=functools.partial(forms.RegistrationForm,
                 request=request))
 

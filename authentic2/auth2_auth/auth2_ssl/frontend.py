@@ -25,10 +25,10 @@ class SSLFrontend(object):
     def form(self):
         return django.forms.Form
 
-    def post(self, request, form, nonce, next):
-        if next is None:
-            next = request.path
-        qs = { REDIRECT_FIELD_NAME: next }
+    def post(self, request, form, nonce, next_url):
+        if next_url is None:
+            next_url = request.path
+        qs = { REDIRECT_FIELD_NAME: next_url }
         if nonce is not None:
             qs.update({ NONCE_FIELD_NAME: nonce })
         return HttpResponseRedirect('/sslauth?%s' % urllib.urlencode(qs))
