@@ -294,6 +294,7 @@ class LDAPBackend():
                 return user
 
     def authenticate_block(self, block, username, password):
+        from ldap.dn import escape_dn_chars
         if block['timeout'] != -1:
             for opt in ('NETWORK_TIMEOUT', 'TIMELIMIT', 'TIMEOUT'):
                 ldap.set_option(getattr(ldap, 'OPT_%s' % opt), block['timeout'])
@@ -311,7 +312,9 @@ class LDAPBackend():
                 # if necessary bind as admin
                 self.try_admin_bind(conn, block)
                 if block['user_dn_template']:
-                    authz_ids.append(block['user_dn_template'].format(username=username))
+                    template = str(block['user_dn_template'])
+                    escaped_username = escape_dn_chars(username)
+                    authz_ids.append(template.format(username=escaped_username))
                 else:
                     try:
                         if block.get('bind_with_username'):
