@@ -406,7 +406,7 @@ class LDAPBackend():
 
     def create_username(self, uri, dn, username, password, conn, block, attributes):
         '''Build a username using the configured template'''
-        username_template = block['username_template']
+        username_template = unicode(block['username_template'])
         return username_template.format(username=username, dn=dn, uri=uri,
                 block=block, realm=block['realm'], **attributes)
 
