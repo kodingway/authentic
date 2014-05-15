@@ -480,9 +480,10 @@ class LDAPBackend():
         '''Retrieve group DNs from the LDAP by attributes (memberOf) or by
            filter.
         '''
+        from ldap.filter import escape_filter_chars
         group_base_dn = block.get('group_basedn', block['basedn'])
-        member_of_attribute = block['member_of_attribute']
-        group_filter = block['group_filter']
+        member_of_attribute = str(block['member_of_attribute'])
+        group_filter = str(block['group_filter'])
         group_dns = set()
         if member_of_attribute:
             results = conn.search_s(dn, ldap.SCOPE_BASE, '', [member_of_attribute])
@@ -490,7 +491,7 @@ class LDAPBackend():
         if group_filter:
             try:
                 results = conn.search_s(group_base_dn, ldap.SCOPE_SUBTREE,
-                        group_filter.format(user_dn=dn), [])
+                        group_filter.format(user_dn=escape_filter_chars(dn)), [])
             except ldap.NO_SUCH_OBJECT:
                 pass
             group_dns.update(dn for dn, attributes in results)
