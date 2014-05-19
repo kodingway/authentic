@@ -482,13 +482,15 @@ class LDAPBackend():
         '''
         from ldap.filter import escape_filter_chars
         group_base_dn = block.get('group_basedn', block['basedn'])
-        member_of_attribute = str(block['member_of_attribute'])
-        group_filter = str(block['group_filter'])
+        member_of_attribute = block['member_of_attribute']
+        group_filter = block['group_filter']
         group_dns = set()
         if member_of_attribute:
+            member_of_attribute = str(member_of_attribute)
             results = conn.search_s(dn, ldap.SCOPE_BASE, '', [member_of_attribute])
             group_dns.update(results[0][1].get(member_of_attribute, []))
         if group_filter:
+            group_filter = str(group_filter)
             try:
                 results = conn.search_s(group_base_dn, ldap.SCOPE_SUBTREE,
                         group_filter.format(user_dn=escape_filter_chars(dn)), [])
