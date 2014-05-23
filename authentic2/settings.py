@@ -366,7 +366,7 @@ ACCOUNT_ACTIVATION_DAYS = to_int('ACCOUNT_ACTIVATION_DAYS', 3)
 PASSWORD_RESET_TIMEOUT_DAYS = to_int('PASSWORD_RESET_TIMEOUT_DAYS', 3)
 
 if 'A2_HOMEPAGE_URL' in os.environ:
-    A2_HOMEPAGE_URL = os.environg['A2_HOMEPAGE_URL']
+    A2_HOMEPAGE_URL = os.environ['A2_HOMEPAGE_URL']
 
 # Admin tools
 ADMIN_TOOLS_INDEX_DASHBOARD = 'authentic2.dashboard.CustomIndexDashboard'
