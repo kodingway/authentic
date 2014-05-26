@@ -301,6 +301,9 @@ SAML_METADATA_AUTOLOAD = os.environ.get('SAML_METADATA_AUTOLOAD', 'none')
 
 PUSH_PROFILE_UPDATES = 'PUSH_PROFILE_UPDATES' in os.environ
 
+if PASSWORD_HASHERS in os.environ:
+    PASSWORD_HASHERS = os.environ['PASSWORD_HASHERS'].split(':')
+
 ##################################
 # LDAP Configuration
 ##################################
