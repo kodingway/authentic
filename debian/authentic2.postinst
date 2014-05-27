@@ -55,9 +55,14 @@ case "$1" in
             dbc_go authentic2 $@
         fi
 
-        echo -n "Generating static files.." >&2
-        su authentic -p -c "/usr/bin/authentic2-ctl collectstatic --noinput --traceback" >&2
-        echo "..done" >&2
+        if [ ! -f /etc/authentic2/cert.pem -a ! -f /etc/authentic2/key.pem ]; then
+            echo -n "Generating key material..." >&2
+            openssl genpkey -algorithm rsa -pkeyopt rsa_keygen_bits:2048 -out /etc/authentic2/key.pem >&2
+            openssl req -x509 -new -out /etc/authentic2/cert.pem -subj '/CN=whocares' -key /etc/authentic2/key.pem -days 3650 >&2
+            chown $AUTHENTIC_USER.$AUTHENTIC_GROUP /etc/authentic2/cert.pem /etc/authentic2/key.pem
+            chmod 640 /etc/authentic2/cert.pem /etc/authentic2/key.pem
+            echo "..done" >&2
+        fi
         ;;
 
     reconfigure|abort-upgrade|abort-remove|abort-deconfigure)
