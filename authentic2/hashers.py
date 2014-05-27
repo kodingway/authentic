@@ -1,12 +1,14 @@
 import hashlib
-import base64
 import math
+import base64
 
 from django.contrib.auth import hashers
 from django.utils.crypto import constant_time_compare
 from django.utils.datastructures import SortedDict
 from django.utils.translation import ugettext_noop as _
 from django.utils.encoding import force_bytes
+from django.contrib.auth.hashers import make_password
+
 
 class Drupal7PasswordHasher(hashers.BasePasswordHasher):
     """
@@ -83,6 +85,7 @@ class Drupal7PasswordHasher(hashers.BasePasswordHasher):
             (_('hash'), hashers.mask_hash(hash)),
         ])
 
+
 class CommonPasswordHasher(hashers.BasePasswordHasher):
     """
     The Salted MD5 password hashing algorithm (not recommended)
@@ -111,6 +114,76 @@ class CommonPasswordHasher(hashers.BasePasswordHasher):
             (_('hash'), hashers.mask_hash(hash)),
         ])
 
+
+OPENLDAP_ALGO_MAPPING = {
+         #        hasher? salt offset?  hex encode?
+        'SHA':   ( 'sha-oldap',  0,  True),
+        'SSHA':  ('ssha-oldap', 20,  True),
+        'MD5':   ( 'md5-oldap',  0,  True),
+        'SMD5':  ( 'md5-oldap', 16,  True),
+}
+
+
+def olap_password_to_dj(password):
+    '''Convert an LDAP password for Django use eventually hashed'''
+    if password[0] == '{' and '}' in password:
+        algo = password[1:].split('}')[0]
+        if algo not in OPENLDAP_ALGO_MAPPING:
+            raise ValueError('unknown algorithm %r' % algo)
+        password = password[1:].split('}')[1]
+        try:
+            password = base64.b64decode(password)
+        except ValueError:
+            raise ValueError('unable to decode base64 hash %r' % password)
+        algo_name, salt_offset, hex_encode = OPENLDAP_ALGO_MAPPING[algo]
+        salt, password = (password[salt_offset:], password[:salt_offset]) if salt_offset else ('', password)
+        if hex_encode:
+            password = password.encode('hex')
+        return '%s$%s$%s' % (algo_name, salt.encode('hex'), password)
+    else:
+        return make_password(password)
+
+
+class OpenLDAPPasswordHasher(CommonPasswordHasher):
+    def encode(self, password, salt):
+        assert password
+        assert '$' not in salt
+        hash = self.digest(force_bytes(password + salt)).hexdigest()
+        return "%s$%s$%s" % (self.algorithm, salt.encode('hex'), hash)
+
+    def verify(self, password, encoded):
+        algorithm, salt, hash = encoded.split('$', 2)
+        hash = hash.decode('hex')
+        salt = salt.decode('hex')
+        assert algorithm == self.algorithm
+        encoded_2 = self.encode(password, salt)
+        return constant_time_compare(encoded, encoded_2)
+
+
 class SHA256PasswordHasher(CommonPasswordHasher):
     algorithm = 'sha256'
     digest = hashlib.sha256
+
+
+class SSHA1PasswordHasher(OpenLDAPPasswordHasher):
+    algorithm = 'ssha-oldap'
+    digest = hashlib.sha1
+
+
+class SMD5PasswordHasher(OpenLDAPPasswordHasher):
+    algorithm = 'smd5-oldap'
+    digest = hashlib.md5
+
+class SHA1OLDAPPasswordHasher(OpenLDAPPasswordHasher):
+    algorithm = 'sha-oldap'
+    digest = hashlib.sha1
+
+    def salt(self):
+        return ''
+
+class MD5OLDAPPasswordHasher(OpenLDAPPasswordHasher):
+    algorithm = 'md5-oldap'
+    digest = hashlib.md5
+
+    def salt(self):
+        return ''
