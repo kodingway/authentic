@@ -66,8 +66,8 @@ def get_attributes(user, definitions=None, source=None, auth_source=False, **kwa
                 source.name)
         return None
 
-    data = []
     if hasattr(user, 'get_attributes') and callable(user.get_attributes):
+        data = {}
         attributes = user.get_attributes()
         if not definitions:
             definitions = []
