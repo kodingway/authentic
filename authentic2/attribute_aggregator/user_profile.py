@@ -66,56 +66,7 @@ def get_attributes(user, definitions=None, source=None, auth_source=False, **kwa
                 source.name)
         return None
 
-    attributes = dict()
     data = []
-    field_names = set()
-    user_profile_fields = getattr(user, 'USER_PROFILE', [])
-    if not user_profile_fields:
-        user_profile_fields = user._meta.get_all_field_names()
-    for field in user_profile_fields:
-        if isinstance(field, (tuple, list)):
-            field_names.add(field[0])
-        else:
-            field_names.add(field)
-    fields = []
-    if definitions:
-        for definition in definitions:
-            field_name = get_profile_field_name_from_definition(definition)
-            if not field_name:
-                #
-                #  Profile model may be extended without modifying the
-                #  mapping file if the attribute name is the same as the
-                #  definition
-                #
-                field_name = definition
-            fields.append((field_name, definition))
-    else:
-        fields = [(field_name, definition)
-                    for definition in get_definitions_from_profile_field_name(field_name)
-                    for field_name in field_names]
-    logger.debug('retrieving fields %r from USER_PROFILE', fields)
-    data = {}
-    for field_name, definition in fields:
-        try:
-            value = attrgetter(field_name)(user)
-        except AttributeError:
-            logger.debug('field %r not found in USER_PROFILE', field_name)
-            continue
-        if value:
-            if callable(value):
-                value = value()
-            if hasattr(value, 'all') and callable(value.all):
-                value = value.all()
-            logger.debug('field %r has value %r', field_name, value)
-            old = data.get(definition, [])
-            if not isinstance(value, basestring) and hasattr(value,
-                    '__iter__'):
-                new = map(unicode, value)
-            else:
-                new = [unicode(value)]
-            data[definition] = list(set(old) | set(new))
-        else:
-            logger.debug('get_attributes: no value found')
     if hasattr(user, 'get_attributes') and callable(user.get_attributes):
         attributes = user.get_attributes()
         if not definitions:
@@ -137,6 +88,56 @@ def get_attributes(user, definitions=None, source=None, auth_source=False, **kwa
             new = reduce(__or__, new)
             old = data.get(definition, [])
             data[definition] = list(set(old) | set(new))
+    else:
+        attributes = dict()
+        field_names = set()
+        user_profile_fields = getattr(user, 'USER_PROFILE', [])
+        if not user_profile_fields:
+            user_profile_fields = user._meta.get_all_field_names()
+        for field in user_profile_fields:
+            if isinstance(field, (tuple, list)):
+                field_names.add(field[0])
+            else:
+                field_names.add(field)
+        fields = []
+        if definitions:
+            for definition in definitions:
+                field_name = get_profile_field_name_from_definition(definition)
+                if not field_name:
+                    #
+                    #  Profile model may be extended without modifying the
+                    #  mapping file if the attribute name is the same as the
+                    #  definition
+                    #
+                    field_name = definition
+                fields.append((field_name, definition))
+        else:
+            fields = [(field_name, definition)
+                        for definition in get_definitions_from_profile_field_name(field_name)
+                        for field_name in field_names]
+        logger.debug('retrieving fields %r from USER_PROFILE', fields)
+        data = {}
+        for field_name, definition in fields:
+            try:
+                value = attrgetter(field_name)(user)
+            except AttributeError:
+                logger.debug('field %r not found in USER_PROFILE', field_name)
+                continue
+            if value:
+                if callable(value):
+                    value = value()
+                if hasattr(value, 'all') and callable(value.all):
+                    value = value.all()
+                logger.debug('field %r has value %r', field_name, value)
+                old = data.get(definition, [])
+                if not isinstance(value, basestring) and hasattr(value,
+                        '__iter__'):
+                    new = map(unicode, value)
+                else:
+                    new = [unicode(value)]
+                data[definition] = list(set(old) | set(new))
+            else:
+                logger.debug('get_attributes: no value found')
     data = [{'definition': definition, 'values': values} for definition, values in 
             data.items()]
     return {SOURCE_NAME: data}
