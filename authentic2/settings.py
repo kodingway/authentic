@@ -446,6 +446,9 @@ LOGGING = {
             'format': '[%(asctime)s] %(levelname)s %(name)s: %(message)s',
             'datefmt': '%Y-%m-%d %a %H:%M:%S'
         },
+        'syslog': {
+            'format': '%(levelname)s %(name)s: %(message)s',
+        },
     },
     'handlers': {
         'null': {
@@ -463,6 +466,7 @@ LOGGING = {
             'address': '/dev/log',
             'class': 'logging.handlers.SysLogHandler',
             'filters': ['cleaning'],
+            'formatter': 'syslog',
         },
         'mail_admins': {
             'level': 'ERROR',
