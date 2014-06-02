@@ -243,9 +243,9 @@ class LogoutUrlAbstract(models.Model):
                 'loading to be really finished'),
             default=300)
 
-    def get_logout_url(self):
-        ok_icon_url = urlparse.urljoin(settings.STATIC_URL,
-                'authentic2/images/ok.png')
+    def get_logout_url(self, request):
+        ok_icon_url = request.build_absolute_uri(urlparse.urljoin(settings.STATIC_URL,
+                'authentic2/images/ok.png'))
         return self.logout_url.format(urlquote(ok_icon_url))
 
     class Meta:
