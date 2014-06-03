@@ -219,6 +219,24 @@ admin.site.register(IdPOptionsSPPolicy, IdPOptionsSPPolicyAdmin)
 
 class SPOptionsIdPPolicyAdmin(admin.ModelAdmin):
     inlines = [ SAMLAttributeInlineAdmin ]
+    fields = (
+            'name',
+            'enabled',
+            'prefered_assertion_consumer_binding',
+            'encrypt_nameid',
+            'encrypt_assertion',
+            'authn_request_signed',
+            'idp_initiated_sso',
+            'default_name_id_format',
+            'accepted_name_id_format',
+            'ask_user_consent',
+            'accept_slo',
+            'forward_slo',
+            'needs_iframe_logout',
+            'iframe_logout_timeout',
+            'http_method_for_slo_request',
+    )
+
 
 admin.site.register(SPOptionsIdPPolicy, SPOptionsIdPPolicyAdmin)
 admin.site.register(LibertyProvider, LibertyProviderAdmin)
