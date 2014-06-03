@@ -97,6 +97,7 @@ default_settings = dict(
         '30 characters. Letters, digits, and @/./+/-/_ only.')),
     A2_REGISTRATION_FORM_USERNAME_LABEL=Setting(default=_('Username')),
     A2_REGISTRATION_REALM=Setting(default=None, definition='Default realm to assign to self-registrated users'),
+    A2_REGISTRATION_GROUPS=Setting(default=[], definition='Default groups for self-registered users'),
     A2_REALMS=Setting(default=[], definition='List of realms to search user accounts'),
     IDP_BACKENDS=[],
     AUTH_FRONTENDS=[],

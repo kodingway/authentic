@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.models import RequestSite
 from django.contrib.sites.models import Site
-from django.contrib.auth.models import BaseUserManager
+from django.contrib.auth.models import BaseUserManager, Group
 from django.conf import settings
 
 
@@ -47,6 +47,11 @@ class RegistrationView(BaseRegistrationView):
         if attributes:
             for attribute in attributes:
                 attribute.set_value(new_user, cleaned_data[attribute.name])
+        if app_settings.A2_REGISTRATION_GROUPS:
+            groups = []
+            for name in app_settings.A2_REGISTRATION_GROUPS:
+                groups.append(Group.objects.get_or_create(name=name))
+            new_user.groups = groups
         registration_profile = RegistrationProfile.objects.create_profile(new_user)
         registration_profile.send_activation_email(site)
 
