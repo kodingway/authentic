@@ -50,7 +50,8 @@ class RegistrationView(BaseRegistrationView):
         if app_settings.A2_REGISTRATION_GROUPS:
             groups = []
             for name in app_settings.A2_REGISTRATION_GROUPS:
-                groups.append(Group.objects.get_or_create(name=name))
+                group, created = Group.objects.get_or_create(name=name)
+                groups.append(group)
             new_user.groups = groups
         registration_profile = RegistrationProfile.objects.create_profile(new_user)
         registration_profile.send_activation_email(site)
