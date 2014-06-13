@@ -143,6 +143,8 @@ def get_saml2_request_message(request):
         msg = get_saml2_post_request(request)
     elif binding == 'SOAP':
         msg = get_saml2_soap_request(request)
+    else:
+        msg = None
     assert msg, 'no saml2 request message found'
     return msg
 
