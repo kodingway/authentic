@@ -99,6 +99,8 @@ default_settings = dict(
     A2_REGISTRATION_REALM=Setting(default=None, definition='Default realm to assign to self-registrated users'),
     A2_REGISTRATION_GROUPS=Setting(default=[], definition='Default groups for self-registered users'),
     A2_REALMS=Setting(default=[], definition='List of realms to search user accounts'),
+    A2_USERNAME_REGEX=Setting(default=None, definition='Regex that username must validate'),
+    A2_USERNAME_HELP_TEXT=Setting(default=None, definition='Help text to explain validation rules of usernames'),
     IDP_BACKENDS=[],
     AUTH_FRONTENDS=[],
 )
