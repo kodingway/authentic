@@ -174,7 +174,7 @@ def fill_assertion(request, saml_request, assertion, provider_id, nid_format):
 def add_attributes(assertion, provider, policy, ctx):
     qs = SAMLAttribute.objects.for_generic_object(provider)
     qs |= SAMLAttribute.objects.for_generic_object(policy)
-    qs |= qs.distinct()
+    qs = qs.distinct()
 
     if not assertion.attributeStatement:
         assertion.attributeStatement = [lasso.Saml2AttributeStatement()]
