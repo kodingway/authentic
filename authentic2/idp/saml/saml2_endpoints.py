@@ -184,6 +184,8 @@ def add_attributes(assertion, provider, policy, ctx):
         saml_attribute = definition.to_lasso_attribute(ctx)
         if not saml_attribute:
             continue
+        logger.debug('adding attribute %r with value %r',
+                saml_attribute.name, ctx.get(saml_attribute.attribute_name))
         saml_attributes.append(saml_attribute)
     attribute_statement.attribute = saml_attributes
 
