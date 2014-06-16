@@ -42,5 +42,6 @@ def get_attributes(instance, ctx):
         ctx['django_user_' + str(av.attribute.name)] = av.to_python()
     ctx['django_user_groups'] = [group for group in user.groups.all()]
     ctx['django_user_group_names'] = [unicode(group) for group in user.groups.all()]
-    ctx['django_user_domain'] = user.username.rsplit('@', 1)[-1] if '@' in user.username else ''
+    ctx['django_user_domain'] = user.username.rsplit('@', 1)[1] if '@' in user.username else ''
+    ctx['django_user_identifier'] = user.username.rsplit('@', 1)[0] if '@' in user.username else ''
     return ctx
