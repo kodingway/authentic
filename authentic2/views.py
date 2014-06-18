@@ -12,6 +12,7 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.views.generic.edit import UpdateView, FormView
 from django.views.generic import RedirectView, TemplateView
+from django.views.generic.base import View
 from django.contrib.auth import SESSION_KEY
 from django import http, shortcuts
 from django.core import mail, signing
@@ -23,7 +24,8 @@ from django.utils.http import urlencode
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.models import SiteProfileNotAvailable
-from django.http import HttpResponseRedirect
+from django.http import (HttpResponseRedirect, HttpResponseForbidden,
+    HttpResponse)
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.sites.models import Site, RequestSite
@@ -408,3 +410,26 @@ def redirect_to_login(request, next=None, nonce=None, keep_qs=False):
     if nonce is not None:
         qs.update({ constants.NONCE_FIELD_NAME: nonce })
     return HttpResponseRedirect('/login?%s' % urlencode(qs))
+
+
+
+class LoggedInView(View):
+    '''JSONP web service to detect if an user is logged'''
+    http_method_names = [u'get']
+
+    def check_referrer(self):
+        '''Check if the given referer is authorized'''
+        referer = self.request.META.get('HTTP_REFERER', '')
+        for valid_referer in app_settings.VALID_REFERERS:
+            if referer.startswith(valid_referer):
+                return True
+        return False
+
+    def get(self, request, *args, **kwargs):
+        if not self.check_referrer():
+            return HttpResponseForbidden()
+        callback = request.GET.get('callback')
+        content = u'{0}({1})'.format(callback, int(request.user.is_authenticated()))
+        return HttpResponse(content, content_type='application/json')
+
+logged_in = never_cache(LoggedInView.as_view())

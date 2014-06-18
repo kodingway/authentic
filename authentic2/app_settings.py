@@ -110,6 +110,7 @@ default_settings = dict(
     A2_USERNAME_HELP_TEXT=Setting(default=None, definition='Help text to explain validation rules of usernames'),
     IDP_BACKENDS=[],
     AUTH_FRONTENDS=[],
+    VALID_REFERERS=Setting(default=[], definition='List of prefix to match referers'),
 )
 
 app_settings = AppSettings(default_settings)
