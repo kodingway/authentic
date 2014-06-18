@@ -61,7 +61,7 @@ def get_soap_message(request):
     return request.raw_post_data
 
 def get_http_binding(request):
-    if request.method == 'GET':
+    if request.method in ('GET', 'HEAD'):
         return 'GET'
     elif request.method == 'POST':
         # disambiguate SOAP and form POST
