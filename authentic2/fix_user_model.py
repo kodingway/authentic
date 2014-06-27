@@ -31,7 +31,7 @@ def patch_username(model):
                         "numbers, and @, ., +, -, or _ "
                         "characters." % MAX_USERNAME_LENGTH)
     if app_settings.A2_USERNAME_HELP_TEXT:
-        field.help_text = A2_USERNAME_HELP_TEXT
+        field.help_text = app_settings.A2_USERNAME_HELP_TEXT
 
     # patch model field validator because validator doesn't change if we change
     # max_length
@@ -41,6 +41,14 @@ def patch_username(model):
         if isinstance(v, RegexValidator):
             if app_settings.A2_USERNAME_REGEX:
                 v.regex = re.compile(app_settings.A2_USERNAME_REGEX)
+    from django.contrib.auth import forms
+    if app_settings.A2_USERNAME_REGEX:
+        r =  re.compile(app_settings.A2_USERNAME_REGEX, re.UNICODE)
+        for form in (forms.UserChangeForm, forms.UserCreationForm):
+            field = form.declared_fields['username']
+            field.regex = r
+            if app_settings.A2_USERNAME_HELP_TEXT:
+                field.help_text = app_settings.A2_USERNAME_HELP_TEXT
 
 def patch_email(model):
     try:
