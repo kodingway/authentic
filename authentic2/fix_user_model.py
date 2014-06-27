@@ -4,6 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.validators import MaxLengthValidator, RegexValidator
 from django.db.models.signals import class_prepared
 from django.db.models import FieldDoesNotExist
+from django.contrib.auth import forms
 
 from . import validators, app_settings
 
@@ -41,7 +42,6 @@ def patch_username(model):
         if isinstance(v, RegexValidator):
             if app_settings.A2_USERNAME_REGEX:
                 v.regex = re.compile(app_settings.A2_USERNAME_REGEX)
-    from django.contrib.auth import forms
     if app_settings.A2_USERNAME_REGEX:
         r =  re.compile(app_settings.A2_USERNAME_REGEX, re.UNICODE)
         for form in (forms.UserChangeForm, forms.UserCreationForm):
