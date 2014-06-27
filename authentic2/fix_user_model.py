@@ -5,6 +5,7 @@ from django.core.validators import MaxLengthValidator, RegexValidator
 from django.db.models.signals import class_prepared
 from django.db.models import FieldDoesNotExist
 from django.contrib.auth import forms
+from django.contrib.auth import get_user_model
 
 from . import validators, app_settings
 
@@ -57,3 +58,6 @@ def patch_email(model):
         return
 
     field.validators.append(validators.EmailValidator())
+
+patch_user_model(get_user_model())
+
