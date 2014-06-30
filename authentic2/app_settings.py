@@ -111,6 +111,8 @@ default_settings = dict(
     IDP_BACKENDS=[],
     AUTH_FRONTENDS=[],
     VALID_REFERERS=Setting(default=[], definition='List of prefix to match referers'),
+    A2_OPENED_SESSION_COOKIE_NAME=Setting(default='A2_OPENED_SESSION', definition='Authentic session open'),
+    A2_OPENED_SESSION_COOKIE_DOMAIN=Setting(default=None),
 )
 
 app_settings = AppSettings(default_settings)

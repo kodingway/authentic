@@ -7,6 +7,8 @@ except ImportError:
 
 from django.conf import settings
 
+from . import app_settings
+
 class ThreadCollector(object):
     def __init__(self):
         if threading is None:
@@ -87,3 +89,17 @@ class CollectIPMiddleware(object):
         if ip and ip not in ips:
             ips.add(ip)
             request.session.modified = True
+
+class OpenedSessionCookieMiddleware(object):
+    def process_response(self, request, response):
+        if request.user.is_authenticated():
+            if app_settings.A2_OPENED_SESSION_COOKIE_DOMAIN:
+                response.set_cookie(
+                        app_settings.A2_OPENED_SESSION_COOKIE_NAME,
+                        value='1',
+                        max_age=None,
+                        domain=app_settings.A2_OPENED_SESSION_COOKIE_DOMAIN)
+        else:
+            response.delete_cookie(
+                    app_settings.A2_OPENED_SESSION_COOKIE_NAME,
+                    domain=app_settings.A2_OPENED_SESSION_COOKIE_DOMAIN)
