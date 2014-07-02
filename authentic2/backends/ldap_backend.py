@@ -538,8 +538,9 @@ class LDAPBackend():
         mandatory_attributes_values = block['mandatory_attributes_values']
         try:
             results = conn.search_s(dn, ldap.SCOPE_BASE, '(objectclass=*)', attributes)
-        except ldap.LDAPError, e:
-            log.warning('unable to retrieve attributes of dn %r: %s', dn, e)
+        except ldap.LDAPError:
+            log.exception('unable to retrieve attributes of dn %r', dn)
+            return
         attribute_map = results[0][1]
         attribute_map = unicode_dict_of_list(attribute_map)
         # add mandatory attributes
@@ -597,9 +598,12 @@ class LDAPBackend():
 
     def _return_user(self, uri, dn, username, password, conn, block):
         attributes = self.get_ldap_attributes(uri, dn, conn, block)
+        if attributes is None:
+            # attributes retrieval failed
+            return
+        log.debug('retrieved attributes for %r: %r', dn, attributes)
         username = self.create_username(uri, dn, username, password, conn,
                 block, attributes)
-        log.debug('retrieved attributes for %r: %r', dn, attributes)
         if block['transient']:
             return self._return_transient_user(uri, dn, username, password,
                     conn, block, attributes)
