@@ -7,7 +7,7 @@ from django.db.models import FieldDoesNotExist
 from django.contrib.auth import forms
 from django.contrib.auth import get_user_model
 
-from . import validators, app_settings
+from . import validators, app_settings, admin_forms
 
 MAX_USERNAME_LENGTH = 255
 
@@ -45,7 +45,8 @@ def patch_username(model):
                 v.regex = re.compile(app_settings.A2_USERNAME_REGEX)
     if app_settings.A2_USERNAME_REGEX:
         r =  re.compile(app_settings.A2_USERNAME_REGEX, re.UNICODE)
-        for form in (forms.UserChangeForm, forms.UserCreationForm):
+        for form in (forms.UserChangeForm, forms.UserCreationForm,
+                admin_forms.UserChangeForm, admin_forms.UserCreationForm):
             field = form.declared_fields['username']
             field.regex = r
             field.max_length = MAX_USERNAME_LENGTH
