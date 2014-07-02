@@ -7,7 +7,6 @@ except ImportError:
     ldap = None
 import logging
 import random
-import urlparse
 import pickle
 import base64
 import hashlib
@@ -393,17 +392,10 @@ class LDAPBackend():
     def backend_name(self):
         return '%s.%s' % (__name__, self.__class__.__name__)
 
-    def build_ldap_external_id(self, uri, dn, block):
-        if block['use_first_url_for_external_id']:
-            uri = block['url'][0]
-        parsed_uri = urlparse.urlparse(uri)
-        return '{scheme}://{netloc}/{dn}??one?'.format(scheme=parsed_uri.scheme,
-                netloc=parsed_uri.netloc, dn=dn)
-
     def create_username(self, uri, dn, username, password, conn, block, attributes):
         '''Build a username using the configured template'''
         username_template = unicode(block['username_template'])
-        return username_template.format(username=username, dn=dn, uri=uri,
+        return username_template.format(username=username, uri=uri,
                 block=block, realm=block['realm'], **attributes)
 
     def create_user(self, uri, dn, username, password, conn, block, attributes):
@@ -565,6 +557,7 @@ class LDAPBackend():
             old = attribute_map.setdefault(to_attribute, [])
             new = set(old) | set(attribute_map[from_attribute])
             attribute_map[to_attribute] = list(new)
+        attribute_map['dn'] = dn
         return attribute_map
 
     def lookup_existing_user(self, uri, dn, username, password, conn, block, attributes):
