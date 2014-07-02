@@ -105,7 +105,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'django.contrib.messages.context_processors.messages',
     'django.core.context_processors.static',
-    'authentic2.context_processors.federations_processor',
+    'authentic2.context_processors.a2_processor',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -144,6 +144,8 @@ STATICFILES_DIRS = (
 
 if os.environ.get('TEMPLATE_DIRS'):
     TEMPLATE_DIRS = tuple(os.environ['TEMPLATE_DIRS'].split(':')) + TEMPLATE_DIRS
+
+TEMPLATE_VARS = {}
 
 if os.environ.get('STATICFILES_DIRS'):
     STATICFILES_DIRS = tuple(os.environ['STATICFILES_DIRS'].split(':')) + STATICFILES_DIRS

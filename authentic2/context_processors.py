@@ -1,3 +1,5 @@
+from django.conf import settings
+
 from . import utils
 
 class UserFederations(object):
@@ -22,5 +24,8 @@ class UserFederations(object):
             return d
         return super(UserFederations, self).__getattr__(name)
 
-def federations_processor(request):
-    return {'federations': UserFederations(request) }
+def a2_processor(request):
+    variables = {}
+    variables.update(getattr(settings, 'TEMPLATE_VARS', {}))
+    variables['federations'] = UserFederations(request)
+    return variables
