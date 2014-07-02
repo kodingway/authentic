@@ -433,6 +433,11 @@ for config_dir in CONFIG_DIRS:
             raise ImproperlyConfigured('JSON file %r is not a dictionnary' % path)
         load_dict_config(json_config)
 
+for config_dir in CONFIG_DIRS:
+    config_py = os.path.join(config_dir, 'config.py')
+    if os.path.exists(config_py):
+        execfile(config_py, globals())
+
 try:
     from local_settings import *
 except ImportError, e:
