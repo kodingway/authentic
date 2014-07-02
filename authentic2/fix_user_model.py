@@ -49,6 +49,7 @@ def patch_username(model):
             field = form.declared_fields['username']
             field.regex = r
             field.max_length = MAX_USERNAME_LENGTH
+            field.widget.attrs[u'maxlength'] = MAX_USERNAME_LENGTH
             if app_settings.A2_USERNAME_HELP_TEXT:
                 field.help_text = app_settings.A2_USERNAME_HELP_TEXT
 
