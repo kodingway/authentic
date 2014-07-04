@@ -185,7 +185,7 @@ if User.__module__ == 'django.contrib.auth.models':
     admin.site.register(User, AuthenticUserAdmin)
 
 class AttributeAdmin(admin.ModelAdmin):
-    list_display = ('label', 'kind', 'required',
+    list_display = ('label', 'name', 'kind', 'required',
             'asked_on_registration', 'user_editable',
             'user_visible')
 
