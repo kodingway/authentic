@@ -1,6 +1,8 @@
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.forms import Form, CharField, PasswordInput
+from django.utils.datastructures import SortedDict
+from django.db.models import FieldDoesNotExist
 
 
 from .. import app_settings, compat, forms
@@ -24,15 +26,29 @@ class RegistrationForm(forms.UserAttributeFormMixin, Form):
         required_fields = set(compat.get_required_fields())
         for field_name in field_names:
             if field_name not in self.fields:
-                model_field = User._meta.get_field(field_name)
-                kwargs = {}
-                if hasattr(model_field, 'validators'):
-                    kwargs['validators'] = model_field.validators
-                field = model_field.formfield(**kwargs)
-                self.fields.insert(insert_idx, field_name, field)
-                insert_idx += 1
+                try:
+                    model_field = User._meta.get_field(field_name)
+                except FieldDoesNotExist:
+                    pass
+                else:
+                    kwargs = {}
+                    if hasattr(model_field, 'validators'):
+                        kwargs['validators'] = model_field.validators
+                    field = model_field.formfield(**kwargs)
+                    self.fields.insert(insert_idx, field_name, field)
+                    insert_idx += 1
+        for field_name in self.fields:
             if field_name in required_fields:
                 self.fields[field_name].required = True
+        # reorder fields obeying A2_REGISTRATION_FIELDS
+        new_fields = SortedDict()
+        for field_name in app_settings.A2_REGISTRATION_FIELDS:
+            if field_name in self.fields:
+                new_fields[field_name] = self.fields[field_name]
+        for field_name in self.fields:
+            if field_name not in new_fields:
+                new_fields[field_name] = self.fields[field_name]
+        self.fields = new_fields
         if 'username' in self.fields:
             self.fields['username'].regex = app_settings.A2_REGISTRATION_FORM_USERNAME_REGEX
             self.fields['username'].help_text = app_settings.A2_REGISTRATION_FORM_USERNAME_HELP_TEXT
