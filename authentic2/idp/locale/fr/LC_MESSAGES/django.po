@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-10 22:29+0200\n"
-"PO-Revision-Date: 2013-09-10 22:29+0200\n"
+"POT-Creation-Date: 2014-07-04 16:00+0200\n"
+"PO-Revision-Date: 2014-07-04 16:02+0200\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
 "Language: fr\n"
@@ -17,228 +17,67 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n>1;\n"
 
-#: models.py:54
-msgid "user consent for attributes propagation"
-msgstr "consentement utilisateur pour la propagation des attributs"
-
-#: models.py:55
-msgid "user consents for attributes propagation"
-msgstr "consentements utilisateur pour la propagation des attributs"
-
-#: models.py:58
-msgid "user {0} consent to release attributes {1} to provider {2}"
-msgstr ""
-"l'utilisateur {0} consent à libérer les attributs {1} au fournisseur {2}"
-
-#: models.py:67
-msgid "Attribute name"
-msgstr "Nom de l'attribut"
-
-#: models.py:73 models.py:170
-msgid "Output name format"
-msgstr "Format du nom de l'attribut en sortie"
-
-#: models.py:79 models.py:177
-msgid "Output namespace"
-msgstr "Espace de nom de sortie"
-
-#: models.py:83
-msgid "Required"
-msgstr "Requis"
-
-#: models.py:86
-msgid "Attribute source"
-msgstr "Source d'attributs"
-
-#: models.py:90
-msgid "attribute list item"
-msgstr "définition de l'attribut"
-
-#: models.py:91
-msgid "attribute list items"
-msgstr "définitions des attributs"
-
-#: models.py:112
-msgid "Name"
-msgstr "Nom"
-
-#: models.py:115
-msgid "Attributes"
-msgstr "Attributs"
-
-#: models.py:120
-msgid "attribute list"
-msgstr "groupe d'attributs"
-
-#: models.py:121
-msgid "attribute lists"
-msgstr "groupes d'attributs"
-
-#: models.py:133
+#: models.py:18
 msgid "Enabled"
 msgstr "Activé"
 
-#: models.py:135
+#: models.py:20
 msgid "Ask the user consent before forwarding attributes"
 msgstr ""
 "Demander le consentement de l'utilisateur avant d'envoyer des attributs"
 
-#: models.py:138
+#: models.py:23
 msgid "Allow the user to select the forwarding attributes"
 msgstr "Permettre à l'utilisateur de séléctioner les attributs à envoyer"
 
-#: models.py:145
+#: models.py:30
 msgid "Pull attributes list"
 msgstr "Liste des attributs des sources locales"
 
-#: models.py:154
+#: models.py:39
 msgid "Forward pushed attributes"
 msgstr "Faire suivre les attributs poussés"
 
-#: models.py:164
+#: models.py:49
 msgid "Map forwarded pushed attributes"
 msgstr "Mapper les attributs poussés à faire suivre"
 
-#: models.py:185
+#: models.py:55
+msgid "Output name format"
+msgstr "Format du nom de l'attribut en sortie"
+
+#: models.py:62
+msgid "Output namespace"
+msgstr "Espace de nom de sortie"
+
+#: models.py:70
 msgid "Filter by source the forwarded pushed attributes"
 msgstr "Filtrer par source les attributs poussés à faire suivre"
 
-#: models.py:193
+#: models.py:78
 msgid "Filter by attribute names the forwarded pushed attributes"
 msgstr "Filtrer par attribut les attributs poussés à faire suivre"
 
-#: models.py:201
+#: models.py:86
 msgid "Filter by source and per attribute the forwarded pushed attributes"
 msgstr ""
 "Filtrer par source et par attribut les attributs poussés à faire suivre"
 
-#: models.py:209
+#: models.py:94
 msgid "Map filtered attributes"
 msgstr "Mapper les attributs filtrés"
 
-#: models.py:216
+#: models.py:101
 msgid "Send an error when a required attribute is missing"
 msgstr "envoyer une erreur lorsqu'un attribut requis est manquant"
 
-#: models.py:223
+#: models.py:108
 msgid "attribute policy"
 msgstr "règlement sur les attributs"
 
-#: models.py:224
+#: models.py:109
 msgid "attribute policies"
 msgstr "règlements sur les attributs"
-
-#: views.py:109
-msgid "Local logout..."
-msgstr "Déconnexion locale"
-
-#: views.py:117
-msgid "Logging out from all your services"
-msgstr "Déconnexion de tous vos services"
-
-#: views.py:122
-msgid "Logged out"
-msgstr "Déconnecté"
-
-#: idp_openid/views.py:266
-msgid "Trust this site?"
-msgstr ""
-
-#: idp_openid/templates/django_openid_provider/manage_id.html:5
-#: idp_openid/templates/django_openid_provider/manage_id_confirm.html:5
-msgid "Manage OpenID"
-msgstr ""
-
-#: idp_openid/templates/django_openid_provider/manage_id.html:23
-msgid "Your current OpenID"
-msgstr ""
-
-#: idp_openid/templates/django_openid_provider/manage_id.html:52
-msgid "Add a new OpenID identity"
-msgstr ""
-
-#: idp_openid/templates/django_openid_provider/manage_trustroot.html:5
-msgid "Manage trusted site"
-msgstr ""
-
-#: idp_openid/templates/django_openid_provider/manage_trustroot.html:17
-msgid "Your trusted site"
-msgstr ""
-
-#: saml/backend.py:69
-#, python-format
-msgid "Sending logout to %(name)s...."
-msgstr "Communication de la déconnexion à %(name)s...."
-
-#: saml/saml2_endpoints.py:370
-#, python-format
-msgid ""
-"SAMLv2 Single Sign On: invalid message for WebSSO profile with HTTP-Redirect "
-"binding: %r"
-msgstr ""
-"SAMLv2 Single Sign On: message invalide pour le profile WebSSO avec le "
-"binding HTTP-Redirect: %r"
-
-#: saml/saml2_endpoints.py:375
-msgid ""
-"SAMLv2 Single Sign On: the request cannot be answered because no valid "
-"protocol binding could be found"
-msgstr ""
-
-#: saml/saml2_endpoints.py:393
-#, python-format
-msgid "sso: fail to load unknown provider %s"
-msgstr ""
-
-#: saml/saml2_endpoints.py:400
-msgid "sso: No SP policy defined"
-msgstr ""
-
-#: saml/saml2_endpoints.py:526
-msgid "continue_sso: error loading login"
-msgstr ""
-
-#: saml/saml2_endpoints.py:530
-#, python-format
-msgid "continue_sso: unknown provider %s"
-msgstr ""
-
-#: saml/saml2_endpoints.py:662 saml/saml2_endpoints.py:955
-#, python-format
-msgid "Provider %s is unknown"
-msgstr ""
-
-#: saml/saml2_endpoints.py:668
-msgid "No service provider policy defined"
-msgstr ""
-
-#: saml/saml2_endpoints.py:847 saml/saml2_endpoints.py:1033
-#: saml/saml2_endpoints.py:1045 saml/saml2_endpoints.py:1259
-#: saml/saml2_endpoints.py:1338 saml/saml2_endpoints.py:1385
-#: saml/saml2_endpoints.py:1396
-#, python-format
-msgid "You are being redirected to \"%s\""
-msgstr "Vous allez être redirigé sur « %s »"
-
-#: saml/saml2_endpoints.py:938
-msgid "Error trying to initiate a single sign on"
-msgstr ""
-
-#: saml/saml2_endpoints.py:944
-msgid "A provider identifier was not provided"
-msgstr ""
-
-#: saml/saml2_endpoints.py:975
-msgid "idp_sso: No SP policy defined"
-msgstr ""
-
-#: saml/saml2_endpoints.py:987
-msgid "Server error"
-msgstr ""
-
-#: saml/saml2_endpoints.py:1388
-msgid "Invalid logout request"
-msgstr ""
 
 #: templates/idp/account_management.html:5
 msgid "Authentic - Account Management"
@@ -253,18 +92,22 @@ msgid "Profile"
 msgstr "Profil"
 
 #: templates/idp/account_management.html:28
-msgid "Edit profile"
-msgstr "Edition du profil"
+msgid "Change email"
+msgstr "Modifier votre adresse électronique"
 
 #: templates/idp/account_management.html:29
-msgid "Delete profile"
-msgstr "Supprimer le profil"
+msgid "Edit profile"
+msgstr "Éditer mon profil"
 
-#: templates/idp/account_management.html:31
+#: templates/idp/account_management.html:30
+msgid "Delete profile"
+msgstr "Supprimer mon profil"
+
+#: templates/idp/account_management.html:32
 msgid "Credentials"
 msgstr "Moyens d'authentification"
 
-#: templates/idp/account_management.html:35
+#: templates/idp/account_management.html:36
 msgid "Back"
 msgstr "Retour"
 
@@ -276,7 +119,7 @@ msgstr "Authentic"
 msgid "Services"
 msgstr "Services"
 
-#: templates/idp/homepage.html:44
+#: templates/idp/homepage.html:50
 msgid "Administration"
 msgstr "Administration"
 
@@ -284,7 +127,7 @@ msgstr "Administration"
 msgid "Logout"
 msgstr "Déconnexion"
 
-#: templates/idp/logout.html:18
+#: templates/idp/logout.html:40
 msgid "Continue logout"
 msgstr "Continuer la déconnexion"
 
