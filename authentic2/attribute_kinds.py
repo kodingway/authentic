@@ -8,6 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import capfirst
 
 from .decorators import to_list
+from . import app_settings
 
 @to_list
 def get_choices():
@@ -42,7 +43,10 @@ def contribute_to_form(attribute_descriptions, form):
         attribute_description.contribute_to_form(form)
 
 def get_form_field(kind, **kwargs):
-    return ATTRIBUTE_KINDS[kind]['field_class'](**kwargs)
+    defn = ATTRIBUTE_KINDS[kind]
+    if 'kwargs' in defn:
+        kwargs.update(defn['kwargs'])
+    return defn['field_class'](**kwargs)
 
 def get_kind(kind):
     d = ATTRIBUTE_KINDS[kind]
@@ -62,4 +66,5 @@ ATTRIBUTE_KINDS = [
           'field_class': SIRETField,
         },
 ]
+ATTRIBUTE_KINDS += app_settings.A2_ATTRIBUTE_KINDS
 ATTRIBUTE_KINDS = dict((d['name'], d) for d in ATTRIBUTE_KINDS)

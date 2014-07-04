@@ -115,6 +115,7 @@ default_settings = dict(
     VALID_REFERERS=Setting(default=[], definition='List of prefix to match referers'),
     A2_OPENED_SESSION_COOKIE_NAME=Setting(default='A2_OPENED_SESSION', definition='Authentic session open'),
     A2_OPENED_SESSION_COOKIE_DOMAIN=Setting(default=None),
+    A2_ATTRIBUTE_KINDS=Setting(default=[], definition='List of other attribute kinds'),
 )
 
 app_settings = AppSettings(default_settings)
