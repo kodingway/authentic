@@ -60,11 +60,6 @@ ATTRIBUTE_KINDS = [
           'name': 'string',
           'field_class': forms.CharField,
         },
-        {
-          'label': _('siret'),
-          'name': 'siret',
-          'field_class': SIRETField,
-        },
 ]
 ATTRIBUTE_KINDS += app_settings.A2_ATTRIBUTE_KINDS
 ATTRIBUTE_KINDS = dict((d['name'], d) for d in ATTRIBUTE_KINDS)
