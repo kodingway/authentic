@@ -448,7 +448,7 @@ from . import fix_user_model
 
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': True,
+    'disable_existing_loggers': False,
     'filters': {
         'cleaning': {
             '()':  'authentic2.utils.CleanLogMessage',
