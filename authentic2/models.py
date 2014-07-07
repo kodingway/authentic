@@ -205,6 +205,16 @@ class UserExternalId(models.Model):
     updated = models.DateTimeField(auto_now=True,
             verbose_name=_('last update date'))
 
+    def __unicode__(self):
+        return u'{0} is {1} on {2}'.format(
+                self.user, self.external_id, self.source)
+
+    def __repr__(self):
+        return '<UserExternalId user: {0!r} source: {1!r} ' \
+               'external_id: {2!r} created: {3} updated: {4}' \
+               .format(self.user_id, self.source, self.external_id,
+                       self.created, self.update)
+
     class Meta:
         verbose_name = _('user external id')
         verbose_name_plural = _('user external ids')
