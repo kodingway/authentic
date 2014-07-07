@@ -66,7 +66,6 @@ class ThreadTrackingHandler(logging.Handler):
 
 collector = ThreadCollector()
 logging_handler = ThreadTrackingHandler(collector)
-logging.root.setLevel(logging.NOTSET)
 logging.root.addHandler(logging_handler)
 
 class LoggingCollectorMiddleware(object):
