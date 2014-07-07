@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+import string
 
 import smtplib
 
@@ -75,3 +76,26 @@ validate_email = EmailValidator(
     _('Enter a valid email address.'),
     'invalid'
 )
+
+def validate_password(password):
+    password_set = set(password)
+    lower = set(string.lowercase)
+    upper = set(string.uppercase)
+    punc = set(string.punctuation)
+
+    if not password:
+        return
+    min_len = app_settings.A2_PASSWORD_POLICY_MIN_LENGTH
+    if len(password) < min_len:
+        raise ValidationError(_('password must contain at least %d '
+            'characters') % min_len)
+
+    class_count = 0
+    for cls in (password_set, lower, upper, punc):
+        if not password_set.isdisjoint(cls):
+            class_count += 1
+    min_class_count = app_settings.A2_PASSWORD_POLICY_MIN_CLASSES
+    if class_count < min_class_count:
+        raise ValidationError(_('password must contain characters '
+            'from at least %d classes amon: lowercase letters, '
+            'uppercase letters, digits, and punctuations') % min_class_count)

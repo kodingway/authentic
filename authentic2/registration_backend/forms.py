@@ -4,15 +4,17 @@ from django.forms import Form, CharField, PasswordInput
 from django.utils.datastructures import SortedDict
 from django.db.models import FieldDoesNotExist
 
+from django.contrib.auth import forms as auth_forms
 
-from .. import app_settings, compat, forms, utils
+from .. import app_settings, compat, forms, utils, validators
 
 
 class RegistrationForm(forms.UserAttributeFormMixin, Form):
     error_css_class = 'form-field-error'
     required_css_class = 'form-field-required'
 
-    password1 = CharField(widget=PasswordInput, label=_("Password"))
+    password1 = CharField(widget=PasswordInput, label=_("Password"),
+            validators=[validators.validate_password])
     password2 = CharField(widget=PasswordInput, label=_("Password (again)"))
 
     def __init__(self, *args, **kwargs):
@@ -100,3 +102,15 @@ class RegistrationForm(forms.UserAttributeFormMixin, Form):
             if self.cleaned_data['password1'] != self.cleaned_data['password2']:
                 raise ValidationError(_("The two password fields didn't match."))
         return self.cleaned_data
+
+class SetPasswordForm(auth_forms.SetPasswordForm):
+    new_password1 = CharField(label=_("New password"),
+                                    widget=PasswordInput,
+                                    validators=[validators.validate_password])
+
+class PasswordChangeForm(auth_forms.PasswordChangeForm):
+    new_password1 = CharField(label=_("New password"),
+                                    widget=PasswordInput,
+                                    validators=[validators.validate_password])
+
+

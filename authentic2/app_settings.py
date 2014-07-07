@@ -90,9 +90,9 @@ default_settings = dict(
                 definition='Root urlconf for the /accounts endpoints'),
     A2_REGISTRATION_FORM_CLASS = Setting(default='authentic2.registration_backend.forms.RegistrationForm',
                 definition='Default registration form'),
-    A2_REGISTRATION_SET_PASSWORD_FORM_CLASS = Setting(default='django.contrib.auth.forms.SetPasswordForm',
+    A2_REGISTRATION_SET_PASSWORD_FORM_CLASS = Setting(default='authentic2.registration_backend.forms.SetPasswordForm',
                 definition='Default set password form'),
-    A2_REGISTRATION_CHANGE_PASSWORD_FORM_CLASS = Setting(default='django.contrib.auth.forms.PasswordChangeForm',
+    A2_REGISTRATION_CHANGE_PASSWORD_FORM_CLASS = Setting(default='authentic2.registration_backend.forms.PasswordChangeForm',
                 definition='Default change password form'),
     A2_REGISTRATION_CAN_DELETE_ACCOUNT = Setting(default=True,
                 definition='Can user self delete their account and all their data'),
@@ -120,6 +120,8 @@ default_settings = dict(
     A2_OPENED_SESSION_COOKIE_DOMAIN=Setting(default=None),
     A2_ATTRIBUTE_KINDS=Setting(default=[], definition='List of other attribute kinds'),
     A2_VALIDATE_EMAIL=Setting(default=False, definition='Validate user email domain'),
+    A2_PASSWORD_POLICY_MIN_CLASSES=Setting(default=3, definition='Minimum number of characters classes to be present in passwords'),
+    A2_PASSWORD_POLICY_MIN_LENGTH=Setting(default=6, definition='Minimum number of characters in a password'),
 )
 
 app_settings = AppSettings(default_settings)
