@@ -207,10 +207,6 @@ class LDAPUser(get_user_model()):
         if hasattr(self, 'keep_pk'):
             self.pk = pk
 
-class LDAPBackendError(Exception):
-    pass
-
-
 class LDAPBackendError(RuntimeError):
     pass
 
