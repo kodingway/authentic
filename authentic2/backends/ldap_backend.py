@@ -10,8 +10,10 @@ import random
 import pickle
 import base64
 import hashlib
+import urllib
 
-# code copied from http://www.amherst.k12.oh.us/django-ldap.html
+# code originaly copied from by now merely inspired by
+# http://www.amherst.k12.oh.us/django-ldap.html
 
 log = logging.getLogger(__name__)
 
@@ -87,9 +89,11 @@ _DEFAULTS = {
     # update username on all login, use with CAUTION !! only if you know that
     # generated username are unique
     'update_username': False,
-    # lookup existing user with dn
-    'lookups': ('username', 'dn'),
+    # lookup existing user with an external id build with attributes
+    'lookups': ('external_id', 'username'),
+    'external_id_tuples': (('dn:noquote',),),
     # keep password around so that Django authentification also work
+    'clean_external_id_on_update': True,
     'keep_password': True,
     'limit_to_realm': True,
 }
@@ -533,11 +537,14 @@ class LDAPBackend():
     def get_ldap_attributes(self, uri, dn, conn, block):
         '''Retrieve some attributes from LDAP, add mandatory values then apply
            defined mappings between atrribute names'''
-        attributes = map(str, block['attributes'])
+        attributes = set()
+        attributes.update(map(str, block['attributes']))
+        for external_id_tuple in block['external_id_tuples']:
+            attributes.update(external_id_tuple)
         attribute_mappings = block['attribute_mappings']
         mandatory_attributes_values = block['mandatory_attributes_values']
         try:
-            results = conn.search_s(dn, ldap.SCOPE_BASE, '(objectclass=*)', attributes)
+            results = conn.search_s(dn, ldap.SCOPE_BASE, '(objectclass=*)', list(attributes))
         except ldap.LDAPError:
             log.exception('unable to retrieve attributes of dn %r', dn)
             return
@@ -561,22 +568,74 @@ class LDAPBackend():
         attribute_map['dn'] = dn
         return attribute_map
 
-    def lookup_existing_user(self, uri, dn, username, password, conn, block, attributes):
+    def external_id_to_filter(self, external_id, external_id_tuple):
+        '''Split the external id, decode it and build an LDAP filter from it
+           and the external_id_tuple.
+        '''
+        splitted = external_id.split()
+        if len(splitted) != len(external_id_tuple):
+            return
+        filters = zip(external_id_tuple, splitted)
+        decoded = []
+        for attribute, value in filters:
+            quote = True
+            if ':' in attribute:
+                attribute, param = attribute.split(':')
+                quote = not 'noquote' in param.split(',')
+            if quote:
+                decoded.append((attribute, urllib.unquote(value)))
+            else:
+                decoded.append((attribute, value.encode('utf-8')))
+        filters = [filter_format('(%s=%s)', (a,b)) for a, b in decoded]
+        return '(&{0})'.format(''.join(filters))
+
+    def build_external_id(self, external_id_tuple, attributes):
+        '''Build the exernal id for the user, use attribute that eventually never change like GUID or UUID'''
+        l = []
+        for attribute in external_id_tuple:
+            quote = True
+            if ':' in attribute:
+                attribute, param = attribute.split(':')
+                quote = not 'noquote' in param.split(',')
+            v = attributes[attribute]
+            if isinstance(v, list):
+                v = v[0]
+            if isinstance(v, unicode):
+                v = v.encode('utf-8')
+            if quote:
+                v = urllib.quote(v)
+            l.append(v)
+        return ' '.join(v for v in l)
+
+    def lookup_by_username(self, username):
         User = get_user_model()
+        try:
+            log.debug('lookup using username %r', username)
+            return LDAPUser.objects.get(**{User.USERNAME_FIELD: username})
+        except User.DoesNotExist:
+            return
+
+    def lookup_by_external_id(self, block, attributes):
+        User = get_user_model()
+        for eid_tuple in block['external_id_tuples']:
+            external_id = self.build_external_id(eid_tuple, attributes)
+            if not external_id:
+                continue
+            try:
+                log.debug('lookup using external_id %r: %r', eid_tuple,
+                        external_id)
+                return LDAPUser.objects.get(
+                        userexternalid__external_id=external_id,
+                        userexternalid__source=block['realm'])
+            except User.DoesNotExist:
+                pass
+
+    def lookup_existing_user(self, uri, dn, username, password, conn, block, attributes):
         for lookup_type in block['lookups']:
             if lookup_type == 'username':
-                try:
-                    log.debug('lookup using username %r', username)
-                    return LDAPUser.objects.get(**{User.USERNAME_FIELD: username})
-                except User.DoesNotExist:
-                    pass
-            elif lookup_type == 'dn':
-                try:
-                    log.debug('lookup using dn %r', dn)
-                    return LDAPUser.objects.get(userexternalid__external_id=dn,
-                            userexternalid__source=block['realm'])
-                except User.DoesNotExist:
-                    pass
+                return self.lookup_by_username(username)
+            elif lookup_type == 'external_id':
+                return self.lookup_by_external_id(block, attributes)
 
     def update_user_identifiers(self, user, uri, dn, username, conn,
             block, attributes):
@@ -589,12 +648,25 @@ class LDAPBackend():
                 log.debug(log_msg, user.username, username)
                 user.username = username
                 user.save()
-        # if dn lookup is used, update it
-        if 'dn' in block['lookups']:
+        # if external_id lookup is used, update it
+        if 'external_id' in block['lookups'] \
+           and block.get('external_id_tuples') \
+           and block['external_id_tuples'][0]:
             if not user.pk:
                 user.save()
-            UserExternalId.objects.get_or_create(user=user, external_id=dn,
-                    source=block['realm'])
+            external_id = self.build_external_id(
+                    block['external_id_tuples'][0],
+                    attributes)
+            if external_id:
+                new, created = UserExternalId.objects.get_or_create(
+                        user=user,
+                        external_id=external_id,
+                        source=block['realm'])
+                if block['clean_external_id_on_update']:
+                    UserExternalId.objects \
+                        .exclude(id=new.id) \
+                        .filter(user=user, source=block['realm']) \
+                        .delete()
 
     def _return_user(self, uri, dn, username, password, conn, block):
         attributes = self.get_ldap_attributes(uri, dn, conn, block)
