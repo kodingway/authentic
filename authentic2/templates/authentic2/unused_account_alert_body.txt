@@ -1,0 +1,4 @@
+{% load i18n %}{% blocktrans %}Hi {{ user }},
+
+You have not logged since {{ threshold }} days. In {{ clean_threshold }} days your account
+will be deleted.{% endblocktrans %}

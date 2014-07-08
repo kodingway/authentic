@@ -1,0 +1,3 @@
+{% load i18n %}{% blocktrans %}Hi {{ user }},
+
+You have not logged since {{ threshold }} days so your account has been deleted.{% endblocktrans %}

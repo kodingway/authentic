@@ -1,0 +1,1 @@
+{% load i18n %}{% blocktrans %}Alert: {{ user }} you have not logged since {{ threshold }}{% endblocktrans %}

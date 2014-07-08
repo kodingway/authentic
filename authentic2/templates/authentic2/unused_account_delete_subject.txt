@@ -1,0 +1,1 @@
+{% load i18n %}{% blocktrans %}Notification: {{ user }}, your account has been deleted{% endblocktrans %}
