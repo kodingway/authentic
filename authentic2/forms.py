@@ -2,10 +2,11 @@ from django import forms
 from django.contrib.auth import models as auth_models
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
+from django.utils.datastructures import SortedDict
 
 from authentic2.compat import get_user_model
 
-from . import models
+from . import models, app_settings
 
 auth_models.User.USER_PROFILE = ('first_name', 'last_name', 'email')
 User = get_user_model()
@@ -58,6 +59,16 @@ class UserProfileForm(UserAttributeFormMixin, forms.ModelForm):
         for field in get_user_model().REQUIRED_FIELDS:
             if field in self.fields:
                 self.fields[field].required = True
+        ordered_fields = app_settings.A2_PROFILE_FIELDS or app_settings.A2_REGISTRATION_FIELDS
+        if ordered_fields:
+            new_fields = SortedDict()
+            for field_name in ordered_fields:
+                if field_name in self.fields:
+                    new_fields[field_name] = self.fields[field_name]
+            for field_name in self.fields:
+                if field_name not in new_fields:
+                    new_fields[field_name] = self.fields[field_name]
+            self.fields = new_fields
 
     def get_attributes(self):
         qs = super(UserProfileForm, self).get_attributes()
