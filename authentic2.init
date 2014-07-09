@@ -20,6 +20,7 @@ CACHE_DIR=/var/cache/$NAME
 LOG_DIR=/var/log/$NAME
 PIDFILE=$PID_DIR/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
+CTL=/usr/bin/$NAME-ctl
 
 USER=authentic
 GROUP=authentic
@@ -123,7 +124,7 @@ do_reload() {
 
 do_migrate() {
     log_action_msg "Applying new migrations .."
-    su $USER -p -c "/usr/bin/authentic2-ctl syncdb --migrate --noinput"
+    su $USER -p -c "$CTL syncdb --migrate --noinput"
     log_action_msg ".. done"
 }
 
