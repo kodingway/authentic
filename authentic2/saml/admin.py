@@ -23,6 +23,9 @@ from authentic2.saml.models import LibertySession
 from authentic2.saml.models import SAMLAttribute
 from authentic2.http_utils import get_url
 
+from authentic2.decorators import to_iter
+from authentic2.attributes_ng.engine import get_attribute_names
+
 from . import admin_views
 
 logger = logging.getLogger(__name__)
@@ -164,6 +167,11 @@ def update_metadata(modeladmin, request, queryset):
 
 class SAMLAttributeInlineAdmin(GenericTabularInline):
     model = SAMLAttribute
+
+    def formfield_for_choice_field(self, db_field, request, **kwargs):
+        if db_field.name == 'attribute_name':
+            kwargs['choices'] = to_iter(get_attribute_names)({'user': None, 'request': None})
+        return super(SAMLAttributeInlineAdmin, self).formfield_for_choice_field(db_field, request, **kwargs)
 
 
 class LibertyProviderAdmin(admin.ModelAdmin):

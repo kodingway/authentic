@@ -24,8 +24,6 @@ except ImportError:
 from fields import PickledObjectField, MultiSelectField
 
 from . import app_settings, managers
-from ..decorators import to_iter
-from ..attributes_ng.engine import get_attribute_names
 from .. import managers as a2_managers
 
 def metadata_validator(meta):
@@ -348,7 +346,7 @@ class SAMLAttribute(models.Model):
             blank=True)
     attribute_name = models.CharField(max_length=64,
             verbose_name=_('attribute name'),
-            choices=to_iter(get_attribute_names)({'user': None, 'request': None}))
+            choices=(('', 'None'),))
 
     def clean(self):
         super(SAMLAttribute, self).clean()
