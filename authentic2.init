@@ -127,11 +127,18 @@ do_migrate() {
     log_action_msg ".. done"
 }
 
+do_collectstatic() {
+    log_action_msg "Collecting static files .."
+    su $USER -p -c "$CTL collectstatic -l --noinput"
+    log_action_msg ".. done"
+}
+
 
 case "$1" in
   start)
-    do_migrate
     log_daemon_msg "Starting $DESC " "$NAME"
+    do_migrate
+    do_collectstatic
     do_start
     case "$?" in
 		0|1) log_end_msg 0 ;;
@@ -165,9 +172,10 @@ case "$1" in
 	#
 	log_daemon_msg "Restarting $DESC" "$NAME"
 	do_stop
-    do_migrate
 	case "$?" in
 	  0|1)
+    do_migrate
+    do_collectstatic
 		do_start
 		case "$?" in
 			0) log_end_msg 0 ;;
@@ -181,6 +189,20 @@ case "$1" in
 		;;
 	esac
 	;;
+  collectstatic)
+    do_collectstatic
+  ;;
+  migrate)
+    do_migrate
+  ;;
+  manage)
+    shift
+    if [ $(id -un) != "$USER" ]; then
+        sudo -u $USER -- $CTL "$@"
+    else
+        $CTL "$@"
+    fi
+  ;;
   *)
 	echo "Usage: $SCRIPTNAME {start|stop|status|restart|force-reload}" >&2
 	exit 3
