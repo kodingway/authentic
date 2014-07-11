@@ -11,6 +11,7 @@ import pickle
 import base64
 import hashlib
 import urllib
+import itertools
 
 # code originaly copied from by now merely inspired by
 # http://www.amherst.k12.oh.us/django-ldap.html
@@ -20,20 +21,19 @@ log = logging.getLogger(__name__)
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
 from django.contrib.auth.models import Group
-
-from ..cache import get_shared_cache
-from ..decorators import to_list
+from django.db import DatabaseError
+from django.db import transaction
 
 try:
     import lasso
 except ImportError:
     pass
 
+from authentic2.cache import get_shared_cache
+from authentic2.decorators import to_list
+from authentic2.compat import get_user_model, commit_on_success
+from authentic2.models import UserExternalId
 
-from ..compat import get_user_model
-
-
-from ..models import UserExternalId
 
 _DEFAULTS = {
     'binddn': None,
@@ -160,12 +160,11 @@ class LDAPUser(get_user_model()):
     class Meta:
         proxy = True
 
-    def ldap_init(self, block, dn, password, attributes, transient=False):
+    def ldap_init(self, block, dn, password, transient=False):
         self.block = block
         self.dn = dn
         self.is_active = True
         self.set_ldap_password(password)
-        self.attributes = attributes
         self.transient = transient
 
     def set_ldap_password(self, password):
@@ -198,7 +197,8 @@ class LDAPUser(get_user_model()):
         return get_connection(self.block, (self.dn, self.get_password()))
 
     def get_attributes(self):
-        return self.attributes
+        conn = self.get_connection()
+        return LDAPBackend.get_ldap_attributes(self.block, conn, self.dn)
 
     def save(self, *args, **kwargs):
         if self.transient:
@@ -213,7 +213,7 @@ class LDAPUser(get_user_model()):
 class LDAPBackendError(RuntimeError):
     pass
 
-class LDAPBackend():
+class LDAPBackend(object):
     @classmethod
     @to_list
     def get_realms(self):
@@ -402,10 +402,23 @@ class LDAPBackend():
         return username_template.format(username=username, uri=uri,
                 block=block, realm=block['realm'], **attributes)
 
-    def create_user(self, uri, dn, username, password, conn, block, attributes):
+    def save_user(self, user, username):
         User = get_user_model()
-        user = LDAPUser(**{User.USERNAME_FIELD: username})
-        return user
+        parts = username.split('@', 1)
+        if len(parts) == 1:
+            left, right = user, ''
+        else:
+            left, right = parts
+        for i in itertools.count(0):
+            setattr(user, User.USERNAME_FIELD, username)
+            try:
+                sid = transaction.savepoint()
+                user.save()
+                transaction.savepoint_commit(sid)
+                break
+            except DatabaseError:
+                transaction.savepoint_rollback(sid)
+            username = u'{0}{1}@{2}'.format(left, i, right)
 
     def populate_user_attributes(self, user, uri, dn, conn, block, attributes):
         for legacy_attribute, legacy_field in (('email', 'email_field'), 
@@ -534,23 +547,37 @@ class LDAPBackend():
         self.populate_mandatory_groups(user, uri, dn, conn, block)
         self.populate_user_groups(user, uri, dn, conn, block)
 
-    def get_ldap_attributes(self, uri, dn, conn, block):
-        '''Retrieve some attributes from LDAP, add mandatory values then apply
-           defined mappings between atrribute names'''
+    @classmethod
+    def attribute_name_from_external_id_tuple(cls, external_id_tuple):
+        for attribute in external_id_tuple:
+            if ':' in attribute:
+                attribute = attribute.split(':', 1)[0]
+            yield attribute
+
+    @classmethod
+    def get_ldap_attributes_names(cls, block):
         attributes = set()
         attributes.update(map(str, block['attributes']))
         for field in ('email_field', 'fname_field', 'lname_field'):
             if block[field]:
                 attributes.add(block[field])
         for external_id_tuple in block['external_id_tuples']:
-            attributes.update(external_id_tuple)
+            attributes.update(cls.attribute_name_from_external_id_tuple(
+                external_id_tuple))
+        return set(map(str.lower, attributes))
+
+    @classmethod
+    def get_ldap_attributes(cls, block, conn, dn):
+        '''Retrieve some attributes from LDAP, add mandatory values then apply
+           defined mappings between atrribute names'''
+        attributes = cls.get_ldap_attributes_names(block)
         attribute_mappings = block['attribute_mappings']
         mandatory_attributes_values = block['mandatory_attributes_values']
         try:
             results = conn.search_s(dn, ldap.SCOPE_BASE, '(objectclass=*)', list(attributes))
         except ldap.LDAPError:
             log.exception('unable to retrieve attributes of dn %r', dn)
-            return
+            return {}
         attribute_map = results[0][1]
         attribute_map = unicode_dict_of_list(attribute_map)
         # add mandatory attributes
@@ -571,7 +598,8 @@ class LDAPBackend():
         attribute_map['dn'] = dn
         return attribute_map
 
-    def external_id_to_filter(self, external_id, external_id_tuple):
+    @classmethod
+    def external_id_to_filter(cls, external_id, external_id_tuple):
         '''Split the external id, decode it and build an LDAP filter from it
            and the external_id_tuple.
         '''
@@ -647,10 +675,10 @@ class LDAPBackend():
         # if username has changed and we propagate those changes, update it
         if block['update_username']:
             if user.username != username:
+                old_username = user.username
+                self.save_user(user, username)
                 log_msg = 'updating username from %r to %r'
-                log.debug(log_msg, user.username, username)
-                user.username = username
-                user.save()
+                log.debug(log_msg, old_username, user.username)
         # if external_id lookup is used, update it
         if 'external_id' in block['lookups'] \
            and block.get('external_id_tuples') \
@@ -671,8 +699,9 @@ class LDAPBackend():
                         .filter(user=user, source=block['realm']) \
                         .delete()
 
+    @commit_on_success
     def _return_user(self, uri, dn, username, password, conn, block):
-        attributes = self.get_ldap_attributes(uri, dn, conn, block)
+        attributes = self.get_ldap_attributes(block, conn, dn)
         if attributes is None:
             # attributes retrieval failed
             return
@@ -688,7 +717,7 @@ class LDAPBackend():
 
     def _return_transient_user(self, uri, dn, username, password, conn, block, attributes):
         user = LDAPUser(username=username)
-        user.ldap_init(block, dn, password, attributes, transient=True)
+        user.ldap_init(block, dn, password, transient=True)
         self.populate_user(user, uri, dn, username, conn, block, attributes)
         user.set_password(password)
         user.pk = 'transient!{0}'.format(base64.b64encode(pickle.dumps(user)))
@@ -699,15 +728,14 @@ class LDAPBackend():
         if user:
             log.debug('found existing user %r', user)
         else:
-            user = self.create_user(uri, dn, username, password, conn, block, attributes)
-            log.debug('created user %r', user)
-        user.ldap_init(block, dn, password, attributes)
+            user = LDAPUser()
+        user.ldap_init(block, dn, password)
         if block['keep_password']:
             user.set_password(password)
         else:
             user.set_unusable_password()
         self.populate_user(user, uri, dn, username, conn, block, attributes)
-        user.save()
+        self.save_user(user, username)
         user.keep_pk = user.pk
         user.pk = 'persistent!{0}'.format(base64.b64encode(pickle.dumps(user)))
         return user
@@ -717,3 +745,11 @@ class LDAPBackend():
 
     def get_saml2_authn_context(self):
         return lasso.SAML2_AUTHN_CONTEXT_PASSWORD_PROTECTED_TRANSPORT
+
+    @classmethod
+    def get_attribute_names(cls):
+        names = set()
+        for block in cls.get_config():
+            names.update(cls.get_ldap_attributes_names(block))
+            names.update(block['mandatory_attributes_values'].keys())
+        return [(a, '%s (LDAP)' % a) for a in sorted(names)]
