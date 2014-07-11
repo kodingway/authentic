@@ -9,6 +9,7 @@ from django.contrib.sites.models import RequestSite
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import BaseUserManager, Group
 from django.conf import settings
+from django.db.models import FieldDoesNotExist
 
 
 from registration.views import RegistrationView as BaseRegistrationView
@@ -32,10 +33,15 @@ class RegistrationView(BaseRegistrationView):
         else:
             site = RequestSite(request)
         user_fields = {}
-        # keep non password fields
         for field in compat.get_registration_fields():
-            if not field.startswith('password'):
-                user_fields[field] = cleaned_data[field]
+            # save User model fields
+            try:
+                User._meta.get_field(field)
+            except FieldDoesNotExist:
+                continue
+            if field.startswith('password'):
+                continue
+            user_fields[field] = cleaned_data[field]
             if field == 'email':
                 user_fields[field] = BaseUserManager.normalize_email(user_fields[field])
         new_user = User(is_active=False, **user_fields)
