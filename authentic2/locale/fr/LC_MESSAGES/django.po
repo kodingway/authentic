@@ -684,7 +684,7 @@ msgstr "Activation du compte réussie"
 
 #: templates/registration/activate.html:18
 msgid "Account activation failed"
-msgstr "Activation du compte échouée"
+msgstr "Échec à l'activation du compte"
 
 #: templates/registration/activation_complete.html:5
 msgid "Your account is now activated"
