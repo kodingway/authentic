@@ -17,7 +17,6 @@ from django.contrib.auth import SESSION_KEY
 from django import http, shortcuts
 from django.core import mail, signing
 from django.core.urlresolvers import reverse
-from django.contrib.sites.models import get_current_site
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.utils.http import urlencode
@@ -152,10 +151,8 @@ class EmailChangeView(FormView):
 
     def form_valid(self, form):
         email = form.cleaned_data['email']
-        site = get_current_site(self.request)
         token = signing.dumps({
             'email': email,
-            'site_pk': site.pk,
             'user_pk': self.request.user.pk,
         })
         link = '{0}?token={1}'.format(
@@ -163,15 +160,14 @@ class EmailChangeView(FormView):
                 token)
         link = self.request.build_absolute_uri(link)
         ctx = {'email': email,
-               'site': site,
                'user': self.request.user,
-               'link': link
+               'link': link,
+               'domain': self.request.get_host(),
         }
         subject = render_to_string(self.subject_template, ctx).strip()
         body = render_to_string(self.body_template, ctx)
 
-        mail.EmailMessage(subject=subject,
-                body=body, to=[email]).send()
+        mail.EmailMessage(subject=subject, body=body, to=[email]).send()
         messages.info(self.request,
                 _('Your request for changing your email '
                   'is received. An email of validation '
@@ -189,10 +185,6 @@ class EmailChangeVerifyView(TemplateView):
                 token = signing.loads(request.GET['token'], max_age=7200)
                 user_pk = token['user_pk']
                 email = token['email']
-                site_pk = token['site_pk']
-                site = get_current_site(request)
-                if site.pk != site_pk:
-                    raise ValueError
                 user = User.objects.get(pk=user_pk)
                 user.email = email
                 user.save()
@@ -283,16 +275,9 @@ def login(request, template_name='auth/login.html',
 
     request.session.set_test_cookie()
 
-    if Site._meta.installed:
-        current_site = Site.objects.get_current()
-    else:
-        current_site = RequestSite(request)
-
     return render_to_response(template_name, {
         'methods': rendered_forms,
         redirect_field_name: redirect_to,
-        'site': current_site,
-        'site_name': current_site.name,
     }, context_instance=RequestContext(request))
 
 
