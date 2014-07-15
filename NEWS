@@ -1,6 +1,263 @@
 NEWS
 ====
 
+2.1.3 - July 15th 2014
+----------------------
+
+249 commits, 252 files changed, 11140 insertions, 11139 deletions
+
+Changes:
+- a2c2ade registration_backend/views: fix registration of new users
+- aedcb83 management: add missing __init__.py files
+- 720e2d4 middleware: fixes OpenedSessionCookieMiddleware middleware
+- df80753 saml: do not configure choice for attribute names at the model level as it breaks model validation before running migrations
+- ed76842 management: add new command clean-unused-accounts
+- 02f3a2b forms: allow ordering of fields on profile page
+- 56592e6 middleware: do not reset root logger to level 0
+- 69514f9 run.sh: do not make DEBUG=1 a default
+- ad4d83e settings: do not disable existing loggers, it's clear now that it is wrong
+- 6c20a1a ldap_backend: replace dn lookup by an external_id lookup
+- 2383d81 ldap_backend: fail cleanly when attribute retrieval fails and log an error
+- a5172a5 ldap_backend: add dn to the attribute dict
+- 7dcd2ad ldap_backend: remove redefinition of LDAPBackendError
+- a535158 models: add string cast to UserExternalId
+- 79e6f3d registration_backend/forms: use A2_REGISTRATION_FIELDS to reorder fields in the registration form
+- 383b776 idp/locale: update french translations
+- d655013 locale: grammar correction
+- c1a4f93 admin: show attribute name in listing of attribute definitions
+- 33f533f attribute_kinds: remove siret attribute which is too specific
+- d870b23 attribute_kinds: pick attribute kinds from settings
+- c863427 compat: add settings to add user model fields to the registration form
+- 4c2ca1e settings: load /etc/authentic2/config.py if available
+- 95e407a context_processors: add settings.TEMPLATE_VARS in template context
+- 83a0d42 fix_user_model: fix username length check also in overriden forms
+- fcd2259 fix_user_model: fix widget maxlength attribute
+- b50e22f fix_user_model: fix also username length in user change and creation forms
+- 85c24a5 middleware: add a middleware to install a cookie when the user has an open session
+- 9b878e5 templates: fix back link closing tag
+- f4fdc4e saml: use GET binding when the HTTP method is HEAD
+- 5d3b800 fix_user_model: patch directly the user model
+- fa53721 fix_user_model: importing django.contrib.auth.forms inside a function does not work
+- a26d3ae fix_user_model: also fix admin forms when changing validation regex for username
+- 1fcee43 views: add a logged-in jsonp web service
+- b0af1b6 idp/saml/saml2_endpoints: fix typo
+- 74765bb idp/saml/saml2_endpoints: in add_attributes add debug log of attribute values
+- 080f5bd idp/saml/saml2_endpoints: in add_attributes() fix query for SAML2Attribute objects
+- 0ecad21 attributes_ng/source/django_user: add missing attribute django_user_identifier
+- a4dbd4d saml/admin: explicitely list fields to show on change form
+- df00c9d idp/saml: add attribute to assertions based on new attribute definitions
+- 20362c3 saml/admin: add inline admin forms for SAML attribute definitions
+- 0fb3681 saml: add attribute definition model
+- 0965fbd start new attributes-ng subproject
+- 97b819f attribute_aggregator/user_profile: only set attributes from user model fields if get_attributes() did not return an equivalent value
+- 203e7af fix_user_model: allow overriding django User model username regex validator and help text
+- e48714a makes sure msg is defined before asserting on it
+- 5008e25 registration/views: fix n-th misuse by me of get_or_create()
+- e23a700 add setting A2_REGISTRATION_GROUPS to affect default groups to self-registered users
+- f189317 models: change UserExternalId definition
+- 1b7148a decorators: add to_iter() decorator to transform any generator into an iterable object
+- eba089c models: make LogoutUrlAbstract.get_logout_url() take a request object
+- d84a21c models: fix typo in LogoutUrlAbstract.get_logout_url()
+- 1a822a8 settings: set special formatter for syslog
+- 64b53f9 attribute_aggregator/user_profile: fix initialization of a variable
+- c8a75ae attribute_aggregator/user_profile: if user has a get_attributes() method, ignore legacy mapping
+- a0f4816 settings: fix typo
+- 6cd91ca settings: extract PASSWORD_HASHERS setting from environment
+- cd883ff settings: fix typo
+- 3a6f01f settings: add A2_HOMEPAGE_URL
+- 0d83d64 ldap_backend: do not convert to string before testing for nullity
+- 2be7bdf jenkins.sh: restrict pylint to version 1.1.0 which raised less warnings
+- a605052 validators: accept email when greylisting is used
+- 74507b2 ldap_backend: escape the user DN before interpolating it into the group filter
+- 706342d ldap_backend: force the username template to be unicode as the result must be
+- 391e597 ldap_backend: escape string used to build the user DN when using a DN template
+- bd68fe2 setup.py: remove dependency link to fork of django-registration
+- 00a896a models_backend: use a dynamic proxy user model
+- 2a3a165 idp/saml: improve handling of lasso errors on processing of AuthnRequest
+- f542916 saml,idp/saml: if NameQualifier or SPNameQualifier is missing, use implicit knowledge of the IdP or SP identities
+- a9aa567 attribute_aggregator/user_profile: add support for relations use it to fix the role attribute
+- 562aee0 idp/saml: when a provider is missing, propose to add it directly
+- 5c5222d ldap_backend: if LDAP is configured but the ldap module is missing, raise ImproperlyConfigured
+- 89feb7c ldap_backend: if no LDAP config exists, returns None
+- 233fd6e ldap_backend: do not break if an attribute is not UTF-8 (jpegPhoto ?)
+- 6dbfbd9 templates: add a default registration/registration_closed.html template
+- 49c13f0 fix_user_model: add validation of email domains to user model
+- e8ae079 rename fix_username_length module to fix_user_model
+- da64050 add validators module with a first email validator
+- 1c9f0a4 backends/ldap: when mapping attribute names, convert original name to string first
+- 4845d63 backends/ldap: convert attributes to unicode on input
+- 15479b4 settings: user ldap backend before model backend
+- 8c860e1 backends/ldap: add option to pass all realms to an LDAP backend (bis)
+- 1ba9df2 backends/ldap: add option to pass all realms to an LDAP backend
+- a92e80c admin: add email to user editable fields
+- 6357356 backends/ldap: when creating the UserExternalId, verify that the user exists in the database
+- 6bfbaf5 backends/ldap: remove dead import
+- e78854c idp/saml/saml2_endpoints: request failure because the requested NameID format is not supported are not an error but a warning
+- bc95b39 update french translation
+- 500ef9f admin: add a clear expired sessions action
+- 4765b64 admin: fix SessionAdmin.user method, does not assume there is always a user set in a session
+- aefccd1 settings: use Django specific raven/sentry configuration
+- dc360f3 backends/ldap: fix missing definition of the User model
+- 8305292 admin,dashboard: show see technical models admin pages even if DEBUG is False
+- 361c135 dashboard: show session admin in debug panel
+- e4790ae admin: in the Session admin, show user and ips
+- da52fe7 add a new middleware to collect ips in the session
+- 510c396 backends/ldap: add lookup by username, make password change work with Django models
+- e8ec5a8 backends/ldap: add an option to update username on all login
+- 83cc9f2 backends/ldap: improve log
+- ef9fe77 backends/ldap: improve logs
+- e1ae3b7 backends: in LDAPBackend allow the user query to return multiple records
+- 890717e settings: add loading from YAML files
+- 995aacf update french translation
+- d0497f4 settings: if LOG_DEBUG is present, do not set level to DEBUG on root logger
+- 4ddd6cc admin: customize admin for technical models
+- 370e727 admin: activate Session model admin also when the engine is cached_db
+- c143ffc admin: add filter on whether an use has an external identifier or not
+- dbfafc7 dashboard: expose DeletedUser model
+- 372b45e models: complete verbose_name attributes
+- 9f41f0e remove dead application auth2_user
+- 6202e4b backends/ldap: fix lookup of UserExternalId missing in commit 6fde3843bdfa
+- 6b1761c idp: fix renamed authentication backend reference (bis)
+- 45b450b idp: fix renamed authentication backend reference
+- 8437ad4 update french translation
+- d627a4b forms: fix user edition on group admin form
+- 692a195 authentic2-ctl: do not set DEBUG=1 in the environment
+- 8f9ae8e settings: set syslog log level to DEBUG, and reset handlers on django.db logger
+- b6cd5dc settings: display a message when DEBUG is on
+- 5685b31 settings: add a DEBUG_LOG setting to limit debugging log to certain domains
+- e71728e settings: remove useless LANGUAGES setting
+- 4531ced settings: improve naming of path related settings
+- 08ca448 run.sh: run with debugging on
+- 8a4fd00 settings: remove redefinition of VAR_DIR
+- 7a7318e templates: fix typo in password_reset_email.html
+- fb9b1d4 style.css: make help text display under form fields
+- 9e1518b admin: register the Session model if the db session engine is used
+- e1657ca backends/ldap: populate the user.attributes dictionary for transient users
+- 640b6a0 backends/ldap: remove remaining catchall except blocks
+- 8cc48f4 admin: in user list view add filter on realms
+- a3cde8f app_settings,backends/model: add REALMS setting to aggregate realm from all sources
+- b352b07 backends/ldap: move configuration check in get_config()
+- f5a9d7e backends: rename module models to models_backend to prevent collision in imports
+- ab20bee backends/models: if the login form pass a realm use it
+- 6fde384 backends/ldap: add setting username_template for building usernames
+- dfd51e4 backend/ldap: add a realm attribute defaulting to ldap
+- f106505 backends: in the model backend try to lookup user also by appending known realms
+- 1eb2e11 registration_backend: allow a default realm for self-registrated accounts
+- db1b762 settings: unique email for accounts should not be the default
+- a7d4b9e settings: django.contrib.sites is not necessary
+- d4df5f6 idp/saml: remove wrong backend class
+- b68320c idp/saml2: add decorator never_cache to all views
+- c7771d4 idp/saml/saml2_endpoints: add new model backend to supported backends
+- cefa5d5 backends: add new ModelBackend handling multiple matching users and email as username
+- 0159f71 backends/ldap_backend: fix import path
+- 2509410 backends: rename ldap backend module to fix collision with global namespace
+- b2783e2 serializers: fix missing import and not handled case of new models
+- c179273 add a backends directory, mv LDAP backend into backends/ldap.py
+- 31a7b00 add serializer supporting natural primary keys
+- 64c1bc3 move User.username length fix outside of __init__.py as it breaks loading of wsgi application
+- edb77e3 managers: extract GetBySlugQuerySet/Manager from saml.managers
+- 6cb51c1 app_settings: fix typo
+- f6ebdc9 models,managers: add a custom manager to AttributeValue model
+- 12ce6cd admin: only use authentic user admin if the classic user model is used
+- 846fac3 migrations: add migration to add Attribute and AttributeValue
+- 9823957 admin: unregister the user model only if it's already registered
+- 0e18014 admin,dashboard: add support for custom user model
+- 5750fe7 models: add natural key support to model Attribute
+- e2086b0 commit missing file from the custom attribute support commit
+- 06a9e33 authentic2: only patch User.username if this field exists
+- d4fd5b2 dashboard: show internal models when DEBUG is True
+- 7c4b9b1 update french locale
+- b9c0f7e add custom attributes support to Django user model
+- 7de5f17 decorators: add decorator to_list() to make a list returning function from a generator
+- a09abf3 managers: fix filter in with_federation() and without_federation()
+- 6ef54cd idp/saml2: fix path for the redirect_to_logout view
+- 98f7d2f authentic2/idp/static was move into authentic2/static
+- bb413cd models: patch Django user-model username max_length to be 255 characters
+- 856bb9a move static files at root of python packages
+- 4710346 ignore ./static not all static directories
+- cdd695b settings: apply new standard layout for system static and template directories
+- 31059e6 app_settings: add key AUTH_FRONTENDS
+- 37c7617 use getattr for getting AUHT_OPENID, DISCO_SERVICE and AUTH_SSL settings
+- b72dc3a app_settings,utils: move IDP_BACENDS default value into app_settings
+- 5594936 app_settings: fix capitalisation of username field on registration page
+- 75422cb settings.py: add option USE_MEMCACHE
+- c1fd142 models: initialize plugins there
+- 4c21a7b saml/managers: add method to convert LibertySession queryset to LassoSession dump
+- d408895 saml/models: LibertySession.federation and assertion can be blank (=NULL)
+- 4a31b11 settings: load authentication backends, auth frontends and idp backends from plugins
+- fb669c6 plugins: define a DEFAULT_GROUP_NAME and use it in as default group name in functions
+- 41f02e8 remove AUTH_OATH setting description
+- 386bb66 auth2_ssl/backend: do not clutter saml2_endpoints with authncontext declaration, use authentication backend hook
+- 4789396 settings.py: add a default configuration for a file based cache
+- 466d1b8 saml/common.py: use assertion for checking if a message is a SOAP one
+- d38dc84 saml/models: set LibertyProvider manager to LibertyProviderManager
+- 21dc8ce saml/managers.py: remove dead import
+- 3529ec7 saml/managers.py: add helper method to LibertyProviderQuerySet
+- dc346d7 remove the CAS idp, as it is now out of tree
+- 94d52b8 models: FederationId, a generic model to store federation identifiers
+- 8653edb models: LogoutUrl, new generic model to store logout urls of providers
+- 0fa8329 utils: in accumulate_from_backends, ask also to plugins
+- 9cc17bd middleware: add a new LogCollector middleware
+- 8781ebd saml/models: move all managers to their own module
+- e90a4a7 saml/common: in soap_call return the original exception through SOAPException
+- 770ef7f saml/common: SOAPException does not need any specialization
+- 8c84456 saml/common: add assertion on presence of a name_id in parameters of add_federation
+- 0f980ea saml/common: add more debugging log
+- 9564cc1 saml/common: change provider_id to entity_id in load_provider to uniformize vocabulary
+- 0214e2b saml/common: add assertion and debug logging in SAML2 message extraction functions
+- c38112a saml/saml2utils: simplify log messages in authnresponse_checking
+- 6623566 saml/common: simplify debug log in soap_call
+- f049de7 saml/common: add debug log to return_saml2
+- 9745156 saml/common: add a logger
+- ecc5601 views: simplify server_error view
+- 2e0e3e6 remove authsaml2, it's reborn as plugin authentic2-auth-saml2
+- 833191a auth2_ssl: simplify and adapt for nginx
+- dc16ce9 frontends: remove the next parameter to the profile view,
+- f29db4a urls: if DEBUG is True, serve static files
+- 5ae30ce auth2_ssl: refactoring [module reorg]
+- dbab288 move all content of the auth2_auth module into authentic2 module [module reorg]~
+- 9dd8a60 remove dead import
+- 2f7eebd auth2_auth: remove dead admin module
+- 92e53bc fix import error on NONCE_FIELD_NAME
+- 21b4e11 auth2_ssl: refactoring [module reorg]
+- e0e065d auth2_ssl: consolidat urls in an urls module [module reorg]
+- c651f68 move constant NONCE_FIELD_NAME in module authentic.constants [module reorg]
+- 2aa09a6 idp/urls: do not assume IDP_CAS or IDP_SAML are defined
+- 82544a8 idp: refactoring [module reorg]
+- 9ee9d1c remove dead view error_ssl
+- c79b2af move login view from auth2_auth to idp [module reorg]
+- 9fa3537 auth2_auth/views: remove unused view password_change
+- 1ee99e2 idp/urls: refer to interaction views by name, attribute global name [module reorg]
+- 1a68a68 registration_backend/forms.py: validate that username is not already taken
+- 9c6e238 registration_backend/views.py: call the user model clean() method when creating temporary user on registration
+- 34ad76d registration_backend/forms.py: validate that passwords match on registration
+- d02d903 registration_backend/forms.py: copy validators from user model to form
+- 4a950fb settings: extract any environment var named SETTING_
+- ed5ba7f settings: load middleware from plugins
+- 0f8942d dashboard: load admin modules from plugins
+- fdf03e8 utils: add IterableFactory to make fresh iterable from generators
+- 8f9df53 settings: add environment setting SECURE_PROXY_SSL_HEADER
+- dde3007 plugins: set a default group_name for plugins
+- 51cf993 admin: allow editing group's users from the group change form
+- 835759f urls: import django.contrib.admin directly
+- 43d6cef settings: restore normal order of applications in INSTALLED_APPS
+- 44e9581 backends: in LDAPBackend fix missing variable reference in string template
+- a31e6d3 backends: remove referral results from results before counting found user records
+- 2e17383 backends: remove 1s default timeout for LDAP requests
+- 7c8bbba backends: in LDAPBackend do not follow LDAP referrals by default
+- 9cddce0 add a plugin system
+- 3c1ce8f auth2_auth: fix bug in auth_ssl urls
+- 20ebabd backends: do not force flags on LDAP users
+- 478dadd attribute_aggregator/core: simplify load_or_create_user_profile() using Model.get_or_create() to remove a race condition
+- f256267 setup.py: adapt to change in Django compilemessages
+- 5605186 auth2_auth/views: allow staff to see the login page even when logged
+- dfbbe03 auth2_auth/urls: use the auth_login name for the login view
+- e5567b3 setup.py: force version of django-admin-tools to >= 0.5
+- dd7794d fix wrong commit count in NEWS
+- c552e9e idp/saml/saml2_endpoints: use the new SPOptionsIdPPolicy.http_method_for_slo_request field when initializing a new SLO request
+- 7883fa0 saml/models: add field SPOptionsIdPPolicy.http_method_for_slo_request
+
+
 2.1.2 - January 8th 2014
 ------------------------
 
