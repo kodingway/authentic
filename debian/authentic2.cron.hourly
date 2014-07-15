@@ -1,0 +1,2 @@
+service authentic2 manage clearsessions
+service authentic2 manage cleanupauthentic
