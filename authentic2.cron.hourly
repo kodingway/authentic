@@ -1,2 +1,4 @@
-service authentic2 manage clearsessions
-service authentic2 manage cleanupauthentic
+#!/bin/sh
+
+/usr/sbin/service authentic2 manage clearsessions
+/usr/sbin/service authentic2 manage cleanupauthentic
