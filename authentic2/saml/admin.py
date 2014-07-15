@@ -169,8 +169,10 @@ class SAMLAttributeInlineAdmin(GenericTabularInline):
     model = SAMLAttribute
 
     def formfield_for_choice_field(self, db_field, request, **kwargs):
+        def choices(ctx):
+            return [('', _('None'))] + get_attribute_names(ctx)
         if db_field.name == 'attribute_name':
-            kwargs['choices'] = to_iter(get_attribute_names)({'user': None, 'request': None})
+            kwargs['choices'] = to_iter(choices)({'user': None, 'request': None})
         return super(SAMLAttributeInlineAdmin, self).formfield_for_choice_field(db_field, request, **kwargs)
 
 
