@@ -127,7 +127,7 @@ OPENLDAP_ALGO_MAPPING = {
 def olap_password_to_dj(password):
     '''Convert an LDAP password for Django use eventually hashed'''
     if password[0] == '{' and '}' in password:
-        algo = password[1:].split('}')[0]
+        algo = password[1:].split('}')[0].upper()
         if algo not in OPENLDAP_ALGO_MAPPING:
             raise ValueError('unknown algorithm %r' % algo)
         password = password[1:].split('}')[1]
