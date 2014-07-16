@@ -36,7 +36,7 @@ class ModelBackend(ModelBackend):
         try:
             if app_settings.ACCEPT_EMAIL_AUTHENTICATION \
                     and UserModel._meta.get_field('email'):
-                queries.append(models.Q(**{'email': username}))
+                queries.append(models.Q(**{'email__iexact': username}))
         except models.FieldDoesNotExist:
             pass
 
