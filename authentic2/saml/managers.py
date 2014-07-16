@@ -37,6 +37,7 @@ class LibertyAssertionManager(models.Manager):
         before = now()-datetime.timedelta(seconds=expire)
         self.filter(creation__lt=before).delete()
 
+
 class LibertyFederationManager(models.Manager):
     def cleanup(self):
         for federation in self.filter(user__isnull=True):
@@ -45,6 +46,14 @@ class LibertyFederationManager(models.Manager):
                 if not result:
                     return
             federation.delete()
+
+    def get_by_natural_key(self, username, sp_slug, idp_slug):
+        kwargs = {'user__username': username}
+        if sp_slug:
+            kwargs['sp__liberty_provider__slug'] = sp_slug
+        if idp_slug:
+            kwargs['idp__liberty_provider__slug'] = idp_slug
+        return self.get(**kwargs)
 
 
 class LibertyArtifactManager(models.Manager):

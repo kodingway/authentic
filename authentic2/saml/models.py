@@ -672,6 +672,19 @@ class LibertyFederation(models.Model):
             kwargs.update(nameid2kwargs(name_id))
         models.Model.__init__(self, *args, **kwargs)
 
+    def natural_key(self):
+        key = self.user.natural_key()
+        if self.sp:
+            key += self.sp.natural_key()
+        else:
+            key += (None,)
+        if self.idp:
+            key += self.idp.natural_key()
+        else:
+            key += (None,)
+        return key
+
+
     def is_unique(self, for_format=True):
         '''Return whether a federation already exist for this user and this provider.
 
