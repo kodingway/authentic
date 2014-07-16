@@ -93,3 +93,7 @@ class LibertySessionQuerySet(SessionLinkedQuerySet):
 
 LibertySessionManager = managers.PassThroughManager \
         .for_queryset_class(LibertySessionQuerySet)
+
+class GetByLibertyProviderManager(models.Manager):
+    def get_by_natural_key(self, slug):
+        return self.get(liberty_provider__slug=slug)

@@ -513,8 +513,13 @@ class LibertyServiceProvider(models.Model):
              related_name = "attribute_policy",
             verbose_name=_("attribute policy"), null=True, blank=True)
 
+    objects = managers.GetByLibertyProviderManager()
+
     def get_policy(self):
         return get_all_custom_or_default(self, 'policy')
+
+    def natural_key(self):
+        return (self.liberty_provider.slug,)
 
     def __unicode__(self):
         return unicode(self.liberty_provider)
@@ -546,12 +551,17 @@ class LibertyIdentityProvider(models.Model):
             related_name="authorization_policy",
             verbose_name=_('authorization identity providers policy'), blank=True, null=True)
 
+    objects = managers.GetByLibertyProviderManager()
+
     # TODO: add clean method which checks that the LassoProvider we can create
     # with the metadata file support the IDP role
     # i.e. provider.roles & lasso.PROVIDER_ROLE_IDP != 0
 
     def __unicode__(self):
         return unicode(self.liberty_provider)
+
+    def natural_key(self):
+        return (self.liberty_provider.slug,)
 
     class Meta:
         verbose_name = _('liberty identity provider')
