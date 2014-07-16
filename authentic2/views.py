@@ -325,8 +325,15 @@ class ProfileView(TemplateView):
         profile = []
         field_names = app_settings.A2_PROFILE_FIELDS
         if not field_names:
-            field_names = list(getattr(request.user, 'USER_PROFILE', []))
-            field_names += list(models.Attribute.objects.filter(user_visible=True).values_list('name', flat=True))
+            field_names = list(app_settings.A2_REGISTRATION_FIELDS)
+            for field_name in getattr(request.user, 'USER_PROFILE', []):
+                if field_name not in field_names:
+                    field_names.append(field_name)
+            qs = models.Attribute.objects.filter(user_visible=True)
+            qs = qs.values_list('name', flat=True)
+            for field_name in qs:
+                if field_name not in field_names:
+                    field_names.append(field_name)
         for field_name in field_names:
             title = None
             if isinstance(field_name, (list, tuple)):
