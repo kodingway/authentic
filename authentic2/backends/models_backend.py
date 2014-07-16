@@ -56,6 +56,10 @@ class ModelBackend(ModelBackend):
         if username is None:
             username = kwargs.get(UserModel.USERNAME_FIELD)
         query = self.get_query(username, realm)
-        for user in UserModel.objects.filter(query):
+        users = UserModel.objects.filter(query)
+        # order by username to make username without realm come before usernames with realms
+        # i.e. "toto" should come before "toto@example.com"
+        users = users.order_by(UserModel.USERNAME_FIELD)
+        for user in users:
             if user.check_password(password):
                 return user
