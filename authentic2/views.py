@@ -140,7 +140,7 @@ class EmailChangeView(FormView):
     template_name = 'profiles/email_change.html'
     subject_template = 'profiles/email_change_subject.txt'
     body_template = 'profiles/email_change_body.txt'
-    success_url = '../..'
+    success_url = '..'
 
     def get_form_kwargs(self):
         kwargs = super(EmailChangeView, self).get_form_kwargs()
