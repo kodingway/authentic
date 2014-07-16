@@ -5,6 +5,7 @@ import glob
 import re
 
 from django.core.exceptions import ImproperlyConfigured
+from django.conf import global_settings
 
 from . import plugins
 
@@ -309,8 +310,19 @@ SAML_METADATA_AUTOLOAD = os.environ.get('SAML_METADATA_AUTOLOAD', 'none')
 
 PUSH_PROFILE_UPDATES = 'PUSH_PROFILE_UPDATES' in os.environ
 
+
 if 'PASSWORD_HASHERS' in os.environ:
     PASSWORD_HASHERS = os.environ['PASSWORD_HASHERS'].split(':')
+else:
+    PASSWORD_HASHERS = global_settings.PASSWORD_HASHERS
+    PASSWORD_HASHERS += (
+            'authentic2.hashers.Drupal7PasswordHasher',
+            'authentic2.hashers.SHA256PasswordHasher',
+            'authentic2.hashers.SSHA1PasswordHasher',
+            'authentic2.hashers.SMD5PasswordHasher',
+            'authentic2.hashers.SHA1OLDAPPasswordHasher',
+            'authentic2.hashers.MD5OLDAPPasswordHasher',
+    )
 
 ##################################
 # LDAP Configuration
