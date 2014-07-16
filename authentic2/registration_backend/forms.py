@@ -5,7 +5,7 @@ from django.utils.datastructures import SortedDict
 from django.db.models import FieldDoesNotExist
 
 
-from .. import app_settings, compat, forms
+from .. import app_settings, compat, forms, utils
 
 
 class RegistrationForm(forms.UserAttributeFormMixin, Form):
@@ -42,12 +42,18 @@ class RegistrationForm(forms.UserAttributeFormMixin, Form):
                 self.fields[field_name].required = True
         # reorder fields obeying A2_REGISTRATION_FIELDS
         new_fields = SortedDict()
-        for field_name in app_settings.A2_REGISTRATION_FIELDS:
+        for field_name in utils.field_names(app_settings.A2_REGISTRATION_FIELDS):
             if field_name in self.fields:
                 new_fields[field_name] = self.fields[field_name]
         for field_name in self.fields:
             if field_name not in new_fields:
                 new_fields[field_name] = self.fields[field_name]
+        # override titles
+        for field in app_settings.A2_REGISTRATION_FIELDS:
+            if isinstance(field, (list, tuple)):
+                if len(field) > 1:
+                    self.fields[field[0]].label = field[1]
+
         self.fields = new_fields
         if 'username' in self.fields:
             self.fields['username'].regex = app_settings.A2_REGISTRATION_FORM_USERNAME_REGEX

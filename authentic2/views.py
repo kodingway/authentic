@@ -337,7 +337,9 @@ class ProfileView(TemplateView):
         for field_name in field_names:
             title = None
             if isinstance(field_name, (list, tuple)):
-                field_name, title = field_name
+                if len(field_name) > 1:
+                    title = field_name[1]
+                field_name = field_name[0]
             try:
                 field = request.user._meta.get_field(field_name)
             except FieldDoesNotExist:
@@ -346,7 +348,7 @@ class ProfileView(TemplateView):
                 qs = qs.select_related()
                 value = [at_value.to_python() for at_value in qs]
                 value = filter(None, value)
-                if qs:
+                if qs and not title:
                     title = unicode(qs[0].attribute)
             else:
                 if not title:

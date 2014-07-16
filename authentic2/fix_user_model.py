@@ -34,6 +34,7 @@ def patch_username(model):
                         "characters." % MAX_USERNAME_LENGTH)
     if app_settings.A2_USERNAME_HELP_TEXT:
         field.help_text = app_settings.A2_USERNAME_HELP_TEXT
+    field.label = _('username')
 
     # patch model field validator because validator doesn't change if we change
     # max_length

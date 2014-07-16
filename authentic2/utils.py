@@ -199,3 +199,10 @@ class Service(object):
 
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
+
+def field_names(list_of_field_name_and_titles):
+    for t in list_of_field_name_and_titles:
+        if isinstance(t, basestring):
+            yield t
+        else:
+            yield t[0]

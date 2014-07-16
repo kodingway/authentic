@@ -6,7 +6,7 @@ except ImportError:
     from django.contrib.auth.models import User
     get_user_model = lambda: User
 
-from . import app_settings
+from . import app_settings, utils
 
 user_model_label = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 
@@ -19,8 +19,8 @@ def get_registration_fields():
     """
     User = get_user_model()
     username_field = getattr(User, 'USERNAME_FIELD', 'username')
-    field_names = getattr(User, 'REGISTER_FIELDS', get_required_fields())
-    setting_fields = app_settings.A2_REGISTRATION_FIELDS
+    field_names = utils.field_names(getattr(User, 'REGISTER_FIELDS', get_required_fields()))
+    setting_fields = utils.field_names(app_settings.A2_REGISTRATION_FIELDS)
     return [username_field] + list(field_names) + list(setting_fields)
 
 def get_required_fields():
@@ -29,6 +29,6 @@ def get_required_fields():
     """
     User = get_user_model()
     username_field = getattr(User, 'USERNAME_FIELD', 'username')
-    field_names = getattr(User, 'REQUIRED_FIELDS', [])
-    setting_fields = app_settings.A2_REGISTRATION_REQUIRED_FIELDS
+    field_names = utils.field_names(getattr(User, 'REQUIRED_FIELDS', []))
+    setting_fields = utils.field_names(app_settings.A2_REGISTRATION_REQUIRED_FIELDS)
     return [username_field] + list(field_names) + list(setting_fields)

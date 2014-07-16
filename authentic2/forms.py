@@ -6,7 +6,7 @@ from django.utils.datastructures import SortedDict
 
 from authentic2.compat import get_user_model
 
-from . import models, app_settings
+from . import models, app_settings, utils
 
 auth_models.User.USER_PROFILE = ('first_name', 'last_name', 'email')
 User = get_user_model()
@@ -59,7 +59,8 @@ class UserProfileForm(UserAttributeFormMixin, forms.ModelForm):
         for field in get_user_model().REQUIRED_FIELDS:
             if field in self.fields:
                 self.fields[field].required = True
-        ordered_fields = app_settings.A2_PROFILE_FIELDS or app_settings.A2_REGISTRATION_FIELDS
+        fields = app_settings.A2_PROFILE_FIELDS or app_settings.A2_REGISTRATION_FIELDS
+        ordered_fields = list(utils.field_names(fields))
         if ordered_fields:
             new_fields = SortedDict()
             for field_name in ordered_fields:
@@ -69,6 +70,11 @@ class UserProfileForm(UserAttributeFormMixin, forms.ModelForm):
                 if field_name not in new_fields:
                     new_fields[field_name] = self.fields[field_name]
             self.fields = new_fields
+        # override titles
+        for field in fields:
+            if isinstance(field, (list, tuple)):
+                if len(field) > 1:
+                    self.fields[field[0]].label = field[1]
 
     def get_attributes(self):
         qs = super(UserProfileForm, self).get_attributes()
