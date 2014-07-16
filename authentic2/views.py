@@ -22,14 +22,12 @@ from django.utils.translation import ugettext as _
 from django.utils.http import urlencode
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import REDIRECT_FIELD_NAME
-from django.contrib.auth.models import SiteProfileNotAvailable
 from django.http import (HttpResponseRedirect, HttpResponseForbidden,
     HttpResponse)
-from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_protect
-from django.contrib.sites.models import Site, RequestSite
 from django.views.decorators.cache import never_cache
 from django.contrib.auth.decorators import login_required
+from django.db.models import FieldDoesNotExist
 
 
 # FIXME: this decorator has nothing to do with an idp, should be moved in the
@@ -37,7 +35,8 @@ from django.contrib.auth.decorators import login_required
 # FIXME: this constant should be moved in the a2 package
 
 
-from . import utils, app_settings, forms, compat, decorators, constants
+from . import (utils, app_settings, forms, compat, decorators,
+    constants, models)
 
 
 logger = logging.getLogger(__name__)
@@ -304,51 +303,65 @@ def _homepage(request):
     return render_to_response('idp/homepage.html',
        tpl_parameters, RequestContext(request))
 
-@decorators.prevent_access_to_transient_users
-def profile(request):
+class ProfileView(TemplateView):
+    template_name = 'idp/account_management.html'
 
-    frontends = utils.get_backends('AUTH_FRONTENDS')
+    def get_context_data(self, **kwargs):
+        ctx = super(ProfileView, self).get_context_data(**kwargs)
+        frontends = utils.get_backends('AUTH_FRONTENDS')
+        request = self.request
 
-    if request.method == "POST":
-        for frontend in frontends:
-            if not frontend.enabled():
-                continue
-            if 'submit-%s' % frontend.id() in request.POST:
-                form = frontend.form()(data=request.POST)
-                if form.is_valid():
-                    if request.session.test_cookie_worked():
-                        request.session.delete_test_cookie()
-                    return frontend.post(request, form, None, '/profile')
-    # User attributes management
-    profile = []
-    try:
-        for field_name in getattr(request.user, 'USER_PROFILE', []):
-            if isinstance(field_name, tuple):
+        if request.method == "POST":
+            for frontend in frontends:
+                if not frontend.enabled():
+                    continue
+                if 'submit-%s' % frontend.id() in request.POST:
+                    form = frontend.form()(data=request.POST)
+                    if form.is_valid():
+                        if request.session.test_cookie_worked():
+                            request.session.delete_test_cookie()
+                        return frontend.post(request, form, None, '/profile')
+        # User attributes management
+        profile = []
+        field_names = app_settings.A2_PROFILE_FIELDS
+        if not field_names:
+            field_names = list(getattr(request.user, 'USER_PROFILE', []))
+            field_names += list(models.Attribute.objects.filter(user_visible=True).values_list('name', flat=True))
+        for field_name in field_names:
+            title = None
+            if isinstance(field_name, (list, tuple)):
                 field_name, title = field_name
-            elif isinstance(field_name, str):
-                title = request.user._meta.get_field(field_name).verbose_name
+            try:
+                field = request.user._meta.get_field(field_name)
+            except FieldDoesNotExist:
+                qs = models.AttributeValue.objects.with_owner(request.user)
+                qs = qs.filter( attribute__name=field_name, attribute__user_visible=True)
+                qs = qs.select_related()
+                value = [at_value.to_python() for at_value in qs]
+                if qs:
+                    title = unicode(qs[0].attribute)
             else:
-                raise TypeError('USER_PROFILE must contain string or tuple')
-            value = getattr(request.user, field_name, None)
+                if not title:
+                    title = field.verbose_name
+                value = getattr(self.request.user, field_name, None)
             if not value:
                 continue
             if callable(value):
                 value = value()
-            if not isinstance(value, basestring) and hasattr(value, '__iter__'):
-                profile.append((title, map(unicode, value)))
-            else:
-                profile.append((title, [unicode(value)]))
-    except (SiteProfileNotAvailable, ObjectDoesNotExist):
-        pass
-    # Credentials management
-    blocks = [ frontend.profile(request) for frontend in frontends \
-            if hasattr(frontend, 'profile') ]
-    return render_to_response('idp/account_management.html', {
-        'frontends_block': blocks,
-        'profile': profile,
-        'allow_account_deletion': app_settings.A2_REGISTRATION_CAN_DELETE_ACCOUNT,
-        },
-        RequestContext(request))
+            if not isinstance(value, (list, tuple)):
+                value = (value,)
+            profile.append((title, map(unicode, value)))
+        # Credentials management
+        blocks = [ frontend.profile(request) for frontend in frontends \
+                if hasattr(frontend, 'profile') ]
+        ctx.update({
+            'frontends_block': blocks,
+            'profile': profile,
+            'allow_account_deletion': app_settings.A2_REGISTRATION_CAN_DELETE_ACCOUNT,
+        })
+        return ctx
+
+profile = decorators.prevent_access_to_transient_users(ProfileView.as_view())
 
 def logout_list(request):
     '''Return logout links from idp backends'''
