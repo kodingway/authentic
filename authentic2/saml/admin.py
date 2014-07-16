@@ -6,7 +6,7 @@ from django.utils.translation import ugettext as _
 from django.conf.urls import patterns, url
 from django.conf import settings
 from django.forms import ModelForm
-import django.forms
+from django import forms
 from django.contrib import messages
 try:
     from django.contrib.contenttypes.admin import GenericTabularInline
@@ -109,10 +109,10 @@ class LibertyIdentityProviderInline(admin.StackedInline):
             }),
     )
 
-class TextAndFileWidget(django.forms.widgets.MultiWidget):
+class TextAndFileWidget(forms.widgets.MultiWidget):
     def __init__(self, attrs=None):
-        widgets = (django.forms.widgets.Textarea(),
-                django.forms.widgets.FileInput(),)
+        widgets = (forms.widgets.Textarea(),
+                forms.widgets.FileInput(),)
         super(TextAndFileWidget, self).__init__(widgets, attrs)
 
     def decompress(self, value):
@@ -139,10 +139,10 @@ class TextAndFileWidget(django.forms.widgets.MultiWidget):
 
 
 class LibertyProviderForm(ModelForm):
-    metadata = django.forms.CharField(required=True,widget=TextAndFileWidget)
-    public_key = django.forms.CharField(required=False,widget=TextAndFileWidget)
-    ssl_certificate = django.forms.CharField(required=False,widget=TextAndFileWidget)
-    ca_cert_chain = django.forms.CharField(required=False,widget=TextAndFileWidget)
+    metadata = forms.CharField(required=True,widget=TextAndFileWidget)
+    public_key = forms.CharField(required=False,widget=TextAndFileWidget)
+    ssl_certificate = forms.CharField(required=False,widget=TextAndFileWidget)
+    ca_cert_chain = forms.CharField(required=False,widget=TextAndFileWidget)
     class Meta:
         model = LibertyProvider
 
@@ -165,15 +165,19 @@ def update_metadata(modeladmin, request, queryset):
         messages.info(request, _('Metadata update for: %s') % updated)
 
 
-class SAMLAttributeInlineAdmin(GenericTabularInline):
-    model = SAMLAttribute
-
-    def formfield_for_choice_field(self, db_field, request, **kwargs):
+class SAMLAttributeInlineForm(forms.ModelForm):
+    class Meta:
         def choices(ctx):
             return [('', _('None'))] + get_attribute_names(ctx)
-        if db_field.name == 'attribute_name':
-            kwargs['choices'] = to_iter(choices)({'user': None, 'request': None})
-        return super(SAMLAttributeInlineAdmin, self).formfield_for_choice_field(db_field, request, **kwargs)
+
+        model = SAMLAttribute
+        widgets = {
+                'attribute_name': forms.Select(choices=to_iter(choices)({'user': None, 'request': None}))
+        }
+
+class SAMLAttributeInlineAdmin(GenericTabularInline):
+    model = SAMLAttribute
+    form = SAMLAttributeInlineForm
 
 
 class LibertyProviderAdmin(admin.ModelAdmin):

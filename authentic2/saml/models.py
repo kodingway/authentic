@@ -345,8 +345,7 @@ class SAMLAttribute(models.Model):
             verbose_name=_('friendly name'),
             blank=True)
     attribute_name = models.CharField(max_length=64,
-            verbose_name=_('attribute name'),
-            choices=(('', 'None'),))
+            verbose_name=_('attribute name'))
 
     def clean(self):
         super(SAMLAttribute, self).clean()
