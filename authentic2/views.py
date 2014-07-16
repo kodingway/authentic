@@ -338,6 +338,7 @@ class ProfileView(TemplateView):
                 qs = qs.filter( attribute__name=field_name, attribute__user_visible=True)
                 qs = qs.select_related()
                 value = [at_value.to_python() for at_value in qs]
+                value = filter(None, value)
                 if qs:
                     title = unicode(qs[0].attribute)
             else:
