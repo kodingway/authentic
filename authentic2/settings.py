@@ -151,6 +151,14 @@ TEMPLATE_VARS = {}
 if os.environ.get('STATICFILES_DIRS'):
     STATICFILES_DIRS = tuple(os.environ['STATICFILES_DIRS'].split(':')) + STATICFILES_DIRS
 
+LOCALE_PATHS = (
+        os.path.join(VAR_DIR, 'locale'),
+        os.path.join(BASE_DIR, 'locale'),
+)
+if os.environ.get('LOCALE_PATHS'):
+    LOCALE_PATHS = tuple(os.environ['LOCALE_PATHS'].split(':')) + LOCALE_PATHS
+
+
 
 INSTALLED_APPS = (
     'django.contrib.staticfiles',
