@@ -202,7 +202,10 @@ class EmailChangeVerifyView(TemplateView):
             except User.DoesNotExist:
                 messages.error(request, _('your request for changing your email is for '
                     'an unknown user, try again'))
-        return shortcuts.redirect(settings.LOGIN_REDIRECT_URL)
+            else:
+                return shortcuts.redirect('account_management')
+        return shortcuts.redirect('email-change')
+
 
 email_change_verify = EmailChangeVerifyView.as_view()
 
