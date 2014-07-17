@@ -539,6 +539,9 @@ class LDAPBackend():
            defined mappings between atrribute names'''
         attributes = set()
         attributes.update(map(str, block['attributes']))
+        for field in ('email_field', 'fname_field', 'lname_field'):
+            if block[field]:
+                attributes.add(block[field])
         for external_id_tuple in block['external_id_tuples']:
             attributes.update(external_id_tuple)
         attribute_mappings = block['attribute_mappings']
