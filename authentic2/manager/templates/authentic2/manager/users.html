@@ -1,0 +1,26 @@
+{% extends "authentic2/manager/sidebar.html" %}
+{% load i18n staticfiles django_tables2 %}
+
+{% block page-title %}{{ block.super }} - {% trans "Users management" %}{% endblock %}
+
+{% block page_title %}{% trans "Users management" %}{% endblock %}
+
+{% block appbar %}
+  {{ block.super }}
+  <a rel="popup" href="{% url "a2-manager-user-add" %}" id="add-user-btn">{% trans "Add user" %}</a>
+{% endblock %}
+
+{% block sidebar %}
+  <div>
+    <h3>{% trans "Search" %}</h3>
+     <div id="search-form">
+       <input id="search-input" type="search" value="{{ request.GET.search }}">
+       <button>{% trans "Search" %}</button>
+     </div>
+  </div>
+  <p>{% blocktrans with count=users.count %}{{ count }} users{% endblocktrans %}</p>
+{% endblock %}
+
+{% block main %}
+  {% render_table table "authentic2/manager/table.html" %}
+{% endblock %}

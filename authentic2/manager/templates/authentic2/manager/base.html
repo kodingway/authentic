@@ -1,0 +1,35 @@
+{% extends "gadjo/base.html" %}
+{% load i18n staticfiles %}
+
+{% block page-title %}{% trans "Management" %}{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" media="all" href="{% static "authentic2/manager/css/style.css" %}"/>
+{% endblock %}
+
+{% block extrascripts %}
+  {% if debug %}
+    <script src="{% static "jquery/js/jquery.form.js" %}"></script>
+  {% else %}
+    <script src="{% static "jquery/js/jquery.form.min.js" %}"></script>
+  {% endif %}
+  <script type="text/javascript" src="{% static "authentic2/js/purl.js" %}"></script>
+  <script type="text/javascript" src="{% static "authentic2/manager/js/manager.js" %}"></script>
+  <script type="text/javascript" src="/static/js/select2.js"></script>
+  <script type="text/javascript" src="/static/js/heavy_data.js"></script>
+  <script>
+    window.csrf_token = '{{ csrf_token }}';
+  </script>
+{% endblock %}
+
+{% block site-url %}{{ management_homepage_url }}{% endblock %}
+{% block site-title %}{% trans "Management" %}{% endblock %}
+
+{% block logout-url %}{{ management_logout_url }}{% endblock %}
+
+{% block homepage-url %}{% url "a2-manager-homepage" %}{% endblock %}
+
+{% block appbar %}
+  <h2>{% block page_title %}{% endblock %}</h2>
+{% endblock %}
+

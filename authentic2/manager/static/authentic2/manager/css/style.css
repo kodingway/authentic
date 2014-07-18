@@ -1,0 +1,167 @@
+
+div#sidebar {
+	width: 15%
+	float: left;
+	text-align: justify;
+	padding-right: 10px;
+}
+
+div#sidebar {
+	text-align: left;
+}
+
+div#sidebar input[type=text] {
+       width: 95%;
+}
+
+div#sidebar button {
+       width: 100%;
+}
+
+
+#sidebar ul.roles {
+	padding: 0;
+	text-align: left;
+	list-style: none;
+}
+
+#sidebar ul.roles li {
+	margin-bottom: 1ex;
+}
+
+#sidebar ul.roles li a {
+	text-decoration: none;
+}
+
+#sidebar ul.roles a.active {
+	font-weight: bold;
+}
+
+div.role-info h3 {
+}
+
+form#add-user-role {
+	margin-top: 2em;
+	margin-bottom: 2em;
+}
+
+form#add-user-role div.select2-container {
+	width: 30%;
+	display: inline-block;
+	position: relative;
+	top: 2px;
+	margin-left: 1ex;
+	margin-right: 1ex;
+}
+
+table.feeds td.url {
+	text-align: left;
+	padding-left: 1em;
+}
+
+form#errors label span,
+form#smtp label span {
+        width: 16em;
+        display: inline-block;
+}
+
+form#errors button, form#smtp button {
+	margin-left: 15.4em;
+}
+
+div#user-edit div.left {
+        float: left;
+        width: 400px;
+}
+
+div#user-edit div.left button {
+        margin-top: 2em;
+}
+
+div#user-edit div.right {
+        float: right;
+        width: 150px;
+}
+
+div#user-edit div.right strong {
+        display: block;
+        margin-bottom: 1ex;
+}
+
+div#user-edit div.right button {
+        width: 100%;
+        text-align: left;
+        padding: 0.5ex 1ex;
+}
+
+table.users tbody tr td:nth-child(2) {
+	color: #FF7800;
+}
+
+table.users tbody tr td:nth-child(2):hover {
+	text-decoration: underline;
+	border-bottom: 1px solid transparent;
+}
+
+/* bdauvergne additions */
+
+#delete-form {
+  float: right;
+}
+
+.ui-dialog-content .helptext {
+  display: none;
+}
+
+.form-inner-container {
+  width: 500px;
+}
+
+.other_actions {
+  float: right;
+  position: relative;
+  max-width: 35%;
+}
+
+.other_actions input[type=submit] {
+  display: block;
+  margin: 5px;
+  width: 100%;
+}
+
+ul.messages {
+	position: fixed;
+	width: 30em;
+	top: 10px;
+	right: 10px;
+	padding: 0;
+	z-index: 2000;
+	margin-top: 1em;
+	list-style-type: none;
+	display: table;
+	margin: auto;
+	background: rgba(40, 40, 40, 0.7);
+	color: white;
+	text-shadow: black 1px 1px 1px;
+	border-radius: 10px;
+}
+
+ul.messages li {
+	padding: 1ex;
+	margin: 1ex;
+	border-size: 0px;
+	-moz-border-radius:7px;
+	-webkit-border-radius:7px;
+	border-radius:7px;
+	border: none;
+}
+
+input[type=submit][name=password_reset] {
+  white-space: normal;
+}
+
+li#roles a { background-image: url(icon-personnes.png); }
+li#roles a:hover { background-image: url(icon-personnes-hover.png); }
+
+li#users a { background-image: url(icon-user.png); }
+li#users a:hover { background-image: url(icon-user-hover.png); }

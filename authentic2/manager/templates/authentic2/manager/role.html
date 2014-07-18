@@ -1,0 +1,23 @@
+{% extends "authentic2/manager/roles.html" %}
+
+{% load i18n staticfiles django_tables2 %}
+
+{% block extra_scripts %}
+  {{ block.super }}
+  {{ choose_user_form.media }}
+{% endblock %}
+
+{% block main %}
+   <div class="role-info">
+     <h3 style="margin-top: 0;">{% trans "Users with role" %}: {{ active_role.name }}</h3>
+
+     {% render_table users "authentic2/manager/role_users_table.html" %}
+
+     <form method="post" id="add-user-role">
+             {% trans "Add an user to this role:" %}
+             {% csrf_token %}
+             {{ choose_user_form.ref }}
+             <button>{% trans "Add" %}</button>
+     </form>
+   </div>
+{% endblock %}
