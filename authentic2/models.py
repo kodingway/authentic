@@ -213,7 +213,7 @@ class UserExternalId(models.Model):
         return '<UserExternalId user: {0!r} source: {1!r} ' \
                'external_id: {2!r} created: {3} updated: {4}' \
                .format(self.user_id, self.source, self.external_id,
-                       self.created, self.update)
+                       self.created, self.updated)
 
     class Meta:
         verbose_name = _('user external id')
