@@ -14,15 +14,17 @@ class Migration(SchemaMigration):
         db.delete_table('authentic2_authenticationevent')
         db.rename_table('auth2_auth_authenticationevent', 'authentic2_authenticationevent')
         db.send_create_signal('authentic2', ['AuthenticationEvent'])
-        ContentType.objects.filter(app_label='authentic2',
-                model='authenticationevent').delete()
-        ContentType.objects.filter(app_label='auth2_auth') \
-                .update(app_label='authentic2')
+        if not db.dry_run:
+            ContentType.objects.filter(app_label='authentic2',
+                    model='authenticationevent').delete()
+            ContentType.objects.filter(app_label='auth2_auth') \
+                    .update(app_label='authentic2')
 
 
     def backwards(self, orm):
-        ContentType.objects.filter(app_label='authentic2',
-                model='authenticationevent').update(app_label='auth2_auth')
+        if not db.dry_run:
+            ContentType.objects.filter(app_label='authentic2',
+                    model='authenticationevent').update(app_label='auth2_auth')
         db.rename_table('authentic2_authenticationevent', 'auth2_auth_authenticationevent')
         db.send_create_signal('auth2_auth', ['AuthenticationEvent'])
 
