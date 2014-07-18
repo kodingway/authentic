@@ -1,0 +1,55 @@
+{% extends "authentic2/manager/base.html" %}
+{% load i18n staticfiles %}
+
+{% block title %}{{ block.super }} - {% trans "Role management" %}{% endblock %}
+
+{% block page_title %}{% trans "Role management" %}{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  $(function () {
+        function refresh_page() {
+          $.get('', '', function (response_text) {
+            $('#sidebar').replaceWith($(response_text).find('#sidebar'));
+          });
+        };
+  });
+</script>
+{% endblock %}
+
+{% block sidebar %}
+   <ul class="roles">
+     {% for role in roles %}
+       <li>
+       <a href="{% url "a2-manager-role" role_ref=role.ref %}"
+           {% if role.ref == active_role.ref %}class="active"{% endif %}>
+            {{ role.name }}
+         </a>
+       </li>
+     {% endfor %}
+   </ul>
+   <a href="{% url "a2-manager-role-add" %}" rel="popup">{% trans "Add role" %}</a>
+{% endblock %}
+
+{% block content %}
+   <div class="big-msg-info">
+     Utilisez les filtres sur sur la gauche de l'écran pour afficher
+     les membres du rôle correspondant.
+   </div>
+{% endblock %}
+
+{% block end_content %}
+  <div id="role-edit" style="display: none;">
+   <form>
+    <label><span>Nom :</span> <input type="text" size="30" value="Foo"/></label></br>
+   </form>
+  </div>
+
+  <div id="role-add" style="display: none;">
+   <form id="role-add-form" method="post" action="{% url "a2-manager-role-add" %}">
+    {% csrf_token %}
+    {{ role_add_form }}
+   </form>
+  </div>
+
+{% endblock %}

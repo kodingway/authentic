@@ -173,6 +173,8 @@ INSTALLED_APPS = (
     'admin_tools.dashboard',
     'django.contrib.admin',
     'registration',
+    'django_select2',
+    'django_tables2',
     'authentic2.nonce',
     'authentic2.saml',
     'authentic2.idp',
@@ -180,6 +182,7 @@ INSTALLED_APPS = (
     'authentic2.auth2_auth',
     'authentic2.attribute_aggregator',
     'authentic2.disco_service',
+    'authentic2.manager',
     'authentic2',
 )
 

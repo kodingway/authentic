@@ -1,0 +1,18 @@
+{% extends "authentic2/manager/base.html" %}
+{% load i18n %}
+
+{% block content %}
+  <div id="content">
+    {% if title %}
+      <div id="appbar"><h2>{{ title }}</h2></div>
+    {% endif %}
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div class="buttons">
+        <button>{% trans "Create" %}</button> 
+        <a class="cancel" href="..">Annuler</a>
+      </div>
+    </form>
+  </div>
+{% endblock %}

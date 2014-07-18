@@ -8,3 +8,5 @@ django-debug-toolbar<1.0.0
 --allow-unverified django-admin-tools
 django-admin-tools>=0.5.1
 dnspython
+django-select2
+django-tables2

@@ -1,0 +1,83 @@
+{% load i18n staticfiles %}<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8"/>
+
+    <title>{% block title %}{% trans "Management" %}{% endblock %}</title>
+
+    <link rel="stylesheet" type="text/css" media="all" href="{% static "authentic2/manager/css/style.css" %}"/>
+
+    {% if debug %}
+      <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+      <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+      <script src="{% static "jquery/js/jquery.form.js" %}"></script>
+      <script src="{% static "jquery-ui-contextmenu-1.5.0/jquery.ui-contextmenu.js" %}"></script>
+    {% else %}
+      <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+      <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.min.js"></script>
+      <script src="{% static "jquery/js/jquery.form.min.js" %}"></script>
+      <script src="{% static "jquery-ui-contextmenu-1.5.0/jquery.ui-contextmenu.min.js" %}"></script>
+    {% endif %}
+    <script src="{% static "authentic2/js/purl.js" %}"></script>
+    <script src="{% static "authentic2/manager/js/manager.js" %}"></script>
+    <link rel="stylesheet" type="text/css" media="all" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css"/>
+
+    {% block extra_scripts %}
+    {% endblock %}
+  </head>
+  <body>
+    <div id="wrap-large">
+      <div id="header">
+        {% block header %}<h1><a href="{{ management_homepage_url }}">{% trans "Management" %}</a></h1>{% endblock %}
+      </div>
+
+      <div id="splash" class="cmpp">
+        {% block splash %}
+          <div id="user-links">
+            {% block user-links %}
+              <a href="{{ management_logout_url }}">{% trans "Logout" %}</a>
+            {% endblock %}
+          </div>
+        {% endblock %}
+        {% if messages %}
+          <ul class="messages">
+              {% for message in messages %}
+              <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                  {{ message }}
+              </li>
+              {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+
+      <div id="more-user-links">
+        {% block more-user-links %}
+          <a href="{{ management_homepage_url }}" class="icon-home-space">{% trans "Homepage" %}</a>
+        {% endblock %}
+      </div>
+
+      <div id="content">
+        <div id="appbar">
+          {% block appbar %}
+          <h2>{% block page_title %}{% endblock %}</h2>
+          {% endblock %}
+        </div>
+
+       <div id="sidebar">
+         {% block sidebar %}
+         {% endblock %}
+       </div>
+
+       <div class="content">
+         {% block content %}{% endblock %}
+       </div>
+
+       <div id="footer">
+         Authentic2 Manager - Copyright &copy; 2014 Entr'ouvert
+       </div>
+     </div>
+
+    {% block end_content%}
+    {% endblock %}
+  </body>
+</html>

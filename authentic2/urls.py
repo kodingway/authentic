@@ -23,6 +23,7 @@ not_homepage_patterns += patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^admin_tools/', include('admin_tools.urls')),
     url(r'^idp/', include('authentic2.idp.urls')),
+    url(r'^manager/', include('authentic2.manager.urls')),
 )
 
 if getattr(settings, 'AUTH_OPENID', False):

@@ -1,0 +1,85 @@
+{% extends "authentic2/manager/roles.html" %}
+{% load i18n staticfiles django_tables2 %}
+
+{% block extra_scripts %}
+  {{ block.super }}
+  <script>
+    $(function () {
+      $('#search-input').change(function () {
+        var params = $.url().param();
+        if ($(this).val()) {
+          params.search = $(this).val();
+        } else {
+          if ('search' in params) {
+            delete params.search;
+          }
+        }
+        var href = $.url().attr('path')
+        if ($.param(params)) {
+          href += '?' + $.param(params);
+        }
+        window.location.href = href;
+      });
+      $('#search-input-clear-btn').click(function () {
+        $('#search-input').val('').trigger('change');
+      });
+      $('.content').on('click', '.paginator a', function () {
+        var href = $(this).attr('href');
+        $.get(href, '', function (response_text) {
+          var content = $(response_text).find('.table-container');
+          $('.table-container').replaceWith(content);
+          history.pushState(null, href, href);
+          setup_menu();
+        });
+        return false;
+      });
+      function remove_user(event, ui) {
+        var user = $(ui.target).parent('tr').data('ref');
+        if (! user) {
+          return;
+        }
+        $.post('', {
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            action: 'remove', 
+            'user': user
+          },
+          function () {
+              $.get('', function (html) {
+                $('#user-table').replaceWith($(html).find('#user-table'));
+                setup_menu();
+              });
+          }
+        )
+      }
+      function setup_menu() {
+        $('#user-table').contextmenu({
+          delegate: 'tbody tr',
+          menu: [
+            {title: '{% trans "Remove" %}', action: remove_user}
+          ]
+        });
+      }
+      setup_menu();
+
+    })
+  </script>
+  {{ choose_user_form.media }}
+{% endblock %}
+
+{% block content %}
+   <div class="role-info">
+     <h3>{% trans "Users with role" %}: {{ active_role.name }}</h3>
+     <div id="search-form">
+       {% trans "Search" %}: <input id="search-input" type="text" value="{{ request.GET.search }}"><button id="search-input-clear-btn">Effacer</button>
+     </div>
+
+     {% render_table users "authentic2/manager/table.html" %}
+
+     <form method="post" id="add-user-role">
+             Ajouter un utilisateur à ce rôle :
+             {% csrf_token %}
+             {{ choose_user_form }}
+             <button>Valider</button>
+     </form>
+   </div>
+{% endblock %}

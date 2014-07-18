@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Portail Admin</title>
+    <link rel="stylesheet" type="text/css" media="all" href="css/style.css"/>
+    <script src="js/jquery-1.7.2.min.js"></script>
+    <script src="js/jquery-ui-1.8.21.custom.min.js"></script>
+    <link rel="stylesheet" type="text/css" media="all" href="css/smoothness/jquery-ui-1.8.21.custom.css"/>
+    <link rel="stylesheet" type="text/css" media="all" href="js/select2/select2.css"/>
+    <script src="js/select2/select2.js"></script>
+    <script src="js/mockups.js"></script>
+    <script>
+    function unselect_all() {
+      $('.popover-container').css('display', 'none');
+      $('table tbody tr').removeClass('active');
+      $('table tbody tr input:checked').parents('tr').addClass('active');
+      return true;
+    }
+
+    $(function() {
+      $('select').select2();
+      $('#add-role-btn').click(function() {
+         unselect_all();
+         $('#role-add').dialog({title: 'Ajouter un rôle',
+                            width: '400px',
+                            modal: true,
+                            buttons: [
+                              { text: "Annuler",
+                                click: function() { $(this).dialog("close"); } },
+                              { text: "Ajouter",
+                                click: function() { $(this).dialog("close"); } }]}
+                           );
+         return false;
+       });
+       $('ul.roles a').click(function() {
+          unselect_all();
+          $('ul.roles a').removeClass('active');
+          $(this).addClass('active');
+          $('div.big-msg-info').hide();
+          $('div.role-info h3').text('Utilisateurs disposant du rôle : ' + $(this).text());
+          $('div.role-info').show();
+          return false;
+       });
+
+      $('html').click(unselect_all);
+
+      $('table td:first-child').click(function(ev) {ev.stopPropagation();});
+      $('table td:first-child input').change(function(ev) {
+         ev.stopPropagation();
+         $('.popover-container').css('display', 'none');
+         if ($(this).prop('checked')) {
+           $(this).prop('checked', true);
+           $(this).parents('tr').addClass('active');
+         } else {
+           $(this).prop('checked', false);
+           $(this).parents('tr').removeClass('active');
+         }
+         return true;
+      });
+
+      $('table tbody tr').click(function(ev) {
+         if ($(this).find('input:checked').length == 0) {
+           $('table tbody tr input:checked').parents('tr').removeClass('active');
+           $('table tbody tr input:checked').prop('checked', false);
+           if ($(this).hasClass('active')) {
+             $('.popover-container').css('display', 'none');
+             $(this).removeClass('active');
+             return false;
+           }
+           $('table tbody tr').removeClass('active');
+         }
+         $(this).addClass('active');
+         $('.popover-container').css('visibility', 'hidden').css('display', 'block');
+         $('.popover-container').css('left', ev.pageX - $('#content').offset().left - 20
+                 ).css('top', ev.pageY - $('#content').offset().top +
+                         $('.popover').height() + 25
+                 ).css('visibility', 'visible');
+         return false;
+     });
+
+
+    });
+    </script>
+  </head>
+  <body>
+  <div id="wrap-large">
+    <div id="header">
+      <h1><a href="accueil.html">Portail Admin</a></h1>
+    </div>
+    <div id="splash" class="cmpp">
+      <div id="user-links">
+        <a href="index.html">Déconnexion</a>
+      </div>
+    </div>
+    <div id="more-user-links">
+      <a href="accueil.html" class="icon-home-space">Accueil</a>
+    </div>
+    <div id="content">
+
+    <div id="appbar">
+    <h2>Liste des rôles</h2>
+    </div>
+
+   <div id="sidebar">
+   <ul class="roles">
+    <li><a href="#">Administrateur</a></li>
+    <li><a href="#">Gestionnaire des annonces</a></li>
+    <li><a href="#">Gestionnaire des rôles</a></li>
+    <li><a href="#">Gestionnaire des sites communaux</a></li>
+    <li><a href="#">Gestionnaire des textes</a></li>
+    <li><a href="#">Gestionnaire des utilisateurs</a></li>
+   </ul>
+   </div>
+
+   <div class="content">
+
+   <div class="popover-container">
+    <ul class="popover">
+       <li><a>Retirer</a></li>
+    </ul>
+   </div>
+
+
+
+   <div class="big-msg-info">
+     Utilisez les filtres sur sur la gauche de l'écran pour afficher
+     les membres du rôle correspondant.
+   </div>
+
+   <div class="role-info" style="display: none;">
+     <h3></h3>
+     <table class="main">
+    <thead>
+    <tr>
+     <th></th>
+     <th>Nom d'utilisateur</th>
+     <th>Email</th>
+     <th>Prénom</th>
+     <th>Nom</th>
+     <th>Actif</th>
+    </tr>
+    </thead>
+    <tbody>
+     <tr><td class="checkbox"><input type="checkbox"/></td><td>foobar</td><td>foobar@example.net</td><td>Foo</td><td>Bar</td><td>×</td></tr>
+     <tr><td class="checkbox"><input type="checkbox"/></td><td>foobar</td><td>foobar@example.net</td><td>Foo</td><td>Bar</td><td>×</td></tr>
+     <tr><td class="checkbox"><input type="checkbox"/></td><td>foobar</td><td>foobar@example.net</td><td>Foo</td><td>Bar</td><td>×</td></tr>
+     <tr><td class="checkbox"><input type="checkbox"/></td><td>foobar</td><td>foobar@example.net</td><td>Foo</td><td>Bar</td><td>×</td></tr>
+     <tr><td class="checkbox"><input type="checkbox"/></td><td>foobar</td><td>foobar@example.net</td><td>Foo</td><td>Bar</td><td>×</td></tr>
+     <tr><td class="checkbox"><input type="checkbox"/></td><td>foobar</td><td>foobar@example.net</td><td>Foo</td><td>Bar</td><td>×</td></tr>
+     </tbody>
+
+     </table>
+
+     <form id="add-user-role">
+             Ajouter un utilisateur à ce rôle :
+             <select><option></option><option>foobar</option></select>
+             <button>Valider</button>
+     </form>
+   </div>
+
+
+   </div>
+
+    </div>
+
+    <div id="footer">
+        Logiciel Portail Admin - Copyright &copy; 2014 Entr'ouvert
+    </div>
+  </div>
+
+  <div id="role-edit" style="display: none;">
+   <form>
+    <label><span>Nom :</span> <input type="text" size="30" value="Foo"/></label></br>
+   </form>
+  </div>
+
+  <div id="role-add" style="display: none;">
+   <form>
+    <label><span>Nom du rôle :</span> <input type="text" size="30"/></label></br>
+   </form>
+  </div>
+
+  </body>
+</html>
