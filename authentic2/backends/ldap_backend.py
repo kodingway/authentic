@@ -564,7 +564,7 @@ class LDAPBackend(object):
         for external_id_tuple in block['external_id_tuples']:
             attributes.update(cls.attribute_name_from_external_id_tuple(
                 external_id_tuple))
-        return set(map(str.lower, attributes))
+        return set(map(str.lower, map(str, attributes)))
 
     @classmethod
     def get_ldap_attributes(cls, block, conn, dn):
