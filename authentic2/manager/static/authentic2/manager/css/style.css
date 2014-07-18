@@ -1,0 +1,1298 @@
+/* theme derived and inspired by TerraFirma
+ * <http://www.oswd.org/design/information/id/3557/>
+ */
+
+@font-face {
+  font-family: "FontAwesome";
+  src: url('fontawesome-webfont.eot');
+  src: url('fontawesome-webfont.eot?#iefix') format('eot'), url('fontawesome-webfont.woff') format('woff'), url('fontawesome-webfont.ttf') format('truetype'), url('fontawesome-webfont.svg#FontAwesome') format('svg');
+  font-weight: normal;
+  font-style: normal;
+} 
+
+html, body {
+	margin: 0;
+	font-family: sans-serif;
+	height: 101%;
+}
+
+html {
+	background: #F9F9F7 url(../images/a1.gif) repeat-x;
+	color: #8c8c73;
+}
+
+a, #tab-personnes a, #tab-ressources a {
+	color: #FF7800;
+	text-decoration: underline;
+}
+
+a:hover, #tab-personnes a:hover, #tab-ressources a:hover {
+	text-decoration: none;
+}
+
+div#user-links {
+	display: inline;
+	padding: 5px;
+	background: rgba(100, 100, 100, 0.8);
+	border-top-right-radius: 6px;
+	border-bottom-left-radius: 6px;
+}
+
+div#user-links a {
+	color: white;
+	text-decoration: none;
+}
+
+div#user-links a:hover {
+	text-shadow: 1px 1px 1px black;
+}
+
+div#wrap-large,
+div#wrap {
+	background: white;
+	width: 640px;
+	margin: 3em auto;
+	margin-bottom: 0;
+	padding: 15px;
+	-moz-border-radius: 6px;
+	-webkit-border-radius:6px;
+	-moz-box-shadow: 0 0 4px rgba(0,0,0,0.75);
+	-webkit-box-shadow: 0 0 4px rgba(0,0,0,0.75);
+	position: relative;
+}
+
+div#wrap-large {
+	width: 95%;
+}
+
+#header
+{
+	position: absolute;
+	background: #FF7800 url(../images/a8.gif) repeat-x;
+	-moz-border-radius: 6px 0 0 6px;
+	-webkit-border-radius: 6px 0 0 6px;
+	width: 212px;
+	height: 92px;
+	color: #fff;
+	padding-left: 10px;
+	z-index: 14;
+}
+
+#header h1
+{
+	font-size: 23px;
+	letter-spacing: -1px;
+	padding-top: 30px;
+	margin: 0;
+}
+
+#header span
+{
+	margin: 0;
+	font-size: 10px;
+	font-weight: normal;
+	color: #FCE2CA;
+}
+
+#header h1 a,
+#header span a {
+	color: white;
+	text-decoration: none;
+}
+
+#splash
+{
+	position: absolute;
+	right: 15px;
+	background: #5D91E5 url(../images/sky-birds.jpg) no-repeat top right;
+	width: 90%;
+	height: 87px;
+	-moz-border-radius: 0 6px 6px 0;
+	-webkit-border-radius: 0 6px 6px 0;
+	z-index: 10;
+
+	color: white;
+	font-weight: bold;
+	text-align: right;
+	padding-top: 5px;
+}
+
+#agendas span.box {
+  display: inline-block;
+  height: 20px;
+  width: 20px;
+  border: 1px outset gray;
+  position: relative;
+  top: -4px;
+}
+
+span.cmpp, #service-links a.cmpp, #splash.cmpp { background-color: #56D72B; }
+span.camsp, #service-links a.camsp, #splash.camsp { background-color: #D72B2F; }
+span.sessad-ted, #service-links a.sessad-ted, #splash.sessad-ted { background-color: #D72BBF; }
+span.sessad-sys, #service-links a.sessad-dys, #splash.sessad-dys { background-color: #5D91E5; }
+
+#splash.cmpp { background-image: url(../images/banner-green.jpg); background-repeat: repeat-x; }
+#splash.camsp { background-image: url(../images/banner-red.jpg); background-repeat: repeat-x; }
+#splash.sessad-ted { background-image: url(../images/banner-purple.jpg); }
+#splash.sessad-dys { background-image: url(../images/sky-birds.jpg); }
+
+
+#service-links {
+	position: absolute;
+	right: -5px;
+	top: 0px;
+}
+
+#service-links a {
+	padding: 1em 2px;
+	border: 1px outset #ccc;
+	color: white;
+	text-decoration: none;
+	width: 10em;
+	display: inline-block;
+	text-align: center;
+}
+
+#service-links a.active {
+	border: 1px inset white;
+	font-weight: bold;
+}
+
+div#content {
+	margin: 1em 1ex;
+	padding: 7px;
+	position: relative;
+}
+
+div#content h2 {
+	margin-top: 0;
+	font-weight: normal;
+	color: #656551;
+	font-size: 18px;
+	letter-spacing: -1px;
+	line-height: 25px;
+	margin-bottom: 20px;
+	padding: 0 0 10px 15px;
+	position: relative;
+	top: 4px;
+	background: url(../images/a22.gif) bottom repeat-x;
+}
+
+#footer
+{
+	font-size: 70%;
+	position: relative;
+	clear: both;
+	height: 66px;
+	text-align: center;
+	line-height: 66px;
+	background-image: url(../images/a50.gif);
+	color: #A8A88D;
+}
+
+#footer a
+{
+	color: #8C8C73;
+}
+
+
+form#login-form p {
+	float: left;
+	width: 40%;
+}
+
+form input.submit {
+	float: right;
+	width: 18%;
+	margin-top: 30px;
+}
+
+div.login-actions {
+	clear: both;
+	padding-top: 2em;
+}
+
+div.login-actions p {
+	margin: 0;
+}
+
+form p {
+	margin: 0 0 1em 0;
+}
+
+form p label {
+	display: block;
+}
+
+form p input,
+form p textarea {
+	margin-left: 10px;
+}
+
+ul.errorlist {
+	margin: 0;
+	padding: 0;
+	color: #e80404;
+	list-style: none;
+}
+
+input, textarea {
+	padding: 5px;
+	border: 1px solid #cccccc;
+	color:#666666;
+	background: white;
+	color: black;
+	-webkit-border-radius: 4px;
+}
+
+textarea:focus, input[type="text"]:focus, input[type="password"]:focus {
+	border: 1px solid #4690d6;
+	color:#333333;
+}
+
+input[type=submit] {
+	color: #ffffff;
+	background:#4690d6;
+	border: 1px solid #2a567f;
+	font-weight: bold;
+	padding: 2px 8px 2px 8px;
+	margin: 0;
+	cursor: pointer;
+}
+
+input[type=submit]:hover {
+	border-color: #0e1d2b;
+}
+
+form#login-form ul.errorlist {
+	margin-bottom: 1em;
+	width: 80%;
+	font-weight: normal;
+}
+
+li.indented {
+	margin-left: 50px;
+}
+
+ul.NoBullet {
+	list-style-type: none;
+}
+
+div#content h4 {
+	margin-bottom: 5px;
+	margin-top: 30px;
+}
+
+div.errors {
+	margin: 0;
+	padding: 0;
+	color: #e80404;
+	list-style: none;
+}
+
+div#breadcrumb {
+	font-size: 80%;
+	margin-bottom: 1em;
+}
+
+div#sidebar,
+div#users {
+	width: 15%;
+	float: left;
+	text-align: justify;
+	padding-right: 10px;
+}
+
+div#sidebar {
+	text-align: left;
+}
+
+div#sidebar input[type=text] {
+       width: 95%;
+}
+
+div#sidebar button {
+       width: 100%;
+}
+
+select {
+	background: white url(../images/button-next-down.png) no-repeat 98% 50%;
+	color: black;
+	padding: 5px;
+	margin-left: 10px;
+	border: 1px solid #cccccc;
+	color:#666666;
+	color: black;
+	width: 69.2%;
+}
+
+form input.submit {
+	position: relative;
+	top: -22px;
+}
+form#login-form input.submit {
+	position: relative;
+	top: -5px;
+}
+
+div.content {
+	float: left;
+	width: 82%;
+	margin-left: 8px;
+	margin-top: -10px;
+}
+
+div#users input {
+	width: 10em;
+}
+
+div#users dt {
+	font-weight: bold;
+}
+
+div#users dd {
+	margin: 0 0 1em 1em;
+}
+
+div#users ul {
+	margin-left: 0;
+	padding-left: 0;
+	font-size: 11px;
+	list-style: none;
+}
+
+div#users li {
+	cursor: pointer;
+}
+
+div.content ul {
+	text-align: justify;
+}
+
+h2 img {
+	position: absolute;
+	right: 0px;
+	top: 5px;
+}
+
+div#appbar button,
+div#appbar a {
+	position: relative;
+	top: -45px;
+	float: right;
+	padding-left: 15px;
+	padding-right: 15px;
+}
+
+div#appbar button {
+	left: -20px;
+	top: -55px;
+}
+
+div#extra-top-links {
+	position: absolute;
+	right: 20px;
+}
+
+
+div#datesel {
+	text-align: center;
+}
+
+td#dispos {
+	padding-top: 55px;
+}
+
+td#dispos td {
+	height: 4px;
+	width: 15px;
+	vertical-align: top;
+}
+
+td.away {
+	background: #ccc;
+}
+
+td.free {
+	background: green;
+}
+
+td.busy {
+	background: red;
+}
+
+td#agendas {
+	vertical-align: top;
+	width: 100%;
+}
+
+div.agenda ul {
+	padding: 0;
+	list-style: none;
+}
+
+#content div.agenda h3 {
+	padding: 3px 5px;
+	margin: 5px 0;
+	font-size: 100%;
+	background: white;
+}
+
+div.agenda span.hour {
+	padding-left: 20px;
+}
+
+div.agenda h3.info {
+	color: #8c8c73;
+	font-style: italic;
+}
+
+#content div.agenda h3.free {
+	border: 1px solid green;
+        background: #D4FFA7;
+}
+
+div.agenda h3.busy-here,
+div.agenda h3.busy-elsewhere {
+	border: 1px solid red;
+}
+
+tr.hour-mark td {
+	border-top: 4px solid white;
+}
+
+li.active {
+	font-weight: bold;
+}
+
+div.agenda span.right {
+	position: absolute;
+	right: 5px;
+}
+
+div.agenda span.right button,
+div.agenda span.right img {
+	position: relative;
+	top: -2px;
+}
+
+div.agenda span.right button {
+	top: -10px;
+	padding: 2px 3px;
+}
+
+div.agenda p {
+	margin-top: 0px;
+	margin-bottom: 30px;
+}
+
+div.agenda p a {
+	margin: 0;
+	float: right;
+}
+
+#rdv table {
+	margin-bottom: 15px;
+}
+
+#rdv td {
+	vertical-align: top;
+}
+
+div#intervenants ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	margin-bottom: 1ex;
+}
+
+
+#agenda-date {
+	border: 0;
+	text-align: center;
+	color: #8c8c73;
+}
+
+table.main {
+	width: 100%;
+}
+
+table.main th {
+	font-weight: normal;
+	border-bottom: 1px solid #888;
+}
+
+table.main td {
+	text-align: center;
+}
+
+table.main tr td.checkbox {
+	width: 1em;
+}
+
+table#tableau-recap-facturation tbody tr:nth-child(odd) td,
+table.main tr:nth-child(odd) td {
+	background: #eee;
+}
+
+table.main tr:hover td,
+table#actes tr.non-factu:hover td {
+	background: #ccf;
+	cursor: pointer;
+}
+
+table.main tr.active td {
+	background: #bbf;
+}
+
+table#actes tr.non-factu td {
+  background: #ccc;
+}
+
+td.traite {
+	color: blue;
+}
+
+td.diag {
+	color: red;
+}
+
+div#tabs div.left {
+        float: left;
+        width: 35%;
+}
+
+div#tabs div.right {
+        float: right;
+        width: 45%;
+}
+
+div#tabs div.right ul li,
+div#tabs div.left ul li {
+        margin: 1ex 0;
+	list-style: none;
+}
+
+div#tabs  label {
+	color: #666;
+}
+
+div#tabs div.right div h4 {
+        margin: 1ex;
+}
+
+div#tabs div.right div {
+        margin: 1em;
+        background: #eee;
+        padding: 1em;
+        border-radius: 10px;
+}
+
+div#filtre ul,
+div#filtre ul li {
+	margin-left: 0;
+	padding-left: 0;
+	list-style: none;
+}
+
+span.num {
+	color: #333;
+}
+
+div.frame {
+  border: 1px solid #aaa;
+  margin-bottom: 1em;
+  border-radius: 4px;
+}
+
+div.frame h3 {
+  margin: 0;
+  margin-bottom: 1ex;
+  padding: 3px 1ex;
+  color: #656551;
+  font-weight: normal;
+  background: #ccc url(smoothness/images/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 50% repeat-x;
+}
+
+div.frame p {
+  margin: 0 1ex;
+}
+
+#tabs-2 select {
+        width: auto;
+        height: auto;
+}
+
+#tabs-2 table {
+  width: 100%;
+  text-align: center;
+}
+
+#tabs-3 div {
+  margin-top: 1em;
+  position: relative;
+}
+
+#tabs-3 div.contact {
+        margin: 12px;
+        background: #eee;
+        padding: 1em;
+        border-radius: 10px;
+}
+
+#tabs-3 div.contact.patient {
+	background: #ddd;
+	border-width: 2px;
+}
+
+#tabs-3 div.contact h4 {
+        margin: 0;
+}
+
+div#tabs-3 div.right {
+        text-align: right;
+        border: 0;
+        position: absolute;
+        top: 20px;
+        right: 0;
+        width: 350px;
+        padding-right: 30px;
+}
+
+div#tabs-3 div.right button {
+        margin-left: 20px;
+}
+
+div#tabs-3 div.contact div.right {
+        padding-right: 18px; /* 30px - 12px */
+        top: -4px;
+}
+
+div#tabs-2 div,
+div#tabs-3 div {
+        position: relative;
+}
+
+#info-membre div button.save,
+div#tabs-3 div div.buttons,
+div#tabs-2 div button.save {
+        position: absolute;
+        top: 0;
+        right: 0;
+}
+
+
+div#tabs-3 div div.buttons {
+	border: 0;
+	margin: 0;
+}
+
+#info-membre div {
+  position: relative;
+}
+
+#info-membre p {
+  margin: 1em;
+}
+
+#info-membre p.services label {
+  margin-right: 4em;
+}
+
+#membre-buttons {
+  margin: 1em 0;
+}
+
+span.en-conge {
+  font-weight: normal;
+  font-size: 80%;
+}
+
+#schedule table {
+  width: 95%;
+  text-align: center;
+}
+
+#schedule td {
+  width: 14%;
+}
+
+#schedule th {
+	color: #FF7800;
+	text-decoration: underline;
+}
+
+tr.expired td {
+	color: #888;
+}
+
+#lundi-dlg table {
+  width: 98%;
+  text-align: center;
+}
+
+table#conges-a-venir {
+  width: 98%;
+}
+
+table#conges-a-venir td {
+  width: 32%;
+}
+
+div#overlay {
+  position: absolute;
+  bottom: -40px;
+  left: -10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 0px 10px;
+  width: 100%;
+  z-index: 10;
+}
+
+div#overlay a {
+  color: white;
+}
+
+li label {
+}
+
+#tableau-recap-facturation {
+  width: 100%;
+}
+
+#tableau-recap-facturation td {
+  text-align: center;
+}
+
+#tableau-recap-facturation tfoot th,
+#tableau-recap-facturation tfoot td {
+  padding-top: 8px;
+  border-top: 1px solid #aaa;
+}
+
+#tableau-recap-facturation tr#total-row th,
+#tableau-recap-facturation tr#total-row td {
+  border-top: 1px solid #aaa;
+  border-bottom: 1px solid #aaa;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+div.acte {
+  border: 1px solid #aaa;
+  width: 100%;
+  margin-bottom: 1em;
+}
+
+div.acte p {
+  margin: 5px;
+}
+
+div.acte select {
+  width: auto;
+  padding: 0px;
+}
+
+div.dossier p {
+  margin: 0 5px;
+}
+
+div.dossier div.info {
+  margin-left: 40px;
+  margin-bottom: 10px;
+}
+
+button.flat,
+button.blind {
+ border: 1px solid #555;
+ border-radius: 5px;
+ background: white;
+ font-size: 80%;
+}
+
+#content div.agenda h3.busy-elsewhere {
+  color: #888;
+  background: #f0f0f0;
+}
+
+span.hi-fact { color: red; }
+
+div.dossier.facturable h3 {
+  background: #ccc url(ui-bg-red.png) 50% 50% repeat-x;
+  color: white;
+}
+
+div.dossier.facturable a {
+  color: white;
+}
+
+
+div.acte button.acte-btn {
+  position: absolute;
+  right: 3px;
+}
+
+ul.apps {
+	margin-top: 2em;
+	margin-bottom: 2em;
+}
+
+ul.apps li {
+	display: block;
+	float: left;
+	margin-right: 1em;
+}
+
+ul.apps li a {
+	background-color: transparent;
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+}
+
+ul.apps li a {
+	display: block;
+	width: 120px;
+	height: 40px;
+	padding-top: 80px;
+	font-weight: bold;
+	text-align: center;
+	border: 1px dotted #666;
+	text-decoration: none;
+	transition: all .2s ease-in-out;
+	-webkit-transition: all .2s ease-in-out;
+	-moz-transition: all .2s ease-in-out;
+}
+
+ul.apps li a:hover {
+	border: 1px solid #333;
+}
+
+li#calendar a { background-image: url(icon-calendar.png); }
+li#calendar a:hover { background-image: url(icon-calendar-hover.png); }
+
+li#personnes a { background-image: url(icon-personnes.png); }
+li#personnes a:hover { background-image: url(icon-personnes-hover.png); }
+
+li#user a { background-image: url(icon-user.png); }
+li#user a:hover { background-image: url(icon-user-hover.png); }
+
+li#webservices a { background-image: url(icon-webservices.png); }
+li#webservices a:hover { background-image: url(icon-webservices-hover.png); }
+
+li#annonces a { background-image: url(icon-annonces.png); }
+li#annonces a:hover { background-image: url(icon-annonces-hover.png); }
+
+li#settings a { background-image: url(icon-settings.png); }
+li#settings a:hover { background-image: url(icon-settings-hover.png); }
+
+li#securite a { background-image: url(icon-password.png); }
+li#securite a:hover { background-image: url(icon-password-hover.png); }
+
+li#dossiers a { background-image: url(icon-dossiers.png); }
+li#dossiers a:hover { background-image: url(icon-dossiers-hover.png); }
+
+li#sql a { background-image: url(icon-grid.png); }
+li#sql a:hover { background-image: url(icon-grid-hover.png); }
+
+li#sms a { background-image: url(icon-phone.png); }
+li#sms a:hover { background-image: url(icon-phone-hover.png); }
+
+li#ckan a { background-image: url(icon-ckan.png); }
+li#ckan a:hover { background-image: url(icon-ckan-hover.png); }
+
+li#ajouter a { background-image: url(icon-add.png); }
+li#ajouter a:hover { background-image: url(icon-add-hover.png); }
+
+li#actes a { background-image: url(icon-actes.png); }
+li#actes a:hover { background-image: url(icon-actes-hover.png); }
+
+li#ressources a { background-image: url(icon-ressources.png); }
+li#ressources a:hover { background-image: url(icon-ressources-hover.png); }
+
+li#facturation a { background-image: url(icon-facturation.png); }
+li#facturation a:hover { background-image: url(icon-facturation-hover.png); }
+
+li#stats a { background-image: url(icon-stats.png); }
+li#stats a:hover { background-image: url(icon-stats-hover.png); }
+
+div.agenda a.print {
+	display: block;
+	text-align: right;
+}
+
+tr.clos {
+	color: red;
+}
+
+div.big-msg-info {
+        background: transparent url(info.png) 5px 5px no-repeat;
+        width: 30em;
+        padding-left: 90px;
+        margin: 3em auto;
+        min-height: 90px;
+        padding-top: 20px;
+}
+
+div.textedit {
+        position: relative;
+        padding-right: 20px;
+}
+
+div.textedit textarea {
+        width: 99%;
+}
+
+div.textedit button {
+        position: absolute;
+        right: -20px;
+        top: 0px;
+}
+
+table#activity tr:nth-child(odd) td {
+}
+
+table#activity tr.hour-change  td {
+	border-top: 20px solid white;
+}
+
+table#activity tr td.hour {
+	background: #ccc;
+	font-size: 120%;
+	font-weight: bold;
+}
+
+#id_date,
+#id_debut,
+#id_duree {
+	width: 6em;
+}
+
+#rdv table {
+	width: 100%;
+}
+
+#rdv table td {
+	width: 30%;
+}
+
+form#settings label span {
+        width: 6em;
+        display: inline-block;
+}
+
+abbr {
+        cursor: help;
+        border-bottom: 1px dotted #aaa;
+}
+
+pre.code {
+        border: 1px solid #babdb6;
+        padding: 0.5em 1em;
+        background: #fefefe;
+}
+
+h3.collapsed,
+h3.expanded {
+        cursor: pointer;
+}
+
+h3.collapsed:before {
+	content: "▶  ";
+        font-size: 80%;
+}
+
+h3.expanded:before {
+	content: "▼  ";
+        font-size: 80%;
+}
+
+#more-user-links {
+        color: black;
+        margin-top: 100px;
+}
+
+#more-user-links a {
+        background: #ccc;
+        text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+        border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+        border: 1px solid #bbb;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
+        padding: 4px 12px;
+        border-radius: 4px;
+        color: black;
+        text-decoration: none;
+}
+
+#more-user-links a:hover {
+        background: #aaa;
+}
+
+#more-user-links span.middle {
+        padding-left: 15px;
+}
+
+
+#more-user-links span.right {
+        position: absolute;
+        right: 20px;
+	top: 80px;
+	z-index: 100;
+}
+
+#more-user-links span.right span {
+	color: #ddd;
+}
+
+div#content.login {
+	margin-top: 100px;
+}
+
+p.paginator a,
+p.paginator span {
+  padding: 2px 5px;
+  border: 1px solid #aaa;
+}
+
+
+[class^="icon-"]:after, [class*=" icon-"]:after,
+[class^="icon-"]:before, [class*=" icon-"]:before {
+  font-family: FontAwesome;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  text-decoration: none;
+}
+a [class^="icon-"], a [class*=" icon-"] {
+  display: inline-block;
+  text-decoration: none;
+}
+
+.icon-home-space:before           { content: "\f015 "; }
+.icon-paper-clip:before           { content: "\f0c6 "; }
+
+
+div#subtitle {
+	padding: 1ex;
+	position: fixed;
+	bottom: 0px;
+	right: 1%;
+	width: 78%;
+	padding: 0 10%;
+	z-index: 1002;
+	font-size: 300%;
+	display: none;
+}
+
+div#subtitle p {
+	text-align: center;
+	color: #444;
+}
+
+div#end-sequence {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1000;
+	background: white;
+	text-align: center;
+	transition: all .2s ease-in-out;
+	-webkit-transition: all .2s ease-in-out;
+	-moz-transition: all .2s ease-in-out;
+	cursor: none;
+}
+
+span.key {
+	background: #eee;
+	padding: 2px 5px;
+	border: 1px outset #ccc;
+}
+
+div#end-sequence img {
+	margin-top: 100px;
+}
+
+div.ui-dialog label span {
+        display: block;
+        color: #555;
+}
+
+div.ui-dialog label input,
+div.ui-dialog label div.select2-container {
+        margin-left: 1ex;
+}
+
+div.select2-container {
+        width: 100%;
+}
+
+.popover-container {
+        position: absolute;
+        display: none;
+}
+
+.popover {
+  position: absolute;
+z-index: 1212;
+width: 100px;
+padding: 0;
+  list-style: none;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  border: 1px solid;
+  border-color: #777 #6c6c6c #666;
+  border-radius: 5px;
+  -webkit-transition: 0.2s ease-out;
+  -moz-transition: 0.2s ease-out;
+  -o-transition: 0.2s ease-out;
+  transition: 0.2s ease-out;
+  -webkit-transition-property: opacity, padding, visibility;
+  -moz-transition-property: opacity, padding, visibility;
+  -o-transition-property: opacity, padding, visibility;
+  transition-property: opacity, padding, visibility;
+  background-image: linear-gradient(to bottom, #eeeeee, #ddd);
+  -webkit-box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.9), 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.9), 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+.popover:before, .popover:after, .user li:first-child:after {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 15px;
+  width: 0;
+  height: 0;
+  border: 7px outset transparent;
+}
+.popover:before {
+  top: -14px;
+  border-bottom: 7px solid #555;
+}
+.popover li:first-child:after {
+  top: -13px;
+  border-bottom: 7px solid white;
+}
+.popover:after {
+  top: -12px;
+  border-bottom: 7px solid #eeeeee;
+}
+.popover li {
+  padding: 4px 12px;
+  color: #838ca2;
+}
+.popover li.sep {
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid #b4bbce;
+  -webkit-box-shadow: inset 0 1px rgba(255, 255, 255, 0.6);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.6);
+}
+.popover li a {
+  display: block;
+  position: relative;
+  margin: 0 -13px;
+  padding: 2px 20px 2px 12px;
+  color: #313a4f;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid #666;
+  border-width: 0 1px;
+}
+.popover li a:hover {
+  background: #ccf;
+}
+
+.popover li a.disabled:hover {
+  background: inherit;
+}
+
+.popover li a.disabled {
+  color: #ccc;
+}
+
+
+#sidebar ul.roles {
+	padding: 0;
+	text-align: left;
+	list-style: none;
+}
+
+#sidebar ul.roles li {
+	margin-bottom: 1ex;
+}
+
+#sidebar ul.roles li a {
+	text-decoration: none;
+}
+
+#sidebar ul.roles a.active {
+	font-weight: bold;
+}
+
+div.role-info h3 {
+}
+
+form#add-user-role {
+	margin-top: 2em;
+	margin-bottom: 2em;
+}
+
+form#add-user-role div.select2-container {
+	width: 30%;
+	display: inline-block;
+	position: relative;
+	top: 2px;
+	margin-left: 1ex;
+	margin-right: 1ex;
+}
+
+table.feeds td.url {
+	text-align: left;
+	padding-left: 1em;
+}
+
+form#errors label span,
+form#smtp label span {
+        width: 16em;
+        display: inline-block;
+}
+
+form#errors button, form#smtp button {
+	margin-left: 15.4em;
+}
+
+div#user-edit div.left {
+        float: left;
+        width: 400px;
+}
+
+div#user-edit div.left button {
+        margin-top: 2em;
+}
+
+div#user-edit div.right {
+        float: right;
+        width: 150px;
+}
+
+div#user-edit div.right strong {
+        display: block;
+        margin-bottom: 1ex;
+}
+
+div#user-edit div.right button {
+        width: 100%;
+        text-align: left;
+        padding: 0.5ex 1ex;
+}
+
+table.users tbody tr td:nth-child(2) {
+	color: #FF7800;
+}
+
+table.users tbody tr td:nth-child(2):hover {
+	text-decoration: underline;
+	border-bottom: 1px solid transparent;
+}
