@@ -5,8 +5,8 @@
 
     <title>{% block title %}{% trans "Management" %}{% endblock %}</title>
 
-    <link rel="stylesheet" type="text/css" media="all" href="{% static "authentic2/manager/css/style.css" %}"/>
 
+    <link rel="stylesheet" type="text/css" media="all" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css"/>
     {% if debug %}
       <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
       <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
@@ -19,11 +19,17 @@
       <script src="{% static "jquery-ui-contextmenu-1.5.0/jquery.ui-contextmenu.min.js" %}"></script>
     {% endif %}
     <script src="{% static "authentic2/js/purl.js" %}"></script>
+    <script src="{% static "authentic2/manager/js/gadjo.js" %}"></script>
     <script src="{% static "authentic2/manager/js/manager.js" %}"></script>
-    <link rel="stylesheet" type="text/css" media="all" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css"/>
+    <script type="text/javascript" src="/static/js/select2.js"></script>
+    <script type="text/javascript" src="/static/js/heavy_data.js"></script>
+    <script>
+      window.csrf_token = '{{ csrf_token }}';
+    </script>
 
     {% block extra_scripts %}
     {% endblock %}
+    <link rel="stylesheet" type="text/css" media="all" href="{% static "authentic2/manager/css/style.css" %}"/>
   </head>
   <body>
     <div id="wrap-large">
@@ -39,15 +45,17 @@
             {% endblock %}
           </div>
         {% endblock %}
-        {% if messages %}
-          <ul class="messages">
-              {% for message in messages %}
-              <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-                  {{ message }}
-              </li>
-              {% endfor %}
-          </ul>
-        {% endif %}
+        {% block messages %}
+          {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                    {{ message }}
+                </li>
+                {% endfor %}
+            </ul>
+          {% endif %}
+        {% endblock %}
       </div>
 
       <div id="more-user-links">

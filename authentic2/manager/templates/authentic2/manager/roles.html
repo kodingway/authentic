@@ -1,21 +1,9 @@
 {% extends "authentic2/manager/base.html" %}
 {% load i18n staticfiles %}
 
-{% block title %}{{ block.super }} - {% trans "Role management" %}{% endblock %}
+{% block title %}{{ block.super }} - {% trans "Roles management" %}{% endblock %}
 
-{% block page_title %}{% trans "Role management" %}{% endblock %}
-
-{% block extra_scripts %}
-<script>
-  $(function () {
-        function refresh_page() {
-          $.get('', '', function (response_text) {
-            $('#sidebar').replaceWith($(response_text).find('#sidebar'));
-          });
-        };
-  });
-</script>
-{% endblock %}
+{% block page_title %}{% trans "Roles management" %}{% endblock %}
 
 {% block sidebar %}
    <ul class="roles">
@@ -28,7 +16,8 @@
        </li>
      {% endfor %}
    </ul>
-   <a href="{% url "a2-manager-role-add" %}" rel="popup">{% trans "Add role" %}</a>
+   <p><a href="{% url "a2-manager-role-add" %}" rel="popup">{% trans "Add role" %}</a></p>
+   <p><a href="{% url "a2-manager-users" %}">{% trans "Users management" %}</a></p>
 {% endblock %}
 
 {% block content %}

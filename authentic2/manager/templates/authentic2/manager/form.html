@@ -1,17 +1,39 @@
 {% extends "authentic2/manager/base.html" %}
 {% load i18n %}
 
+{% block messages %}
+{% endblock %}
+
 {% block content %}
   <div id="content">
     {% if title %}
       <div id="appbar"><h2>{{ title }}</h2></div>
     {% endif %}
     <form method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <div class="buttons">
-        <button>{% trans "Create" %}</button> 
-        <a class="cancel" href="..">Annuler</a>
+      <div class="form-inner-container">
+        {% if messages %}
+          <ul class="messages">
+              {% for message in messages %}
+              <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                  {{ message }}
+              </li>
+              {% endfor %}
+          </ul>
+        {% endif %}
+        {% if other_actions %}
+          <div class="other_actions">
+            <strong>Actions</strong>
+            {% for action, title in other_actions %}
+              <input type="submit" name="{{ action }}" value="{{ title }}"/>
+            {% endfor %}
+          </div>
+        {% endif %}
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="buttons">
+          <button>{% if action %}{{ action }}{% else %}{% trans "Create" %}{% endif %}</button> 
+          <a class="cancel" href="..">Annuler</a>
+        </div>
       </div>
     </form>
   </div>

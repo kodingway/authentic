@@ -1052,6 +1052,7 @@ p.paginator a,
 p.paginator span {
   padding: 2px 5px;
   border: 1px solid #aaa;
+  margin: 2px;
 }
 
 
@@ -1124,8 +1125,9 @@ div.ui-dialog label div.select2-container {
         margin-left: 1ex;
 }
 
-div.select2-container {
+div.ui-dialog div.select2-container {
         width: 100%;
+        margin-left: 10px;
 }
 
 .popover-container {
@@ -1295,4 +1297,61 @@ table.users tbody tr td:nth-child(2) {
 table.users tbody tr td:nth-child(2):hover {
 	text-decoration: underline;
 	border-bottom: 1px solid transparent;
+}
+
+/* bdauvergne additions */
+
+#delete-form {
+  float: right;
+}
+
+.ui-dialog-content .helptext {
+  display: none;
+}
+
+.form-inner-container {
+  width: 500px;
+}
+
+.other_actions {
+  float: right;
+  position: relative;
+  max-width: 35%;
+}
+
+.other_actions input[type=submit] {
+  display: block;
+  margin: 5px;
+  width: 100%;
+}
+
+ul.messages {
+	position: fixed;
+	width: 30em;
+	top: 10px;
+	right: 10px;
+	padding: 0;
+	z-index: 2000;
+	margin-top: 1em;
+	list-style-type: none;
+	display: table;
+	margin: auto;
+	background: rgba(40, 40, 40, 0.7);
+	color: white;
+	text-shadow: black 1px 1px 1px;
+	border-radius: 10px;
+}
+
+ul.messages li {
+	padding: 1ex;
+	margin: 1ex;
+	border-size: 0px;
+	-moz-border-radius:7px;
+	-webkit-border-radius:7px;
+	border-radius:7px;
+	border: none;
+}
+
+input[type=submit][name=password_reset] {
+  white-space: normal;
 }

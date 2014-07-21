@@ -1,6 +1,8 @@
 from django.utils.translation import ugettext_lazy as _
 from django import forms
 
+from authentic2.compat import get_user_model
+
 from . import utils, fields
 
 class RoleAddForm(forms.Form):
@@ -12,6 +14,13 @@ class RoleAddForm(forms.Form):
 
 
 class ChooseUserForm(forms.Form):
-    user = fields.ChooseUserField(label=_('user'))
+    ref = fields.ChooseUserField(label=_('user'))
 
+
+class UserEditForm(forms.ModelForm):
+    groups = fields.GroupsField()
+
+    class Meta:
+        model = get_user_model()
+        fields = [ 'username', 'first_name', 'last_name', 'email', 'groups']
 

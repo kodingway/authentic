@@ -1,4 +1,6 @@
-from django_select2 import AutoSelect2Field, NO_ERR_RESP
+from django_select2 import AutoSelect2Field, AutoModelSelect2MultipleField, NO_ERR_RESP
+
+from django.contrib.auth.models import Group
 
 from . import utils
 
@@ -18,3 +20,9 @@ class ChooseUserField(AutoSelect2Field):
         In this particular example, the referenced value and the shown value are the same
         """
         return unicode(value)
+
+class GroupsField(AutoModelSelect2MultipleField):
+    queryset = Group.objects
+    search_fields = [
+            'name__icontains',
+    ]

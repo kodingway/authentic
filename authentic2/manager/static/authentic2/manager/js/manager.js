@@ -1,77 +1,69 @@
-function displayPopup(event)
-{
-    var $anchor = $(this);
-    var url = $anchor.attr('href');
-    var selector = $anchor.data('selector') || 'form';
-
-    function ajaxform_submit (data, status, xhr, form) {
-        if ('location' in data) {
-            var location = $.url(data.location);
-            var href = $.url(window.location.href);
-            if (location.attr('protocol') == href.attr('protocol') &&
-                location.attr('host') == href.attr('host') &&
-                location.attr('relative') == href.attr('relative')) {
-                var e = $.Event('popup-success');
-                $anchor.trigger(e);
-                if (! e.isDefaultPrevented()) {
-                  window.location.reload(true);
-                }
-            }
-            // set anchor if it changed
-            window.location = data.location;
-        } else {
-            var html = data.content;
-            $(form).empty().append($(html).find(selector).children());
-            $(form).find('.buttons').hide();
+function table_context_menu(selector, menu) {
+  $(document).contextmenu({
+      delegate: selector + ' tbody tr',
+      menu: menu,
+      select: function (event, ui) {
+        var ref = $(ui.target).parent('tr').data('ref');
+        var action = ui.cmd;
+        if (! ref) {
+          return;
         }
-    }
-
-    $.ajax({
-        url: url,
-        success: function(html) {
-            var is_json = typeof html != 'string';
-            if (is_json) {
-                var html = html.content;
-            } else {
-                var html = html;
-            }
-            var form = $(html).find(selector);
-            var title = $(html).find('#appbar h2').text();
-            var dialog = $(form).dialog({modal: true, 'title': title, width: 'auto'});
-            var buttons = Array();
-            if (! form.prop('action')) {
-                form.prop('action', url);
-            }
-            $(dialog).find('.buttons').hide();
-            $(html).find('.buttons button, .buttons a').each(function(idx, elem) {
-                var button = Object();
-                button.text = $(elem).text();
-                if ($(elem).hasClass('cancel')) {
-                    button.click = function() { dialog.dialog('destroy'); return false; };
-                } else {
-                    button.click = function() { form.find('button').click(); return false; };
-                }
-                if ($(elem).hasClass('submit-button')) {
-                    button.class = 'submit-button';
-                } else if ($(elem).hasClass('delete-button')) {
-                    button.class = 'delete-button';
-                }
-                buttons.push(button);
-            });
-            buttons.reverse();
-            $(dialog).dialog('option', 'buttons', buttons);
-            if ($(dialog).find('input:visible').length) {
-                $(dialog).find('input:visible')[0].focus();
-            }
-            if (is_json && $.fn.url != undefined && $.fn.ajaxForm != undefined) {
-                $(form).ajaxForm({success: ajaxform_submit});
-            }
-            return false;
-        }
-    });
-    return false;
+        $.post('', {
+            csrfmiddlewaretoken: window.csrf_token,
+            'action': action, 
+            'ref': ref 
+          },
+          function () {
+              $.get('', function (html) {
+                $(selector + ' tbody').replaceWith($(html).find(selector  + ' tbody'));
+                // is is still necessary when only updating tbody ?
+                // table_context_menu($('#' + id), menu); 
+              });
+          }
+        );
+      }
+  });
 }
 
 $(function() {
-    $('a[rel=popup]').click(displayPopup);
+    /* search inputs behaviours */
+    $('#search-input').change(function () {
+      var params = $.url().param();
+      if ($(this).val()) {
+        params.search = $(this).val();
+      } else {
+        if ('search' in params) {
+          delete params.search;
+        }
+      }
+      var href = $.url().attr('path')
+      if ($.param(params)) {
+        href += '?' + $.param(params);
+      }
+      window.location = href;
+    });
+    $('#search-input-clear-btn').click(function () {
+      $('#search-input').val('').trigger('change');
+    });
+
+    /* paginators behaviour */
+    $('.content').on('click', '.paginator a', function () {
+      var href = $(this).attr('href');
+      var title = $(this).text();
+      $.get(href, function (response_text) {
+        var content = $(response_text).find('.table-container');
+        $('.table-container').replaceWith(content);
+        history.pushState(null, 'page ' + title, href);
+      });
+      return false;
+    });
+    $('.js-table-menu').each(function (i, menu) {
+      var $menu = $(menu);
+      var selector = $menu.data('selector');
+      table_context_menu(selector, $menu);
+    })
+    $('.messages').delay(3000*(1+$('.messages li').length)).fadeOut('slow');
+    $(document).on('gadjo:dialog-loaded', function (e, form) {
+      $('.messages', form).delay(3000*(1+$('.messages li', form).length)).fadeOut('slow');
+    });
 });
