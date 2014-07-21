@@ -119,6 +119,7 @@ default_settings = dict(
     A2_OPENED_SESSION_COOKIE_NAME=Setting(default='A2_OPENED_SESSION', definition='Authentic session open'),
     A2_OPENED_SESSION_COOKIE_DOMAIN=Setting(default=None),
     A2_ATTRIBUTE_KINDS=Setting(default=[], definition='List of other attribute kinds'),
+    A2_VALIDATE_EMAIL=Setting(default=False, definition='Validate user email domain'),
 )
 
 app_settings = AppSettings(default_settings)
