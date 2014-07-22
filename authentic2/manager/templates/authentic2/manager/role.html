@@ -9,15 +9,7 @@
 
 {% block content %}
    <div class="role-info">
-     <form id="delete-form" action="?delete" method="post">
-        {% csrf_token %}
-        <button>{% trans "Delete" %}</button>
-     </form>
-     <h3>{% trans "Users with role" %}: {{ active_role.name }} <a rel="popup" class="edit-button" href="{% url "a2-manager-role-edit" role_ref=active_role.ref %}">Edit</a></h3>
-     <div id="search-form">
-       {% trans "Search" %}: <input id="search-input" type="text" value="{{ request.GET.search }}">
-       <button id="search-input-clear-btn">{% trans "Clear" %}</button>
-     </div>
+     <h3 style="margin-top: 0;">{% trans "Users with role" %}: {{ active_role.name }}</h3>
 
      {% render_table users "authentic2/manager/table.html" %}
 

@@ -14,12 +14,11 @@
   <div>
     <h3>{% trans "Search" %}</h3>
      <div id="search-form">
-       <input id="search-input" type="text" value="{{ request.GET.search }}">
-       <button id="search-input-clear-btn">{% trans "Clear" %}</button>
+       <input id="search-input" type="search" value="{{ request.GET.search }}">
+       <button>{% trans "Search" %}</button>
      </div>
   </div>
   <p>{{ users.count }} users</p>
-  <p><a href="{% url "a2-manager-roles" %}">{% trans "Roles management" %}</a></p>
 {% endblock %}
 
 {% block content %}

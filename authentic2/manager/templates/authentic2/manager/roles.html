@@ -3,7 +3,20 @@
 
 {% block title %}{{ block.super }} - {% trans "Roles management" %}{% endblock %}
 
-{% block page_title %}{% trans "Roles management" %}{% endblock %}
+{% block page_title %}{% trans "Roles management" %}
+{% if active_role %} — {{ active_role.name }}{% endif %}
+{% endblock %}
+
+{% block appbar %}
+  {{ block.super }}
+  {% if active_role %}
+  <a rel="popup" href="#" id="add-user-btn">{% trans "Delete" %}</a>
+  <a rel="popup" href="{% url "a2-manager-role-edit" role_ref=active_role.ref %}" id="add-user-btn">{% trans "Edit" %}</a>
+  {% else %}
+   <p><a href="{% url "a2-manager-role-add" %}" rel="popup">{% trans "Add role" %}</a></p>
+  {% endif %}
+{% endblock %}
+
 
 {% block sidebar %}
    <ul class="roles">
@@ -16,8 +29,15 @@
        </li>
      {% endfor %}
    </ul>
-   <p><a href="{% url "a2-manager-role-add" %}" rel="popup">{% trans "Add role" %}</a></p>
-   <p><a href="{% url "a2-manager-users" %}">{% trans "Users management" %}</a></p>
+
+   {% if active_role %}
+     <hr />
+     <div id="search-form">
+       <h3>{% trans "Search" %}</h3>
+       <input id="search-input" type="search" value="{{ request.GET.search }}">
+       <button>{% trans "Search" %}</button>
+     </div>
+   {% endif %}
 {% endblock %}
 
 {% block content %}
