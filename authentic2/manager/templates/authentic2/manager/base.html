@@ -60,26 +60,27 @@
 
       <div id="more-user-links">
         {% block more-user-links %}
-          <a href="{{ management_homepage_url }}" class="icon-home-space">{% trans "Homepage" %}</a>
+          <a href="{% url "a2-manager-homepage" %}" class="icon-home-space">{% trans "Homepage" %}</a>
         {% endblock %}
       </div>
 
       <div id="content">
-        <div id="appbar">
-          {% block appbar %}
-          <h2>{% block page_title %}{% endblock %}</h2>
-          {% endblock %}
-        </div>
+        {% block largecontent %}
+          <div id="appbar">
+            {% block appbar %}
+            <h2>{% block page_title %}{% endblock %}</h2>
+            {% endblock %}
+          </div>
 
-       <div id="sidebar">
-         {% block sidebar %}
-         {% endblock %}
-       </div>
-
-       <div class="content">
-         {% block content %}{% endblock %}
-       </div>
-
+          <div id="sidebar">
+            {% block sidebar %}
+            {% endblock %}
+          </div>
+ 
+          <div class="content">
+            {% block content %}{% endblock %}
+          </div>
+       {% endblock %}
        <div id="footer">
          Authentic2 Manager - Copyright &copy; 2014 Entr'ouvert
        </div>

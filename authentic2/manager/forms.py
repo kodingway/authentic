@@ -18,7 +18,7 @@ class ChooseUserForm(forms.Form):
 
 
 class UserEditForm(forms.ModelForm):
-    groups = fields.GroupsField()
+    groups = fields.GroupsField(required=False)
 
     class Meta:
         model = get_user_model()

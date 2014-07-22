@@ -22,9 +22,11 @@
         {% endif %}
         {% if other_actions %}
           <div class="other_actions">
-            <strong>Actions</strong>
-            {% for action, title in other_actions %}
-              <input type="submit" name="{{ action }}" value="{{ title }}"/>
+            <strong>{% trans "Actions" %}</strong>
+            {% for action in other_actions %}
+              <input type="submit" name="{{ action.name }}" value="{{ action.title }}"
+                {% if action.confirm %}data-confirm="{{ action.confirm }}"{% endif %}
+              />
             {% endfor %}
           </div>
         {% endif %}
@@ -32,7 +34,7 @@
         {{ form.as_p }}
         <div class="buttons">
           <button>{% if action %}{{ action }}{% else %}{% trans "Create" %}{% endif %}</button> 
-          <a class="cancel" href="..">Annuler</a>
+          <a class="cancel" href="..">{% trans "Cancel" %}</a>
         </div>
       </div>
     </form>

@@ -1,0 +1,20 @@
+{% extends "authentic2/manager/base.html" %}
+{% load i18n %}
+
+{% block largecontent %}
+   <div id="appbar">
+     <h2>{% trans "Welcome" %}</h2>
+   </div>
+
+   <div id="user-info">
+     {{ user.get_full_name }}
+     (<a href="{% url "auth_password_change" %}">{% trans "Password change" %}</a>)
+   </div>
+
+    <ul class="apps">
+      <li id="users"><a href="{% url "a2-manager-users" %}">{% trans "User management" %}</a></li>
+      <li id="roles"><a href="{% url "a2-manager-roles" %}">{% trans "Role management" %}</a></li>
+    </ul>
+
+    <br style="clear: both;"/>
+{% endblock %}

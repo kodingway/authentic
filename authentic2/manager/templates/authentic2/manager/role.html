@@ -11,7 +11,7 @@
    <div class="role-info">
      <h3 style="margin-top: 0;">{% trans "Users with role" %}: {{ active_role.name }}</h3>
 
-     {% render_table users "authentic2/manager/table.html" %}
+     {% render_table users "authentic2/manager/role_users_table.html" %}
 
      <ul class="js-table-menu" data-selector="#user-table" class="ui-helper-hidden">
        <li data-command="remove"><a href="#">{% trans "Remove" %}</a></li>
@@ -20,7 +20,7 @@
      <form method="post" id="add-user-role">
              Ajouter un utilisateur à ce rôle :
              {% csrf_token %}
-             {{ choose_user_form }}
+             {{ choose_user_form.ref }}
              <button>Valider</button>
      </form>
    </div>

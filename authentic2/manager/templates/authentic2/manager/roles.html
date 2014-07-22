@@ -10,7 +10,7 @@
 {% block appbar %}
   {{ block.super }}
   {% if active_role %}
-  <a rel="popup" href="#" id="add-user-btn">{% trans "Delete" %}</a>
+  <a rel="popup" href="{% url "a2-manager-role-delete" role_ref=active_role.ref %}" id="add-user-btn">{% trans "Delete" %}</a>
   <a rel="popup" href="{% url "a2-manager-role-edit" role_ref=active_role.ref %}" id="add-user-btn">{% trans "Edit" %}</a>
   {% else %}
    <p><a href="{% url "a2-manager-role-add" %}" rel="popup">{% trans "Add role" %}</a></p>

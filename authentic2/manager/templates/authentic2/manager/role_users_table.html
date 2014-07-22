@@ -1,0 +1,10 @@
+{% extends "authentic2/manager/table.html" %}
+
+{% load i18n %}
+
+{% block table.head.last.column %}
+<th></th>
+{% endblock %}
+{% block table.tbody.last.column %}
+<td><a class="icon-remove-sign js-remove-user" data-confirm="{% blocktrans with username=row.record.username %}Do you really want to delete user &quot;{{ username }}&quot; ?{% endblocktrans %}" href="#"></a></td>
+{% endblock %}

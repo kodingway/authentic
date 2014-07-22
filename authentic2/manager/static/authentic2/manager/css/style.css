@@ -868,33 +868,6 @@ ul.apps li a:hover {
 	border: 1px solid #333;
 }
 
-li#calendar a { background-image: url(icon-calendar.png); }
-li#calendar a:hover { background-image: url(icon-calendar-hover.png); }
-
-li#personnes a { background-image: url(icon-personnes.png); }
-li#personnes a:hover { background-image: url(icon-personnes-hover.png); }
-
-li#user a { background-image: url(icon-user.png); }
-li#user a:hover { background-image: url(icon-user-hover.png); }
-
-li#webservices a { background-image: url(icon-webservices.png); }
-li#webservices a:hover { background-image: url(icon-webservices-hover.png); }
-
-li#annonces a { background-image: url(icon-annonces.png); }
-li#annonces a:hover { background-image: url(icon-annonces-hover.png); }
-
-li#settings a { background-image: url(icon-settings.png); }
-li#settings a:hover { background-image: url(icon-settings-hover.png); }
-
-li#securite a { background-image: url(icon-password.png); }
-li#securite a:hover { background-image: url(icon-password-hover.png); }
-
-li#dossiers a { background-image: url(icon-dossiers.png); }
-li#dossiers a:hover { background-image: url(icon-dossiers-hover.png); }
-
-li#sql a { background-image: url(icon-grid.png); }
-li#sql a:hover { background-image: url(icon-grid-hover.png); }
-
 li#sms a { background-image: url(icon-phone.png); }
 li#sms a:hover { background-image: url(icon-phone-hover.png); }
 
@@ -1071,6 +1044,7 @@ a [class^="icon-"], a [class*=" icon-"] {
 
 .icon-home-space:before           { content: "\f015 "; }
 .icon-paper-clip:before           { content: "\f0c6 "; }
+.icon-remove-sign:before          { content: "\f057 "; }
 
 
 div#subtitle {
@@ -1355,3 +1329,9 @@ ul.messages li {
 input[type=submit][name=password_reset] {
   white-space: normal;
 }
+
+li#roles a { background-image: url(icon-personnes.png); }
+li#roles a:hover { background-image: url(icon-personnes-hover.png); }
+
+li#users a { background-image: url(icon-user.png); }
+li#users a:hover { background-image: url(icon-user-hover.png); }

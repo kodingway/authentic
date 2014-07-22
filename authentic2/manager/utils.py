@@ -31,7 +31,7 @@ def get_role_users(role, search=None):
     return qs
 
 def get_users(search=None):
-    qs = User.objects.all()
+    qs = User.objects.order_by('username')
     if search:
         qs = filter_user(qs, search)
     return qs
@@ -44,7 +44,12 @@ def search_user(term):
     return [RoleUser(u.get_full_name().strip() or u.username, u.id) for u in filter_user(User.objects.all(), term)[:10]]
 
 def add_user_to_role(role, user):
-    User.objects.get(id=user).groups.add(Group.objects.get(id=role.ref))
+    u = User.objects.get(id=user)
+    if u.groups.filter(id=role.ref).exists():
+        return False
+    else:
+        u.groups.add(Group.objects.get(id=role.ref))
+        return True
 
 def remove_user_from_role(role, user):
     User.objects.get(id=user).groups.remove(Group.objects.get(id=role.ref))

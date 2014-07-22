@@ -1,7 +1,8 @@
 import json
+import collections
 
 from django.views.generic import (TemplateView, FormView, UpdateView,
-        CreateView)
+        CreateView, DeleteView)
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy as _
@@ -10,7 +11,8 @@ from django.forms import models as model_forms
 from django.contrib.auth.models import Group
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.tokens import default_token_generator
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import (permission_required,
+    login_required)
 
 from django.contrib import messages
 
@@ -19,6 +21,12 @@ from django_tables2 import RequestConfig
 from authentic2.compat import get_user_model
 
 from . import app_settings, utils, tables, forms
+
+class Action(object):
+    def __init__(self, name, title, confirm=None):
+        self.name = name
+        self.title = title
+        self.confirm = confirm
 
 class ManagerMixin(object):
     def get_context_data(self, **kwargs):
@@ -80,8 +88,7 @@ class OtherActionsMixin(object):
 
     def get_context_data(self, **kwargs):
         ctx = super(OtherActionsMixin, self).get_context_data(**kwargs)
-        if self.get_other_actions():
-            ctx['other_actions'] = self.get_other_actions()
+        ctx['other_actions'] = tuple(self.get_other_actions())
         return ctx
 
     def get_other_actions(self):
@@ -89,9 +96,9 @@ class OtherActionsMixin(object):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        for action, title in self.get_other_actions():
-            if action in request.POST:
-                method = getattr(self, 'action_' + action, None)
+        for action in self.get_other_actions():
+            if action.name in request.POST:
+                method = getattr(self, 'action_' + action.name, None)
                 if method:
                     response = method(request, *args, **kwargs)
                     if response:
@@ -109,6 +116,14 @@ class RoleAddView(TitleMixin, AjaxFormViewMixin, FormView):
     def form_valid(self, form):
         super(RoleAddView, self).form_valid(form)
         return redirect('a2-manager-role', role_ref=self.form_result)
+
+class RoleDeleteView(TitleMixin, AjaxFormViewMixin, DeleteView):
+    template_name = 'authentic2/manager/delete.html'
+    model = Group
+    title = _('Delete role')
+    pk_url_kwarg = 'role_ref'
+    success_url = '..'
+
 
 class RoleEditView(TitleMixin, AjaxFormViewMixin, UpdateView):
     template_name = 'authentic2/manager/form.html'
@@ -146,7 +161,9 @@ class RoleView(RolesMixin, TemplateView):
         if ref:
             action = request.POST.get('action', 'add')
             if action == 'add':
-                utils.add_user_to_role(role, ref)
+                if not utils.add_user_to_role(role, ref):
+                    messages.warning(request, _('User already in '
+                        'this role'))
             elif action == 'remove':
                 utils.remove_user_from_role(role, ref)
         if 'delete' in request.GET:
@@ -159,6 +176,7 @@ class RoleView(RolesMixin, TemplateView):
 roles = permission_required('group.add', raise_exception=True)(RolesView.as_view())
 role_add = permission_required('group.add', raise_exception=True)(RoleAddView.as_view())
 role_edit = permission_required('group.change', raise_exception=True)(RoleEditView.as_view())
+role_delete = permission_required('group.delete', raise_exception=True)(RoleDeleteView.as_view())
 role = permission_required('group.delete', raise_exception=True)(RoleView.as_view())
 
 class UsersView(RolesMixin, TemplateView):
@@ -191,17 +209,16 @@ class UserEditView(UserMixin, OtherActionsMixin, ActionMixin, TitleMixin,
     title = _('Edit user')
     action = _('Edit')
     fields = ['username', 'first_name', 'last_name', 'email']
-    other_actions = (
-            ('password_reset', _('Reset password')),
-            ('activate', _('Activate')),
-            ('deactivate', _('Deactivate')),
-            ('delete', _('Delete')),
-    )
 
     def get_other_actions(self):
-        other_actions = list(super(UserEditView, self).get_other_actions())
-        removed = 'activate' if self.object.is_active else 'deactivate'
-        return filter(lambda x: x[0] != removed, other_actions)
+        yield Action('password_reset', _('Reset password'))
+        if self.object.is_active:
+            yield Action('activate', _('Activate'))
+        else:
+            yield Action('deactivate', _('Deactivate'))
+        yield Action('delete', 
+                _('Delete'), 
+                _('Do you really want to delete "%s" ?') % self.object.username)
 
     def action_activate(self, request, *args, **kwargs):
         self.object.is_active = True
@@ -210,6 +227,10 @@ class UserEditView(UserMixin, OtherActionsMixin, ActionMixin, TitleMixin,
     def action_deactivate(self, request, *args, **kwargs):
         self.object.is_active = False
         self.object.save()
+
+    def action_delete(self, request, *args, **kwargs):
+        self.object.delete()
+        return HttpResponseRedirect('.')
 
     def action_password_reset(self, request, *args, **kwargs):
         # FIXME: a bit hacky, could break if PasswordResetForm implementation changes
@@ -228,3 +249,8 @@ class UserEditView(UserMixin, OtherActionsMixin, ActionMixin, TitleMixin,
 users = permission_required('user.delete', raise_exception=True)(UsersView.as_view())
 user_add = permission_required('user.add', raise_exception=True)(UserAddView.as_view())
 user_edit = permission_required('user.change', raise_exception=True)(UserEditView.as_view())
+
+class HomepageView(TemplateView):
+    template_name = 'authentic2/manager/homepage.html'
+
+homepage = login_required(HomepageView.as_view())

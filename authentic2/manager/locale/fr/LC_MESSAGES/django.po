@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: entrouvert 2.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-21 15:25+0200\n"
-"PO-Revision-Date: 2014-07-21 15:29+0200\n"
+"POT-Creation-Date: 2014-07-30 14:50+0200\n"
+"PO-Revision-Date: 2014-07-30 14:52+0200\n"
 "Last-Translator: Benjamin Dauvergne <bdauvergne@entrouvert.com>\n"
 "Language-Team: French <fr@li.org>\n"
 "Language: \n"
@@ -25,55 +25,68 @@ msgstr "Nom du rôle"
 msgid "user"
 msgstr "utilisateur"
 
-#: tables.py:10
+#: tables.py:11
 msgid "username"
 msgstr "identifiant"
 
-#: tables.py:11
-msgid "email"
-msgstr "adresse électronique"
+#: tables.py:12
+msgid "Email"
+msgstr "Adresse électronique"
 
-#: views.py:107
+#: tables.py:19
+msgid "None"
+msgstr ""
+
+#: views.py:108
 msgid "Add new role"
 msgstr "Ajouter un nouveau rôle"
 
-#: views.py:115
+#: views.py:117
+msgid "Delete role"
+msgstr "Supprimer le rôle"
+
+#: views.py:124
 msgid "Edit role"
 msgstr "Éditer le rôle"
 
-#: views.py:186
+#: views.py:159
+msgid "User already in this role"
+msgstr "L'utilisateurs a déjà ce rôle"
+
+#: views.py:198
 msgid "Create user"
 msgstr "Créer un nouvel utilisateur"
 
-#: views.py:187 templates/authentic2/manager/form.html:34
+#: views.py:199 templates/authentic2/manager/form.html:34
 msgid "Create"
 msgstr "Créer"
 
-#: views.py:191
+#: views.py:203
 msgid "Edit user"
 msgstr "Éditer l'utilisateur"
 
-#: views.py:192
+#: views.py:204 templates/authentic2/manager/roles.html:14
 msgid "Edit"
 msgstr "Éditer"
 
-#: views.py:195
+#: views.py:207
 msgid "Reset password"
 msgstr "Ré-initialiser le mot de passe"
 
-#: views.py:196
+#: views.py:208
 msgid "Activate"
 msgstr "Activer"
 
-#: views.py:197
+#: views.py:209
 msgid "Deactivate"
 msgstr "Désactiver"
 
-#: views.py:198 templates/authentic2/manager/role.html:14
+#: views.py:210 templates/authentic2/manager/delete.html:19
+#: templates/authentic2/manager/roles.html:13
 msgid "Delete"
 msgstr "Supprimer"
 
-#: views.py:225
+#: views.py:241
 #, python-format
 msgid "A mail was sent to %s"
 msgstr "Un courrier électronique a été envoyé à %s"
@@ -91,35 +104,60 @@ msgstr "Déconnexion"
 msgid "Homepage"
 msgstr "Page d'accueil"
 
-#: templates/authentic2/manager/role.html:16
+#: templates/authentic2/manager/delete.html:16
+#, python-format
+msgid "Do you want to delete role %(object)s ?"
+msgstr "Souhaitez-vous vraiment supprimer le rôle %(object)s ?"
+
+#: templates/authentic2/manager/delete.html:20
+#: templates/authentic2/manager/form.html:35
+msgid "Cancel"
+msgstr "Annuler"
+
+#: templates/authentic2/manager/form.html:25
+msgid "Actions"
+msgstr ""
+
+#: templates/authentic2/manager/homepage.html:6
+msgid "Welcome"
+msgstr "Bienvenue"
+
+#: templates/authentic2/manager/homepage.html:11
+msgid "Password change"
+msgstr "Changer le mot de passe"
+
+#: templates/authentic2/manager/homepage.html:15
+msgid "User management"
+msgstr "Liste des utilisateurs enregistrés"
+
+#: templates/authentic2/manager/homepage.html:16
+msgid "Role management"
+msgstr "Liste des rôles"
+
+#: templates/authentic2/manager/role.html:12
 msgid "Users with role"
 msgstr "Utilisateurs ayant le rôle"
 
-#: templates/authentic2/manager/role.html:18
-#: templates/authentic2/manager/users.html:15
-msgid "Search"
-msgstr "Rechercher"
-
-#: templates/authentic2/manager/role.html:19
-#: templates/authentic2/manager/users.html:18
-msgid "Clear"
-msgstr "Effacer"
-
-#: templates/authentic2/manager/role.html:25
+#: templates/authentic2/manager/role.html:17
 msgid "Remove"
 msgstr "Enlever"
 
 #: templates/authentic2/manager/roles.html:4
 #: templates/authentic2/manager/roles.html:6
-#: templates/authentic2/manager/users.html:22
 msgid "Roles management"
 msgstr "Liste des rôles"
 
-#: templates/authentic2/manager/roles.html:19
+#: templates/authentic2/manager/roles.html:16
 msgid "Add role"
 msgstr "Ajouter un rôle"
 
-#: templates/authentic2/manager/roles.html:20
+#: templates/authentic2/manager/roles.html:36
+#: templates/authentic2/manager/roles.html:38
+#: templates/authentic2/manager/users.html:15
+#: templates/authentic2/manager/users.html:18
+msgid "Search"
+msgstr "Rechercher"
+
 #: templates/authentic2/manager/users.html:4
 #: templates/authentic2/manager/users.html:6
 msgid "Users management"

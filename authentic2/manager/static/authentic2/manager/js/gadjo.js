@@ -48,7 +48,11 @@ function displayPopup(event)
             var $form = $(form);
             $form.empty().append($(data.content).find(selector).children());
             $form.find('.buttons').hide();
-            $anchor.trigger('gadjo:dialog-loaded', $form);
+            if (document.contains($anchor[0])) {
+              $anchor.trigger('gadjo:dialog-loaded', $form);
+            } else {
+              $(document).trigger('gadjo:dialog-loaded', $form);
+            }
         }
     }
 
