@@ -41,9 +41,9 @@ def to_int(name, default):
         raise ImproperlyConfigured('environ variable %s must be an integer' % name)
 
 
-DEBUG = 'DEBUG' in os.environ
-DEBUG_PROPAGATE_EXCEPTIONS = 'DEBUG_PROPAGATE_EXCEPTIONS' in os.environ
-USE_DEBUG_TOOLBAR = 'USE_DEBUG_TOOLBAR' in os.environ
+DEBUG = to_boolean('DEBUG', default=False)
+DEBUG_PROPAGATE_EXCEPTIONS = to_boolean('DEBUG_PROPAGATE_EXCEPTIONS', default=False)
+USE_DEBUG_TOOLBAR = to_boolean('USE_DEBUG_TOOLBAR', default=False)
 TEMPLATE_DEBUG = DEBUG
 
 BASE_DIR = os.path.dirname(__file__)
@@ -197,11 +197,11 @@ AUTHENTICATION_BACKENDS = plugins.register_plugins_authentication_backends(
         AUTHENTICATION_BACKENDS)
 
 # sessions
-SESSION_EXPIRE_AT_BROWSER_CLOSE =  'SESSION_EXPIRE_AT_BROWSER_CLOSE' in os.environ
+SESSION_EXPIRE_AT_BROWSER_CLOSE =  to_boolean('SESSION_EXPIRE_AT_BROWSER_CLOSE', default=False)
 SESSION_COOKIE_AGE = int(os.environ.get('SESSION_COOKIE_AGE', 36000)) # one day of work
 SESSION_COOKIE_NAME = os.environ.get('SESSION_COOKIE_NAME', 'sessionid')
 SESSION_COOKIE_PATH = os.environ.get('SESSION_COOKIE_PATH', '/')
-SESSION_COOKIE_SECURE = 'SESSION_COOKIE_SECURE' in os.environ
+SESSION_COOKIE_SECURE = to_boolean('SESSION_COOKIE_SECURE', default=False)
 if 'SESSION_ENGINE' in os.environ:
     SESSION_ENGINE = os.environ['SESSION_ENGINE']
 
@@ -211,7 +211,7 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 25))
 EMAIL_SUBJECT_PREFIX = os.environ.get('EMAIL_SUBJECT_PREFIX', '[Authentic]')
-EMAIL_USE_TLS = 'EMAIL_USE_TLS' in os.environ
+EMAIL_USE_TLS = to_boolean('EMAIL_USE_TLS', default=False)
 SERVER_EMAIL = os.environ.get('SERVER_EMAIL', 'root@localhost')
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'webmaster@localhost')
 
@@ -236,12 +236,12 @@ DEBUG_TOOLBAR_CONFIG = {'INTERCEPT_REDIRECTS': False}
 
 # Authentic2 settings
 
-DISCO_SERVICE = 'DISCO_SERVICE' in os.environ
-DISCO_USE_OF_METADATA = 'DISCO_USE_OF_METADATA' in os.environ
+DISCO_SERVICE = to_boolean('DISCO_SERVICE', default=False)
+DISCO_USE_OF_METADATA = to_boolean('DISCO_USE_OF_METADATA', default=False)
 
 DISCO_SERVICE_NAME = os.environ.get('DISCO_SERVICE_NAME', "http://www.identity-hub.com/disco_service/disco")
 DISCO_RETURN_ID_PARAM = "entityID"
-SHOW_DISCO_IN_MD = 'SHOW_DISCO_IN_MD' in os.environ
+SHOW_DISCO_IN_MD = to_boolean('SHOW_DISCO_IN_MD', default=False)
 
 ###########################
 # Authentication settings
@@ -250,7 +250,7 @@ SHOW_DISCO_IN_MD = 'SHOW_DISCO_IN_MD' in os.environ
 # Only RSA private keys are currently supported
 AUTH_FRONTENDS = ( 'authentic2.auth_frontends.LoginPasswordBackend',)
 AUTH_FRONTENDS = plugins.register_plugins_auth_frontends(AUTH_FRONTENDS)
-SSLAUTH_CREATE_USER = 'SSLAUTH_CREATE_USER' in os.environ
+SSLAUTH_CREATE_USER = to_boolean('SSLAUTH_CREATE_USER', default=False)
 AUTHENTICATION_EVENT_EXPIRATION = int(os.environ.get('AUTHENTICATION_EVENT_EXPIRATION', 3600*24*7))
 
 #############################
@@ -316,7 +316,7 @@ TKX6tp6oI+7MIJE6ySZ0cBqOiydAkBePZhu57j6ToBkTa0dbHjn1WA==
 # Can be none, sp, idp or both
 SAML_METADATA_AUTOLOAD = os.environ.get('SAML_METADATA_AUTOLOAD', 'none')
 
-PUSH_PROFILE_UPDATES = 'PUSH_PROFILE_UPDATES' in os.environ
+PUSH_PROFILE_UPDATES = to_boolean('PUSH_PROFILE_UPDATES', default=False)
 
 
 if 'PASSWORD_HASHERS' in os.environ:
@@ -389,11 +389,11 @@ SOUTH_TESTS_MIGRATE = False
 ############################
 # Registration
 ############################
-A2_ACCEPT_EMAIL_AUTHENTICATION = to_boolean('A2_ACCEPT_EMAIL_AUTHENTICATION')
-A2_CAN_RESET_PASSWORD = to_boolean('A2_CAN_RESET_PASSWORD')
-A2_REGISTRATION_CAN_DELETE_ACCOUNT = to_boolean('A2_REGISTRATION_CAN_DELETE_ACCOUNT')
+A2_ACCEPT_EMAIL_AUTHENTICATION = to_boolean('A2_ACCEPT_EMAIL_AUTHENTICATION', default=True)
+A2_CAN_RESET_PASSWORD = to_boolean('A2_CAN_RESET_PASSWORD', default=True)
+A2_REGISTRATION_CAN_DELETE_ACCOUNT = to_boolean('A2_REGISTRATION_CAN_DELETE_ACCOUNT', default=True)
 A2_REGISTRATION_EMAIL_IS_UNIQUE = to_boolean('A2_REGISTRATION_EMAIL_IS_UNIQUE', default=False)
-REGISTRATION_OPEN = to_boolean('REGISTRATION_OPEN')
+REGISTRATION_OPEN = to_boolean('REGISTRATION_OPEN', default=True)
 ACCOUNT_ACTIVATION_DAYS = to_int('ACCOUNT_ACTIVATION_DAYS', 3)
 PASSWORD_RESET_TIMEOUT_DAYS = to_int('PASSWORD_RESET_TIMEOUT_DAYS', 3)
 
@@ -405,10 +405,10 @@ ADMIN_TOOLS_INDEX_DASHBOARD = 'authentic2.dashboard.CustomIndexDashboard'
 ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'authentic2.dashboard.CustomAppIndexDashboard'
 ADMIN_TOOLS_MENU = 'authentic2.menu.CustomMenu'
 
-AUTH_OPENID = 'AUTH_OPENID' in os.environ
-AUTH_SSL = 'AUTH_SSL' in os.environ
-IDP_SAML2 = 'IDP_SAML2' in os.environ
-IDP_OPENID = 'IDP_OPENID' in os.environ
+AUTH_OPENID = to_boolean('AUTH_OPENID', default=False)
+AUTH_SSL = to_boolean('AUTH_SSL', default=False)
+IDP_SAML2 = to_boolean('IDP_SAML2', default=False)
+IDP_OPENID = to_boolean('IDP_OPENID', default=False)
 
 # extract any key starting with setting
 for key in os.environ:
