@@ -25,9 +25,9 @@ def to_boolean(name, default=True):
         i = int(value)
         return bool(i)
     except ValueError:
-        if value.lower() in ('true', 't'):
+        if value.lower() in ('true', 't', 'y', 'yes'):
             return True
-        if value.lower() in ('false', 'f'):
+        if value.lower() in ('false', 'f', 'n', 'no'):
             return False
     return default
 
