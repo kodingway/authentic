@@ -223,6 +223,8 @@ class LDAPBackend(object):
 
     @classmethod
     def get_config(self):
+        if not getattr(settings, 'LDAP_AUTH_SETTINGS', []):
+            return []
         if isinstance(settings.LDAP_AUTH_SETTINGS[0], dict):
             blocks = settings.LDAP_AUTH_SETTINGS
         else:
