@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.forms import Form, CharField, PasswordInput, EmailField
 from django.utils.datastructures import SortedDict
-from django.db.models import FieldDoesNotExist
+from django.db.models.fields import FieldDoesNotExist
 
 from django.contrib.auth import forms as auth_forms
 

@@ -29,7 +29,7 @@ from django.core.exceptions import PermissionDenied
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.cache import never_cache
 from django.contrib.auth.decorators import login_required
-from django.db.models import FieldDoesNotExist
+from django.db.models.fields import FieldDoesNotExist
 
 
 # FIXME: this decorator has nothing to do with an idp, should be moved in the

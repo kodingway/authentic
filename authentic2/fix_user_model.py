@@ -3,7 +3,7 @@ import re
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import MaxLengthValidator, RegexValidator
 from django.db.models.signals import class_prepared
-from django.db.models import FieldDoesNotExist
+from django.db.models.fields import FieldDoesNotExist
 from django.contrib.auth import forms
 from django.contrib.auth import get_user_model
 
