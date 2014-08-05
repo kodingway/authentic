@@ -83,10 +83,11 @@ class LoggingCollectorMiddleware(object):
 
 class CollectIPMiddleware(object):
     def process_request(self, request):
-        ips = request.session.setdefault('ips', set())
+        ips = set(request.session.setdefault('ips', []))
         ip = request.META.get('REMOTE_ADDR', None)
         if ip and ip not in ips:
             ips.add(ip)
+            request.session['ips'] = list(ips)
             request.session.modified = True
 
 class OpenedSessionCookieMiddleware(object):
