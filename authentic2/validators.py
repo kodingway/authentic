@@ -68,8 +68,7 @@ class EmailValidator(object):
         except dns.resolver.NoAnswer:
             raise ValidationError(_('Nonexistent email address.'))
 
-
-validate_email = EmailValidator()
+email_validator = EmailValidator()
 
 def validate_password(password):
     password_set = set(password)
