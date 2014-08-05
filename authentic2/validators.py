@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 import smtplib
 
 from django.utils.translation import ugettext_lazy as _
-from django.core.validators import EmailValidator, email_re
+from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError
 
 import dns.resolver
@@ -42,9 +42,15 @@ class EmailValidator(EmailValidator):
         except dns.resolver.NoAnswer:
             raise ValidationError(_('Nonexistent email address.'))
 
-
-validate_email = EmailValidator(
-    email_re,
-    _('Enter a valid email address.'),
-    'invalid'
-)
+try:
+    from django.core.exceptions import email_re
+except ImportError:
+    # post Django 1.6
+    validate_email = EmailValidator()
+else:
+    # pre Django 1.6
+    validate_email = EmailValidator(
+        email_re,
+        _('Enter a valid email address.'),
+        'invalid'
+    )
