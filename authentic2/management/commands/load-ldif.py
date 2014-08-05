@@ -4,10 +4,10 @@ import json
 
 
 from django.core.management.base import BaseCommand, CommandError
-from django.db import transaction
 from django.contrib.auth import get_user_model
 
 
+from authentic2.compat import atomic
 from authentic2.hashers import olap_password_to_dj
 from authentic2.models import Attribute
 
@@ -136,7 +136,7 @@ class Command(BaseCommand):
     args = '<ldif_file...>'
     help = 'Load/update LDIF files as users'
 
-    @transaction.commit_on_success
+    @atomic
     def handle(self, *args, **options):
         options['verbosity'] = int(options['verbosity'])
         for arg in args:

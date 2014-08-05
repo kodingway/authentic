@@ -69,7 +69,6 @@ settings')
             return None
 
 
-    @transaction.commit_on_success
     def create_user(self, ssl_info):
         """
         This method creates a new django User and ClientCertificate record
@@ -100,7 +99,6 @@ settings')
         self.link_user(ssl_info, user)
         return user
 
-    @transaction.commit_on_success
     def link_user(self, ssl_info, user):
         """
         This method creates a new django User and ClientCertificate record

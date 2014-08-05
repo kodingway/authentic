@@ -5,6 +5,7 @@ import glob
 import re
 import warnings
 
+import django
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import global_settings
 
@@ -68,6 +69,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(PROJECT_DIR, PROJECT_NAME + '.db'),
+        'ATOMIC_REQUESTS': True,
     }
 }
 
@@ -120,7 +122,14 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.locale.LocaleMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.transaction.TransactionMiddleware',
+)
+
+if django.VERSION < (1, 6, 0):
+    MIDDLEWARE_CLASSES += (
+        'django.middleware.transaction.TransactionMiddleware',
+    )
+
+MIDDLEWARE_CLASSES += (
     'authentic2.idp.middleware.DebugMiddleware',
     'authentic2.middleware.CollectIPMiddleware',
     'authentic2.middleware.StoreRequestMiddleware',

@@ -27,7 +27,7 @@ from django.db import transaction
 from authentic2.compat_lasso import lasso
 
 from authentic2.decorators import to_list
-from authentic2.compat import get_user_model, commit_on_success
+from authentic2.compat import get_user_model
 from authentic2.models import UserExternalId
 from authentic2.middleware import StoreRequestMiddleware
 
@@ -761,7 +761,6 @@ class LDAPBackend(object):
                         .filter(user=user, source=block['realm']) \
                         .delete()
 
-    @commit_on_success
     def _return_user(self, uri, dn, username, password, conn, block):
         attributes = self.get_ldap_attributes(block, conn, dn)
         if attributes is None:

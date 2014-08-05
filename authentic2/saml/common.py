@@ -311,7 +311,6 @@ def get_manage_dump(request):
     d = LibertyManageDump.objects.filter(django_session_key = request.session.session_key)
     return d
 
-@transaction.commit_on_success
 def retrieve_metadata_and_create(request, provider_id, sp_or_idp):
     logger.debug('trying to load %s from wkl' % provider_id)
     if not provider_id.startswith('http'):
