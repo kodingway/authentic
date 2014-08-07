@@ -307,6 +307,7 @@ def build_assertion(request, login, nid_format='transient', attributes=None):
             notBefore.isoformat() + 'Z',
             notOnOrAfter.isoformat() + 'Z')
     assertion = login.assertion
+    assertion.conditions.notOnOrAfter = notOnOrAfter.isoformat() + 'Z'
     logger.debug("assertion building in progress %s" \
         % assertion.dump())
     logger.debug("fill assertion")
