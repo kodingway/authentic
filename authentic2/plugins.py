@@ -105,7 +105,7 @@ def register_plugins_authentication_backends(authentication_backends,
                     authentication_backends.append(cls)
     return tuple(authentication_backends)
 
-def register_plugins_auth_frontends(auth_frontends,
+def register_plugins_auth_frontends(auth_frontends=(),
         group_name=DEFAULT_GROUP_NAME):
     auth_frontends = list(auth_frontends)
     for plugin in get_plugins(group_name):
