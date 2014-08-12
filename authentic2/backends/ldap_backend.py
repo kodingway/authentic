@@ -168,6 +168,7 @@ class LDAPUser(get_user_model()):
 
     class Meta:
         proxy = True
+        app_label = 'authentic2'
 
     def ldap_init(self, block, dn, password, transient=False):
         self.block = block
