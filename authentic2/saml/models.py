@@ -29,7 +29,7 @@ from .. import managers as a2_managers
 def metadata_validator(meta):
     provider=lasso.Provider.newFromBuffer(lasso.PROVIDER_ROLE_ANY, meta.encode('utf8'))
     if not provider:
-        raise ValidationError(_('Bad metadata file'))
+        raise ValidationError(_('Invalid metadata file'))
 XML_NS = 'http://www.w3.org/XML/1998/namespace'
 
 def get_lang(etree):
@@ -153,8 +153,8 @@ class LibertyProviderPolicy(models.Model):
         return self.name + ' (%s)' % ', '.join(options)
 
     class Meta:
-        verbose_name = _('liberty service provider policy')
-        verbose_name_plural = _('liberty service provider policies')
+        verbose_name = _('SAML service provider policy')
+        verbose_name_plural = _('SAML service provider policies')
 
 
 AUTHSAML2_UNAUTH_PERSISTENT = (
@@ -478,8 +478,8 @@ class LibertyProvider(models.Model):
 
     class Meta:
         ordering = ('name',)
-        verbose_name = _('liberty provider')
-        verbose_name_plural = _('liberty providers')
+        verbose_name = _('SAML provider')
+        verbose_name_plural = _('SAML providers')
 
 def get_all_custom_or_default(instance, name):
     model = instance._meta.get_field_by_name(name)[0].rel.to
@@ -524,8 +524,8 @@ class LibertyServiceProvider(models.Model):
         return unicode(self.liberty_provider)
 
     class Meta:
-        verbose_name = _('liberty service provider')
-        verbose_name_plural = _('liberty service providers')
+        verbose_name = _('SAML service provider')
+        verbose_name_plural = _('SAML service providers')
 
 
 # TODO: The choice for requests must be restricted by the IdP metadata
@@ -563,8 +563,8 @@ class LibertyIdentityProvider(models.Model):
         return (self.liberty_provider.slug,)
 
     class Meta:
-        verbose_name = _('liberty identity provider')
-        verbose_name_plural = _('liberty identity providers')
+        verbose_name = _('SAML identity provider')
+        verbose_name_plural = _('SAML identity providers')
 
 LIBERTY_SESSION_DUMP_KIND_SP = 0
 LIBERTY_SESSION_DUMP_KIND_IDP = 1
@@ -583,8 +583,8 @@ class LibertySessionDump(models.Model):
     objects = managers.SessionLinkedManager()
 
     class Meta:
-        verbose_name = _('liberty session dump')
-        verbose_name_plural = _('liberty session dumps')
+        verbose_name = _('SAML session dump')
+        verbose_name_plural = _('SAML session dumps')
 
 class LibertyManageDump(models.Model):
     '''Store lasso manage dump
@@ -597,8 +597,8 @@ class LibertyManageDump(models.Model):
     objects = managers.SessionLinkedManager()
 
     class Meta:
-        verbose_name = _('liberty manage dump')
-        verbose_name_plural = _('liberty manage dumps')
+        verbose_name = _('SAML manage dump')
+        verbose_name_plural = _('SAML manage dumps')
 
 class LibertyArtifact(models.Model):
     """Store an artifact and the associated XML content"""
@@ -610,8 +610,8 @@ class LibertyArtifact(models.Model):
     objects = managers.LibertyArtifactManager()
 
     class Meta:
-        verbose_name = _('liberty artifact')
-        verbose_name_plural = _('liberty artifacts')
+        verbose_name = _('SAML artifact')
+        verbose_name_plural = _('SAML artifacts')
 
 def nameid2kwargs(name_id):
     return {
@@ -637,8 +637,8 @@ class LibertyAssertion(models.Model):
         models.Model.__init__(self, *args, **kwargs)
 
     class Meta:
-        verbose_name = _('liberty assertion')
-        verbose_name_plural = _('liberty assertions')
+        verbose_name = _('SAML assertion')
+        verbose_name_plural = _('SAML assertions')
 
 # XXX: for retrocompatibility
 federation_delete = managers.federation_delete
@@ -697,15 +697,15 @@ class LibertyFederation(models.Model):
         return not qs.exists()
 
     class Meta:
-        verbose_name = _("liberty federation")
-        verbose_name_plural = _("liberty federations")
+        verbose_name = _("SAML federation")
+        verbose_name_plural = _("SAML federations")
 
     def __unicode__(self):
         return self.name_id_content
 
 
 class LibertySession(models.Model):
-    """Store the link between a Django session and a Liberty session"""
+    """Store the link between a Django session and a SAML session"""
     django_session_key = models.CharField(max_length = 128)
     session_index = models.CharField(max_length = 80)
     provider_id = models.CharField(max_length = 256)
@@ -756,18 +756,18 @@ class LibertySession(models.Model):
         return '<LibertySession %s>' % self.__dict__
 
     class Meta:
-        verbose_name = _("liberty session")
-        verbose_name_plural = _("liberty sessions")
+        verbose_name = _("SAML session")
+        verbose_name_plural = _("SAML sessions")
 
 class LibertySessionSP(models.Model):
-    """Store the link between a Django session and a Liberty session on the SP"""
+    """Store the link between a Django session and a SAML session on the SP"""
     django_session_key = models.CharField(max_length = 128)
     session_index =  models.CharField(max_length = 80, )
     federation = models.ForeignKey(LibertyFederation)
 
     class Meta:
-        verbose_name = _("liberty service provider session")
-        verbose_name_plural = _("liberty service provider sessions")
+        verbose_name = _("SAML service provider session")
+        verbose_name_plural = _("SAML service provider sessions")
 
 class KeyValue(models.Model):
     key = models.CharField(max_length=128, primary_key=True)
