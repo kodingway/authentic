@@ -166,14 +166,18 @@ def update_metadata(modeladmin, request, queryset):
 
 
 class SAMLAttributeInlineForm(forms.ModelForm):
-    class Meta:
-        def choices(ctx):
-            return [('', _('None'))] + get_attribute_names(ctx)
+    def __init__(self, *args, **kwargs):
+        super(SAMLAttributeInlineForm, self).__init__(*args, **kwargs)
+        choices = self.choices({'user': None, 'request': None})
+        self.fields['attribute_name'].choices = choices
+        self.fields['attribute_name'].widget = forms.Select(choices=choices)
 
+    @to_iter
+    def choices(self, ctx):
+        return [('', _('None'))] + get_attribute_names(ctx)
+
+    class Meta:
         model = SAMLAttribute
-        widgets = {
-                'attribute_name': forms.Select(choices=to_iter(choices)({'user': None, 'request': None}))
-        }
 
 class SAMLAttributeInlineAdmin(GenericTabularInline):
     model = SAMLAttribute
