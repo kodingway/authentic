@@ -30,6 +30,9 @@ recursive-include authentic2/attribute_aggregator/locale *.po *.mo
 recursive-include authentic2/disco_service/locale *.po *.mo
 recursive-include authentic2 README  xrds.xml *.txt yadis.xrdf
 
+# gadjo submodule
+recursive-include authentic2/manager/vendor/gadjo *
+
 include doc/*.rst
 include doc/pictures/*
 include COPYING NEWS README.rst AUTHORS.txt

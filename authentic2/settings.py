@@ -136,11 +136,13 @@ ROOT_URLCONF = 'authentic2.urls'
 TEMPLATE_DIRS = (
         os.path.join(VAR_DIR, 'templates'),
         os.path.join(BASE_DIR, 'templates'),
+        os.path.join(BASE_DIR, 'manager', 'vendor', 'gadjo', 'gadjo', 'templates'),
 )
 
 STATICFILES_DIRS = (
         os.path.join(VAR_DIR, 'extra-static'),
         os.path.join(BASE_DIR, 'static'),
+        os.path.join(BASE_DIR, 'manager', 'vendor', 'gadjo', 'gadjo', 'static'),
 )
 
 if os.environ.get('TEMPLATE_DIRS'):

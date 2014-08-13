@@ -1,0 +1,3 @@
+[submodule "authentic2/manager/vendor/gadjo"]
+	path = authentic2/manager/vendor/gadjo
+	url = git://repos.entrouvert.org/gadjo.git
