@@ -1,0 +1,3 @@
+include COPYING
+recursive-include src/authentic2_plugin_template/templates *.html
+recursive-include src/authentic2_plugin_template/static *.js *.css *.png
