@@ -13,20 +13,21 @@ class AddLibertyProviderFromUrlForm(Form):
 
     def clean(self):
         cleaned_data = super(AddLibertyProviderFromUrlForm, self).clean()
-        name = cleaned_data['name']
-        slug = cleaned_data['slug']
-        url = cleaned_data['url']
-        try:
-            content = urllib2.urlopen(url).read().decode('utf-8')
-            liberty_provider = LibertyProvider(name=name,
-                slug=slug, metadata=content)
-            liberty_provider.full_clean(exclude=
-                    ('entity_id', 'protocol_conformance'))
-        except ValidationError, e:
-            raise
-        except Exception, e:
-            raise ValidationError('unsupported error: %s' % e)
-        self.instance = liberty_provider
+        name = cleaned_data.get('name')
+        slug = cleaned_data.get('slug')
+        url = cleaned_data.get('url')
+        if name and slug and url:
+            try:
+                content = urllib2.urlopen(url).read().decode('utf-8')
+                liberty_provider = LibertyProvider(name=name,
+                    slug=slug, metadata=content)
+                liberty_provider.full_clean(exclude=
+                        ('entity_id', 'protocol_conformance'))
+            except ValidationError, e:
+                raise
+            except Exception, e:
+                raise ValidationError('unsupported error: %s' % e)
+            self.instance = liberty_provider
         return cleaned_data
 
     def save(self):
