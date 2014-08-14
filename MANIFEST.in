@@ -4,6 +4,7 @@ recursive-include tests *
 # static
 recursive-include authentic2/static *.css *.js *.ico *.gif *.png *.jpg
 recursive-include authentic2/auth2_auth/auth2_openid/static *.css *.js *.ico *.gif *.png *.jpg
+recursive-include authentic2/manager/static *.css *.js *.png
 
 # templates
 recursive-include authentic2/saml/templates *.html *.txt *.xml
@@ -15,6 +16,7 @@ recursive-include authentic2/auth2_auth/auth2_ssl/templates *.html *.txt *.xml
 recursive-include authentic2/auth2_auth/templates *.html *.txt *.xml
 recursive-include authentic2/auth2_auth/auth2_oath/templates *.html *.txt *.xml
 recursive-include authentic2/auth2_auth/auth2_openid/templates *.html *.txt *.xml
+recursive-include authentic2/manager/templates *.html
 
 recursive-include authentic2/vendor/totp_js/js *.js
 recursive-include authentic2/saml/fixtures *.json
@@ -28,6 +30,7 @@ recursive-include authentic2/auth2_auth/auth2_oath/locale *.po *.mo
 recursive-include authentic2/auth2_auth/auth2_openid/locale *.po *.mo
 recursive-include authentic2/attribute_aggregator/locale *.po *.mo
 recursive-include authentic2/disco_service/locale *.po *.mo
+recursive-include authentic2/manager/locale *.po *.mo
 recursive-include authentic2 README  xrds.xml *.txt yadis.xrdf
 
 # gadjo submodule
