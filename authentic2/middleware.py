@@ -103,3 +103,17 @@ class OpenedSessionCookieMiddleware(object):
                     app_settings.A2_OPENED_SESSION_COOKIE_NAME,
                     domain=app_settings.A2_OPENED_SESSION_COOKIE_DOMAIN)
         return response
+
+class StoreRequestMiddleware(object):
+    collection = {}
+
+    def process_request(self, request):
+        StoreRequestMiddleware.collection[threading.currentThread()] = request
+
+    def process_response(self, request, response):
+        StoreRequestMiddleware.collection.pop(threading.currentThread(), None)
+        return response
+
+    @classmethod
+    def get_request(cls):
+        return cls.collection.get(threading.currentThread())
