@@ -348,7 +348,6 @@ class LDAPBackend(object):
                             break
                         continue
                     except ldap.LDAPError, e:
-                        raise
                         log.error('user lookup failed: with query %r got error '
                                 '%s', username, query, e)
                         continue
