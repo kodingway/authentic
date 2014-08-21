@@ -964,12 +964,8 @@ def idp_sso(request, provider_id=None, user_id=None, nid_format=None,
     '''Initiate an SSO toward provider_id without a prior AuthnRequest
     '''
     User = get_user_model()
-    if request.method == 'GET':
-        logger.info('to initiate a sso we need a post form')
-        return error_page(request,
-            _('Error trying to initiate a single sign on'), logger=logger)
     if not provider_id:
-        provider_id = request.POST.get('provider_id')
+        provider_id = request.REQUEST.get('provider_id')
     if not provider_id:
         logger.info('to initiate a sso we need a provider_id')
         return error_page(request,
