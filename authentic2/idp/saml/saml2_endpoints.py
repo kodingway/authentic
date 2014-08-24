@@ -1463,6 +1463,7 @@ def idp_slo(request, provider_id=None):
     provider = load_provider(request, provider_id, server=logout.server)
     if not provider:
         logger.error('slo failed to load provider')
+        return redirect_next(request, next) or ko_icon(request)
     policy = get_sp_options_policy(provider)
     if not policy:
         logger.error('No policy found for %s'\
