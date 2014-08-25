@@ -145,6 +145,8 @@ STATICFILES_DIRS = (
         os.path.join(BASE_DIR, 'manager', 'vendor', 'gadjo', 'gadjo', 'static'),
 )
 
+STATICFILES_FINDERS = global_settings.STATICFILES_FINDERS + ('gadjo.finders.XStaticFinder',)
+
 if os.environ.get('TEMPLATE_DIRS'):
     TEMPLATE_DIRS = tuple(os.environ['TEMPLATE_DIRS'].split(':')) + TEMPLATE_DIRS
 

@@ -1,12 +1,15 @@
-
-div#sidebar {
-	width: 15%
-	float: left;
-	text-align: justify;
-	padding-right: 10px;
+div.content {
+  float: left;
+  width: 82%;
+  margin-left: 8px;
+  margin-top: -10px;
 }
 
+
 div#sidebar {
+	width: 15%;
+	float: left;
+	padding-right: 10px;
 	text-align: left;
 }
 
