@@ -3,6 +3,7 @@ import os
 import json
 import glob
 import re
+import warnings
 
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import global_settings
@@ -355,7 +356,7 @@ else:
 CACHE_DIR = os.path.join('/var/cache/', PROJECT_NAME)
 if not os.access(CACHE_DIR, os.W_OK):
     CACHE_DIR = os.path.join(PROJECT_DIR, 'cache')
-    print 'Cannot access global cache path, using in project cache directory', CACHE_DIR
+    warnings.warn('Cannot access global cache path, using in project cache directory %s' %  CACHE_DIR)
     if not os.path.isdir(CACHE_DIR):
         os.makedirs(CACHE_DIR)
 
@@ -567,7 +568,7 @@ if USE_DEBUG_TOOLBAR:
         MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
         INSTALLED_APPS += ('debug_toolbar',)
     except ImportError:
-        print "Debug toolbar missing, not loaded"
+        warnings.warn("Debug toolbar missing, not loaded")
 
 if AUTH_PASSWORD:
     AUTH_FRONTENDS += ('authentic2.auth_frontends.LoginPasswordBackend',)
