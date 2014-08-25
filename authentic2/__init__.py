@@ -5,4 +5,4 @@ __version__ = "2.1.7"
 
 # vendor contains incorporated dependencies
 sys.path.append(os.path.join(os.path.dirname(__file__), 'vendor'))
-sys.path.append(os.path.join(os.path.dirname(__file__), 'manager', 'vendor'))
+sys.path.append(os.path.join(os.path.dirname(__file__), 'manager', 'vendor', 'gadjo'))

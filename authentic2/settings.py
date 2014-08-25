@@ -189,6 +189,7 @@ INSTALLED_APPS = (
     'authentic2.disco_service',
     'authentic2.manager',
     'authentic2',
+    'gadjo',
 )
 
 INSTALLED_APPS = plugins.register_plugins_installed_apps(INSTALLED_APPS)
