@@ -225,8 +225,11 @@ class UserEditView(UserMixin, OtherActionsMixin, ActionMixin, TitleMixin,
         self.object.save()
 
     def action_deactivate(self, request, *args, **kwargs):
-        self.object.is_active = False
-        self.object.save()
+        if request.user == self.object:
+            messages.warning(request, _('You cannot desactivate your own user'))
+        else:
+            self.object.is_active = False
+            self.object.save()
 
     def action_delete(self, request, *args, **kwargs):
         self.object.delete()
