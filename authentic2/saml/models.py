@@ -375,9 +375,9 @@ class SAMLAttribute(models.Model):
             pass
         else:
             raise NotImplementedError
-        atv = lasso.Saml2AttributeValue()
         atvs = []
         for value in values:
+            atv = lasso.Saml2AttributeValue()
             value = value.encode('utf-8')
             tn = lasso.MiscTextNode.newWithString(value)
             tn.textChild = True
