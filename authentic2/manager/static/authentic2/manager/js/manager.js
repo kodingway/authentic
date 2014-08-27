@@ -50,6 +50,14 @@ $(function() {
         update_table(location.href);
       }
     });
+    $(document).on('gadjo:dialog-done', function (e, form) {
+      /* on listing pages, do not redirect user elsewhere */
+      if ($('.table-container').length) {
+        e.preventDefault();
+        update_table(location.href);
+        $(form).dialog('destroy');
+      }
+    });
     /* user deletion */
     $(document).on('click', '.js-remove-user', function (e) {
       var $anchor = $(e.target);
