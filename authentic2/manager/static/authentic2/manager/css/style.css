@@ -6,18 +6,18 @@ div.content {
 }
 
 
-div#sidebar {
+#sidebar {
 	width: 15%;
 	float: left;
 	padding-right: 10px;
 	text-align: left;
 }
 
-div#sidebar input[type=text] {
-       width: 95%;
+#sidebar input {
+       width: 100%;
 }
 
-div#sidebar button {
+#sidebar button {
        width: 100%;
 }
 
