@@ -41,6 +41,13 @@ class Command(BaseCommand):
     )
 
     def handle(self, *args, **options):
+        log = logging.getLogger(__name__)
+        try:
+            self.clean_unused_acccounts(*args, **options)
+        except:
+            log.exception('failure while cleaning unused accounts')
+
+    def clean_unused_acccounts(self, *args, **options):
         if len(args) < 1:
             raise CommandError('missing clean_threshold')
         if options['period'] < 1:
