@@ -19,7 +19,7 @@ class Command(NoArgsCommand):
                 except:
                     log.exception('cleanup of model %s failed', model)
 
-    def cleanup_model(model):
+    def cleanup_model(self, model):
         manager = getattr(model, 'objects', None)
         if hasattr(manager, 'cleanup'):
             manager.cleanup()
