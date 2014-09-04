@@ -568,6 +568,7 @@ if SENTRY_DSN is not None:
 if USE_DEBUG_TOOLBAR:
     try:
         import debug_toolbar
+        DEBUG_TOOLBAR_PATCH_SETTINGS = False
         MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
         INSTALLED_APPS += ('debug_toolbar',)
     except ImportError:
