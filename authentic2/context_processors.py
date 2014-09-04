@@ -1,3 +1,4 @@
+from pkg_resources import get_distribution
 from django.conf import settings
 
 from . import utils
@@ -24,8 +25,17 @@ class UserFederations(object):
             return d
         return super(UserFederations, self).__getattr__(name)
 
+__AUTHENTIC2_DISTRIBUTION = None
+
 def a2_processor(request):
+    global __AUTHENTIC2_DISTRIBUTION
     variables = {}
     variables.update(getattr(settings, 'TEMPLATE_VARS', {}))
     variables['federations'] = UserFederations(request)
+    if __AUTHENTIC2_DISTRIBUTION is None:
+        if settings.DEBUG:
+            __AUTHENTIC2_DISTRIBUTION = repr(get_distribution('authentic2'))
+        else:
+            __AUTHENTIC2_DISTRIBUTION = str(get_distribution('authentic2'))
+    variables['AUTHENTIC2_VERSION'] = __AUTHENTIC2_DISTRIBUTION
     return variables
