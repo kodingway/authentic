@@ -9,7 +9,6 @@ import logging
 import random
 import pickle
 import base64
-import hashlib
 import urllib
 import itertools
 
@@ -29,11 +28,10 @@ try:
 except ImportError:
     pass
 
-from authentic2.cache import get_shared_cache
 from authentic2.decorators import to_list
 from authentic2.compat import get_user_model, commit_on_success
 from authentic2.models import UserExternalId
-
+from authentic2.middleware import StoreRequestMiddleware
 
 _DEFAULTS = {
     'binddn': None,
@@ -156,6 +154,7 @@ class LDAPException(Exception):
 
 class LDAPUser(get_user_model()):
     attributes = {}
+    SESSION_PASSWORD_KEY = 'ldap-password-cached'
 
     class Meta:
         proxy = True
@@ -168,33 +167,30 @@ class LDAPUser(get_user_model()):
         self.transient = transient
 
     def set_ldap_password(self, password):
-        shared_cache = get_shared_cache('ldap')
-        shared_cache.set(self.get_ldap_password_cache_key(), password, 86400)
+        request = StoreRequestMiddleware.get_request()
+        cache = request.session.setdefault(self.SESSION_PASSWORD_KEY, {})
+        cache[self.dn] = password
+        request.session.modified = True
 
-    def get_cache_key(self):
-        return hashlib.md5(self.dn).hexdigest()
-
-    def get_ldap_password_cache_key(self):
-        return 'ldap-password-{0}'.format(self.get_cache_key())
-
-    def get_password(self):
-        shared_cache = get_shared_cache('ldap')
-        password = shared_cache.get(self.get_ldap_password_cache_key())
+    def get_ldap_password(self):
+        request = StoreRequestMiddleware.get_request()
+        cache = request.session.setdefault(self.SESSION_PASSWORD_KEY, {})
+        password = cache.get(self.dn)
         if password is None:
             raise LDAPException('missing password for dn %r', self.dn)
         return password
 
     def set_password(self, new_password):
-        old_password = self.get_password()
+        old_password = self.get_ldap_password()
         if old_password != new_password:
             conn = self.get_connection()
-            modify_password(conn, self.block, self.dn, self.get_password(),
+            modify_password(conn, self.block, self.dn, self.get_ldap_password(),
                     new_password)
         self.set_ldap_password(new_password)
         super(LDAPUser, self).set_password(new_password)
 
     def get_connection(self):
-        return get_connection(self.block, (self.dn, self.get_password()))
+        return get_connection(self.block, (self.dn, self.get_ldap_password()))
 
     def get_attributes(self):
         conn = self.get_connection()
