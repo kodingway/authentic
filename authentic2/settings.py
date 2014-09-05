@@ -537,8 +537,10 @@ LOGGING = {
 }
 
 if DEBUG and not DEBUG_LOG:
-    LOGGING['loggers']['']['handlers'] += ['console']
     LOGGING['loggers']['']['level'] = 'DEBUG'
+
+if to_boolean('CONSOLE_LOG'):
+    LOGGING['loggers']['']['handlers'] += ['console']
 
 if DEBUG_LOG:
     domains = DEBUG_LOG.split()
