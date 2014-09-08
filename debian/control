@@ -16,7 +16,7 @@ Depends: ${misc:Depends}, ${python:Depends},
     python-requests,
     python-django-south (>= 0.7), python-django-south (<< 0.9),
     python-django-admin-tools, python-lasso, python-dnspython,
-    python-importlib, python-gadjo
+    python-importlib, python-gadjo, python-django-tables2
 Recommends: python-openid, python-ldap
 Suggests: python-raven
 Description: Versatile identity server
