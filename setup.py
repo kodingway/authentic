@@ -148,4 +148,9 @@ setup(name="authentic2",
       cmdclass={'build': build, 'install_lib': install_lib,
           'compile_translations': compile_translations,
           'sdist': eo_sdist},
+      entry_points={
+          'authentic2.plugin': [
+              'authentic2-auth-ssl = authentic2.auth2_auth.auth2_ssl:Plugin',
+          ],
+      },
 )

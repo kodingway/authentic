@@ -416,7 +416,8 @@ ADMIN_TOOLS_MENU = 'authentic2.menu.CustomMenu'
 
 AUTH_PASSWORD = to_boolean('AUTH_PASSWORD', default=True)
 AUTH_OPENID = to_boolean('AUTH_OPENID', default=False)
-AUTH_SSL = to_boolean('AUTH_SSL', default=False)
+SSLAUTH_ENABLE = to_boolean('AUTH_SSL', 
+        default=to_boolean('SSLAUTH_ENABLE', default=False))
 IDP_SAML2 = to_boolean('IDP_SAML2', default=False)
 IDP_OPENID = to_boolean('IDP_OPENID', default=False)
 
@@ -580,11 +581,6 @@ if AUTH_PASSWORD:
 if AUTH_OPENID:
     INSTALLED_APPS += ('authentic2.auth2_auth.auth2_openid', 'django_authopenid',)
     AUTH_FRONTENDS += ('authentic2.auth2_auth.auth2_openid.backend.OpenIDFrontend',)
-
-if AUTH_SSL:
-    AUTHENTICATION_BACKENDS += ('authentic2.auth2_auth.auth2_ssl.backend.SSLBackend',)
-    AUTH_FRONTENDS += ('authentic2.auth2_auth.auth2_ssl.frontend.SSLFrontend',)
-    INSTALLED_APPS += ('authentic2.auth2_auth.auth2_ssl',)
 
 if IDP_SAML2:
     IDP_BACKENDS += ('authentic2.idp.saml.backend.SamlBackend',)

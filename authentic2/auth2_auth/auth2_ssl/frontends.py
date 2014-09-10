@@ -9,12 +9,12 @@ import django.forms
 from authentic2.constants import NONCE_FIELD_NAME
 
 
-from . import views
+from . import views, app_settings
 
 
 class SSLFrontend(object):
     def enabled(self):
-        return True
+        return app_settings.ENABLE
 
     def id(self):
         return 'ssl'

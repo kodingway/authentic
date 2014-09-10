@@ -8,6 +8,7 @@ class AppSettings(object):
     __DEFAULTS = dict(
             # settings for TEST only, make it easy to simulate the SSL
             # environment
+            ENABLE=False,
             FORCE_ENV={},
             ACCEPT_SELF_SIGNED=False,
             STRICT_MATCH=False,
@@ -20,21 +21,14 @@ class AppSettings(object):
     def __init__(self, prefix):
         self.prefix = prefix
 
-    @property
-    def settings(self):
+    def _setting(self, name, dflt):
         from django.conf import settings
-        return settings
+        return getattr(settings, self.prefix+name, dflt)
 
-    def __getattr__(self, key):
-        if key in self.__DEFAULTS:
-            return getattr(self.settings,
-                    self.prefix+key, self.__DEFAULTS[key])
-        else:
-            from django.core.exceptions import ImproperlyConfigured
-            try:
-                return getattr(self.settings, self.prefix+key)
-            except AttributeError:
-                raise ImproperlyConfigured('settings %s is missing' % self.prefix+key)
+    def __getattr__(self, name):
+        if name not in self.__DEFAULTS:
+            raise AttributeError(name)
+        return self._setting(name, self.__DEFAULTS[name])
 
 
 app_settings = AppSettings('SSLAUTH_')

@@ -32,10 +32,6 @@ if getattr(settings, 'AUTH_OPENID', False):
             include('authentic2.auth2_auth.auth2_openid.urls')),
     )
 
-if getattr(settings, 'AUTH_SSL', False):
-    not_homepage_patterns += patterns('',
-        url(r'^accounts/sslauth/', include('authentic2.auth2_auth.auth2_ssl.urls')))
-
 urlpatterns += not_homepage_patterns
 
 try:
