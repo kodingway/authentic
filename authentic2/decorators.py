@@ -1,8 +1,8 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from functools import wraps
 
-from . import utils
+from . import utils, app_settings
 
 TRANSIENT_USER_TYPES = []
 
@@ -29,3 +29,15 @@ def to_iter(func):
     def f(*args, **kwargs):
         return utils.IterableFactory(lambda: func(*args, **kwargs))
     return f
+
+def setting_enabled(name, settings=app_settings):
+    '''Generate a decorator for enabling a view based on a setting'''
+    def decorator(func):
+        @wraps(func)
+        def f(*args, **kwargs):
+            if not getattr(settings, name, False):
+                full_name = getattr(settings, 'prefix', '') + name
+                raise Http404('enable %s' % full_name)
+            return func(*args, **kwargs)
+        return f
+    return decorator
