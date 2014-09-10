@@ -26,11 +26,6 @@ not_homepage_patterns += patterns('',
     url(r'^manage/', include('authentic2.manager.urls')),
 )
 
-if getattr(settings, 'AUTH_OPENID', False):
-    not_homepage_patterns += patterns('',
-        (r'^accounts/openid/',
-            include('authentic2.auth2_auth.auth2_openid.urls')),
-    )
 
 urlpatterns += not_homepage_patterns
 

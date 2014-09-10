@@ -420,7 +420,6 @@ ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'authentic2.dashboard.CustomAppIndexDashboard'
 ADMIN_TOOLS_MENU = 'authentic2.menu.CustomMenu'
 
 A2_AUTH_PASSWORD_ENABLE = to_boolean('AUTH_PASSWORD', default=True)
-AUTH_OPENID = to_boolean('AUTH_OPENID', default=False)
 SSLAUTH_ENABLE = to_boolean('AUTH_SSL', 
         default=to_boolean('SSLAUTH_ENABLE', default=False))
 A2_IDP_SAML2_ENABLE = to_boolean('IDP_SAML2', default=False)
@@ -587,10 +586,6 @@ if USE_DEBUG_TOOLBAR:
         INSTALLED_APPS += ('debug_toolbar',)
     except ImportError:
         warnings.warn("Debug toolbar missing, not loaded")
-
-if AUTH_OPENID:
-    INSTALLED_APPS += ('authentic2.auth2_auth.auth2_openid', 'django_authopenid',)
-    AUTH_FRONTENDS += ('authentic2.auth2_auth.auth2_openid.backend.OpenIDFrontend',)
 
 if IDP_OPENID:
     # RESTRICT_OPENID_RP = ["http://rp.example.com", ] # orequest.trust_root
