@@ -257,7 +257,8 @@ SHOW_DISCO_IN_MD = to_boolean('SHOW_DISCO_IN_MD', default=False)
 # Authentication settings
 ###########################
 
-AUTH_FRONTENDS = plugins.register_plugins_auth_frontends()
+AUTH_FRONTENDS = plugins.register_plugins_auth_frontends((
+    'authentic2.auth_frontends.LoginPasswordBackend',))
 
 # Only RSA private keys are currently supported
 SSLAUTH_CREATE_USER = to_boolean('SSLAUTH_CREATE_USER', default=False)
@@ -415,7 +416,7 @@ ADMIN_TOOLS_INDEX_DASHBOARD = 'authentic2.dashboard.CustomIndexDashboard'
 ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'authentic2.dashboard.CustomAppIndexDashboard'
 ADMIN_TOOLS_MENU = 'authentic2.menu.CustomMenu'
 
-AUTH_PASSWORD = to_boolean('AUTH_PASSWORD', default=True)
+A2_AUTH_PASSWORD_ENABLE = to_boolean('AUTH_PASSWORD', default=True)
 AUTH_OPENID = to_boolean('AUTH_OPENID', default=False)
 SSLAUTH_ENABLE = to_boolean('AUTH_SSL', 
         default=to_boolean('SSLAUTH_ENABLE', default=False))
@@ -575,9 +576,6 @@ if USE_DEBUG_TOOLBAR:
         INSTALLED_APPS += ('debug_toolbar',)
     except ImportError:
         warnings.warn("Debug toolbar missing, not loaded")
-
-if AUTH_PASSWORD:
-    AUTH_FRONTENDS += ('authentic2.auth_frontends.LoginPasswordBackend',)
 
 if AUTH_OPENID:
     INSTALLED_APPS += ('authentic2.auth2_auth.auth2_openid', 'django_authopenid',)

@@ -3,11 +3,11 @@ from django.contrib.auth import login
 from django.utils.translation import gettext_noop
 from django.http import HttpResponseRedirect
 
-from . import views, models
+from . import views, models, app_settings
 
 class LoginPasswordBackend(object):
     def enabled(self):
-        return True
+        return app_settings.A2_AUTH_PASSWORD_ENABLE
 
     def name(self):
         return gettext_noop('Password')
