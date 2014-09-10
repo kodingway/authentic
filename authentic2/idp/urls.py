@@ -4,10 +4,6 @@ from django.conf import settings
 
 urlpatterns = patterns('')
 
-if getattr(settings, 'IDP_SAML2', False):
-    urlpatterns += patterns('',
-        (r'^saml2/', include('authentic2.idp.saml.urls')),)
-
 if getattr(settings, 'IDP_OPENID', False):
    urlpatterns += patterns('',
             (r'^openid/', include('authentic2.idp.idp_openid.urls')))

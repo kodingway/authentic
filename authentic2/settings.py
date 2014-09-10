@@ -420,7 +420,7 @@ A2_AUTH_PASSWORD_ENABLE = to_boolean('AUTH_PASSWORD', default=True)
 AUTH_OPENID = to_boolean('AUTH_OPENID', default=False)
 SSLAUTH_ENABLE = to_boolean('AUTH_SSL', 
         default=to_boolean('SSLAUTH_ENABLE', default=False))
-IDP_SAML2 = to_boolean('IDP_SAML2', default=False)
+A2_IDP_SAML2_ENABLE = to_boolean('IDP_SAML2', default=False)
 IDP_OPENID = to_boolean('IDP_OPENID', default=False)
 
 # extract any key starting with setting
@@ -477,6 +477,9 @@ try:
 except ImportError, e:
     if 'local_settings' in e.args[0]:
         pass
+
+if 'IDP_SAML2' in globals():
+    A2_IDP_SAML2_ENABLE = IDP_SAML2
 
 from . import fix_user_model
 
@@ -580,9 +583,6 @@ if USE_DEBUG_TOOLBAR:
 if AUTH_OPENID:
     INSTALLED_APPS += ('authentic2.auth2_auth.auth2_openid', 'django_authopenid',)
     AUTH_FRONTENDS += ('authentic2.auth2_auth.auth2_openid.backend.OpenIDFrontend',)
-
-if IDP_SAML2:
-    IDP_BACKENDS += ('authentic2.idp.saml.backend.SamlBackend',)
 
 if IDP_OPENID:
     # RESTRICT_OPENID_RP = ["http://rp.example.com", ] # orequest.trust_root

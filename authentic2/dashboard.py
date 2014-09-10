@@ -50,18 +50,6 @@ class CustomIndexDashboard(Dashboard):
                 'authentic2.models.Attribute'),
         ))
         self.children.append(modules.ModelList(
-            _('SAML2'),
-            models=(
-                'authentic2.saml.models.LibertyProvider',
-                'authentic2.saml.models.SPOptionsIdPPolicy',
-                'authentic2.saml.models.IdPOptionsSPPolicy',
-                'authentic2.idp.models.AttributePolicy',
-                'authentic2.attribute_aggregator.models.AttributeList',
-                'authentic2.attribute_aggregator.models.AttributeItem',
-                'authentic2.attribute_aggregator.models.AttributeSource',
-            ),
-        ))
-        self.children.append(modules.ModelList(
             _('Debug'),
             models=(
                 'authentic2.models.AttributeValue',
