@@ -201,6 +201,7 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 # authentication
 AUTHENTICATION_BACKENDS = (
     'authentic2.backends.ModelBackend',
+    'authentic2.backends.LDAPBackend',
 )
 AUTHENTICATION_BACKENDS = plugins.register_plugins_authentication_backends(
         AUTHENTICATION_BACKENDS)
@@ -590,7 +591,3 @@ if IDP_OPENID:
     INSTALLED_APPS += ('authentic2.idp.idp_openid',)
     TEMPLATE_CONTEXT_PROCESSORS += ('authentic2.idp.idp_openid.context_processors.openid_meta',)
     # OPENID_ACTIONS = {"http://rp.example.com" : 'my-template.html', }
-
-if LDAP_AUTH_SETTINGS:
-    AUTHENTICATION_BACKENDS = ('authentic2.backends.LDAPBackend',) + AUTHENTICATION_BACKENDS
-
