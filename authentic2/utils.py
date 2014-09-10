@@ -206,3 +206,8 @@ def field_names(list_of_field_name_and_titles):
             yield t
         else:
             yield t[0]
+
+def get_form_class(form_class):
+    module, form_class = form_class.rsplit('.', 1)
+    module = import_module(module)
+    return getattr(module, form_class)
