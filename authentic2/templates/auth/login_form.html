@@ -15,6 +15,6 @@
   <p>→ {% trans "Forgot password?" %} <a href="{% url 'auth_password_reset' %}">{% trans "Reset it!" %}</a></p>
 {% endif %}
 {% if registration_authorized %}
-  <p>→ {% trans "Not a member?" %} <a href="{% url 'registration_register' %}">{% trans "Register!" %}</a></p>
+  <p>→ {% trans "Not a member?" %} <a href="{% url 'registration_register' %}?{{ request.GET.urlencode }}">{% trans "Register!" %}</a></p>
 {% endif %}
 </div>

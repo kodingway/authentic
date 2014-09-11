@@ -29,7 +29,9 @@ class RegistrationView(FormView):
     template_name = 'registration/registration_form.html'
 
     def form_valid(self, form):
-        activation_key = signing.dumps(form.cleaned_data)
+        data = form.cleaned_data
+        data.update({'next_url': self.request.GET.get('next_url')})
+        activation_key = signing.dumps(data)
         ctx_dict = {'activation_key': activation_key,
                     'expiration_days': EXPIRATION,
                     'site': self.request.get_host()}
@@ -53,12 +55,14 @@ class ActivationView(TemplateView):
     template_name = 'registration/activate.html'
 
     def get(self, request, *args, **kwargs):
-        context = {}
+        context = {'activated': False, 'next_url': None}
         try:
-            user = authenticate(**self.register(kwargs['activation_key']))
+            registration_kwargs = self.register(kwargs['activation_key'])
+            next_url = registration_kwargs.pop('next_url')
+            user = authenticate(**registration_kwargs)
             login(request, user)
-            messages.info(request, _('Your account has been successfully activated. You are now logged in.'))
-            return redirect('auth_homepage')
+            context['next_url'] = next_url
+            context['activated'] = True
         except signing.SignatureExpired:
             context['expired'] = True
         except IntegrityError:
@@ -69,6 +73,7 @@ class ActivationView(TemplateView):
         User = compat.get_user_model()
         registration_fields = signing.loads(registration_token,
                                             max_age=EXPIRATION * 3600 * 24)
+
         user_fields = {}
         for field in compat.get_registration_fields():
             # save User model fields
@@ -99,7 +104,8 @@ class ActivationView(TemplateView):
                 groups.append(group)
             new_user.groups = groups
         return {'username': registration_fields['username'],
-                'password': registration_fields['password1']}
+                'password': registration_fields['password1'],
+                'next_url': registration_fields['next_url']}
 
 class DeleteView(TemplateView):
     def get(self, request, *args, **kwargs):
