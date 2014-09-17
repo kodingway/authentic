@@ -31,6 +31,7 @@ from authentic2.decorators import RequestCache
 from .. import nonce
 
 AUTHENTIC_STATUS_CODE_NS = "http://authentic.entrouvert.org/status_code/"
+AUTHENTIC_SAME_ID_SENTINEL = 'urn:authentic.entrouvert.org:same-as-provider-entity-id'
 AUTHENTIC_STATUS_CODE_UNKNOWN_PROVIDER = AUTHENTIC_STATUS_CODE_NS + \
     "UnknownProvider"
 AUTHENTIC_STATUS_CODE_MISSING_NAMEID= AUTHENTIC_STATUS_CODE_NS + \
@@ -235,15 +236,26 @@ END_IDENTITY_DUMP = '''</Identity>'''
 def federations_to_identity_dump(self_entity_id, federations):
     l = [ START_IDENTITY_DUMP ]
     for federation in federations:
+        name_id_qualifier = federation.name_id_qualifier
+        name_id_sp_name_qualifier = federation.name_id_sp_name_qualifier
+        # ease migration of federations by making qualifiers relative to the linked idp or sp
         if federation.sp:
             sp_id = federation.sp.liberty_provider.entity_id
+            if name_id_sp_name_qualifier == AUTHENTIC_SAME_ID_SENTINEL:
+                name_id_sp_name_qualifier = sp_id
+            if name_id_qualifier == AUTHENTIC_SAME_ID_SENTINEL:
+                name_id_qualifier = self_entity_id
         elif federation.idp:
             sp_id = self_entity_id
+            if name_id_sp_name_qualifier == AUTHENTIC_SAME_ID_SENTINEL:
+                name_id_sp_name_qualifier = self_entity_id
+            if name_id_qualifier == AUTHENTIC_SAME_ID_SENTINEL:
+                name_id_qualifier = federation.idp.liberty_provider.entity_id
         qualifiers = []
         if federation.name_id_qualifier:
-            qualifiers.append('NameQualifier="%s"' % federation.name_id_qualifier)
+            qualifiers.append('NameQualifier="%s"' % name_id_qualifier)
         if federation.name_id_sp_name_qualifier:
-            qualifiers.append('SPNameQualifier="%s"' % federation.name_id_sp_name_qualifier)
+            qualifiers.append('SPNameQualifier="%s"' % name_id_sp_name_qualifier)
         l.append(MIDDLE_IDENTITY_DUMP.format(
             content=federation.name_id_content,
             format=federation.name_id_format,

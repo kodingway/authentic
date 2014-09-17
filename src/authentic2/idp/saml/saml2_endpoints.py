@@ -66,7 +66,7 @@ from authentic2.saml.common import redirect_next, asynchronous_bindings, \
     send_soap_request, get_saml2_query_request, \
     get_saml2_request_message_async_binding, create_saml2_server, \
     get_saml2_metadata, get_sp_options_policy, \
-    get_entity_id
+    get_entity_id, AUTHENTIC_SAME_ID_SENTINEL
 import authentic2.saml.saml2utils as saml2utils
 from common import kill_django_sessions
 from authentic2.constants import NONCE_FIELD_NAME
@@ -282,6 +282,7 @@ def build_assertion(request, login, nid_format='transient', attributes=None):
     """After a successfully validated authentication request, build an
        authentication assertion
     """
+    entity_id = get_entity_id(request, reverse(metadata))
     now = datetime.datetime.utcnow()
     logger.info("building assertion at %s" % str(now))
     logger.debug('named Id format is %s' % nid_format)
@@ -344,6 +345,12 @@ def build_assertion(request, login, nid_format='transient', attributes=None):
         logger.debug("nameID persistent, get or create "
             "federation")
         kwargs = nameid2kwargs(login.assertion.subject.nameID)
+        # if qualifiers can be inferred from providers entityID replace them by
+        # placeholders
+        if kwargs.get('name_id_qualifier') == entity_id:
+            kwargs['name_id_qualifier'] = AUTHENTIC_SAME_ID_SENTINEL
+        if kwargs.get('name_id_sp_name_qualifier') == login.remoteProviderId:
+            kwargs['name_id_sp_name_qualifier'] = AUTHENTIC_SAME_ID_SENTINEL
         service_provider = LibertyServiceProvider.objects \
                 .get(liberty_provider__entity_id=login.remoteProviderId)
         federation, new = LibertyFederation.objects.get_or_create(
