@@ -25,13 +25,6 @@ from authentic2.saml.models import LibertyProvider
 logger = logging.getLogger('authentic2.disco.responder')
 
 
-USE_OF_METADATA = False
-try:
-    USE_OF_METADATA = settings.DISCO_USE_OF_METADATA
-except:
-    logger.error("disco: missing parameters in settings for idp discovery.")
-
-
 def error_page(request, message, logger):
     '''Customized disco service error page'''
     message = u'disco: ' + message
@@ -192,7 +185,7 @@ def disco(request):
     # If we use metadata, we ignore the parameter return and take it from the
     # md. Else and if no return parameter in query, it is an unconformant SP.
     return_url = None
-    if USE_OF_METADATA:
+    if getattr(settings, 'USE_OF_METADATA', True):
         return_url = get_disco_return_url_from_metadata(entityID)
     else:
         return_url = _return
