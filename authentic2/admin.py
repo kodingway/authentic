@@ -5,9 +5,13 @@ from django.contrib import admin
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
+from django.utils.http import urlencode
+from django.http import HttpResponseRedirect
+from django.views.decorators.cache import never_cache
 from django.contrib.auth.admin import GroupAdmin, UserAdmin
 from django.contrib.auth.models import Group
 from django.contrib.sessions.models import Session
+from django.contrib.auth import REDIRECT_FIELD_NAME
 
 from .nonce.models import Nonce
 from . import forms, models, admin_forms, compat, app_settings
@@ -198,3 +202,21 @@ class A2GroupAdmin(GroupAdmin):
 
 admin.site.unregister(Group)
 admin.site.register(Group, A2GroupAdmin)
+
+
+@never_cache
+def login(request, extra_context=None):
+    query = urlencode({REDIRECT_FIELD_NAME: request.get_full_path()})
+    url = '{0}?{1}'.format(settings.LOGIN_URL, query)
+    return HttpResponseRedirect(url)
+
+admin.site.login = login
+
+@never_cache
+def logout(request, extra_context=None):
+    query = urlencode({REDIRECT_FIELD_NAME: request.get_full_path()})
+    url = '{0}?{1}'.format(settings.LOGOUT_URL, query)
+    return HttpResponseRedirect(url)
+
+admin.site.logout = logout
+
