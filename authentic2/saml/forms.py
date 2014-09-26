@@ -54,5 +54,6 @@ class AddLibertyProviderFromUrlForm(Form):
         if not self.instance is None:
             self.instance.save()
             for child in self.childs:
+                child.liberty_provider = self.instance
                 child.save()
         return self.instance
