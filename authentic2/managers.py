@@ -99,6 +99,23 @@ class AttributeValueQuerySet(QuerySet):
         content_type = ContentType.objects.get_for_model(owner)
         return self.filter(content_type=content_type, object_id=owner.pk)
 
+    def get_by_natural_key(self, ct_nk, owner_nk, attribute_nk):
+        from .models import Attribute, AttributeValue
+        try:
+            ct = ContentType.objects.get_by_natural_key(*ct_nk)
+        except ContentType.DoesNotExist:
+            raise AttributeValue.DoesNotExist
+        try:
+            owner_class = ct.model_class()
+            owner = owner_class.objects.get_by_natural_key(*owner_nk)
+        except owner_class.DoesNotExist:
+            raise AttributeValue.DoesNotExist
+        try:
+            at = Attribute.objects.get_by_natural_key(*attribute_nk)
+        except Attribute.DoesNotExist:
+            raise AttributeValue.DoesNotExist
+        return self.get(content_type=ct, object_id=owner.pk, attribute=at)
+
 
 AttributeValueManager = managers.PassThroughManager \
         .for_queryset_class(AttributeValueQuerySet)

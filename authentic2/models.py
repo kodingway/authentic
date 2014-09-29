@@ -373,6 +373,12 @@ class AttributeValue(models.Model):
         deserialize = self.attribute.get_kind()['deserialize']
         return deserialize(self.content)
 
+    def natural_key(self):
+        if not hasattr(self.owner, 'natural_key'):
+            return self.id
+        return (self.content_type.natural_key(), self.owner.natural_key(),
+                self.attribute.natural_key())
+
     class Meta:
         verbose_name = _('attribute value')
         verbose_name_plural = _('attribute values')
