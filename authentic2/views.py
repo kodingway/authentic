@@ -99,7 +99,7 @@ class EditProfile(UpdateView):
                             self.request.user, sp_id)
 
     def form_valid(self, form):
-        if settings.PUSH_PROFILE_UPDATES:
+        if app_settings.PUSH_PROFILE_UPDATES:
             thread.start_new_thread(self.push_attributes, ())
         return super(EditProfile, self).form_valid(form)
 
