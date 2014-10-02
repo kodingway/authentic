@@ -555,6 +555,13 @@ msgstr "Continuer la déconnexion"
 msgid "You are going to do a global logout, do you want to continue ?"
 msgstr "Vous avez demandé un déconnexion globale, voulez-vous continuer ?"
 
+msgid "The page is out of date, it was reloaded for you"
+msgstr "Cette page est périmée car vous vous êtes connecté entre temps; nous "
+"l'avons rechargé pour vous."
+
+msgid "The form was out of date, please try again."
+msgstr "Ce formulaire était périmé, veuillez ré-essayer."
+
 #: templates/authentic2/logout_confirm.html:19
 #, fuzzy
 #| msgid "Continue logout"
