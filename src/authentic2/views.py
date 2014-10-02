@@ -472,3 +472,7 @@ class LoggedInView(View):
         return HttpResponse(content, content_type='application/json')
 
 logged_in = never_cache(LoggedInView.as_view())
+
+def csrf_failure_view(request, reason=""):
+    messages.warning(request, _('The page is out of date, it was reloaded for you'))
+    return HttpResponseRedirect(request.get_full_path())

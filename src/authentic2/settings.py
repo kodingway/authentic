@@ -135,6 +135,8 @@ AUTHENTICATION_BACKENDS = (
 )
 AUTHENTICATION_BACKENDS = plugins.register_plugins_authentication_backends(
         AUTHENTICATION_BACKENDS)
+CSRF_FAILURE_VIEW = 'authentic2.views.csrf_failure_view'
+
 
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/login/'
