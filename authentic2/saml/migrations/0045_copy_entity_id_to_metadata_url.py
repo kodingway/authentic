@@ -149,7 +149,7 @@ class Migration(SchemaMigration):
             'name_id_sp_name_qualifier': ('django.db.models.fields.CharField', [], {'max_length': '256', 'null': 'True', 'blank': 'True'}),
             'sp': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['saml.LibertyServiceProvider']", 'null': 'True', 'blank': 'True'}),
             'termination_notified': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']", 'null': 'True', 'on_delete': 'models.SET_NULL', 'blank': 'True'})
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['%s']" % user_model_label, 'null': 'True', 'on_delete': 'models.SET_NULL', 'blank': 'True'})
         },
         u'saml.libertyidentityprovider': {
             'Meta': {'object_name': 'LibertyIdentityProvider'},
