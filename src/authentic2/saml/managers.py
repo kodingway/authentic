@@ -31,14 +31,6 @@ class SessionLinkedQuerySet(QuerySet):
 SessionLinkedManager = managers.PassThroughManager \
         .for_queryset_class(SessionLinkedQuerySet)
 
-class LibertyAssertionManager(models.Manager):
-    def cleanup(self):
-        # keep assertions 1 week
-        expire = getattr(settings, 'SAML2_ASSERTION_EXPIRATION', 3600*24*7)
-        before = now()-datetime.timedelta(seconds=expire)
-        self.filter(creation__lt=before).delete()
-
-
 class LibertyFederationManager(models.Manager):
     def cleanup(self):
         for federation in self.filter(user__isnull=True):

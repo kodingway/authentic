@@ -677,26 +677,6 @@ def nameid2kwargs(name_id):
         'name_id_content': name_id.content,
         'name_id_format': name_id.format }
 
-class LibertyAssertion(models.Model):
-    assertion_id = models.CharField(max_length = 128)
-    provider_id = models.CharField(max_length = 256)
-    session_index = models.CharField(max_length = 128, )
-    assertion = models.TextField()
-    creation = models.DateTimeField(auto_now_add=True)
-
-    def __init__(self, *args, **kwargs):
-        saml2_assertion = kwargs.pop('saml2_assertion', None)
-        if saml2_assertion:
-            kwargs['assertion_id'] = saml2_assertion.id
-            kwargs['session_index'] = \
-                    saml2_assertion.authnStatement[0].sessionIndex
-            kwargs['assertion'] = saml2_assertion.exportToXml()
-        models.Model.__init__(self, *args, **kwargs)
-
-    class Meta:
-        verbose_name = _('SAML assertion')
-        verbose_name_plural = _('SAML assertions')
-
 # XXX: for retrocompatibility
 federation_delete = managers.federation_delete
 
@@ -768,8 +748,6 @@ class LibertySession(models.Model):
     provider_id = models.CharField(max_length = 256)
     federation = models.ForeignKey(LibertyFederation, blank=True,
             null = True)
-    assertion = models.ForeignKey(LibertyAssertion, blank=True, null
-            = True)
     name_id_qualifier = models.CharField(max_length = 256,
             verbose_name = _("Qualifier"), null = True)
     name_id_format = models.CharField(max_length = 100,

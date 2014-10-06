@@ -218,7 +218,7 @@ def return_saml_soap_response(profile):
 # Helper method to handle profiles endpoints
 # In the future we should move away from monolithic object (LassoIdentity and
 # LassoSession) holding all the datas, to manipulate them at row Level with
-# LibertyFederation and LibertyAssertion objects.
+# LibertyFederation objects.
 
 START_IDENTITY_DUMP = '''<Identity xmlns="http://www.entrouvert.org/namespaces/lasso/0.0" Version="2">
 '''

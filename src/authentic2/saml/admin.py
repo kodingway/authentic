@@ -17,7 +17,7 @@ from authentic2.saml.models import LibertyProvider, LibertyServiceProvider
 from authentic2.saml.models import LibertyIdentityProvider, IdPOptionsSPPolicy
 from authentic2.saml.models import SPOptionsIdPPolicy
 from authentic2.saml.models import LibertySessionDump, LibertyFederation
-from authentic2.saml.models import LibertyAssertion, LibertySessionSP, KeyValue
+from authentic2.saml.models import LibertySessionSP, KeyValue
 from authentic2.saml.models import LibertySession
 from authentic2.saml.models import SAMLAttribute
 
@@ -283,6 +283,5 @@ if settings.DEBUG:
     admin.site.register(LibertySessionDump)
     admin.site.register(LibertyFederation, LibertyFederationAdmin)
     admin.site.register(LibertySession)
-    admin.site.register(LibertyAssertion)
     admin.site.register(LibertySessionSP)
     admin.site.register(KeyValue)
