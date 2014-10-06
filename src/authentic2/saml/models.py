@@ -807,6 +807,9 @@ class LibertySessionSP(models.Model):
 class KeyValue(models.Model):
     key = models.CharField(max_length=128, primary_key=True)
     value = PickledObjectField()
+    created = models.DateTimeField(auto_now_add=True)
+
+    objects = a2_managers.ExpireManager()
 
     def __unicode__(self):
         return self.key
