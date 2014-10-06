@@ -48,6 +48,10 @@ class AuthenticationEventManager(models.Manager):
                 3600*24*7)
         self.filter(when__lt=now()-timedelta(seconds=expire)).delete()
 
+class ExpireManager(models.Manager):
+    def cleanup(self):
+        self.filter(created__lt=now()-timedelta(days=7)).delete()
+
 LOCAL_PROVIDER_URN = 'urn:oid:1.3.6.1.4.1.36560.1.1:local-provider'
 LOCAL_USER_URN = 'urn:oid:1.3.6.1.4.1.36560.1.1:local-user'
 LOCAL_SERVICE_URN = 'urn:oid:1.3.6.1.4.1.36560.1.1:local-service'
