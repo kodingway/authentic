@@ -1389,12 +1389,12 @@ def slo(request):
         provider = LibertyProvider.objects.get(entity_id=logout.remoteProviderId)
         return return_saml2_response(request, logout,
             title=_('You are being redirected to "%s"') % provider.name)
-    except Exception, e:
-        logger.exception('slo %s' % message)
-        return error_page(_('Invalid logout request'), logger=logger)
+    except (lasso.ProfileInvalidMsgError,
+        lasso.ProfileMissingIssuerError), e:
+        return error_page(_('Invalid logout request'), logger=logger, warning=True)
     session_indexes = logout.request.sessionIndexes
     if len(session_indexes) == 0:
-        logger.error('slo received a request from %s without any \
+        logger.warning('slo received a request from %s without any \
             SessionIndex, it is forbidden' % logout.remoteProviderId)
         logout.buildResponseMsg()
         provider = LibertyProvider.objects.get(entity_id=logout.remoteProviderId)
@@ -1406,7 +1406,7 @@ def slo(request):
             logout.server.providerId, logout.remoteProviderId,
             logout.request.nameId, logout.request.sessionIndexes)
     if not all_sessions.exists():
-        logger.error('slo refused, since no session exists with the \
+        logger.warning('slo refused, since no session exists with the \
             requesting provider')
         return return_logout_error(request, logout,
                 AUTHENTIC_STATUS_CODE_UNKNOWN_SESSION)
@@ -1415,8 +1415,12 @@ def slo(request):
     set_session_dump_from_liberty_sessions(logout, [last_session])
     try:
         logout.validateRequest()
+    except lasso.Error, e:
+        logger.warning('logout request validation failed: %s', e)
+        return return_logout_error(request, logout,
+                AUTHENTIC_STATUS_CODE_INTERNAL_SERVER_ERROR)
     except:
-        logger.exception('slo error')
+        logger.exception('internal error')
         return return_logout_error(request, logout,
                 AUTHENTIC_STATUS_CODE_INTERNAL_SERVER_ERROR)
     # Now clean sessions for this provider
