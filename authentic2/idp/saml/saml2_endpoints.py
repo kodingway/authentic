@@ -33,11 +33,12 @@ from django.http import HttpResponse, HttpResponseRedirect, \
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import never_cache
-from django.contrib.auth import BACKEND_SESSION_KEY
+from django.contrib.auth import BACKEND_SESSION_KEY, REDIRECT_FIELD_NAME
 from django.conf import settings
 from django.utils.encoding import smart_unicode
 from django.contrib.auth import load_backend
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib import messages
 
 
 from authentic2.compat import get_user_model
@@ -1638,3 +1639,26 @@ def check_destination(request, req_or_res):
         logger.warning('failure, expected: %r got: %r ' \
             % (destination, req_or_res.destination))
     return result
+
+def error_redirect(request, msg, *args, **kwargs):
+    '''Log a warning message, register it with the messages framework, then
+       redirect the user to the homepage.
+
+       It will redirect to Authentic2 homepage unless a next query parameter was used.
+    '''
+    default_kwargs = {
+            'log_level': logging.WARNING,
+            'msg_level': messages.WARNING,
+            'default_url': None,
+    }
+    default_kwargs.update(kwargs)
+    messages.add_message(request, default_kwargs['msg_level'], _(msg) % args)
+    logger.log(default_kwargs['log_level'], msg, *args)
+    next_url = request.GET.get(REDIRECT_FIELD_NAME)
+    if next_url:
+        return HttpResponseRedirect(next_url)
+    default_url = kwargs.get('default_url')
+    if default_url:
+        return HttpResponseRedirect(default_url)
+    else:
+        return redirect('auth_homepage')
