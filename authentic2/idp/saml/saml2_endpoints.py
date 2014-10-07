@@ -360,6 +360,7 @@ def build_assertion(request, login, nid_format='transient', attributes=None):
 
 @never_cache
 @csrf_exempt
+@log_assert
 def sso(request):
     """Endpoint for receiving saml2:AuthnRequests by POST, Redirect or SOAP.
        For SOAP a session must be established previously through the login
