@@ -390,7 +390,7 @@ def sso(request):
             break
         except (lasso.ProfileInvalidMsgError,
             lasso.ProfileMissingIssuerError,), e:
-            logger.error('invalid message for WebSSO profile with '
+            logger.warning('invalid message for WebSSO profile with '
                           'HTTP-Redirect binding: %r exception: %s' \
                           % (message, e),
                           extra={'request': request})
@@ -401,18 +401,18 @@ def sso(request):
             log_info_authn_request_details(login)
             message = _("SAMLv2 Single Sign On: the request cannot be "
                 "answered because no valid protocol binding could be found")
-            logger.error("the request cannot be answered because no "
+            logger.warning("the request cannot be answered because no "
                 "valid protocol binding could be found")
             login.response.status.statusMessage = 'No valid protocol binding could be found'
             return HttpResponseBadRequest(message)
         except lasso.ProviderMissingPublicKeyError, e:
             log_info_authn_request_details(login)
-            logger.error('no public key found: %s', e)
+            logger.warning('no public key found: %s', e)
             login.response.status.statusMessage = 'The public key is unknown'
             return return_login_response(request, login)
         except lasso.DsError, e:
             log_info_authn_request_details(login)
-            logger.error('digital signature treatment error: %s', e)
+            logger.warning('digital signature treatment error: %s', e)
             login.response.status.statusMessage = 'Signature validation failed'
             return return_login_response(request, login)
         except (lasso.ServerProviderNotFoundError,
@@ -445,7 +445,7 @@ def sso(request):
                     provider_loaded.service_provider.policy \
                             .authn_request_signature_check_hint)
     if signed and not check_destination(request, login.request):
-        logger.error('wrong or absent destination')
+        logger.warning('wrong or absent destination')
         return return_login_error(request, login,
                 AUTHENTIC_STATUS_CODE_MISSING_DESTINATION)
     # Check NameIDPolicy or force the NameIDPolicy
