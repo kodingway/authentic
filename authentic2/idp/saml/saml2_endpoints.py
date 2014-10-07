@@ -434,7 +434,6 @@ def sso(request):
             else:
                 policy = get_sp_options_policy(provider_loaded)
                 if not policy:
-                    logger.error('No policy defined')
                     return error_page(request, _('sso: No SP policy defined'),
                         logger=logger, warning=True)
                 logger.info('provider %s loaded with success' \
@@ -704,15 +703,11 @@ def sso_after_process_request(request, login, consent_obtained=False,
     provider = load_provider(request, login.remoteProviderId,
         server=login.server)
     if not provider:
-        logger.info(''
-            'sso for an unknown provider %s' % login.remoteProviderId)
         return error_page(request,
             _('Provider %s is unknown') % login.remoteProviderId,
             logger=logger)
     saml_policy = get_sp_options_policy(provider)
     if not saml_policy:
-        logger.error('No policy defined for '
-            'provider %s' % login.remoteProviderId)
         return error_page(request, _('No service provider policy defined'),
             logger=logger)
 
