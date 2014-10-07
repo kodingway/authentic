@@ -23,6 +23,7 @@ import xml.etree.cElementTree as ctree
 import hashlib
 import random
 import string
+from functools import wraps
 
 import lasso
 from django.core.urlresolvers import reverse
@@ -97,7 +98,6 @@ metadata_map = (
 )
 metadata_options = {'key': settings.SAML_SIGNATURE_PUBLIC_KEY}
 
-
 @cache_and_validate(settings.LOCAL_METADATA_CACHE_TIMEOUT)
 def metadata(request):
     '''Endpoint to retrieve the metadata file'''
@@ -105,6 +105,19 @@ def metadata(request):
     return HttpResponse(get_metadata(request, request.path),
             mimetype='text/xml')
 
+def log_assert(func, exception_classes=(AssertionError,)):
+    '''Convert assertion errors to warning logs and report them to the user
+       through the messages framework.
+
+       Returns a redirect to homepage or the `next` query parameter.
+    '''
+    @wraps(func)
+    def f(request, *args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except exception_classes, e:
+            return error_redirect(request, e.message)
+    return f
 
 #####
 # SSO
