@@ -31,7 +31,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseRedirect, \
     HttpResponseForbidden, HttpResponseBadRequest, Http404
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as _, ugettext_noop as N_
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import never_cache
 from django.contrib.auth import BACKEND_SESSION_KEY, REDIRECT_FIELD_NAME
@@ -1433,14 +1433,14 @@ def slo(request):
             (reverse(finish_slo), urllib.quote(logout.request.id)))
 
 
-def ko_icon(request):
-    return HttpResponseRedirect('%s/authentic2/images/ko.png' \
-        % settings.STATIC_URL)
+def icon_url(name):
+    return '%s/authentic2/images/%s.png' % (settings.STATIC_URL, name)
 
+def ko_icon(request):
+    return HttpResponseRedirect(icon_url('ko'))
 
 def ok_icon(request):
-    return HttpResponseRedirect('%s/authentic2/images/ok.png' \
-        % settings.STATIC_URL)
+    return HttpResponseRedirect(icon_url('ok'))
 
 
 @never_cache
@@ -1549,20 +1549,20 @@ def process_logout_response(request, logout, soap_response, next):
 
 @never_cache
 def slo_return(request):
-    next = None
     logger.info('return from redirect')
     relay_state = request.REQUEST.get('RelayState')
     if not relay_state:
-        logger.error('slo no relay state in response')
-        return error_page('Missing relay state', logger=logger)
-    else:
-        logger.debug('relay_state %s' % relay_state)
+        return error_redirect(request, N_('slo no relay state in response'), 
+                default_url=icon_url('ko'))
+    logger.debug('relay_state %r', relay_state)
     try:
         logout_dump, provider_id, next = \
             get_and_delete_key_values(relay_state)
-    except:
-        logger.exception('slo bad relay state in response')
-        return error_page('Bad relay state', logger=logger)
+    except ValueError:
+        return error_redirect(request,
+                N_('unknown relay state %r'),
+                relay_state,
+                default_url=icon_url('ko'))
     server = create_server(request)
     logout = lasso.Logout.newFromDump(server, logout_dump)
     provider_id = logout.remoteProviderId
@@ -1572,7 +1572,7 @@ def slo_return(request):
     # FIXME: should use a logout_request_signature_check_hint
     logout.setSignatureVerifyHint(policy.authn_request_signature_check_hint)
     if not load_provider(request, provider_id, server=logout.server):
-        logger.error('slo failed to load provider')
+        logger.warning('failed to load provider %r', provider_id)
     return process_logout_response(request, logout,
         get_saml2_query_request(request), next)
 
