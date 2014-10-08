@@ -977,9 +977,8 @@ def idp_sso(request, provider_id=None, user_id=None, nid_format=None,
     if not provider_id:
         provider_id = request.REQUEST.get('provider_id')
     if not provider_id:
-        logger.info('to initiate a sso we need a provider_id')
-        return error_page(request,
-            _('A provider identifier was not provided'), logger=logger)
+        return error_redirect(request,
+                N_('missing provider identifier'))
     if user_id:
         logger.info('sso as %s' % user_id)
     server = create_server(request)
@@ -987,9 +986,7 @@ def idp_sso(request, provider_id=None, user_id=None, nid_format=None,
     liberty_provider = load_provider(request, provider_id,
         server=login.server)
     if not liberty_provider:
-        logger.info('sso for an unknown provider %s' % provider_id)
-        return error_page(request, _('Provider %s is unknown') % provider_id,
-            logger=logger)
+        return error_redirect(request, N_('provider %r is unknown'), provider_id)
     if user_id:
         user = User.get(id=user_id)
         if not check_delegated_authentication_permission(request):
@@ -1026,8 +1023,8 @@ def idp_sso(request, provider_id=None, user_id=None, nid_format=None,
     elif binding == 'post':
         login.request.protocolBinding = lasso.SAML2_METADATA_BINDING_POST
     else:
-        logger.error('unsupported protocol binding %r' % binding)
-        return error_page(request, _('Server error'), logger=logger)
+        return error_redirect(request,
+                N_('unknown binding %r') % binding)
     # Control nid format policy
     # XXX: if a federation exist, we should use transient
     login.request.nameIdPolicy.format = nidformat_to_saml2_urn(nid_format)
