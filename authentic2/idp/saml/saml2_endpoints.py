@@ -980,8 +980,6 @@ def idp_sso(request, provider_id=None, user_id=None, nid_format=None,
         logger.info('to initiate a sso we need a provider_id')
         return error_page(request,
             _('A provider identifier was not provided'), logger=logger)
-    logger.info('sso initiated with %(provider_id)s' \
-        % {'provider_id': provider_id})
     if user_id:
         logger.info('sso as %s' % user_id)
     server = create_server(request)
@@ -1015,7 +1013,6 @@ def idp_sso(request, provider_id=None, user_id=None, nid_format=None,
         logger.debug('nameId format is %r' % nid_format)
     if needs_persistence(nid_format):
         load_federation(request, get_entity_id(request, reverse(metadata)), login, user)
-    logger.debug('federation loaded')
     login.initIdpInitiatedAuthnRequest(provider_id)
     # Control assertion consumer binding
     if not policy:
@@ -1024,7 +1021,6 @@ def idp_sso(request, provider_id=None, user_id=None, nid_format=None,
         return error_page(request, _('idp_sso: No SP policy defined'),
             logger=logger)
     binding = policy.prefered_assertion_consumer_binding
-    logger.debug('binding is %r' % binding)
     if binding == 'meta':
         pass
     elif binding == 'art':
@@ -1040,6 +1036,9 @@ def idp_sso(request, provider_id=None, user_id=None, nid_format=None,
     login.request.nameIdPolicy.allowCreate = True
 
     login.processAuthnRequestMsg(None)
+    logger.debug('nameId %r' % nid_format)
+    logger.debug('binding %r' % binding)
+    logger.info('authentication request initialized toward provider_id %r', provider_id)
 
     return sso_after_process_request(request, login,
             consent_obtained=False, user=user, save=save,
