@@ -1649,8 +1649,8 @@ def check_destination(request, req_or_res):
     destination = request.build_absolute_uri(request.path)
     result = req_or_res.destination == destination
     if not result:
-        logger.warning('failure, expected: %r got: %r ' \
-            % (destination, req_or_res.destination))
+        logger.warning('failure, expected: %r got: %r ',
+            destination, req_or_res.destination)
     return result
 
 def error_redirect(request, msg, *args, **kwargs):
