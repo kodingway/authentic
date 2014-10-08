@@ -538,10 +538,15 @@ LOGGING = {
             'handlers': ['null'],
             'propagate': True,
         },
+        'lasso': {
+                'handlers': ['mail_admins', 'syslog'],
+                'level': 'INFO',
+                'propagate': False,
+        },
         '': {
                 'handlers': ['mail_admins', 'syslog'],
                 'level': 'INFO',
-        }
+        },
     },
 }
 
