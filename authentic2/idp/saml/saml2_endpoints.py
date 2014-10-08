@@ -1079,7 +1079,7 @@ def return_logout_error(request, logout, error):
     # Hack because response is not initialized before
     # buildResponseMsg
     logout.buildResponseMsg()
-    logger.debug('send an error message %s' % error)
+    logger.warning('returned an error message on logout: %s', error)
     provider = LibertyProvider.objects.get(entity_id=logout.remoteProviderId)
     return return_saml2_response(request, logout,
         title=_('You are being redirected to "%s"') % provider.name)
