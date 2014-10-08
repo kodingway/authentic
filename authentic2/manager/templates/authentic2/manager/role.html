@@ -13,6 +13,13 @@
 
      {% render_table users "authentic2/manager/role_users_table.html" %}
 
+     <p id="export-formats">{% trans "Export" %} :
+       <a class="export-format" href="{% url "a2-manager-role-users-export" active_role.ref "csv" %}?{{ request.GET.urlencode }}">CSV</a>
+       <a class="export-format" href="{% url "a2-manager-role-users-export" active_role.ref "json" %}?{{ request.GET.urlencode }}">JSON</a>
+       <a class="export-format" href="{% url "a2-manager-role-users-export" active_role.ref "ods" %}?{{ request.GET.urlencode }}">ODS</a>
+       <a class="export-format" href="{% url "a2-manager-role-users-export" active_role.ref "html" %}?{{ request.GET.urlencode }}">HTML</a>
+     </p>
+
      <form method="post" id="add-user-role">
              {% trans "Add an user to this role:" %}
              {% csrf_token %}

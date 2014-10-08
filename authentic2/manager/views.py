@@ -1,10 +1,11 @@
 import json
 
 from django.views.generic import (TemplateView, FormView, UpdateView,
-        CreateView, DeleteView)
+        CreateView, DeleteView, View)
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy as _
+from django.utils.timezone import now
 from django.forms import models as model_forms
 from django.core.urlresolvers import reverse
 
@@ -20,7 +21,7 @@ from django_tables2 import RequestConfig
 
 from authentic2.compat import get_user_model
 
-from . import app_settings, utils, tables, forms
+from . import app_settings, utils, tables, forms, resources
 
 class Action(object):
     def __init__(self, name, title, confirm=None):
@@ -108,6 +109,26 @@ class OtherActionsMixin(object):
         return super(OtherActionsMixin, self).post(request, *args, **kwargs)
 
 
+class UserExportMixin(object):
+    export_prefix = ''
+
+    def get(self, request, format, *args, **kwargs):
+        users = self.get_users(request)
+        dataset = resources.UserResource().export(users)
+        content_types = {
+                'csv': 'text/csv',
+                'html': 'text/html',
+                'json': 'application/json',
+                'ods': 'application/vnd.oasis.opendocument.spreadsheet',
+        }
+        response = HttpResponse(getattr(dataset, format),
+                content_type=content_types[format])
+        filename = '%s%s.%s'% (self.export_prefix, now().isoformat(), format)
+        response['Content-Disposition'] = 'attachment; filename="%s"' \
+                % filename
+        return response
+
+
 class RoleAddView(TitleMixin, ActionMixin, AjaxFormViewMixin, FormView):
     template_name = 'authentic2/manager/form.html'
     form_class = forms.RoleAddForm
@@ -117,6 +138,7 @@ class RoleAddView(TitleMixin, ActionMixin, AjaxFormViewMixin, FormView):
     def form_valid(self, form):
         super(RoleAddView, self).form_valid(form)
         return redirect('a2-manager-role', role_ref=self.form_result)
+
 
 class RoleDeleteView(TitleMixin, AjaxFormViewMixin, DeleteView):
     template_name = 'authentic2/manager/delete.html'
@@ -173,12 +195,24 @@ class RoleView(RolesMixin, TemplateView):
         return HttpResponseRedirect('')
 
 
+class RoleUsersExportView(UserExportMixin, View):
+    export_prefix = 'role-users-'
+
+    def get_users(self, request):
+        kwargs = {}
+        active_role = utils.get_role(self.kwargs['role_ref'])
+        if 'search' in self.request.GET:
+            kwargs = {'search': self.request.GET['search']}
+        return utils.get_role_users(active_role, **kwargs)
+
 
 roles = permission_required('group.add', raise_exception=True)(RolesView.as_view())
 role_add = permission_required('group.add', raise_exception=True)(RoleAddView.as_view())
 role_edit = permission_required('group.change', raise_exception=True)(RoleEditView.as_view())
 role_delete = permission_required('group.delete', raise_exception=True)(RoleDeleteView.as_view())
 role = permission_required('group.delete', raise_exception=True)(RoleView.as_view())
+role_users_export = permission_required('group.change', raise_exception=True)(RoleUsersExportView.as_view())
+
 
 class UsersView(RolesMixin, TemplateView):
     template_name = 'authentic2/manager/users.html'
@@ -194,11 +228,13 @@ class UsersView(RolesMixin, TemplateView):
         ctx['table'] = table
         return ctx
 
+
 class UserMixin(object):
     model = get_user_model()
     template_name = 'authentic2/manager/form.html'
     fields = ['username', 'first_name', 'last_name', 'email', 'is_active']
     form_class = forms.UserEditForm
+
 
 class UserAddView(UserMixin, ActionMixin, TitleMixin,
         AjaxFormViewMixin, CreateView):
@@ -248,6 +284,16 @@ class UserEditView(UserMixin, OtherActionsMixin, ActionMixin, TitleMixin,
         form.save(**opts)
         messages.info(request, _('A mail was sent to %s') % self.object.email)
 
+class UsersExportView(UserExportMixin, View):
+    export_prefix = 'users-'
+
+    def get_users(self, request):
+        kwargs = {}
+        if 'search' in self.request.GET:
+            kwargs = {'search': self.request.GET['search']}
+        return utils.get_users(**kwargs)
+
+users_export = permission_required('user.delete', raise_exception=True)(UsersExportView.as_view())
 
 users = permission_required('user.delete', raise_exception=True)(UsersView.as_view())
 user_add = permission_required('user.add', raise_exception=True)(UserAddView.as_view())

@@ -23,4 +23,10 @@
 
 {% block main %}
   {% render_table table "authentic2/manager/table.html" %}
+  <p id="export-formats">{% trans "Export" %}
+    <a class="export-format" href="{% url "a2-manager-users-export" "csv" %}?{{ request.GET.urlencode }}">CSV</a></li>
+    <a class="export-format" href="{% url "a2-manager-users-export" "json" %}?{{ request.GET.urlencode }}">JSON</a></li>
+    <a class="export-format" href="{% url "a2-manager-users-export" "ods" %}?{{ request.GET.urlencode }}">ODS</a></li>
+    <a class="export-format" href="{% url "a2-manager-users-export" "html" %}?{{ request.GET.urlencode }}">HTML</a></li>
+  </p>
 {% endblock %}

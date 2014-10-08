@@ -127,6 +127,7 @@ setup(name="authentic2",
         'XStatic_Font_Awesome',
         'XStatic_jQuery',
         'XStatic_jquery_ui',
+        'django-import-export',
       ],
       zip_safe=False,
       classifiers=[
