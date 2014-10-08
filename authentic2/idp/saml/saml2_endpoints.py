@@ -552,8 +552,11 @@ def continue_sso(request):
     if not nonce:
         logger.warning('nonce not found')
         return HttpResponseBadRequest()
-    login_dump, consent_obtained, save, nid_format = \
-            get_and_delete_key_values(nonce)
+    try:
+        login_dump, consent_obtained, save, nid_format = \
+                get_and_delete_key_values(nonce)
+    except ValueError:
+        return error_redirect(request, N_('request has expired'))
     server = create_server(request)
     # Work Around for lasso < 2.3.6
     login_dump = login_dump.replace('<Login ', '<lasso:Login ') \
