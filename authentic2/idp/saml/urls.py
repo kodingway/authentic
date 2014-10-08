@@ -11,6 +11,4 @@ urlpatterns = patterns('authentic2.idp.saml.saml2_endpoints',
     url(r'^finish_slo$', 'finish_slo'),
     url(r'^artifact$', 'artifact'),
     url(r'^idp_sso/(.*)$', 'idp_sso'),
-    url(r'^idp_sso/([^/]*)/([^/]*)$', 'idp_sso'),
-    url(r'^idp_sso/([^/]*)/([^/]*)/([^/]*)$', 'idp_sso'),
 )

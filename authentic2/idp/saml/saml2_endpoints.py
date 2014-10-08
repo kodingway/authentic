@@ -969,8 +969,7 @@ def check_delegated_authentication_permission(request):
 @never_cache
 @csrf_exempt
 @login_required
-def idp_sso(request, provider_id=None, user_id=None, nid_format=None,
-        save=True, return_profile=False):
+def idp_sso(request, provider_id=None, save=True, return_profile=False):
     '''Initiate an SSO toward provider_id without a prior AuthnRequest
     '''
     User = get_user_model()
@@ -987,13 +986,17 @@ def idp_sso(request, provider_id=None, user_id=None, nid_format=None,
         server=login.server)
     if not liberty_provider:
         return error_redirect(request, N_('provider %r is unknown'), provider_id)
-    if user_id:
-        user = User.get(id=user_id)
+    username = request.REQUEST.get('username')
+    if username:
         if not check_delegated_authentication_permission(request):
-            logger.warning('%r tried to log as %r on %r but was '
-                'forbidden' % (request.user, user, provider_id))
-            return HttpResponseForbidden('You must be superuser to log as '
-                'another user')
+            return error_redirect(request,
+                    N_('%r tried to log as %r on %r but was forbidden'),
+                   request.user, username, provider_id)
+        try:
+            user = User.objects.get_by_natural_key(username=username)
+        except User.DoesNotExist:
+            return error_redirect(request,
+                    N_('you cannot login as %r as it does not exist'), username)
     else:
         user = request.user
         logger.info('sso by %r' % user)
@@ -1002,16 +1005,7 @@ def idp_sso(request, provider_id=None, user_id=None, nid_format=None,
     if not policy:
         return error_redirect(request,
                 N_('missing service provider policy'))
-    if nid_format:
-        logger.debug('nameId format is %r' % nid_format)
-        if not nid_format in policy.accepted_name_id_format:
-            logger.error('name id format %r is not supported by %r' \
-                % (nid_format, provider_id))
-            raise Http404('Provider %r does not support this name id format' \
-                % provider_id)
-    if not nid_format:
-        nid_format = policy.default_name_id_format
-        logger.debug('nameId format is %r' % nid_format)
+    nid_format = policy.default_name_id_format
     if needs_persistence(nid_format):
         load_federation(request, get_entity_id(request, reverse(metadata)), login, user)
     login.initIdpInitiatedAuthnRequest(provider_id)
