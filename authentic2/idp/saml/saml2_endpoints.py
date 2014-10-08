@@ -1532,7 +1532,7 @@ def process_logout_response(request, logout, soap_response, next):
     try:
         logout.processResponseMsg(soap_response)
     except getattr(lasso, 'ProfileRequestDeniedError', lasso.LogoutRequestDeniedError):
-        logger.warning('logout request was denied')
+        logger.warning('%s denied the logout request', logout.remoteProviderId)
         return redirect_next(request, next) or ko_icon(request)
     except:
         logger.exception('\
