@@ -1001,6 +1001,10 @@ def idp_sso(request, provider_id=None, user_id=None, nid_format=None,
         user = request.user
         logger.info('sso by %r' % user)
     policy = get_sp_options_policy(liberty_provider)
+    # Control assertion consumer binding
+    if not policy:
+        return error_redirect(request,
+                N_('missing service provider policy'))
     if nid_format:
         logger.debug('nameId format is %r' % nid_format)
         if not nid_format in policy.accepted_name_id_format:
@@ -1014,12 +1018,6 @@ def idp_sso(request, provider_id=None, user_id=None, nid_format=None,
     if needs_persistence(nid_format):
         load_federation(request, get_entity_id(request, reverse(metadata)), login, user)
     login.initIdpInitiatedAuthnRequest(provider_id)
-    # Control assertion consumer binding
-    if not policy:
-        logger.error('No policy defined, \
-            unable to set protocol binding')
-        return error_page(request, _('idp_sso: No SP policy defined'),
-            logger=logger)
     binding = policy.prefered_assertion_consumer_binding
     if binding == 'meta':
         pass
