@@ -363,7 +363,7 @@ class ProfileView(TemplateView):
             profile.append((title, map(unicode, value)))
         # Credentials management
         blocks = [ frontend.profile(request) for frontend in frontends \
-                if hasattr(frontend, 'profile') ]
+                if hasattr(frontend, 'profile') and frontend.enabled() ]
         ctx.update({
             'frontends_block': blocks,
             'profile': profile,
