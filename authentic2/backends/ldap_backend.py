@@ -141,13 +141,15 @@ def modify_password(conn, block, dn, old_password, new_password):
     conn.modify_s(dn, ldap.modlist.modifyModlist(old_entry, new_entry))
     log.debug('modified password for dn %r', dn)
 
-def unicode_dict_of_list(attributes, encoding='utf-8'):
+def normalize_ldap_results(attributes, encoding='utf-8'):
+    new_attributes = {}
     for key in attributes:
         try:
-            attributes[key] = map(lambda x: unicode(x, encoding), attributes[key])
+            new_attributes[key.lower()] = map(lambda x: unicode(x, encoding), attributes[key])
         except UnicodeDecodeError:
-            log.warning('unable to decode attribute %r to UTF-8', key)
-    return attributes
+            log.debug('unable to decode attribute %r as UTF-8, converting to base64', key)
+            new_attributes[key.lower()] = map(base64.b64encode, attributes[key])
+    return new_attributes
 
 class LDAPException(Exception):
     pass
@@ -575,8 +577,7 @@ class LDAPBackend(object):
         except ldap.LDAPError:
             log.exception('unable to retrieve attributes of dn %r', dn)
             return {}
-        attribute_map = results[0][1]
-        attribute_map = unicode_dict_of_list(attribute_map)
+        attribute_map = normalize_ldap_results(results[0][1])
         # add mandatory attributes
         for key, mandatory_values in mandatory_attributes_values.iteritems():
             key = str(key)
