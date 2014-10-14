@@ -191,7 +191,7 @@ def provide_attributes_at_sso(request, user, audience, **kwargs):
     provider = None
     try:
         provider = LibertyProvider.objects.get(entity_id=audience)
-    except:
+    except LibertyProvider.DoesNotExist:
         logger.debug('provide_attributes_at_sso: Provider with name %s not '
             'found' % audience)
     attribute_policy = get_attribute_policy(provider)
@@ -345,13 +345,17 @@ def provide_attributes_at_sso(request, user, audience, **kwargs):
                 if attribute_policy.map_attributes_from_push_sources:
                     try:
                         source = AttributeSource.objects.get(name=entity_id)
-                    except:
+                    except AttributeSource.DoesNotExist:
                         try:
                             lp = \
                             LibertyProvider.objects.get(entity_id=entity_id)
-                            source = AttributeSource.objects.get(name=lp.name)
-                        except:
+                        except LibertyProvider.DoesNotExist:
                             pass
+                        else:
+                            try:
+                                source = AttributeSource.objects.get(name=lp.name)
+                            except AttributeSource.DoesNotExist:
+                                pass
                 namespace_in = 'Default'
                 if not source:
                     logger.debug('provide_attributes_at_sso: Not attribute '
@@ -370,15 +374,15 @@ def provide_attributes_at_sso(request, user, audience, **kwargs):
                     try:
                         name, format, fname = key
                         found = True
-                    except:
+                    except ValueError:
                         try:
                             name, format = key
                             found = True
-                        except:
+                        except ValueError:
                             try:
                                 name = key
                                 found = True
-                            except:
+                            except ValueError:
                                 pass
                     if found:
                         logger.debug('provide_attributes_at_sso: attribute with '

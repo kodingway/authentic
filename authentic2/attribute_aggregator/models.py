@@ -135,7 +135,7 @@ class AttributeSource(models.Model):
     def get_source_instance(self):
         try:
             return self.ldapsource
-        except:
+        except LdapSource.DoesNotExist:
             pass
         return None
 
@@ -147,14 +147,14 @@ class AttributeSource(models.Model):
 def get_source_from_name(name):
     try:
         return AttributeSource.objects.get(name=name)
-    except:
+    except AttributeSource.DoesNotExist:
         return None
 
 
 def get_all_sources():
     try:
         return AttributeSource.objects.all()
-    except:
+    except AttributeSource.DoesNotExist:
         return None
 
 if ldap:
@@ -249,9 +249,10 @@ class AttributeData:
         '''ISO8601'''
         try:
             iso8601_to_datetime(expiration_date)
-            self.expiration_date = expiration_date
-        except:
+        except ValueError:
             self.expiration_date = None
+        else:
+            self.expiration_date = expiration_date
 
     def get_definition(self):
         return self.definition
@@ -270,17 +271,15 @@ class AttributeData:
     def set_exptime_in_iso8601(self, expiration_date):
         try:
             iso8601_to_datetime(expiration_date)
-            self.expiration_date = expiration_date
-        except:
+        except ValueError:
             self.expiration_date = None
+        else:
+            self.expiration_date = expiration_date
         self.save()
         return self.expiration_date
 
     def set_exptime_in_datetime(self, expiration_date):
-        try:
-            self.expiration_date = expiration_date.isoformat()
-        except:
-            self.expiration_date = None
+        self.expiration_date = expiration_date.isoformat()
         self.save()
         return self.expiration_date
 
@@ -296,7 +295,7 @@ class AttributeData:
     def get_source(self):
         try:
             return AttributeSource.objects.get(pk=self.source_id)
-        except:
+        except AttributeSource.DoesNotExist:
             return None
 
     def get_source_id(self):
@@ -304,22 +303,20 @@ class AttributeData:
 
     def add_value(self, value):
         if value and convert_from_string(self.definition, value):
-            try:
-                self.values.append(value.encode('utf-8'))
-                self.save()
-                return 0
-            except:
-                return -1
+            self.values.append(value.encode('utf-8'))
+            self.save()
+            return 0
         return -1
 
     def remove_value(self, value):
         if value:
             try:
                 self.values.remove(value.encode('utf-8'))
+            except ValueError:
+                return -1
+            else:
                 self.save()
                 return 0
-            except:
-                return -1
         return -1
 
     def does_expire(self):
@@ -365,18 +362,14 @@ class UserAttributeProfile(models.Model):
     data = models.TextField(null=True, blank=True)
 
     def add_data(self, data):
-        if not isinstance(data, AttributeData):
-            return -1
-        try:
-            l = None
-            if not self.data:
-                l = list()
-            else:
-                l = loads(str(self.data))
-            l.append(data)
-            self.data = dumps(l)
-        except:
-            return -1
+        assert isinstance(data, AttributeData)
+        l = None
+        if not self.data:
+            l = list()
+        else:
+            l = loads(str(self.data))
+        l.append(data)
+        self.data = dumps(l)
         self.save()
         return 0
 
@@ -386,15 +379,12 @@ class UserAttributeProfile(models.Model):
             res = l.pop(position)
             self.data = dumps(l)
             return res
-        except:
+        except IndexError:
             return None
 
     def get_all_data(self):
-        try:
-            l = loads(str(self.data))
-            return l
-        except:
-            return []
+        l = loads(str(self.data))
+        return l
 
     def get_all_data_to_dic(self):
         '''
@@ -463,7 +453,7 @@ class UserAttributeProfile(models.Model):
         s = []
         try:
             s = AttributeSource.objects.get(name=source)
-        except:
+        except AttributeSource.DoesNotExist:
             return []
         return [d for d in l if d.get_source_id() == s.id]
 
@@ -549,13 +539,14 @@ class UserAttributeProfile(models.Model):
                                 try:
                                     iso8601_to_datetime(\
                                         attribute['expiration_date'])
+                                except ValueError:
+                                    logger.warn('load_by_dic: expiration \
+                                        date has not the ISO8601 format')
+                                else:
                                     expiration_date = \
                                         attribute['expiration_date']
                                     logger.debug('load_by_dic: expiration \
                                         date has the ISO8601 format')
-                                except:
-                                    logger.warn('load_by_dic: expiration \
-                                        date has not the ISO8601 format')
                             if not expiration_date:
                                 expiration_date = \
                                     datetime.datetime.now().isoformat()

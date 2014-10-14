@@ -209,27 +209,27 @@ def convert_from_string(definition_name, value):
     elif type_ == ACS_XACML_DATATYPE_INTEGER:
         try:
             return int(value)
-        except:
+        except ValueError:
             return None
     elif type_ == ACS_XACML_DATATYPE_DOUBLE:
         try:
             return float(value)
-        except:
+        except ValueError:
             return None
     elif type_ == ACS_XACML_DATATYPE_TIME:
         try:
             return time.strptime(value, "%h:%m:%s") #12:15:00
-        except:
+        except ValueError:
             return None
     elif type_ == ACS_XACML_DATATYPE_DATE:
         try:
             return time.strptime(value, "%d/%b/%Y") #28/01/1982
-        except:
+        except ValueError:
             return None
     elif type_ == ACS_XACML_DATATYPE_DATETIME:
         try:
             return iso8601_to_datetime(value)
-        except:
+        except ValueError:
             return None
     elif type_ == ACS_XACML_DATATYPE_RFC822NAME: # email
         r = re.compile(\
@@ -276,7 +276,7 @@ def get_user_alias_in_source(user, source):
     try:
         alias = UserAliasInSource.objects.get(user=user, source=source)
         return alias.name
-    except:
+    except UserAliasInSource.DoesNotExist:
         return None
 
 
@@ -290,17 +290,21 @@ def set_user_alias_in_source(user, source, name, force_change=False):
             If this user has already an alias, we change it.
         '''
         alias = UserAliasInSource.objects.get(user=user, source=source)
+    except UserAliasInSource.DoesNotExist:
+        pass
+    else:
         logger.warn('set_user_alias_in_source: \
             this user has already an alias, we change it.')
         alias.delete()
-    except:
-        pass
     try:
         '''
             If a user has already this alias...
             force_change: we give it to this user
         '''
         alias = UserAliasInSource.objects.get(name=name, source=source)
+    except UserAliasInSource.DoesNotExist:
+        pass
+    else:
         if not force_change:
             logger.warn('set_user_alias_in_source: \
                 a user has already this alias, we do nothing.')
@@ -308,8 +312,6 @@ def set_user_alias_in_source(user, source, name, force_change=False):
         logger.warn('set_user_alias_in_source: \
             a user has already this alias, we give it to %s.' % user)
         alias.delete()
-    except:
-        pass
     try:
         alias = UserAliasInSource(user=user, name=name, source=source)
         alias.save()

@@ -58,7 +58,7 @@ def get_attributes(user, definitions=None, source=None, auth_source=False, **kwa
     from models import AttributeSource
     try:
         AttributeSource.objects.get(name=SOURCE_NAME)
-    except:
+    except AttributeSource.DoesNotExist:
         logger.debug('USER_PROFILE source is inactive')
         return None
     if source and source.name != SOURCE_NAME:
