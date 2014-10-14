@@ -21,8 +21,6 @@
 import logging
 import ldap
 
-from django.conf import settings
-
 from authentic2.attribute_aggregator.core import get_user_alias_in_source
 
 
@@ -66,11 +64,12 @@ def get_attributes(user, definitions=None, source=None, auth_source=False, **kwa
         logger.debug('get_attributes: The required source is %s' % source)
         try:
             sources = [source.ldapsource]
-            logger.debug('get_attributes: The source is an LDAP source!')
-        except:
+        except LdapSource.DoesNotExist:
             logger.debug('get_attributes: \
                 The required source is not a LDAP one')
             return None
+        else:
+            logger.debug('get_attributes: The source is an LDAP source!')
     else:
         sources = LdapSource.objects.all()
     if not sources:
@@ -99,20 +98,14 @@ def get_attributes(user, definitions=None, source=None, auth_source=False, **kwa
         dn = None
         is_source_backend = False
         source_url = source.get_url()
-        try:
-            from django_auth_ldap.backend import LDAPBackend
-            dn = LDAPBackend().get_user(user.id).ldap_user.dn
-            # Only a single ldap can be used as backend with django_auth_ldap
-            back_url = settings.AUTH_LDAP_SERVER_URI
-            if back_url == source_url:
-                is_source_backend = True
-        except:
-            pass
-        if not dn and getattr(user, 'backend_id') and \
-                user.backend_id.startswith('ldap'):
-            back_url, dn = user.backend_id.split('!', 1)
-            if back_url == source_url:
-                is_source_backend = True
+
+        dn = getattr(user, 'dn', None)
+        # Only a single ldap can be used as backend with django_auth_ldap
+        if dn and hasattr(user, 'block'):
+            for back_url in user.block.get('url'):
+                if back_url == source_url:
+                    is_source_backend = True
+                    break
         if auth_source and not is_source_backend:
             logger.debug('get_attributes: only attributes from backend and '
                 'this source is not, see next')
