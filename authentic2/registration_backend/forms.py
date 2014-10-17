@@ -1,12 +1,12 @@
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
-from django.forms import Form, CharField, PasswordInput
+from django.forms import Form, CharField, PasswordInput, EmailField
 from django.utils.datastructures import SortedDict
 from django.db.models import FieldDoesNotExist
 
 from django.contrib.auth import forms as auth_forms
 
-from .. import app_settings, compat, forms, utils, validators
+from .. import app_settings, compat, forms, utils, validators, widgets, fields
 
 
 class RegistrationForm(forms.UserAttributeFormMixin, Form):
@@ -37,6 +37,8 @@ class RegistrationForm(forms.UserAttributeFormMixin, Form):
                     if hasattr(model_field, 'validators'):
                         kwargs['validators'] = model_field.validators
                     field = model_field.formfield(**kwargs)
+                    if isinstance(field, EmailField):
+                        field = fields.EmailFieldWithValidation(**kwargs)
                     self.fields.insert(insert_idx, field_name, field)
                     insert_idx += 1
         for field_name in self.fields:
