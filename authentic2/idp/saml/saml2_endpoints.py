@@ -978,8 +978,6 @@ def idp_sso(request, provider_id=None, save=True, return_profile=False):
     if not provider_id:
         return error_redirect(request,
                 N_('missing provider identifier'))
-    if user_id:
-        logger.info('sso as %s' % user_id)
     server = create_server(request)
     login = lasso.Login(server)
     liberty_provider = load_provider(request, provider_id,
@@ -999,7 +997,7 @@ def idp_sso(request, provider_id=None, save=True, return_profile=False):
                     N_('you cannot login as %r as it does not exist'), username)
     else:
         user = request.user
-        logger.info('sso by %r' % user)
+    logger.info('sso by %r', user)
     policy = get_sp_options_policy(liberty_provider)
     # Control assertion consumer binding
     if not policy:
