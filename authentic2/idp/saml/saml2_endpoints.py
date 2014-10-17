@@ -114,7 +114,7 @@ def log_assert(func, exception_classes=(AssertionError,)):
     @wraps(func)
     def f(request, *args, **kwargs):
         try:
-            return func(*args, **kwargs)
+            return func(request, *args, **kwargs)
         except exception_classes, e:
             return error_redirect(request, e.message)
     return f
