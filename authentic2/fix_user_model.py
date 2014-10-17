@@ -60,8 +60,20 @@ def patch_email(model):
         field = model._meta.get_field("email")
     except FieldDoesNotExist:
         return
+    patch_validators(field)
+    from django.db.models.fields import EmailField
+    EmailField.default_validators = [validators.EmailValidator()]
+    from django.forms import EmailField
+    EmailField.default_validators = [validators.EmailValidator()]
 
+
+def patch_validators(field):
+    field.validators = list(field.validators)
+    for i, validator in tuple(enumerate(field.validators)):
+        if validator.__class__.__name__.startswith('Email'):
+            field.validators.pop(i)
     field.validators.append(validators.EmailValidator())
+    field.validators = []
+    field.__class__.default_validators = []
 
 patch_user_model(get_user_model())
-
