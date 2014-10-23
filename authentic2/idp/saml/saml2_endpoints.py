@@ -617,6 +617,14 @@ def sso_after_process_request(request, login, consent_obtained=False,
         logger.info('login required')
         return need_login(request, login, save, nid_format)
 
+    # No user is authenticated and passive is True, deny request
+    if passive and user.is_anonymous():
+        logger.info("%r - no user connected and passive request, returning "
+                "NoPassive", nonce)
+        set_saml2_response_responder_status_code(login.response,
+                lasso.SAML2_STATUS_CODE_NO_PASSIVE)
+        return finish_sso(request, login)
+
     #Deal with transient users
     transient_user = False
     # XXX: Deal with all kind of transient users
