@@ -321,6 +321,11 @@ class SPOptionsIdPPolicy(models.Model):
             default=app_settings.FEDERATION_MODE.get_default(app_settings))
     attributes = GenericRelation('SAMLAttribute')
 
+    objects = a2_managers.GetByNameManager()
+
+    def natural_key(self):
+        return (self.name,)
+
     class Meta:
         verbose_name = _('service provider options policy')
         verbose_name_plural = _('service provider options policies')
