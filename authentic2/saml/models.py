@@ -251,6 +251,11 @@ _("This IdP sends a transient NameID but you want a persistent behaviour for you
             verbose_name = _("Forward Single Logout requests"),
             default=True)
 
+    objects = a2_managers.GetByNameManager()
+
+    def natural_key(self):
+        return (self.name,)
+
     class Meta:
         verbose_name = _('identity provider options policy')
         verbose_name_plural = _('identity provider options policies')
