@@ -9,12 +9,13 @@ from django.db.models.query import QuerySet
 from django.dispatch import Signal
 from django.utils.timezone import now
 from django.utils.importlib import import_module
+from django.contrib.contenttypes.models import ContentType
 
 
 from model_utils import managers
 
 from . import lasso_helper
-from ..managers import GetBySlugQuerySet
+from ..managers import GetBySlugQuerySet, GenericManager
 
 federation_delete = Signal()
 
@@ -114,3 +115,19 @@ class GetByLibertyProviderManager(models.Manager):
             except LibertyProvider.DoesNotExist:
                 raise self.model.DoesNotExist
             return self.create(liberty_provider=liberty_provider)
+
+class SAMLAttributeManager(GenericManager):
+    def get_by_natural_key(self, ct_nk, provider_nk, name_format, name, friendly_name, attribute_name):
+        from .models import SAMLAttribute
+        try:
+            ct = ContentType.objects.get_by_natural_key(*ct_nk)
+        except ContentType.DoesNotExist:
+            raise SAMLAttribute.DoesNotExist
+        try:
+            provider_class = ct.model_class()
+            provider = provider_class.objects.get_by_natural_key(*provider_nk)
+        except provider_class.DoesNotExist:
+            raise SAMLAttribute.DoesNotExist
+        return self.get(content_type=ct, object_id=provider.pk,
+                name_format=name_format, name=name,
+                friendly_name=friendly_name, attribute_name=attribute_name)

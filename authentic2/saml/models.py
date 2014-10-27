@@ -338,7 +338,7 @@ class SAMLAttribute(models.Model):
             ('basic', 'Basic'),
             ('uri', 'URI'),
     )
-    objects = a2_managers.GenericManager()
+    objects = managers.SAMLAttributeManager()
 
     content_type = models.ForeignKey(ContentType,
             verbose_name=_('content type'))
@@ -405,6 +405,14 @@ class SAMLAttribute(models.Model):
         ctx = {self.attribute_name: 'coin'}
         return unicode(self.to_lasso_attribute(ctx).exportToXml(), 'utf-8')
 
+    def natural_key(self):
+        if not hasattr(self.provider, 'natural_key'):
+            return self.id
+        return (self.content_type.natural_key(), self.provider.natural_key(), self.name_format, self.name, self.friendly_name, self.attribute_name)
+
+    class Meta:
+        unique_together = (('content_type', 'object_id', 'name_format', 'name',
+            'friendly_name', 'attribute_name'),)
 
 
 class AuthorizationAttributeMap(models.Model):
