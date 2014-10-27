@@ -147,6 +147,11 @@ class LibertyProviderPolicy(models.Model):
             choices=SIGNATURE_VERIFY_HINT.items(),
             default=lasso.PROFILE_SIGNATURE_VERIFY_HINT_MAYBE)
 
+    objects = a2_managers.GetByNameManager()
+
+    def natural_key(self):
+        return (self.name,)
+
     def __unicode__(self):
         options = []
         options.append(u'AuthnRequest signature: %s' % SIGNATURE_VERIFY_HINT[self.authn_request_signature_check_hint])
