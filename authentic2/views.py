@@ -24,6 +24,7 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.http import (HttpResponseRedirect, HttpResponseForbidden,
     HttpResponse)
+from django.core.exceptions import PermissionDenied
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.cache import never_cache
 from django.contrib.auth.decorators import login_required
@@ -108,6 +109,11 @@ class EditProfile(UpdateView):
         kwargs['prefix'] = 'edit-profile'
         return kwargs
 
+    def dispatch(self, *args, **kwargs):
+        if settings.A2_PROFILE_CAN_EDIT_PROFILE:
+            return super(EditProfile, self).dispatch(*args, **kwargs)
+        else:
+            raise PermissionDenied
 
 edit_profile = decorators.prevent_access_to_transient_users(EditProfile.as_view())
 
@@ -173,6 +179,12 @@ class EmailChangeView(FormView):
                   'was sent to you. Please click on the '
                   'link contained inside.'))
         return super(EmailChangeView, self).form_valid(form)
+
+    def dispatch(self, *args, **kwargs):
+        if settings.A2_PROFILE_CAN_CHANGE_EMAIL:
+            return super(EmailChangeView, self).dispatch(*args, **kwargs)
+        else:
+            raise PermissionDenied
 
 email_change = decorators.prevent_access_to_transient_users(EmailChangeView.as_view())
 
@@ -368,6 +380,8 @@ class ProfileView(TemplateView):
             'frontends_block': blocks,
             'profile': profile,
             'allow_account_deletion': app_settings.A2_REGISTRATION_CAN_DELETE_ACCOUNT,
+            'allow_profile_edit': app_settings.A2_PROFILE_CAN_EDIT_PROFILE,
+            'allow_email_change': app_settings.A2_PROFILE_CAN_CHANGE_EMAIL,
         })
         return ctx
 

@@ -25,8 +25,12 @@
 {% endfor %}
 </dl>
 {% endif %}
+{% if allow_email_change %}
 <p><a href="{% url 'email-change' %}">{% trans "Change email" %}</a></p>
+{% endif %}
+{% if allow_profile_edit %}
 <p><a href="{% url 'profile_edit' %}">{% trans "Edit profile" %}</a></p>
+{% endif %}
 <p><a href="{% url 'delete_account' %}">{% trans "Delete profile" %}</a></p>
 </div>
 <h3>{% trans "Credentials" %}</h3>
