@@ -421,7 +421,6 @@ A2_AUTH_PASSWORD_ENABLE = to_boolean('AUTH_PASSWORD', default=True)
 SSLAUTH_ENABLE = to_boolean('AUTH_SSL', 
         default=to_boolean('SSLAUTH_ENABLE', default=False))
 A2_IDP_SAML2_ENABLE = to_boolean('IDP_SAML2', default=False)
-IDP_OPENID = to_boolean('IDP_OPENID', default=False)
 
 # extract any key starting with setting
 for key in os.environ:
@@ -588,9 +587,3 @@ if USE_DEBUG_TOOLBAR:
         INSTALLED_APPS += ('debug_toolbar',)
     except ImportError:
         warnings.warn("Debug toolbar missing, not loaded")
-
-if IDP_OPENID:
-    # RESTRICT_OPENID_RP = ["http://rp.example.com", ] # orequest.trust_root
-    INSTALLED_APPS += ('authentic2.idp.idp_openid',)
-    TEMPLATE_CONTEXT_PROCESSORS += ('authentic2.idp.idp_openid.context_processors.openid_meta',)
-    # OPENID_ACTIONS = {"http://rp.example.com" : 'my-template.html', }

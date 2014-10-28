@@ -5,7 +5,7 @@ from django.conf import settings
 
 from authentic2.utils import Service
 
-from . import models
+from . import models, app_settings
 
 
 logger = logging.getLogger(__name__)
@@ -20,8 +20,8 @@ class OpenIDBackend(object):
         for service_provider in q:
             actions = []
             actions.append(('go', 'GET', service_provider.trust_root, None))
-            if getattr(settings, 'OPENID_ACTIONS', None):
-                tpl = settings.OPENID_ACTIONS.get(service_provider.trust_root, None)
+            if app_settings.OPENID_ACTIONS:
+                tpl = app_settings.OPENID_ACTIONS.get(service_provider.trust_root, None)
                 if tpl:
                     actions.append(('template', tpl))
             actions.append(('unlink', 'GET', reverse('trustedroot_delete',

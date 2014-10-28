@@ -59,6 +59,7 @@ class CustomIndexDashboard(Dashboard):
                 'authentic2.models.AuthenticationEvent',
                 'authentic2.models.UserExternalId',
                 'authentic2.models.DeletedUser',
+                'authentic2.idp.idp_openid.models.*',
                 'django.contrib.sessions.*',
             ),
         ))

@@ -33,7 +33,9 @@ from openid.extensions.sreg import ns_uri as SREG_TYPE, SRegRequest, \
 from utils import get_store, oresponse_to_response
 from authentic2.utils import login_require, redirect
 from authentic2.constants import NONCE_FIELD_NAME
-import models
+from . import models
+from .decorators import openid_enabled
+
 
 logger = logging.getLogger('authentic.idp.idp_openid')
 
@@ -47,6 +49,7 @@ def check_exploded(exploded, request):
        or exploded.fragment
 
 @csrf_exempt
+@openid_enabled
 def openid_server(request):
     """
     This view is the actual OpenID server - running at the URL pointed to by
@@ -195,6 +198,7 @@ with sreg data %s' % (claimed_id, orequest.trust_root, user_data))
     logger.info('Returning OpenID response %s' % oresponse)
     return oresponse_to_response(server, oresponse)
 
+@openid_enabled
 def openid_xrds(request, identity=False, id=None):
     '''XRDS discovery page'''
     logger.debug('OpenID XRDS identity:%(identity)s id:%(id)s' % locals())
@@ -220,6 +224,7 @@ class DecideForm(forms.Form):
                     label=data_fields[str(field)], required=False)
         logger.info('3SREG request: %s' % self.fields)
 
+@openid_enabled
 def openid_decide(request):
     """
     The page that asks the user if they really want to sign in to the site, and
@@ -277,6 +282,7 @@ because no OpenID request is saved')
         'form': form,
     }, context_instance=RequestContext(request))
 
+@openid_enabled
 def openid_discovery(request, id):
     '''HTML discovery page'''
     xrds_url = request.build_absolute_uri(
@@ -293,3 +299,5 @@ class TrustedRootDelete(DeleteView):
     model = models.TrustedRoot
     success_url = '/'
     template_name = 'idp/openid/trustedroot_confirm_delete.html'
+
+openid_trustedroot_delete = openid_enabled(TrustedRootDelete.as_view())
