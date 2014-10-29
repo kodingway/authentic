@@ -98,6 +98,8 @@ _DEFAULTS = {
 
 _REQUIRED = ('url', 'basedn')
 _TO_ITERABLE = ('url', 'groupsu', 'groupstaff', 'groupactive')
+_VALID_CONFIG_KEYS = list(set(_REQUIRED).union(set(_DEFAULTS)))
+
 
 def get_connection(block, credentials=()):
     if not block['url']:
@@ -229,6 +231,12 @@ class LDAPBackend(object):
             blocks = (self._parse_simple_config(),)
         # First get our configuration into a standard format
         for block in blocks:
+            for key in block:
+                if not key in _VALID_CONFIG_KEYS:
+                    raise ImproperlyConfigured(
+                        ('"{}" : invalid LDAP_AUTH_SETTINGS key, '
+                        +'available are {}').format(key, _VALID_CONFIG_KEYS))
+
             for r in _REQUIRED:
                 if r not in block:
                     raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: missing required configuration option %r' % r)
