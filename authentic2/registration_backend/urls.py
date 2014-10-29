@@ -8,7 +8,7 @@ from django.views.generic.base import TemplateView
 from .. import app_settings
 
 from registration.backends.default.views import ActivationView
-
+from .. import decorators
 
 def get_form_class(form_class):
     module, form_class = form_class.rsplit('.', 1)
@@ -20,6 +20,10 @@ SET_PASSWORD_FORM_CLASS = get_form_class(
         app_settings.A2_REGISTRATION_SET_PASSWORD_FORM_CLASS)
 CHANGE_PASSWORD_FORM_CLASS = get_form_class(
         app_settings.A2_REGISTRATION_CHANGE_PASSWORD_FORM_CLASS)
+
+
+password_change_view = decorators.setting_enabled(
+    'A2_REGISTRATION_CAN_CHANGE_PASSWORD')(auth_views.password_change)
 
 
 urlpatterns = patterns('authentic2.registration_backend.views',
@@ -42,8 +46,7 @@ urlpatterns = patterns('authentic2.registration_backend.views',
                        url(r'^register/closed/$',
                            TemplateView.as_view(template_name='registration/registration_closed.html'),
                            name='registration_disallowed'),
-                       url(r'^password/change/$',
-                           auth_views.password_change,
+                       url(r'^password/change/$', password_change_view,
                            {'password_change_form': CHANGE_PASSWORD_FORM_CLASS},
                            name='auth_password_change'),
                        url(r'^password/change/done/$',

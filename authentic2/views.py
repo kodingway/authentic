@@ -410,8 +410,11 @@ def redirect_to_logout(request, next_page='/'):
 
 
 def login_password_profile(request):
-    return render_to_string('auth/login_password_profile.html', {},
-            RequestContext(request))
+    can_change_password = (app_settings.A2_REGISTRATION_CAN_CHANGE_PASSWORD
+                           and request.user.has_usable_password)
+    return render_to_string('auth/login_password_profile.html',
+                            {'can_change_password' : can_change_password},
+                            RequestContext(request))
 
 
 def redirect_to_login(request, next=None, nonce=None, keep_qs=False):

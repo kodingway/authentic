@@ -96,6 +96,7 @@ default_settings = dict(
                 definition='Default change password form'),
     A2_REGISTRATION_CAN_DELETE_ACCOUNT = Setting(default=True,
                 definition='Can user self delete their account and all their data'),
+    A2_REGISTRATION_CAN_CHANGE_PASSWORD = Setting(default=True, definition='Allow user to change its own password'),
     A2_PROFILE_CAN_CHANGE_EMAIL = Setting(default=True,
                 definition='Can user self change their email'),
     A2_PROFILE_CAN_EDIT_PROFILE = Setting(default=True,
