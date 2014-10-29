@@ -109,13 +109,8 @@ class EditProfile(UpdateView):
         kwargs['prefix'] = 'edit-profile'
         return kwargs
 
-    def dispatch(self, *args, **kwargs):
-        if settings.A2_PROFILE_CAN_EDIT_PROFILE:
-            return super(EditProfile, self).dispatch(*args, **kwargs)
-        else:
-            raise PermissionDenied
-
-edit_profile = decorators.prevent_access_to_transient_users(EditProfile.as_view())
+edit_profile = decorators.setting_enabled('A2_PROFILE_CAN_EDIT_PROFILE')(
+    decorators.prevent_access_to_transient_users(EditProfile.as_view()))
 
 
 def su(request, username, redirect_url='/'):
@@ -180,13 +175,8 @@ class EmailChangeView(FormView):
                   'link contained inside.'))
         return super(EmailChangeView, self).form_valid(form)
 
-    def dispatch(self, *args, **kwargs):
-        if settings.A2_PROFILE_CAN_CHANGE_EMAIL:
-            return super(EmailChangeView, self).dispatch(*args, **kwargs)
-        else:
-            raise PermissionDenied
-
-email_change = decorators.prevent_access_to_transient_users(EmailChangeView.as_view())
+email_change = decorators.setting_enabled('A2_PROFILE_CAN_CHANGE_EMAIL')(
+    decorators.prevent_access_to_transient_users((EmailChangeView.as_view())))
 
 class EmailChangeVerifyView(TemplateView):
     def get(self, request, *args, **kwargs):
