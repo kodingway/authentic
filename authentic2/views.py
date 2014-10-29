@@ -434,7 +434,7 @@ def redirect_to_login(request, next=None, nonce=None, keep_qs=False):
     qs = { REDIRECT_FIELD_NAME: next }
     if nonce is not None:
         qs.update({ constants.NONCE_FIELD_NAME: nonce })
-    return HttpResponseRedirect('/login?%s' % urlencode(qs))
+    return HttpResponseRedirect('%s?%s' % (reverse('auth_login'), urlencode(qs)))
 
 
 
