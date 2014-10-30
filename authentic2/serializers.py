@@ -136,16 +136,18 @@ def Deserializer(stream_or_string, **options):
         stream_or_string = stream_or_string.decode('utf-8')
     try:
         objects = json.loads(stream_or_string)
-        for obj in objects:
-            Model = _get_model(obj['model'])
-            if isinstance(obj['pk'], (tuple, list)):
-                try:
-                    o = Model.objects.get_by_natural_key(*obj['pk'])
-                except Model.DoesNotExist:
-                    obj['pk'] = None
-                else:
-                    obj['pk'] = o.pk
-        for obj in PythonDeserializer(objects, **options):
+        def handle_natural_keys():
+            for obj in objects:
+                Model = _get_model(obj['model'])
+                if isinstance(obj['pk'], (tuple, list)):
+                    try:
+                        o = Model.objects.get_by_natural_key(*obj['pk'])
+                    except Model.DoesNotExist:
+                        obj['pk'] = None
+                    else:
+                        obj['pk'] = o.pk
+                yield obj
+        for obj in PythonDeserializer(handle_natural_keys(), **options):
             yield obj
     except GeneratorExit:
         raise
