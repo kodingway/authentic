@@ -125,9 +125,10 @@ table.users tbody tr td:nth-child(2):hover {
 }
 
 .other_actions {
-  float: right;
-  position: relative;
+  position: absolute;
   max-width: 35%;
+  top: 15px;
+  right: 15px;
 }
 
 .other_actions input[type=submit] {
