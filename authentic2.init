@@ -21,26 +21,27 @@ LOG_DIR=/var/log/$NAME
 PIDFILE=$PID_DIR/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 CTL=/usr/bin/$NAME-ctl
+BIND=unix:$PID_DIR/$NAME.sock
 
 USER=authentic
 GROUP=authentic
-
-DAEMON_ARGS="--pid $PIDFILE \
---user $USER --group $GROUP \
---daemon \
---access-logfile $LOG_DIR/gunicorn-access.log \
---log-file $LOG_DIR/gunicorn-error.log \
---bind=unix:$PID_DIR/$NAME.sock \
---workers=10 \
---worker-class=sync \
---timeout=60 \
-authentic2.wsgi:application"
 
 # Exit if the package is not installed
 [ -x $DAEMON ] || exit 0
 
 # Read configuration variable file if it is present
 [ -r /etc/default/$NAME ] && . /etc/default/$NAME
+
+DAEMON_ARGS="--pid $PIDFILE \
+--user $USER --group $GROUP \
+--daemon \
+--access-logfile $LOG_DIR/gunicorn-access.log \
+--log-file $LOG_DIR/gunicorn-error.log \
+--bind=$BIND \
+--workers=10 \
+--worker-class=sync \
+--timeout=60 \
+authentic2.wsgi:application"
 
 # Load confg
 . /etc/authentic2/authentic.conf
