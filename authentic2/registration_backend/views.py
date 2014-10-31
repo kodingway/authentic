@@ -4,6 +4,7 @@ from datetime import datetime
 from django.shortcuts import redirect, render
 from django.utils.translation import ugettext as _
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.sites.models import Site, RequestSite
 from django.contrib.auth.models import BaseUserManager, Group
 from django.conf import settings
@@ -103,17 +104,12 @@ class ActivationView(TemplateView):
             new_user.groups = groups
         return new_user
 
-class DeleteView(TemplateView):
-    def get(self, request, *args, **kwargs):
-        next_url = request.build_absolute_uri(request.META.get('HTTP_REFERER')\
-                                              or request.GET.get('next_url'))
-        if not app_settings.A2_REGISTRATION_CAN_DELETE_ACCOUNT:
-            return redirect(next_url)
-        return render(request, 'registration/delete_account.html')
-
-    def post(self, request, *args, **kwargs):
-        next_url = request.build_absolute_uri(request.META.get('HTTP_REFERER')\
-                                              or request.GET.get('next_url'))
+@login_required
+def delete(request, next_url='/'):
+    next_url = request.build_absolute_uri(request.META.get('HTTP_REFERER') or next_url)
+    if not app_settings.A2_REGISTRATION_CAN_DELETE_ACCOUNT:
+        return redirect(next_url)
+    if request.method == 'POST':
         if 'submit' in request.POST:
             models.DeletedUser.objects.delete_user(request.user)
             logger.info(u'deletion of account %s requested' % request.user)
@@ -121,3 +117,4 @@ class DeleteView(TemplateView):
             return redirect('auth_logout')
         else:
             return redirect(next_url)
+    return render(request, 'registration/delete_account.html')
