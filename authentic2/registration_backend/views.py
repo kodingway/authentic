@@ -37,9 +37,9 @@ class RegistrationView(FormView):
 
         activation_key = signing.dumps(form.cleaned_data)
         ctx_dict = {'activation_key': activation_key,
+                    'user': form.cleaned_data,
                     'expiration_days': EXPIRATION,
                     'site': site}
-        ctx_dict.update(form.cleaned_data)
 
         subject = render_to_string('registration/activation_email_subject.txt',
                                    ctx_dict)
