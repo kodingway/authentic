@@ -105,4 +105,12 @@ LibertySessionManager = managers.PassThroughManager \
 
 class GetByLibertyProviderManager(models.Manager):
     def get_by_natural_key(self, slug):
-        return self.get(liberty_provider__slug=slug)
+        from .models import LibertyProvider
+        try:
+            return self.get(liberty_provider__slug=slug)
+        except self.model.DoesNotExist:
+            try:
+                liberty_provider = LibertyProvider.objects.get(slug=slug)
+            except LibertyProvider.DoesNotExist:
+                raise self.model.DoesNotExist
+            return self.create(liberty_provider=liberty_provider)
