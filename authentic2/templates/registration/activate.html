@@ -7,23 +7,18 @@
 
 {% block content %}
 
-{% if activated %}
-<p>{% trans "Account successfully activated. You are now logged in." %}</p>
+{% if account %}
 
-{% if next_url %}
-<a href="{{ next_url }}">
-{% else %}
-<a href="{% url 'auth_homepage' %}">
-{% endif %}
-{% trans "Continue" %}</a>
+<p>{% trans "Account successfully activated" %}</p>
+
+<p><a href="{% url 'auth_login' %}">{% trans "Log in" %}</a></p>
 
 {% else %}
+
 <p>{% trans "Account activation failed" %}</p>
-
 {% if expired %}
 <p>{% trans "Your activation key is expired" %}</p>
 {% endif %}
-
 {% if existing_user %}
 <p>{% trans "A user with that username already exists." %}</p>
 {% endif %}
