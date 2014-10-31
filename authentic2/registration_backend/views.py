@@ -6,7 +6,6 @@ from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.contrib.sites.models import Site, RequestSite
 from django.contrib.auth.models import BaseUserManager, Group
-from django.contrib.auth import authenticate, login
 from django.conf import settings
 from django.db.models import FieldDoesNotExist
 from django.db import IntegrityError
@@ -61,10 +60,8 @@ class ActivationView(TemplateView):
     def get(self, request, *args, **kwargs):
         context = {}
         try:
-            user = authenticate(**self.register(kwargs['activation_key']))
-            login(request, user)
-            messages.info(request, _('Your account has been successfully activated. You are now logged in.'))
-            return redirect('auth_homepage')
+            self.register(kwargs['activation_key'])
+            return redirect('registration_activation_complete')
         except signing.SignatureExpired:
             context['expired'] = True
         except IntegrityError:
@@ -104,8 +101,7 @@ class ActivationView(TemplateView):
                 group, created = Group.objects.get_or_create(name=name)
                 groups.append(group)
             new_user.groups = groups
-        return {'username': registration_fields['username'],
-                'password': registration_fields['password1']}
+        return new_user
 
 class DeleteView(TemplateView):
     def get(self, request, *args, **kwargs):
