@@ -374,17 +374,20 @@ class UserAttributeProfile(models.Model):
         return 0
 
     def remove_data(self, position):
-        try:
-            l = loads(str(self.data))
-            res = l.pop(position)
-            self.data = dumps(l)
-            return res
-        except IndexError:
-            return None
+        if self.data:
+            try:
+                l = loads(str(self.data))
+                res = l.pop(position)
+                self.data = dumps(l)
+                return res
+            except IndexError:
+                pass
+        return None
 
     def get_all_data(self):
-        l = loads(str(self.data))
-        return l
+        if self.data:
+            return loads(str(self.data))
+        return []
 
     def get_all_data_to_dic(self):
         '''
