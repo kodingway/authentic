@@ -4,6 +4,7 @@ from datetime import datetime
 from django.shortcuts import redirect, render
 from django.utils.translation import ugettext as _
 from django.contrib import messages
+from django.contrib.sites.models import Site, RequestSite
 from django.contrib.auth.models import BaseUserManager, Group
 from django.contrib.auth import authenticate, login
 from django.conf import settings
@@ -29,10 +30,15 @@ class RegistrationView(FormView):
     template_name = 'registration/registration_form.html'
 
     def form_valid(self, form):
+        if Site._meta.installed:
+            site = Site.objects.get_current()
+        else:
+            site = RequestSite(self.request)
+
         activation_key = signing.dumps(form.cleaned_data)
         ctx_dict = {'activation_key': activation_key,
                     'expiration_days': EXPIRATION,
-                    'site': self.request.get_host()}
+                    'site': site}
         ctx_dict.update(form.cleaned_data)
 
         subject = render_to_string('registration/activation_email_subject.txt',
