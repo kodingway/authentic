@@ -2,6 +2,7 @@ Django<1.6
 south>=0.8.4,<0.9
 requests
 django-model-utils
+django-registration>=1
 django-debug-toolbar>=1.2,<1.3
 --allow-external django-admin-tools
 --allow-unverified django-admin-tools

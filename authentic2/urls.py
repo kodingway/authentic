@@ -18,8 +18,6 @@ not_homepage_patterns = patterns('authentic2.views',
     url(r'^accounts/', include('authentic2.profile_urls')),
 )
 
-
-
 not_homepage_patterns += patterns('',
     url(r'^accounts/', include(app_settings.A2_REGISTRATION_URLCONF)),
     url(r'^admin/', include(admin.site.urls)),

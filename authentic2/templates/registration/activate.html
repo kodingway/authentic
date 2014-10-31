@@ -16,12 +16,6 @@
 {% else %}
 
 <p>{% trans "Account activation failed" %}</p>
-{% if expired %}
-<p>{% trans "Your activation key is expired" %}</p>
-{% endif %}
-{% if existing_user %}
-<p>{% trans "A user with that username already exists." %}</p>
-{% endif %}
 
 {% endif %}
 
