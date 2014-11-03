@@ -92,8 +92,12 @@ _DEFAULTS = {
     'external_id_tuples': (('dn:noquote',),),
     # keep password around so that Django authentification also work
     'clean_external_id_on_update': True,
+    # Conserve the passsword in the Django User object
     'keep_password': True,
+    # Only authenticate users coming from the corresponding realm
     'limit_to_realm': True,
+    # Assign users mandatorily to some groups
+    'set_mandatory_groups': (),
 }
 
 _REQUIRED = ('url', 'basedn')
