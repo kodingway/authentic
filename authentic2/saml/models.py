@@ -361,6 +361,10 @@ class SAMLAttribute(models.Model):
             blank=True)
     attribute_name = models.CharField(max_length=64,
             verbose_name=_('attribute name'))
+    enabled = models.BooleanField(
+            verbose_name=_('enabled'),
+            default=True,
+            blank=True)
 
     def clean(self):
         super(SAMLAttribute, self).clean()
