@@ -186,8 +186,10 @@ def fill_assertion(request, saml_request, assertion, provider_id, nid_format):
 
 
 def add_attributes(assertion, provider, policy, ctx):
-    qs = SAMLAttribute.objects.for_generic_object(provider)
-    qs |= SAMLAttribute.objects.for_generic_object(policy)
+    qs = SAMLAttribute.objects.for_generic_object(provider) \
+            .filter(enabled=True)
+    qs |= SAMLAttribute.objects.for_generic_object(policy) \
+            .filter(enabled=True)
     qs = qs.distinct()
 
     if not assertion.attributeStatement:
