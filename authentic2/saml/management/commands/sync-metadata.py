@@ -117,15 +117,15 @@ def load_one_entity(tree, options, sp_policy=None, idp_policy=None, afp=None):
         options['count'] = options.get('count', 0) + 1
         if idp:
             identity_provider, created = LibertyIdentityProvider.objects.get_or_create(
-                    liberty_provider=provider)
-            identity_provider.enabled = True
+                    liberty_provider=provider,
+                    defaults={'enabled': not options['create-disabled']})
             if idp_policy:
                 identity_provider.idp_options_policy = idp_policy
             identity_provider.save()
         if sp:
             service_provider, created = LibertyServiceProvider.objects.get_or_create(
-                    liberty_provider=provider)
-            service_provider.enabled = True
+                    liberty_provider=provider,
+                    defaults={'enabled': not options['create-disabled']})
             if sp_policy:
                 service_provider.sp_options_policy = sp_policy
             service_provider.save()
@@ -219,7 +219,13 @@ each provider. The following schema is supported:
     </AttributeFilterPolicy>
 
 Any other kind of attribute filter policy is unsupported.
-'''))
+'''),
+        make_option('--create-disabled',
+            dest='create-disabled',
+            action='store_true',
+            default=False,
+            help='When creating a new provider, make it disabled by default.'),
+        )
 
     args = '<metadata_file>'
     help = 'Load the specified SAMLv2 metadata file'
