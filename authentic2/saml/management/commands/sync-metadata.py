@@ -1,6 +1,7 @@
 from optparse import make_option
 import sys
 import xml.etree.ElementTree as etree
+import os
 
 import lasso
 from django.core.management.base import BaseCommand, CommandError
@@ -8,7 +9,8 @@ from django.db import transaction
 from django.template.defaultfilters import slugify
 
 from authentic2.saml.models import *
-
+from authentic2.saml.shibboleth.afp_parser import parse_attribute_filters_file
+from authentic2.attribute_aggregator.core import get_definition_from_alias, get_full_definition
 
 SAML2_METADATA_UI_HREF = 'urn:oasis:names:tc:SAML:metadata:ui'
 
@@ -31,12 +33,31 @@ DISPLAY_NAME = mdui_element_name('DisplayName')
 ENTITY_ID = 'entityID'
 PROTOCOL_SUPPORT_ENUMERATION = 'protocolSupportEnumeration'
 
+def build_saml_attribute_kwargs(provider, name):
+    '''Build SAML attribute following the LDAP profile'''
+    content_type = ContentType.objects.get_for_model(LibertyProvider)
+    object_id = provider.pk
+    definition = get_full_definition(name)
+    if not definition:
+        definition = get_definition_from_alias(name)
+    if not definition:
+        print >>sys.stderr, 'Unable to find a definition for attribute', name, provider
+        return {}
+    oid = definition['oid']
+    return {
+        'content_type': content_type,
+        'object_id': object_id,
+        'name_format': 'uri',
+        'friendly_name': name,
+        'name': 'urn:oid:%s' % oid,
+    }
+
 def check_support_saml2(tree):
     if tree is not None and lasso.SAML2_PROTOCOL_HREF in tree.get(PROTOCOL_SUPPORT_ENUMERATION):
         return True
     return False
 
-def load_one_entity(tree, options, sp_policy=None, idp_policy=None):
+def load_one_entity(tree, options, sp_policy=None, idp_policy=None, afp=None):
     '''Load or update an EntityDescriptor into the database'''
     entity_id = tree.get(ENTITY_ID)
     name = None
@@ -104,6 +125,25 @@ def load_one_entity(tree, options, sp_policy=None, idp_policy=None):
             if sp_policy:
                 service_provider.sp_options_policy = sp_policy
             service_provider.save()
+        if afp and provider.entity_id in afp:
+            pks = []
+            for name in afp[provider.entity_id]:
+                kwargs = build_saml_attribute_kwargs(provider, name)
+                defaults = {
+                    'attribute_name': name,
+                }
+                # create object with default attribute mapping to the same name
+                # as the attribute if no SAMLAttribute model already exists,
+                # otherwise do nothing
+                try:
+                    attribute, created = SAMLAttribute.objects.get_or_create(defaults=defaults,
+                            **kwargs)
+                    pks.append(attribute.pk)
+                except SAMLAttribute.MultipleObjectsReturned:
+                    pks.extend(SAMLAttribute.objects.filter(**kwargs).values_list('pk', flat=True))
+            if options.get('reset-attributes'):
+                # remove attributes not matching the filters
+                SAMLAttribute.objects.for_generic_object(provider).exclude(pk__in=pks).delete()
 
 class Command(BaseCommand):
     '''Load SAMLv2 metadata file into the LibertyProvider, LibertyServiceProvider
@@ -146,7 +186,30 @@ class Command(BaseCommand):
             help='Tag the loaded providers with the given source string, \
 existing providers with the same tag will be removed if they do not exist\
  anymore in the metadata file.'),
-        )
+        make_option('--reset-attributes',
+            action='store_true',
+            default=False,
+            help='When loading shibboleth attribute filter policies, start by '
+                 'removing all existing SAML attributes for each provider'),
+        make_option('--shibboleth-attribute-filter-policy',
+            dest='attribute-filter-policy',
+            default=None,
+            help='''Path to a file containing an Attribute Filter Policy for the
+Shibboleth IdP, that will be used to configure SAML attributes for
+each provider. The following schema is supported:
+
+    <AttributeFilterPolicy id="<whatever>">
+        <PolicyRequirementRule xsi:type="basic:AttributeRequesterString" value="<entityID>" >
+        [
+          <AttributeRule attributeID="<attribute-name>">
+                <PermitValueRule xsi:type="basic:ANY"/>
+          </AttributeRule>
+        ]*
+    </AttributeFilterPolicy>
+
+Any other kind of attribute filter policy is unsupported.
+'''))
+
     args = '<metadata_file>'
     help = 'Load the specified SAMLv2 metadata file'
 
@@ -173,6 +236,14 @@ existing providers with the same tag will be removed if they do not exist\
             if doc.getroot().tag == ENTITY_DESCRIPTOR_TN:
                 load_one_entity(doc.getroot(), options)
             elif doc.getroot().tag == ENTITIES_DESCRIPTOR_TN:
+                afp = None
+                if 'attribute-filter-policy' in options and options['attribute-filter-policy']:
+                    path = options['attribute-filter-policy']
+                    if not os.path.isfile(path):
+                        raise CommandError(
+                            'No attribute filter policy file %s' % path)
+                    afp = parse_attribute_filters_file(
+                        options['attribute-filter-policy'])
                 sp_policy = None
                 if 'sp_policy' in options and options['sp_policy']:
                     sp_policy_name = options['sp_policy']
@@ -202,7 +273,9 @@ existing providers with the same tag will be removed if they do not exist\
                     entity_descriptors = doc.getroot().findall(ENTITY_DESCRIPTOR_TN)
                 for entity_descriptor in entity_descriptors:
                     try:
-                        load_one_entity(entity_descriptor, options, sp_policy=sp_policy, idp_policy=idp_policy)
+                        load_one_entity(entity_descriptor, options,
+                                sp_policy=sp_policy, idp_policy=idp_policy,
+                                afp=afp)
                         loaded.append(entity_descriptor.get(ENTITY_ID))
                     except Exception, e:
                         raise
