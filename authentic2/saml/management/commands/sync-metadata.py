@@ -7,6 +7,7 @@ import lasso
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from django.template.defaultfilters import slugify
+from django.utils.translation import gettext as _
 
 from authentic2.saml.models import *
 from authentic2.saml.shibboleth.afp_parser import parse_attribute_filters_file
@@ -44,7 +45,6 @@ def build_saml_attribute_kwargs(provider, name):
         definition = get_definition_from_alias(name)
         attribute_name = get_def_name_from_alias(name)
     if not definition:
-        print >>sys.stderr, 'Unable to find a definition for attribute', name, provider
         return {}, None
     oid = definition['oid']
     return {
@@ -62,6 +62,7 @@ def check_support_saml2(tree):
 
 def load_one_entity(tree, options, sp_policy=None, idp_policy=None, afp=None):
     '''Load or update an EntityDescriptor into the database'''
+    verbosity = int(options['verbosity'])
     entity_id = tree.get(ENTITY_ID)
     name = None
     # try mdui nodes
@@ -101,7 +102,7 @@ def load_one_entity(tree, options, sp_policy=None, idp_policy=None, afp=None):
         # get or create the provider
         provider, created = LibertyProvider.objects.get_or_create(entity_id=entity_id,
                 protocol_conformance=3, defaults={'name': name, 'slug': slug})
-        if options['verbosity'] == '2':
+        if verbosity > '1':
             if created:
                 what = 'Creating'
             else:
@@ -132,6 +133,10 @@ def load_one_entity(tree, options, sp_policy=None, idp_policy=None, afp=None):
             pks = []
             for name in afp[provider.entity_id]:
                 kwargs, attribute_name = build_saml_attribute_kwargs(provider, name)
+                if not kwargs:
+                    if verbosity > 1:
+                        print >>sys.stderr, _('Unable to find an LDAP definition for attribute %s on %s') % (name, provider)
+                    continue
                 attribute_name = attribute_name.lower()
                 defaults = {
                     'attribute_name': attribute_name,
@@ -142,6 +147,8 @@ def load_one_entity(tree, options, sp_policy=None, idp_policy=None, afp=None):
                 try:
                     attribute, created = SAMLAttribute.objects.get_or_create(defaults=defaults,
                             **kwargs)
+                    if created and verbosity > 1:
+                        print _('Created new attribute %s for %s') % (name, provider)
                     pks.append(attribute.pk)
                 except SAMLAttribute.MultipleObjectsReturned:
                     pks.extend(SAMLAttribute.objects.filter(**kwargs).values_list('pk', flat=True))
@@ -219,6 +226,7 @@ Any other kind of attribute filter policy is unsupported.
 
     @transaction.commit_manually
     def handle(self, *args, **options):
+        verbosity = int(options['verbosity'])
         source = options['source']
         try:
             if not args:
@@ -253,23 +261,31 @@ Any other kind of attribute filter policy is unsupported.
                     sp_policy_name = options['sp_policy']
                     try:
                         sp_policy = SPOptionsIdPPolicy.objects.get(name=sp_policy_name)
-                        print 'Service providers are set with the following SAML2 \
-                            options policy: %s' % sp_policy
+                        if verbosity > 1:
+                            print 'Service providers are set with the following SAML2 \
+                                options policy: %s' % sp_policy
                     except:
-                        print 'SAML2 service provider options policy with name %s not found' % sp_policy_name
+                        if verbosity > 0:
+                            print >>sys.stderr, _('SAML2 service provider options policy with name %s not found') % sp_policy_name
+                            raise CommandError()
                 else:
-                    print 'No SAML2 service provider options policy provided'
+                    if verbosity > 1:
+                        print 'No SAML2 service provider options policy provided'
                 idp_policy = None
                 if 'idp_policy' in options and options['idp_policy']:
                     idp_policy_name = options['idp_policy']
                     try:
                         idp_policy = IdPOptionsSPPolicy.objects.get(name=idp_policy_name)
-                        print 'Identity providers are set with the following SAML2 \
-                            options policy: %s' % idp_policy
+                        if verbosity > 1:
+                            print 'Identity providers are set with the following SAML2 \
+                                options policy: %s' % idp_policy
                     except:
-                        print 'SAML2 identity provider options policy with name %s not found' % idp_policy_name
+                        if verbosity > 0:
+                            print >>sys.stderr, _('SAML2 identity provider options policy with name %s not found') % idp_policy_name
+                            raise CommandError()
                 else:
-                    print 'No SAML2 identity provider options policy provided'
+                    if verbosity > 1:
+                        print _('No SAML2 identity provider options policy provided')
                 loaded = []
                 if doc.getroot().tag == ENTITY_DESCRIPTOR_TN:
                     entity_descriptors = [ doc.getroot() ]
@@ -282,12 +298,11 @@ Any other kind of attribute filter policy is unsupported.
                                 afp=afp)
                         loaded.append(entity_descriptor.get(ENTITY_ID))
                     except Exception, e:
-                        raise
-                        entity_id = entity_descriptor.get(ENTITY_ID)
-                        if options['ignore-errors']:
-                            print >> sys.stderr, 'Unable to load EntityDescriptor for %s: %s' % (entity_id, str(e))
-                        else:
-                            raise CommandError('EntityDescriptor loading: %s' % str(e))
+                        if not options['ignore-errors']:
+                            raise
+                        if verbosity > 0:
+                            print >>sys.stderr, _('Failed to load entity descriptor for %s') % entity_descriptor.get(ENTITY_ID)
+                        raise CommandError()
                 if options['source']:
                     if options['delete']:
                         print 'Finally delete all providers for source: %s...' % source
@@ -296,7 +311,8 @@ Any other kind of attribute filter policy is unsupported.
                         to_delete = LibertyProvider.objects.filter(federation_source=source)\
                                 .exclude(entity_id__in=loaded)
                         for provider in to_delete:
-                            print 'Delete obsolete provider %s' % provider.entity_id
+                            if verbosity > 1:
+                                print _('Deleted obsolete provider %s') % provider.entity_id
                             provider.delete()
             else:
                 raise CommandError('%s is not a SAMLv2 metadata file' % metadata_file)
@@ -306,4 +322,5 @@ Any other kind of attribute filter policy is unsupported.
         else:
             transaction.commit()
         if not options.get('delete'):
-            print 'Loaded', options.get('count', 0), 'providers'
+            if verbosity > 1:
+                print 'Loaded', options.get('count', 0), 'providers'
