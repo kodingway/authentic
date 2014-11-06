@@ -1,6 +1,76 @@
 NEWS
 ====
 
+2.1.8 - Movember 6th 2014
+-------------------------
+
+101 commits,  114 files changed, 1778 insertions(+), 2110 deletions(-)
+
+- full support for natural keys to SAML models
+- new setting key to disable profile edit, password change and email change
+	views
+- new decorator setting_enabled to deactivate a view based on a setting
+- new urlpatterns decorator required to wrapp all view in an urlpatterns with a
+	decorator
+- validation of LDAP setting keys: it stops when an unknown key is used
+- validate DNS in email fields, for profile edit and registration
+- removed auth2_openid idp backend
+- lot of improvements to error management in SAML idp
+- default logging configuration now log the function names
+- add CSV export feature to new manager
+- LDAP user passwords are now stored in the session, no need for a shared cache
+	anymore
+- authentic2 version is now available in templates in the variable AUTHENTIC2_VERSION
+- tracebacks during cleaning of models are now logged
+- idp sso can be initiated using a GET
+
+2.1.7 - August 21th 2014
+------------------------
+
+21 commits, 50 files changed, 3153 insertions(+), 233 deletions(-)
+
+- new manager for users and groups on /manage
+- simple password policy validation on registration and profile update
+- password authentication can be disabled
+
+2.1.6 - August 5th 2014
+-----------------------
+
+29 commits, 23 files changed, 473 insertions(+), 166 deletions(-)
+
+69b4da5 settings: do not produce duplicate log when using DEBUG_LOG setting
+599073c settings: uniformize use of to_boolean for boolean settings
+bcc592a settings: add support for y, yes, n, no values to the to_boolean() parser
+8fcbcda backends/ldap_backend: do not fail when LDAP_AUTH_SETTINGS is not defined
+fed533c backends/ldap_backend: convert attributes name to str
+7aa5332 attributes_ng/sources: add an ldap source
+6f2fc98 models: fix AttributeError in UserExternalId.__repr__
+4930227 compat: add work-around for Django < 1.8 and commit_on_success
+e8a1f0a auth2_auth/migrations: protect data modifying code with "if not db.dry_run"
+bdcf55b backends/ldap_backend: add legacy field mapping to attributes to import
+6cb5602 settings: don't print "Debugging mode is active"
+adda44a settings: allow to override field names in A2_PROFILE_FIELDS and A2_REGISTRATION_FIELDS
+e3135d4 settings: set LOCALE_PATHS
+b056b26 views: if A2_PROFILE_FIELDS is empty, use A2_REGISTRATION_FIELDS completed with extra attributes
+c48796b views: in profile view filter out empty attribute values
+9ae7590 backends/models_backend: filter user email case-insensitively
+d2ccb7e views: refactor profile view, use CBV, and honor A2_PROFILE_FIELDS
+e8c49e5 views: return to profile page after validating an email change
+c3fa0ac views: return to profile after requesting an email change
+8673268 saml: SAMLAttribute.attribute_name must not be constrained at the model level
+3a25ebc saml/models: add natural key to LibertyFederation
+eeec701 saml/models: add natural keys to LibertyServiceProvider and LibertyIdentityProvider
+1c3c922 settings: import A2_ACCEPT_EMAIL_AUTHENTICATION from environment
+45135ff settings: load all custom password hashers
+8f0db6e hashers: always convert OpenLDAP hash algo to uppercase
+ce67ec4 commands: add new command load-ldif
+34778e3 saml/admin: fix missing blank value for SAMLAttribute.attribute_name
+e025d56 l10n: change translation of "Account activation failed" (#5144)
+93ab270 views: do not use django.contrib.sites in the email change view
+
+2.1.5 - skipped
+---------------
+
 2.1.4 - July 15th 2014
 ----------------------
 
