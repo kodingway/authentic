@@ -2280,6 +2280,15 @@ ATTRIBUTE_MAPPING = {
     "syntax": "1.3.6.1.4.1.1466.115.121.1.15{128}",
 },
 
+#SupAnn version 2009.6
+#http://www.cru.fr/_media/documentation/supann/supann_2009.schema.txt
+"mailForwardingAddress": {
+    "oid": "2.16.840.1.113730.3.1.17",
+    "display_name": "mailForwardingAddress",
+    "type": "http://www.w3.org/2001/XMLSchema#string",
+    "syntax": "1.3.6.1.4.1.1466.115.121.1.15{128}",
+},
+
 "role": {
     "oid": "1.3.6.1.4.1.36560.42.1",
     "display_name": "Role",
