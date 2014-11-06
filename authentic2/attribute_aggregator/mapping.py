@@ -2289,6 +2289,22 @@ ATTRIBUTE_MAPPING = {
     "syntax": "1.3.6.1.4.1.1466.115.121.1.15{128}",
 },
 
+# macedir.org for eduGain
+"schacHomeOrganization": {
+        "oid": "1.3.6.1.4.1.25178.1.2.9",
+        "display_name": "The persons home organization using the domain of the organization",
+        "type": "http://www.w3.org/2001/XMLSchema#string",
+        "syntax": "1.3.6.1.4.1.1466.115.121.1.15",
+},
+
+# macedir .org or eduGain
+"schacHomeOrganizationType": {
+        "oid": "1.3.6.1.4.1.25178.1.2.10",
+        "display_name": "Identifies the type of organisation specified in the person's schacHomeOrganization attribute.",
+        "type": "http://www.w3.org/2001/XMLSchema#string",
+        "syntax": "1.3.6.1.4.1.1466.115.121.1.15",
+},
+
 "role": {
     "oid": "1.3.6.1.4.1.36560.42.1",
     "display_name": "Role",
