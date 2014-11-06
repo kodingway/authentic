@@ -131,7 +131,7 @@ do_migrate() {
 
 do_collectstatic() {
     log_action_msg "Collecting static files .."
-    su $USER -p -c "$CTL collectstatic -l --noinput"
+    su $USER -p -c "$CTL collectstatic --noinput"
     log_action_msg ".. done"
 }
 
