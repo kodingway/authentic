@@ -1212,10 +1212,10 @@ ATTRIBUTE_MAPPING = {
 },
 
 #Extracted from openldap schema /etc/ldap/schema/core.ldif
-"gn": {
+"givenName": {
     "oid": "2.5.4.42",
     "display_name": _("First name") + "(gn givenName)",
-    "alias": ['givenName'],
+    "alias": ['gn'],
     "profile_field_name": 'first_name',
     "type": "http://www.w3.org/2001/XMLSchema#string",
     "namespaces": {
