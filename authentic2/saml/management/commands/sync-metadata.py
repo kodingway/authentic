@@ -10,7 +10,8 @@ from django.template.defaultfilters import slugify
 
 from authentic2.saml.models import *
 from authentic2.saml.shibboleth.afp_parser import parse_attribute_filters_file
-from authentic2.attribute_aggregator.core import get_definition_from_alias, get_full_definition
+from authentic2.attribute_aggregator.core import (get_definition_from_alias,
+        get_full_definition, get_def_name_from_alias)
 
 SAML2_METADATA_UI_HREF = 'urn:oasis:names:tc:SAML:metadata:ui'
 
@@ -37,12 +38,14 @@ def build_saml_attribute_kwargs(provider, name):
     '''Build SAML attribute following the LDAP profile'''
     content_type = ContentType.objects.get_for_model(LibertyProvider)
     object_id = provider.pk
+    attribute_name = name
     definition = get_full_definition(name)
     if not definition:
         definition = get_definition_from_alias(name)
+        attribute_name = get_def_name_from_alias(name)
     if not definition:
         print >>sys.stderr, 'Unable to find a definition for attribute', name, provider
-        return {}
+        return {}, None
     oid = definition['oid']
     return {
         'content_type': content_type,
@@ -50,7 +53,7 @@ def build_saml_attribute_kwargs(provider, name):
         'name_format': 'uri',
         'friendly_name': name,
         'name': 'urn:oid:%s' % oid,
-    }
+    }, attribute_name
 
 def check_support_saml2(tree):
     if tree is not None and lasso.SAML2_PROTOCOL_HREF in tree.get(PROTOCOL_SUPPORT_ENUMERATION):
@@ -128,9 +131,10 @@ def load_one_entity(tree, options, sp_policy=None, idp_policy=None, afp=None):
         if afp and provider.entity_id in afp:
             pks = []
             for name in afp[provider.entity_id]:
-                kwargs = build_saml_attribute_kwargs(provider, name)
+                kwargs, attribute_name = build_saml_attribute_kwargs(provider, name)
+                attribute_name = attribute_name.lower()
                 defaults = {
-                    'attribute_name': name,
+                    'attribute_name': attribute_name,
                 }
                 # create object with default attribute mapping to the same name
                 # as the attribute if no SAMLAttribute model already exists,
