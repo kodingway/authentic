@@ -294,7 +294,7 @@ class LDAPBackend(object):
                 elif isinstance(block[key], dict):
                     newdict = {}
                     for subkey in block[key]:
-                        newdict[subkey.lower()] = block[subkey]
+                        newdict[subkey.lower()] = block[key][subkey]
                     block[key] = newdict
                 else:
                     raise NotImplementedError('LDAP setting %r cannot be '
