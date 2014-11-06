@@ -33,6 +33,8 @@ recursive-include authentic2 README  xrds.xml *.txt yadis.xrdf
 # gadjo submodule
 recursive-include authentic2/manager/vendor/gadjo *
 
+recursive-include samples *
+
 include doc/*.rst
 include doc/pictures/*
 include COPYING NEWS README.rst AUTHORS.txt
