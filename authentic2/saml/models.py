@@ -370,7 +370,7 @@ class SAMLAttribute(models.Model):
     def name_format_uri(self):
         if self.name_format == 'basic':
             return lasso.SAML2_ATTRIBUTE_NAME_FORMAT_BASIC
-        elif self.name.format == 'uri':
+        elif self.name_format == 'uri':
             return lasso.SAML2_ATTRIBUTE_NAME_FORMAT_URI
         else:
             raise NotImplementedError
