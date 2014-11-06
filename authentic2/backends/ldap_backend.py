@@ -607,6 +607,8 @@ class LDAPBackend(object):
         for external_id_tuple in block['external_id_tuples']:
             attributes.update(cls.attribute_name_from_external_id_tuple(
                 external_id_tuple))
+        for from_at, to_at in block['attribute_mappings']:
+            attributes.add(to_at)
         return set(map(str.lower, map(str, attributes)))
 
     @classmethod
