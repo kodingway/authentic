@@ -276,6 +276,8 @@ class LDAPBackend(object):
                 if isinstance(block[i], basestring):
                     block[i] = (block[i],)
             # lowercase LDAP attribute names
+            block['external_id_tuples'] = map(lambda t: map(str.lower, t), block['external_id_tuples'])
+            block['attribute_mappings'] = map(lambda t: map(str.lower, t), block['attribute_mappings'])
             for key in _TO_LOWERCASE:
                 # we handle strings, list of strings and list of list or tuple whose first element is a string
                 if isinstance(block[key], basestring):
