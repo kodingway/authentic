@@ -361,7 +361,10 @@ class LDAPBackend(object):
                             authz_ids.append(utf8_username)
                         elif block['user_filter']:
                             try:
-                                query = filter_format(block['user_filter'], (utf8_username,))
+                                # allow multiple occurences of the username in the filter
+                                user_filter = block['user_filter']
+                                n = len(user_filter.split('%s')) - 1
+                                query = filter_format(user_filter, (utf8_username,) * n)
                             except TypeError, e:
                                 log.error('user_filter syntax error %r: %s',
                                         block['user_filter'], e)
