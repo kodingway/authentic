@@ -95,7 +95,7 @@ _DEFAULTS = {
     # Conserve the passsword in the Django User object
     'keep_password': True,
     # Only authenticate users coming from the corresponding realm
-    'limit_to_realm': True,
+    'limit_to_realm': False,
     # Assign users mandatorily to some groups
     'set_mandatory_groups': (),
 }
