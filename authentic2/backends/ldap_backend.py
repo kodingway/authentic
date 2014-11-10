@@ -276,27 +276,27 @@ class LDAPBackend(object):
                 if isinstance(block[i], basestring):
                     block[i] = (block[i],)
             # lowercase LDAP attribute names
-            block['external_id_tuples'] = map(lambda t: map(str.lower, t), block['external_id_tuples'])
-            block['attribute_mappings'] = map(lambda t: map(str.lower, t), block['attribute_mappings'])
+            block['external_id_tuples'] = map(lambda t: map(str.lower, map(str, t)), block['external_id_tuples'])
+            block['attribute_mappings'] = map(lambda t: map(str.lower, map(str, t)), block['attribute_mappings'])
             for key in _TO_LOWERCASE:
                 # we handle strings, list of strings and list of list or tuple whose first element is a string
                 if isinstance(block[key], basestring):
-                    block[key] = block[key].lower()
+                    block[key] = str(block[key]).lower()
                 elif isinstance(block[key], (list, tuple)):
                     new_seq = []
                     for elt in block[key]:
                         if isinstance(elt, basestring):
-                            elt = elt.lower()
+                            elt = str(elt).lower()
                         elif isinstance(elt, (list, tuple)):
                             elt = list(elt)
-                            elt[0] = elt[0].lower()
+                            elt[0] = str(elt[0]).lower()
                             elt = tuple(elt)
                         new_seq.append(elt)
                     block[key] = tuple(new_seq)
                 elif isinstance(block[key], dict):
                     newdict = {}
                     for subkey in block[key]:
-                        newdict[subkey.lower()] = block[key][subkey]
+                        newdict[str(subkey).lower()] = block[key][subkey]
                     block[key] = newdict
                 else:
                     raise NotImplementedError('LDAP setting %r cannot be '
