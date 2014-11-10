@@ -543,6 +543,10 @@ class LibertyServiceProvider(models.Model):
     attribute_policy = models.ForeignKey('idp.AttributePolicy',
              related_name = "attribute_policy",
             verbose_name=_("attribute policy"), null=True, blank=True)
+    users_can_manage_federations = models.BooleanField(
+            verbose_name=_('users can manage federation'),
+            default=True,
+            blank=True)
 
     objects = managers.GetByLibertyProviderManager()
 
