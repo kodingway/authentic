@@ -352,7 +352,7 @@ class SAMLAttribute(models.Model):
             default='basic',
             choices=ATTRIBUTE_NAME_FORMATS)
     name = models.CharField(
-            max_length=64,
+            max_length=128,
             verbose_name=_('name'),
             blank=True,
             help_text=_('the local attribute name is used if left blank'))
