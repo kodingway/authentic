@@ -337,6 +337,7 @@ class SAMLAttribute(models.Model):
     ATTRIBUTE_NAME_FORMATS = (
             ('basic', 'Basic'),
             ('uri', 'URI'),
+            ('unspecified', 'Unspecified'),
     )
     objects = managers.SAMLAttributeManager()
 
@@ -376,6 +377,8 @@ class SAMLAttribute(models.Model):
             return lasso.SAML2_ATTRIBUTE_NAME_FORMAT_BASIC
         elif self.name_format == 'uri':
             return lasso.SAML2_ATTRIBUTE_NAME_FORMAT_URI
+        elif self.name_format == 'unspecified':
+            return lasso.SAML2_ATTRIBUTE_NAME_FORMAT_UNSPECIFIED
         else:
             raise NotImplementedError
 
