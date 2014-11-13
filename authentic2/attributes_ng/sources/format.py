@@ -45,10 +45,6 @@ def get_instances(ctx):
             config_error(BAD_CONFIG_ERROR)
         if not isinstance(d['template'], basestring):
             config_error(TYPE_ERROR)
-        field_refs = get_field_refs(d['template'])
-        for field_ref in field_refs:
-            if str.isdigit(field_ref[0]):
-                config_error(FORMAT_STRING_ERROR, field_ref)
         yield d
 
 
