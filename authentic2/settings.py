@@ -203,8 +203,8 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 # authentication
 AUTHENTICATION_BACKENDS = (
-    'authentic2.backends.ModelBackend',
     'authentic2.backends.LDAPBackend',
+    'authentic2.backends.ModelBackend',
 )
 AUTHENTICATION_BACKENDS = plugins.register_plugins_authentication_backends(
         AUTHENTICATION_BACKENDS)
