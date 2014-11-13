@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-04 16:00+0200\n"
-"PO-Revision-Date: 2014-08-19 10:15+0200\n"
+"POT-Creation-Date: 2014-11-13 16:57+0100\n"
+"PO-Revision-Date: 2014-11-13 16:57+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
 "Language: fr\n"
@@ -78,95 +78,3 @@ msgstr "règlement sur les attributs"
 #: models.py:109
 msgid "attribute policies"
 msgstr "règlements sur les attributs"
-
-#: templates/idp/account_management.html:5
-msgid "Authentic - Account Management"
-msgstr "Authentic - Gestion du compte"
-
-#: templates/idp/account_management.html:10 templates/idp/homepage.html:13
-msgid "Account Management"
-msgstr "Gestion de votre compte"
-
-#: templates/idp/account_management.html:11
-msgid "Profile"
-msgstr "Profil"
-
-#: templates/idp/account_management.html:28
-msgid "Change email"
-msgstr "Modifier votre adresse électronique"
-
-#: templates/idp/account_management.html:29
-msgid "Edit profile"
-msgstr "Éditer votre profil"
-
-#: templates/idp/account_management.html:30
-msgid "Delete profile"
-msgstr "Supprimer votre profil"
-
-#: templates/idp/account_management.html:32
-msgid "Credentials"
-msgstr "Moyens d'authentification"
-
-#: templates/idp/account_management.html:36
-msgid "Back"
-msgstr "Retour"
-
-#: templates/idp/homepage.html:5
-msgid "Authentic"
-msgstr "Authentic"
-
-#: templates/idp/homepage.html:20
-msgid "Services"
-msgstr "Services"
-
-#: templates/idp/homepage.html:50
-msgid "Administration"
-msgstr "Administration"
-
-#: templates/idp/logout.html:5
-msgid "Logout"
-msgstr "Déconnexion"
-
-#: templates/idp/logout.html:40
-msgid "Continue logout"
-msgstr "Continuer la déconnexion"
-
-#: templates/interaction/consent_attributes.html:4
-msgid "Consent page for attribute propagation"
-msgstr "Page de consentement pour la transmission des attributs"
-
-#: templates/interaction/consent_attributes.html:14
-msgid "Choose attributes to send to "
-msgstr "Choisissez les attributs à envoyer"
-
-#: templates/interaction/consent_attributes.html:31
-msgid "Send selected"
-msgstr "Envoyer la selection"
-
-#: templates/interaction/consent_attributes.html:33
-msgid "Send all"
-msgstr "Tout envoyer"
-
-#: templates/interaction/consent_attributes.html:35
-msgid "Refuse all"
-msgstr "Aucun"
-
-#: templates/interaction/consent_federation.html:4
-msgid "Consent page for federation"
-msgstr "Page de consentement pour la fédération"
-
-#: templates/interaction/consent_federation.html:13
-msgid "Do you accept to federate your account with "
-msgstr "Acceptez-vous de fédérer votre compte avec "
-
-#: templates/interaction/consent_federation.html:15
-msgid "Do you accept to federate your account ?"
-msgstr "Acceptez-vous de federez vos comptes ?"
-
-#: templates/interaction/consent_federation.html:23
-msgid "Accept"
-msgstr "Accepter"
-
-#: templates/interaction/consent_federation.html:24
-msgid "Refuse"
-msgstr "Refuser"
