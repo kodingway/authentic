@@ -366,12 +366,20 @@ class ProfileView(TemplateView):
         # Credentials management
         blocks = [ frontend.profile(request) for frontend in frontends \
                 if hasattr(frontend, 'profile') and frontend.enabled() ]
+        idp_backends = utils.get_backends()
+        # Get actions for federation management
+        federation_management = []
+        if app_settings.A2_PROFILE_CAN_MANAGE_FEDERATION:
+            for idp_backend in idp_backends:
+                if hasattr(idp_backend, 'federation_management'):
+                    federation_management.extend(idp_backend.federation_management(request))
         ctx.update({
             'frontends_block': blocks,
             'profile': profile,
             'allow_account_deletion': app_settings.A2_REGISTRATION_CAN_DELETE_ACCOUNT,
             'allow_profile_edit': app_settings.A2_PROFILE_CAN_EDIT_PROFILE,
             'allow_email_change': app_settings.A2_PROFILE_CAN_CHANGE_EMAIL,
+            'federation_management': federation_management,
         })
         return ctx
 

@@ -39,5 +39,26 @@
   {% for html_block in frontends_block %}
     {{ html_block|safe }}
   {% endfor %}
+{% if federation_management %}
+<div id="federation-management">
+  <h3>{% trans "Federation management" %}
+  <ul>
+    {% for federation in federation_management %}
+      <li>
+        <form method="post" action="{{ federation.url }}">
+          {% csrf_token %}
+          <span class="name">{{ federation.name }}</span>
+          {% for key, value in federation.hidden_inputs.iteritems %}
+            <input type="hidden" name="{{ key }}" value="{{ value }}"/>
+          {% endfor %}
+          {% for button_nane, button_label in federation.buttons %}
+            <button name="{{ button_name }}">{{ button_label }}</button>
+          {% endfor %}
+        </form>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
 <p><a href="/">{% trans "Back" %}</a></p>
 {% endblock %}

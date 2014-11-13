@@ -1,6 +1,7 @@
 import logging
 import urllib
 
+from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 
@@ -8,6 +9,7 @@ import authentic2.saml.models as models
 import authentic2.idp.saml.saml2_endpoints as saml2_endpoints
 import authentic2.saml.common as common
 
+from authentic2.decorators import to_list
 from authentic2.utils import Service
 
 
@@ -92,3 +94,37 @@ class SamlBackend(object):
 
     def can_synchronous_logout(self, django_sessions_keys):
         return True
+
+    @to_list
+    def federation_management(self, request):
+        qs = models.LibertyFederation.objects
+        qs = qs.filter(sp__users_can_manage_federations=True)
+        qs = qs.filter(user=request.user)
+        federations = qs.select_related()
+        next_url = request.get_full_path()
+        for federation in  federations:
+            url = reverse('a2-idp-saml2-federation-delete',
+                    kwargs={'pk': federation.pk})
+            yield {
+                    'name': federation.sp.liberty_provider.name,
+                    'hidden_inputs': {
+                        'next': next_url,
+                    },
+                    'buttons': (('delete', _('Delete')),),
+                    'url': url,
+                  }
+        qs = models.LibertyProvider.objects
+        qs = qs.filter(service_provider__users_can_manage_federations=True)
+        qs = qs.exclude(service_provider__libertyfederation__in=federations)
+        qs = qs.select_related()
+        for liberty_provider in qs:
+            url = reverse('a2-idp-saml2-idp-sso')
+            yield {
+                    'name': liberty_provider.name,
+                    'hidden_inputs': {
+                        'provider_id': liberty_provider.entity_id,
+                        'next': next_url,
+                    },
+                    'buttons': (('create', _('Create')),),
+                    'url': url,
+                  }
