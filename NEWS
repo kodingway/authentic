@@ -1,6 +1,17 @@
 NEWS
 ====
 
+2.1.9 - November 14th 2014
+--------------------------
+
+- better interoperability with LDAP directories, all attribute names are lowercased on
+	input to limit problem with case
+- you can now use username multiple times in the LDAP user filter (you can put
+	many %s patterns)
+- new support a limited range of Shibboleth attribute filter policies that you
+	can load when synchronizing with a SAML 2.0 education&research federation.
+- users can now delete their federation on their account page.
+
 2.1.8 - Movember 6th 2014
 -------------------------
 
