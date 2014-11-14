@@ -31,7 +31,7 @@ Package: authentic2
 Architecture: all
 Pre-Depends: python-django (>= 1.5)
 Depends: ${misc:Depends}, adduser,
-    python-authentic2, python-psycopg2,
+    python-authentic2 (= ${binary:Version}), python-psycopg2,
     gunicorn, dbconfig-common,
     debconf | debconf-2.0, ucf
 Recommends: postgresql-client
