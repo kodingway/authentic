@@ -51,7 +51,7 @@
           {% for key, value in federation.hidden_inputs.iteritems %}
             <input type="hidden" name="{{ key }}" value="{{ value }}"/>
           {% endfor %}
-          {% for button_nane, button_label in federation.buttons %}
+          {% for button_name, button_label in federation.buttons %}
             <button name="{{ button_name }}">{{ button_label }}</button>
           {% endfor %}
         </form>
