@@ -248,6 +248,8 @@ def login(request, template_name='auth/login.html',
         else:
             forms = []
             for frontend in frontends:
+                if hasattr(frontend, 'login'):
+                    continue
                 if not frontend.enabled():
                     continue
                 if 'submit-%s' % frontend.id() in request.POST:
@@ -261,7 +263,7 @@ def login(request, template_name='auth/login.html',
                     forms.append((frontend.name(), {'form': frontend.form()(), 'backend': frontend}))
     else:
         forms = [(frontend.name(), { 'form': frontend.form()(), 'backend': frontend }) \
-                for frontend in frontends if frontend.enabled()]
+                for frontend in frontends if frontend.enabled() and not hasattr(frontend, 'login')]
 
     rendered_forms = []
     for name, d in forms:
@@ -276,6 +278,13 @@ def login(request, template_name='auth/login.html',
         rendered_forms.append((name,
             render_to_string(d['backend'].template(),
                 RequestContext(request, context))))
+    for frontend in frontends:
+        if not hasattr(frontend, 'login'):
+            continue
+        response = frontend.login(request)
+        if response.status_code != 200:
+            return response
+        rendered_forms.append((frontend.name(), response.content))
 
     request.session.set_test_cookie()
 
