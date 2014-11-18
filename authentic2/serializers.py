@@ -59,11 +59,7 @@ def PythonDeserializer(object_list, **options):
                     if hasattr(field.rel.to._default_manager, 'get_by_natural_key'):
                         def m2m_convert(value):
                             if hasattr(value, '__iter__') and not isinstance(value, six.text_type):
-                                try:
-                                    return field.rel.to._default_manager.db_manager(db).get_by_natural_key(*value).pk
-                                except Exception:
-                                    import pdb
-                                    pdb.set_trace()
+                                return field.rel.to._default_manager.db_manager(db).get_by_natural_key(*value).pk
                             else:
                                 return smart_text(field.rel.to._meta.pk.to_python(value))
                     else:
