@@ -19,7 +19,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth import REDIRECT_FIELD_NAME
 
 
-import registration.views
+from authentic2.registration_backend.views import RegistrationView
 
 
 from authentic2.constants import NONCE_FIELD_NAME
@@ -188,7 +188,7 @@ error_ssl = SslErrorView.as_view()
 def register(request):
     '''Registration page for SSL auth without CA'''
     next_url = request.GET.get(REDIRECT_FIELD_NAME, settings.LOGIN_REDIRECT_URL)
-    return registration.views.register(request, success_url=next_url,
-            form_class=functools.partial(forms.RegistrationForm,
-                request=request))
+    return RegistrationView.as_view(request, success_url=next_url,
+                                    form_class=functools.partial(forms.RegistrationForm,
+                                    request=request))
 

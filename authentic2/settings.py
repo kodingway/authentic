@@ -180,7 +180,6 @@ INSTALLED_APPS = (
     'admin_tools.menu',
     'admin_tools.dashboard',
     'django.contrib.admin',
-    'registration',
     'django_select2',
     'django_tables2',
     'authentic2.nonce',

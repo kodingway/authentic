@@ -19,7 +19,3 @@ except ImportError:
     raise
     print 'django_authopenid is missing: easy_install django-authopenid'
 
-try:
-    import registration
-except ImportError:
-    print 'registration is missing: easy_install django-registration'

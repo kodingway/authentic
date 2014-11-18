@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load breadcrumbs i18n %}
+
+{% block title %}
+{% trans "Login" %}
+{% endblock %}
+
+{% block breadcrumbs %}
+{{ block.super }}
+{% breadcrumb_url 'Register' %}
+{% endblock %}
+
+
+{% block content %}
+
+<h2>{% trans "Login" %}</h2>
+<p>{% trans "Multiple accounts are associated to this email." %}
+{% trans "Please choose the account you want to log in with:" %}
+</p>
+
+
+<ul>
+  {% for account in accounts %}
+  <li><a href="{% url "registration_login" registration_token account.username %}">{{ account }}</a></li>
+  {% endfor %}
+</ul>
+
+{% endblock %}
