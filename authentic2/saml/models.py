@@ -471,6 +471,7 @@ class LibertyProvider(models.Model):
     slug = models.SlugField(max_length=140, unique=True)
     entity_id = models.URLField(unique = True)
     entity_id_sha1 = models.CharField(max_length = 40, blank=True)
+    metadata_url = models.URLField(max_length=256, blank=True)
     protocol_conformance = models.IntegerField(max_length = 10,
             choices = ((lasso.PROTOCOL_SAML_2_0, 'SAML 2.0'),))
     metadata = models.TextField(validators = [ metadata_validator ])

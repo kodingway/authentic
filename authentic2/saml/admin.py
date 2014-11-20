@@ -196,7 +196,7 @@ class LibertyProviderAdmin(admin.ModelAdmin):
                 'fields' : ('name', 'slug', 'entity_id', 'entity_id_sha1','federation_source')
             }),
             (_('Metadata files'), {
-                'fields': ('metadata', 'public_key', 'ssl_certificate', 'ca_cert_chain')
+                'fields': ('metadata_url', 'metadata', 'public_key', 'ssl_certificate', 'ca_cert_chain')
             }),
     )
     inlines = [
