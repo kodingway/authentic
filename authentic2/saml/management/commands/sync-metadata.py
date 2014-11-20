@@ -135,7 +135,8 @@ def load_one_entity(tree, options, sp_policy=None, idp_policy=None, afp=None):
                 kwargs, attribute_name = build_saml_attribute_kwargs(provider, name)
                 if not kwargs:
                     if verbosity > 1:
-                        print >>sys.stderr, _('Unable to find an LDAP definition for attribute %s on %s') % (name, provider)
+                        print >>sys.stderr, _('Unable to find an LDAP definition for attribute %(name)s on %(provider)s') % \
+                            {'name': name, 'provider': provider}
                     continue
                 attribute_name = attribute_name.lower()
                 defaults = {
@@ -148,7 +149,8 @@ def load_one_entity(tree, options, sp_policy=None, idp_policy=None, afp=None):
                     attribute, created = SAMLAttribute.objects.get_or_create(defaults=defaults,
                             **kwargs)
                     if created and verbosity > 1:
-                        print _('Created new attribute %s for %s') % (name, provider)
+                        print _('Created new attribute %(name)s for %(provider)s') % \
+                                {'name': name, 'provider': provider}
                     pks.append(attribute.pk)
                 except SAMLAttribute.MultipleObjectsReturned:
                     pks.extend(SAMLAttribute.objects.filter(**kwargs).values_list('pk', flat=True))
