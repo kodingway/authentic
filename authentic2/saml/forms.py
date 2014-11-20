@@ -32,7 +32,7 @@ class AddLibertyProviderFromUrlForm(Form):
                 if not (is_sp or is_idp):
                     raise ValidationError(_('Invalid SAML metadata: %s') % _('missing IDPSSODescriptor or SPSSODescriptor tags'))
                 liberty_provider = LibertyProvider(name=name,
-                    slug=slug, metadata=content)
+                    slug=slug, metadata=content, metadata_url=url)
                 liberty_provider.full_clean(exclude=
                         ('entity_id', 'protocol_conformance'))
                 if is_sp:
