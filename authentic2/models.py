@@ -1,3 +1,4 @@
+import time
 import warnings
 import re
 import urlparse
@@ -255,7 +256,7 @@ class LogoutUrlAbstract(models.Model):
 
     def get_logout_url(self, request):
         ok_icon_url = request.build_absolute_uri(urlparse.urljoin(settings.STATIC_URL,
-                'authentic2/images/ok.png'))
+                'authentic2/images/ok.png')) + '?nonce=%s' % time.time()
         return self.logout_url.format(urlquote(ok_icon_url))
 
     class Meta:
