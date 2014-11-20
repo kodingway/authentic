@@ -188,8 +188,6 @@ class SAMLAttributeInlineAdmin(GenericTabularInline):
 class LibertyProviderAdmin(admin.ModelAdmin):
     form = LibertyProviderForm
     list_display = ('name', 'slug', 'entity_id', 'protocol_conformance')
-    list_display_links = ('entity_id',)
-    list_editable = ('name',)
     search_fields = ('name', 'entity_id')
     readonly_fields = ('entity_id','protocol_conformance','entity_id_sha1','federation_source')
     fieldsets = (
