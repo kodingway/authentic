@@ -1,4 +1,3 @@
-import urllib2
 import logging
 
 from django.contrib import admin
@@ -8,6 +7,7 @@ from django.conf import settings
 from django.forms import ModelForm
 from django import forms
 from django.contrib import messages
+from django.core.exceptions import ValidationError
 try:
     from django.contrib.contenttypes.admin import GenericTabularInline
 except ImportError:
@@ -21,7 +21,6 @@ from authentic2.saml.models import LibertySessionDump, LibertyFederation
 from authentic2.saml.models import LibertyAssertion, LibertySessionSP, KeyValue
 from authentic2.saml.models import LibertySession
 from authentic2.saml.models import SAMLAttribute
-from authentic2.http_utils import get_url
 
 from authentic2.decorators import to_iter
 from authentic2.attributes_ng.engine import get_attribute_names
@@ -148,21 +147,23 @@ class LibertyProviderForm(ModelForm):
 
 
 def update_metadata(modeladmin, request, queryset):
-    updated = []
-    for provider in queryset:
-        if provider.entity_id.startswith('http'):
-            try:
-                data = get_url(provider.entity_id)
-                if data != provider.metadata:
-                    provider.metadata = data
-                    updated.append(provider.entity_id)
-                    provider.save()
-            except (urllib2.URLError, IOError), e:
-                messages.error(request, _('Failure to resolve %(entity_id)s: %(error)s') %
-                        dict(entity_id=provider.entity_id, error=e))
-    if updated:
-        updated = ', '.join(updated)
-        messages.info(request, _('Metadata update for: %s') % updated)
+    qs = queryset.filter(metadata_url__startswith='https://')
+    total = qs.count()
+    count = 0
+    for provider in qs:
+        try:
+            provider.update_metadata()
+        except ValidationError, e:
+            params = {
+                    'name': provider,
+                    'error_msg': u', '.join(e.messages)
+            }
+            messages.error(request, _('Updating SAML provider %(name)s failed: '
+                '%(error_msg)s') % params)
+        else:
+            count += 1
+    messages.info(request, _('%(count)d on %(total)d SAML providers updated') % {
+        'count': count, 'total': total})
 
 
 class SAMLAttributeInlineForm(forms.ModelForm):

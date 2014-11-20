@@ -3,7 +3,9 @@ import hashlib
 import numbers
 import datetime
 
+import requests
 import lasso
+
 from django.db import models
 from django.db.models import Q
 from django.conf import settings
@@ -19,7 +21,6 @@ try:
     from django.contrib.contenttypes.fields import GenericRelation
 except ImportError:
     from django.contrib.contenttypes.generic import GenericRelation
-
 
 from fields import PickledObjectField, MultiSelectField
 
@@ -508,6 +509,18 @@ class LibertyProvider(models.Model):
 
     def natural_key(self):
         return (self.slug,)
+
+    def update_metadata(self):
+        try:
+            if not self.metadata_url:
+                raise ValidationError(_('No metadata URL'))
+            response = requests.get(self.metadata_url)
+        except requests.RequestException, e:
+            raise ValidationError(_('Retrieval of metadata failed: %s') % e)
+        else:
+            self.metadata = response.content
+            self.clean()
+            self.save()
 
     class Meta:
         ordering = ('name',)
