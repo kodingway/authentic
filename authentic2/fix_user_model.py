@@ -38,22 +38,29 @@ def patch_username(model):
 
     # patch model field validator because validator doesn't change if we change
     # max_length
+    if app_settings.A2_USERNAME_REGEX:
+        r =  re.compile(app_settings.A2_USERNAME_REGEX, re.UNICODE)
     for v in field.validators:
         if isinstance(v, MaxLengthValidator):
             v.limit_value = MAX_USERNAME_LENGTH
         if isinstance(v, RegexValidator):
             if app_settings.A2_USERNAME_REGEX:
-                v.regex = re.compile(app_settings.A2_USERNAME_REGEX)
-    if app_settings.A2_USERNAME_REGEX:
-        r =  re.compile(app_settings.A2_USERNAME_REGEX, re.UNICODE)
-        for form in (forms.UserChangeForm, forms.UserCreationForm,
-                admin_forms.UserChangeForm, admin_forms.UserCreationForm):
-            field = form.declared_fields['username']
+                v.regex = r
+    for form in (forms.UserChangeForm, forms.UserCreationForm,
+            admin_forms.UserChangeForm, admin_forms.UserCreationForm):
+        field = form.base_fields['username']
+        if app_settings.A2_USERNAME_REGEX:
             field.regex = r
-            field.max_length = MAX_USERNAME_LENGTH
-            field.widget.attrs[u'maxlength'] = MAX_USERNAME_LENGTH
-            if app_settings.A2_USERNAME_HELP_TEXT:
-                field.help_text = app_settings.A2_USERNAME_HELP_TEXT
+        field.max_length = MAX_USERNAME_LENGTH
+        field.widget.attrs[u'maxlength'] = MAX_USERNAME_LENGTH
+        if app_settings.A2_USERNAME_HELP_TEXT:
+            field.help_text = app_settings.A2_USERNAME_HELP_TEXT
+        for v in field.validators:
+            if isinstance(v, MaxLengthValidator):
+                v.limit_value = MAX_USERNAME_LENGTH
+            if isinstance(v, RegexValidator):
+                if app_settings.A2_USERNAME_REGEX:
+                    v.regex = r
 
 def patch_email(model):
     try:
