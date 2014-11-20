@@ -265,6 +265,7 @@ def login(request, template_name='auth/login.html',
         forms = [(frontend.name(), { 'form': frontend.form()(), 'backend': frontend }) \
                 for frontend in frontends if frontend.enabled() and not hasattr(frontend, 'login')]
 
+    context_instance = RequestContext(request)
     rendered_forms = []
     for name, d in forms:
         context = { 'cancel': nonce is not None,
@@ -276,12 +277,12 @@ def login(request, template_name='auth/login.html',
         if hasattr(d['backend'], 'get_context'):
             context.update(d['backend'].get_context())
         rendered_forms.append((name,
-            render_to_string(d['backend'].template(),
-                RequestContext(request, context))))
+            render_to_string(d['backend'].template(), context,
+                context_instance=context_instance)))
     for frontend in frontends:
         if not hasattr(frontend, 'login'):
             continue
-        response = frontend.login(request)
+        response = frontend.login(request, context_instance=context_instance)
         if response.status_code != 200:
             return response
         rendered_forms.append((frontend.name(), response.content))
@@ -291,7 +292,7 @@ def login(request, template_name='auth/login.html',
     return render_to_response(template_name, {
         'methods': rendered_forms,
         redirect_field_name: redirect_to,
-    }, context_instance=RequestContext(request))
+    }, context_instance=context_instance)
 
 
 def service_list(request):
