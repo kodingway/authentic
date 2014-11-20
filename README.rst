@@ -50,6 +50,7 @@ The other Authentic 2 dependencies are:
 - south >= 0.7.3
 - django-authopenid >= 0.9.6
 - django-debug-toolbar >= 0.9.0
+- django-sekizai
 
 Install Authentic directly from pypi
 ------------------------------------

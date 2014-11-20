@@ -128,6 +128,7 @@ setup(name="authentic2",
         'XStatic_jQuery',
         'XStatic_jquery_ui',
         'django-import-export',
+        'django-sekizai',
       ],
       zip_safe=False,
       classifiers=[

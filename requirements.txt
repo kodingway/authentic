@@ -12,3 +12,4 @@ django-select2
 django-tables2
 gadjo
 django-import-export
+django-sekizai
