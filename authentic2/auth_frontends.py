@@ -39,5 +39,5 @@ class LoginPasswordBackend(object):
     def template(self):
         return 'auth/login_form.html'
 
-    def profile(self, request):
-        return views.login_password_profile(request)
+    def profile(self, request, *args, **kwargs):
+        return views.login_password_profile(request, *args, **kwargs)

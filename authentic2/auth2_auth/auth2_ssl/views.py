@@ -166,10 +166,13 @@ def post_account_linking(request):
     else:
         return render(request, 'auth/account_linking_ssl.html')
 
-def profile(request, template_name='ssl/profile.html'):
+def profile(request, template_name='ssl/profile.html', *args, **kwargs):
+    context_instance = kwargs.pop('context_instance', None) or \
+        RequestContext(request)
     certificates = models.ClientCertificate.objects.filter(user=request.user)
     ctx = { 'certificates': certificates }
-    return render_to_string(template_name, RequestContext(request, ctx))
+    return render_to_string(template_name, ctx,
+            context_instance=context_instance)
 
 @prevent_access_to_transient_users
 def delete_certificate(request, certificate_pk):

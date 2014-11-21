@@ -323,6 +323,7 @@ class ProfileView(TemplateView):
         frontends = utils.get_backends('AUTH_FRONTENDS')
         request = self.request
 
+        context_instance = RequestContext(request, ctx)
         if request.method == "POST":
             for frontend in frontends:
                 if not frontend.enabled():
@@ -374,7 +375,7 @@ class ProfileView(TemplateView):
                 value = (value,)
             profile.append((title, map(unicode, value)))
         # Credentials management
-        blocks = [ frontend.profile(request) for frontend in frontends \
+        blocks = [ frontend.profile(request, context_instance=context_instance) for frontend in frontends \
                 if hasattr(frontend, 'profile') and frontend.enabled() ]
         idp_backends = utils.get_backends()
         # Get actions for federation management
@@ -383,7 +384,7 @@ class ProfileView(TemplateView):
             for idp_backend in idp_backends:
                 if hasattr(idp_backend, 'federation_management'):
                     federation_management.extend(idp_backend.federation_management(request))
-        ctx.update({
+        context_instance.update({
             'frontends_block': blocks,
             'profile': profile,
             'allow_account_deletion': app_settings.A2_REGISTRATION_CAN_DELETE_ACCOUNT,
@@ -391,7 +392,7 @@ class ProfileView(TemplateView):
             'allow_email_change': app_settings.A2_PROFILE_CAN_CHANGE_EMAIL,
             'federation_management': federation_management,
         })
-        return ctx
+        return context_instance
 
 profile = decorators.prevent_access_to_transient_users(ProfileView.as_view())
 
@@ -427,12 +428,13 @@ def redirect_to_logout(request, next_page='/'):
     return HttpResponseRedirect('%s?next=%s' % (reverse(logout), urllib.quote(next_page)))
 
 
-def login_password_profile(request):
+def login_password_profile(request, *args, **kwargs):
+    context_instance = kwargs.pop('context_instance', None) or RequestContext(request)
     can_change_password = (app_settings.A2_REGISTRATION_CAN_CHANGE_PASSWORD
                            and request.user.has_usable_password)
     return render_to_string('auth/login_password_profile.html',
                             {'can_change_password' : can_change_password},
-                            RequestContext(request))
+                            context_instance=context_instance)
 
 
 def redirect_to_login(request, next=None, nonce=None, keep_qs=False):
