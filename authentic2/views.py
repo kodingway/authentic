@@ -280,7 +280,7 @@ def login(request, template_name='auth/login.html',
             render_to_string(d['backend'].template(), context,
                 context_instance=context_instance)))
     for frontend in frontends:
-        if not hasattr(frontend, 'login'):
+        if not hasattr(frontend, 'login') or not frontend.enabled():
             continue
         response = frontend.login(request, context_instance=context_instance)
         if response.status_code != 200:
