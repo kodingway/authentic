@@ -457,7 +457,9 @@ def logout(request, next_page='/', redirect_field_name=REDIRECT_FIELD_NAME,
     auth_logout(request)
     context['next_page'] = next_page
     context['message'] = _('Logged out')
-    return render_to_response(template, context_instance = context)
+    response = render_to_response(template, context_instance=context)
+    response.set_cookie('a2_just_logged_out', 1, max_age=60)
+    return response
 
 def redirect_to_logout(request, next_page='/'):
     return HttpResponseRedirect('%s?next=%s' % (reverse(logout), urllib.quote(next_page)))
