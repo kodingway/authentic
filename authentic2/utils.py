@@ -170,8 +170,23 @@ def load_backend(path):
 def get_backends(setting_name='IDP_BACKENDS'):
     '''Return the list of IdP backends'''
     backends = []
-    for backend_path in getattr(app_settings, setting_name, ()):
-        backends.append(load_backend(backend_path))
+    for backend_path in getattr(app_settings, setting_name):
+        kwargs = {}
+        if not isinstance(backend_path, six.string_types):
+            backend_path, kwargs = backend_path
+        backend = load_backend(backend_path)
+        kwargs_settings = getattr(app_settings, setting_name + '_KWARGS', {})
+        if backend_path in kwargs_settings:
+            kwargs.update(kwargs_settings[backend_path])
+        if hasattr(backend, 'id'):
+            if hasattr(backend.id, '__call__'):
+                bid = backend.id()
+            else:
+                bid = backend.id
+            if bid in kwargs_settings:
+                kwargs.update(kwargs_settings[bid])
+        backend.__dict__.update(kwargs)
+        backends.append(backend)
     return backends
 
 def add_arg(url, key, value = None):

@@ -4,6 +4,7 @@ import thread
 import requests
 import urllib
 import re
+import collections
 
 
 from django.conf import settings
@@ -216,8 +217,7 @@ __logout_redirection_timeout = getattr(settings, 'IDP_LOGOUT_TIMEOUT', 600)
 
 @csrf_protect
 @never_cache
-def login(request, template_name='auth/login.html',
-          login_form_template='auth/login_form.html',
+def login(request, template_name='authentic2/login.html',
           redirect_field_name=REDIRECT_FIELD_NAME):
     """Displays the login form and handles the login action."""
 
@@ -234,6 +234,13 @@ def login(request, template_name='auth/login.html',
 
     frontends = utils.get_backends('AUTH_FRONTENDS')
 
+    # set default priority and name
+    for frontend in frontends:
+        if not hasattr(frontend, 'name'):
+            frontend.name = frontend.name()
+        if not hasattr(frontend, 'priority'):
+            frontend.priority = 0
+
     # If already logged, leave now
     if not request.user.is_staff \
             and not request.user.is_anonymous() \
@@ -241,56 +248,90 @@ def login(request, template_name='auth/login.html',
             and request.method != 'POST':
         return HttpResponseRedirect(redirect_to)
 
-    if request.method == "POST":
-        if 'cancel' in request.POST:
-            redirect_to = utils.add_arg(redirect_to, 'cancel')
-            return HttpResponseRedirect(redirect_to)
+    blocks = []
+
+    # Cancel button
+    if request.method == "POST" and 'cancel' in request.POST:
+        redirect_to = utils.add_arg(redirect_to, 'cancel')
+        return HttpResponseRedirect(redirect_to)
+
+    for frontend in frontends:
+        if hasattr(frontend, 'login'):
+            continue
+        if not frontend.enabled():
+            continue
+        fid = frontend.id()
+        name = frontend.name
+        form_class = frontend.form()
+        submit_name = 'submit-%s' % fid
+        block = {
+                'id': fid,
+                'name': name,
+                'frontend': frontend
+        }
+        if request.method == 'POST' and submit_name in request.POST:
+            form = form_class(data=request.POST)
+            if form.is_valid():
+                if request.session.test_cookie_worked():
+                    request.session.delete_test_cookie()
+                return frontend.post(request, form, nonce, redirect_to)
+            block['form'] = form
         else:
-            forms = []
-            for frontend in frontends:
-                if hasattr(frontend, 'login'):
-                    continue
-                if not frontend.enabled():
-                    continue
-                if 'submit-%s' % frontend.id() in request.POST:
-                    form = frontend.form()(data=request.POST)
-                    if form.is_valid():
-                        if request.session.test_cookie_worked():
-                            request.session.delete_test_cookie()
-                        return frontend.post(request, form, nonce, redirect_to)
-                    forms.append((frontend.name(), {'form': form, 'backend': frontend}))
-                else:
-                    forms.append((frontend.name(), {'form': frontend.form()(), 'backend': frontend}))
-    else:
-        forms = [(frontend.name(), { 'form': frontend.form()(), 'backend': frontend }) \
-                for frontend in frontends if frontend.enabled() and not hasattr(frontend, 'login')]
+            block['form'] = form_class()
+        blocks.append(block)
 
     context_instance = RequestContext(request)
-    rendered_forms = []
-    for name, d in forms:
-        context = { 'cancel': nonce is not None,
-                    'submit_name': 'submit-%s' % d['backend'].id(),
-                    redirect_field_name: redirect_to,
-                    'can_reset_password': app_settings.A2_CAN_RESET_PASSWORD,
-                    'registration_authorized': getattr(settings, 'REGISTRATION_OPEN', True),
-                    'form': d['form'] }
-        if hasattr(d['backend'], 'get_context'):
-            context.update(d['backend'].get_context())
-        rendered_forms.append((name,
-            render_to_string(d['backend'].template(), context,
-                context_instance=context_instance)))
+
+    # New frontends API 
+
     for frontend in frontends:
         if not hasattr(frontend, 'login') or not frontend.enabled():
             continue
         response = frontend.login(request, context_instance=context_instance)
+        if not response:
+            continue
         if response.status_code != 200:
             return response
-        rendered_forms.append((frontend.name(), response.content))
+        blocks.append({
+                'id': frontend.id(),
+                'name': frontend.name,
+                'content': response.content,
+                'frontend': frontend,
+        })
+
+    # Old frontends API
+    for block in blocks:
+        fid = block['id']
+        if not 'form' in block:
+            continue
+        frontend = block['frontend']
+        context = { 
+                'cancel': nonce is not None,
+                'submit_name': 'submit-%s' % fid,
+                redirect_field_name: redirect_to,
+                'can_reset_password': app_settings.A2_CAN_RESET_PASSWORD,
+                'registration_authorized': getattr(settings, 'REGISTRATION_OPEN', True),
+                'form': block['form']
+        }
+        if hasattr(frontend, 'get_context'):
+            context.update(frontend.get_context())
+        sub_template_name = frontend.template()
+        block['content'] = render_to_string(
+                sub_template_name, context,
+                context_instance=context_instance)
 
     request.session.set_test_cookie()
 
+    # order blocks by their frontend priority
+    blocks.sort(key=lambda block: block['frontend'].priority)
+
+    # legacy context variable
+    rendered_forms = [(block['name'], block['content']) for block in blocks]
+
     return render_to_response(template_name, {
         'methods': rendered_forms,
+        # new definition
+        'blocks': collections.OrderedDict((block['id'], block) for block in blocks),
         redirect_field_name: redirect_to,
     }, context_instance=context_instance)
 

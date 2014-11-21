@@ -123,6 +123,7 @@ default_settings = dict(
     A2_USERNAME_HELP_TEXT=Setting(default=None, definition='Help text to explain validation rules of usernames'),
     IDP_BACKENDS=[],
     AUTH_FRONTENDS=[],
+    AUTH_FRONTENDS_KWARGS={},
     VALID_REFERERS=Setting(default=[], definition='List of prefix to match referers'),
     A2_OPENED_SESSION_COOKIE_NAME=Setting(default='A2_OPENED_SESSION', definition='Authentic session open'),
     A2_OPENED_SESSION_COOKIE_DOMAIN=Setting(default=None),
