@@ -479,8 +479,8 @@ for config_dir in CONFIG_DIRS:
 try:
     from local_settings import *
 except ImportError, e:
-    if 'local_settings' in e.args[0]:
-        pass
+    if not 'local_settings' in e.args[0]:
+        raise
 
 if 'IDP_SAML2' in globals():
     A2_IDP_SAML2_ENABLE = IDP_SAML2
