@@ -58,7 +58,7 @@ def get_soap_message(request):
     assert request.method == 'POST' \
             and 'CONTENT_TYPE' in request.META \
             and 'text/xml' in request.META['CONTENT_TYPE'], 'not a SOAP message'
-    return request.raw_post_data
+    return request.body
 
 def get_http_binding(request):
     if request.method in ('GET', 'HEAD'):
