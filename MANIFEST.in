@@ -44,6 +44,8 @@ include diagnose.py
 include ez_setup.py
 include authentic2/auth2_auth/auth2_ssl/authentic_ssl.vhost
 include requirements.txt
+include test_settings
+include getlasso.sh
 include authentic2/vendor/dpam/LICENSE
 include authentic2/nonce/README.rst
 include doc/conf.py doc/Makefile doc/README.rst.bak 

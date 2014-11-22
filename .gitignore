@@ -14,3 +14,4 @@ authentic2/locale/fr/LC_MESSAGES/django.mo
 local_settings.*
 *.egg-info
 *.mo
+.tox
