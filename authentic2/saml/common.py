@@ -174,7 +174,7 @@ def return_saml2(request, profile, field_name, title = ''):
                         'body': profile.msgBody,
                         'relay_state': profile.msgRelayState },
                         context_instance=context_instance)
-        return HttpResponse(profile.msgBody, mimetype = 'text/xml')
+        return HttpResponse(profile.msgBody, content_type = 'text/xml')
     elif profile.msgUrl:
         return HttpResponseRedirect(profile.msgUrl)
     else:
@@ -213,7 +213,7 @@ def check_id_and_issue_instant(request_response_or_assertion, now=None):
     return True
 
 def return_saml_soap_response(profile):
-    return HttpResponse(profile.msgBody, mimetype = 'text/xml')
+    return HttpResponse(profile.msgBody, content_type = 'text/xml')
 
 # Helper method to handle profiles endpoints
 # In the future we should move away from monolithic object (LassoIdentity and
@@ -632,7 +632,7 @@ def soap_fault(request, faultcode='soap:Client', faultstring=None):
        <faultcode>%(faultcode)s</faultcode>%(faultstring)s
     </soap:Fault></soap:Body>
 </soap:Envelope>''' % locals()
-    return HttpResponse(content, mimetype = "text/xml")
+    return HttpResponse(content, content_type = "text/xml")
 
 def get_idp_options_policy(provider):
     try:

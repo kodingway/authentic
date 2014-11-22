@@ -103,7 +103,7 @@ def metadata(request):
     '''Endpoint to retrieve the metadata file'''
     logger.info('return metadata')
     return HttpResponse(get_metadata(request, request.path),
-            mimetype='text/xml')
+            content_type='text/xml')
 
 def log_assert(func, exception_classes=(AssertionError,)):
     '''Convert assertion errors to warning logs and report them to the user
