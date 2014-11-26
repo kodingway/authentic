@@ -1614,20 +1614,12 @@ def get_metadata(request, provider_id=None):
             options=options)
 
 
-__cached_server = None
-
-
 def create_server(request, provider_id=None):
     '''Build a lasso.Server object using current settings for the IdP
 
     The built lasso.Server is cached for later use it should work until
     multithreading is used, then thread local storage should be used.
     '''
-    global __cached_server
-    if __cached_server:
-        # clear loaded providers
-        __cached_server.providers = {}
-        return __cached_server
     provider_id, options = get_provider_id_and_options(request, provider_id)
     __cached_server = create_saml2_server(request, provider_id,
             idp_map=metadata_map, options=options)
