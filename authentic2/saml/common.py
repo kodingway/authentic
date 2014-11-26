@@ -102,7 +102,7 @@ def create_saml2_server(request, metadata, idp_map=None, sp_map=None, options={}
     '''Create a lasso Server object for using with a profile'''
     server = lasso.Server.newFromBuffers(get_saml2_metadata(request, metadata,
         idp_map=idp_map, sp_map=sp_map, options=options),
-        settings.SAML_SIGNATURE_PRIVATE_KEY)
+        options.get('private_key'))
     if not server:
         raise Exception('Cannot create LassoServer object')
     return server

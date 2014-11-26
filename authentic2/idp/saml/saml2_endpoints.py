@@ -80,6 +80,8 @@ from authentic2.utils import (cache_and_validate, get_backends as
 from authentic2.decorators import is_transient_user
 from authentic2.attributes_ng.engine import get_attributes
 
+from . import app_settings
+
 logger = logging.getLogger('authentic2.idp.saml')
 
 def get_nonce():
@@ -96,9 +98,8 @@ metadata_map = (
         (saml2utils.Saml2Metadata.ARTIFACT_RESOLUTION_SERVICE,
             lasso.SAML2_METADATA_BINDING_SOAP, '/artifact')
 )
-metadata_options = {'key': settings.SAML_SIGNATURE_PUBLIC_KEY}
 
-@cache_and_validate(settings.LOCAL_METADATA_CACHE_TIMEOUT)
+@cache_and_validate(lambda: app_settings.LOCAL_METADATA_CACHE_TIMEOUT)
 def metadata(request):
     '''Endpoint to retrieve the metadata file'''
     logger.info('return metadata')
@@ -287,11 +288,11 @@ def build_assertion(request, login, nid_format='transient', attributes=None):
     logger.info("building assertion at %s" % str(now))
     logger.debug('named Id format is %s' % nid_format)
     # 1 minute ago
-    notBefore = now - datetime.timedelta(0, __delta)
+    notBefore = now - datetime.timedelta(0, app_settings.SECONDS_TOLERANCE)
     # 1 minute in the future
-    notOnOrAfter = now + datetime.timedelta(0, __delta)
+    notOnOrAfter = now + datetime.timedelta(0, app_settings.SECONDS_TOLERANCE)
     ssl = 'HTTPS' in request.environ
-    if __user_backend_from_session:
+    if app_settings.AUTHN_CONTEXT_FROM_SESSION:
         backend = request.session[BACKEND_SESSION_KEY]
         logger.debug("authentication from session %s" \
             % backend)
@@ -1588,21 +1589,17 @@ def slo_return(request):
 
 # Helpers
 
-# SAMLv2 IdP settings variables
-__local_options = getattr(settings, 'IDP_SAML2_METADATA_OPTIONS', {})
-__user_backend_from_session = getattr(settings,
-        'IDP_SAML2_AUTHN_CONTEXT_FROM_SESSION', True)
-__delta = getattr(settings, 'IDP_SECONDS_TOLERANCE', 60)
-
 # Mapping to generate the metadata file, must be kept in sync with the url
 # dispatcher
-
 
 def get_provider_id_and_options(request, provider_id):
     if not provider_id:
         provider_id = reverse(metadata)
-    options = metadata_options
-    options.update(__local_options)
+    options = {
+            'key': app_settings.SIGNATURE_PUBLIC_KEY,
+            'private_key': app_settings.SIGNATURE_PRIVATE_KEY,
+    }
+    options.update(app_settings.METADATA_OPTIONS)
     return provider_id, options
 
 
@@ -1614,7 +1611,7 @@ def get_metadata(request, provider_id=None):
     '''
     provider_id, options = get_provider_id_and_options(request, provider_id)
     return get_saml2_metadata(request, request.path, idp_map=metadata_map,
-            options=metadata_options)
+            options=options)
 
 
 __cached_server = None

@@ -90,7 +90,11 @@ def cache_and_validate(timeout, hashing=hashlib.md5):
             now = dt.datetime.now()
             if key in f.cache:
                 date, last_modified, etag, mime_type, old_content = f.cache[key]
-                if now - date < dt.timedelta(seconds=timeout):
+                if callable(timeout):
+                    real_timeout = timeout()
+                else:
+                    real_timeout = timeout
+                if now - date < dt.timedelta(seconds=real_timeout):
                     return date, last_modified, etag, mime_type, old_content
                 else:
                     content = f(request, *args, **kwargs)
