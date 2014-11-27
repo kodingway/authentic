@@ -502,10 +502,11 @@ class LDAPBackend(object):
                 auth = handler_class(*sasl_params)
                 conn.sasl_interactive_bind_s(who, auth)
             elif block['binddn'] and block['bindpw']:
-                conn.simple_bind_s(block['binddn'], block['bindpw'])
+                who = block['binddn']
+                conn.simple_bind_s(who, block['bindpw'])
         except ldap.INVALID_CREDENTIALS:
-            log.error('admin bind failed: invalid credentials (%r, %r)',
-                    block['binddn'], '*hidden*')
+            log.error('admin bind failed: invalid credentials (%r, %r)', who,
+                    '*hidden*')
         except ldap.INVALID_DN_SYNTAX:
             log.error('admin bind failed: invalid dn syntax %r', who)
         else:
