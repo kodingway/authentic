@@ -20,6 +20,7 @@
 
 import logging
 from operator import attrgetter, __or__
+import six
 
 
 from authentic2.attribute_aggregator.core import (get_profile_field_name_from_definition,
@@ -128,7 +129,7 @@ def get_attributes(user, definitions=None, source=None, auth_source=False, **kwa
                 value = value.all()
             logger.debug('field %r has value %r', field_name, value)
             old = data.get(definition, [])
-            if not isinstance(value, basestring) and hasattr(value,
+            if not isinstance(value, six.string_types) and hasattr(value,
                     '__iter__'):
                 new = map(unicode, value)
             else:

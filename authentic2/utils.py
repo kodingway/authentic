@@ -3,6 +3,7 @@ import hashlib
 import datetime as dt
 import logging
 import urllib
+import six
 
 from importlib import import_module
 
@@ -110,7 +111,7 @@ def cache_and_validate(timeout, hashing=hashlib.md5):
         @condition(etag_func=get_etag, last_modified_func=get_last_modified)
         def replacement(request, *args, **kwargs):
             _, _, _, content_type, content = get_content(request, *args, **kwargs)
-            if isinstance(content, basestring):
+            if isinstance(content, six.string_types):
                 return HttpResponse(content, content_type=content_type)
             else:
                 return content
@@ -202,7 +203,7 @@ class Service(object):
 
 def field_names(list_of_field_name_and_titles):
     for t in list_of_field_name_and_titles:
-        if isinstance(t, basestring):
+        if isinstance(t, six.string_types):
             yield t
         else:
             yield t[0]

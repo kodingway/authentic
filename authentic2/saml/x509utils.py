@@ -4,12 +4,13 @@ import tempfile
 import os
 import subprocess
 import stat
+import six
 
 _openssl = 'openssl'
 
 def decapsulate_pem_file(file_or_string):
     '''Remove PEM header lines'''
-    if not isinstance(file_or_string, basestring):
+    if not isinstance(file_or_string, six.string_types):
         content = file_or_string.read()
     else:
         content = file_or_string

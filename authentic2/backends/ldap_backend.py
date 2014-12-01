@@ -11,6 +11,7 @@ import pickle
 import base64
 import urllib
 import itertools
+import six
 
 # code originaly copied from by now merely inspired by
 # http://www.amherst.k12.oh.us/django-ldap.html
@@ -248,8 +249,8 @@ class LDAPBackend(object):
                 if d not in block:
                     block[d] = _DEFAULTS[d]
                 else:
-                    if isinstance(_DEFAULTS[d], basestring):
-                        if not isinstance(block[d], basestring):
+                    if isinstance(_DEFAULTS[d], six.string_types):
+                        if not isinstance(block[d], six.string_types):
                             raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: '
                                     'attribute %r must be a string' % d)
                         try:
@@ -270,19 +271,19 @@ class LDAPBackend(object):
                         raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: '
                                 'attribute %r is required but is empty')
             for i in _TO_ITERABLE:
-                if isinstance(block[i], basestring):
+                if isinstance(block[i], six.string_types):
                     block[i] = (block[i],)
             # lowercase LDAP attribute names
             block['external_id_tuples'] = map(lambda t: map(str.lower, map(str, t)), block['external_id_tuples'])
             block['attribute_mappings'] = map(lambda t: map(str.lower, map(str, t)), block['attribute_mappings'])
             for key in _TO_LOWERCASE:
                 # we handle strings, list of strings and list of list or tuple whose first element is a string
-                if isinstance(block[key], basestring):
+                if isinstance(block[key], six.string_types):
                     block[key] = str(block[key]).lower()
                 elif isinstance(block[key], (list, tuple)):
                     new_seq = []
                     for elt in block[key]:
-                        if isinstance(elt, basestring):
+                        if isinstance(elt, six.string_types):
                             elt = str(elt).lower()
                         elif isinstance(elt, (list, tuple)):
                             elt = list(elt)

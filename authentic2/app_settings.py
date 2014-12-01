@@ -1,4 +1,5 @@
 import sys
+import six
 
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ImproperlyConfigured
@@ -9,7 +10,7 @@ class Setting(object):
 
     def __init__(self, default=SENTINEL, definition='', names=None):
         self.names = names or []
-        if isinstance(self.names, basestring):
+        if isinstance(self.names, six.string_types):
             self.names = [self.names]
         self.names = set(self.names)
         self.default = default

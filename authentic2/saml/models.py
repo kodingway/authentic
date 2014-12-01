@@ -2,6 +2,7 @@ import xml.etree.ElementTree as etree
 import hashlib
 import numbers
 import datetime
+import six
 
 import requests
 from authentic2.compat import lasso
@@ -392,7 +393,7 @@ class SAMLAttribute(models.Model):
         if self.friendly_name:
             at.friendlyName = self.friendly_name.encode('utf-8')
         values = ctx.get(self.attribute_name)
-        if isinstance(values, (basestring, numbers.Number, datetime.datetime, datetime.date)):
+        if isinstance(values, tuple(six.string_types) + (numbers.Number, datetime.datetime, datetime.date)):
             values = [values]
         elif isinstance(values, (tuple, list)):
             pass

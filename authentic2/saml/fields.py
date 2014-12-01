@@ -2,6 +2,7 @@ try:
     import cPickle as pickle
 except ImportError:
     import pickle
+import six
 
 from django import forms
 from django.db import models
@@ -136,7 +137,7 @@ class MultiSelectField(models.Field):
         return MultiSelectFormField(**defaults)
 
     def get_db_prep_value(self, value, connection, prepared=False):
-        if isinstance(value, basestring):
+        if isinstance(value, six.string_types):
             return value
         elif isinstance(value, list):
             return ",".join(value)

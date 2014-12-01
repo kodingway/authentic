@@ -1,3 +1,5 @@
+import six
+
 from django.core.exceptions import ImproperlyConfigured
 
 from ...decorators import to_list
@@ -43,7 +45,7 @@ def get_instances(ctx):
             config_error(UNEXPECTED_KEYS_ERROR, unexpected)
         if 'name' not in keys or 'template' not in keys:
             config_error(BAD_CONFIG_ERROR)
-        if not isinstance(d['template'], basestring):
+        if not isinstance(d['template'], six.string_types):
             config_error(TYPE_ERROR)
         yield d
 

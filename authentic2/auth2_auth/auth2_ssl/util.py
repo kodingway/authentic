@@ -1,4 +1,5 @@
 import base64
+import six
 
 from . import app_settings
 
@@ -52,7 +53,7 @@ class SSLInfo(object):
 
     def read_env(self, env):
         for attr, keys in X509_KEYS.iteritems():
-            if isinstance(keys, basestring):
+            if isinstance(keys, six.string_types):
                 keys = [keys]
             for key in keys:
                 if key in env and env[key]:
