@@ -6,10 +6,14 @@ class Plugin(object):
     def get_before_urls(self):
         from . import app_settings
         from django.conf.urls import patterns, include
-        from authentic2.decorators import setting_enabled, required
+        from authentic2.decorators import (setting_enabled, required,
+                lasso_required)
 
         return required(
-                setting_enabled('ENABLE', settings=app_settings),
+                (
+                    setting_enabled('ENABLE', settings=app_settings),
+                    lasso_required()
+                ),
                 patterns('',
                     (r'^idp/saml2/', include(__name__ + '.urls'))))
 

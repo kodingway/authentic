@@ -49,6 +49,15 @@ def setting_enabled(name, settings=app_settings):
         return getattr(settings, name, False)
     return unless(test, 'please enable %s' % full_name)
 
+def lasso_required():
+    def test():
+        try:
+            import lasso
+            return True
+        except ImportError:
+            return False
+    return unless(test, 'please install lasso')
+
 def required(wrapping_functions,patterns_rslt):
     '''
     Used to require 1..n decorators in any view returned by a url tree
