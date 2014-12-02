@@ -541,18 +541,22 @@ LOGGING = {
         },
         'lasso': {
                 'handlers': ['mail_admins', 'syslog'],
-                'level': 'INFO',
+                'level': 'WARNING',
                 'propagate': False,
         },
         '': {
                 'handlers': ['mail_admins', 'syslog'],
-                'level': 'INFO',
+                'level': 'WARNING',
         },
     },
 }
 
 if DEBUG and not DEBUG_LOG:
-    LOGGING['loggers']['']['level'] = 'DEBUG'
+    for logger in LOGGING['loggers']:
+        if logger.startswith('authentic2'):
+            LOGGING['loggers'][logger]['level'] = 'DEBUG'
+            LOGGING['loggers'][logger]['propagate'] = False
+            LOGGING['loggers'][logger]['handlers'] = LOGGING['loggers']['']['handlers']
 
 if to_boolean('CONSOLE_LOG'):
     LOGGING['loggers']['']['handlers'] += ['console']
