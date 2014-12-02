@@ -142,28 +142,6 @@ SIGNATURE_VERIFY_HINT = {
         lasso.PROFILE_SIGNATURE_VERIFY_HINT_FORCE: _('Always check signatures'),
         lasso.PROFILE_SIGNATURE_VERIFY_HINT_IGNORE: _('Does not check signatures') }
 
-class LibertyProviderPolicy(models.Model):
-    name = models.CharField(max_length=64, unique=True)
-    authn_request_signature_check_hint = models.IntegerField(
-            verbose_name=_("How to verify signatures Authentication Request ?"),
-            choices=SIGNATURE_VERIFY_HINT.items(),
-            default=lasso.PROFILE_SIGNATURE_VERIFY_HINT_MAYBE)
-
-    objects = a2_managers.GetByNameManager()
-
-    def natural_key(self):
-        return (self.name,)
-
-    def __unicode__(self):
-        options = []
-        options.append(u'AuthnRequest signature: %s' % SIGNATURE_VERIFY_HINT[self.authn_request_signature_check_hint])
-        return self.name + ' (%s)' % ', '.join(options)
-
-    class Meta:
-        verbose_name = _('SAML service provider policy')
-        verbose_name_plural = _('SAML service provider policies')
-
-
 AUTHSAML2_UNAUTH_PERSISTENT = (
     ('AUTHSAML2_UNAUTH_PERSISTENT_ACCOUNT_LINKING_BY_AUTH',
         _('Account linking by authentication')),
@@ -551,8 +529,6 @@ class LibertyServiceProvider(models.Model):
     enable_following_sp_options_policy = models.BooleanField(verbose_name = \
         _('The following options policy will apply except if a policy for all service provider is defined.'))
     sp_options_policy = models.ForeignKey(SPOptionsIdPPolicy, related_name = "sp_options_policy", verbose_name = _('service provider options policy'), blank=True, null=True)
-    policy = models.ForeignKey(LibertyProviderPolicy,
-            verbose_name=_("Protocol policy"), null=True, default=1)
     enable_following_attribute_policy = models.BooleanField(verbose_name = \
         _('The following attribute policy will apply except if a policy for all service provider is defined.'))
     attribute_policy = models.ForeignKey('idp.AttributePolicy',

@@ -16,7 +16,6 @@ except ImportError:
 from authentic2.saml.models import LibertyProvider, LibertyServiceProvider
 from authentic2.saml.models import LibertyIdentityProvider, IdPOptionsSPPolicy
 from authentic2.saml.models import SPOptionsIdPPolicy
-from authentic2.saml.models import LibertyProviderPolicy
 from authentic2.saml.models import LibertySessionDump, LibertyFederation
 from authentic2.saml.models import LibertyAssertion, LibertySessionSP, KeyValue
 from authentic2.saml.models import LibertySession
@@ -216,11 +215,6 @@ class LibertyProviderAdmin(admin.ModelAdmin):
         return urls
 
 
-class LibertyProviderPolicyAdmin(admin.ModelAdmin):
-    inlines = [
-            LibertyServiceProviderInline,
-    ]
-
 class LibertyFederationAdmin(admin.ModelAdmin):
     search_fields = ('name_id_content', 'user__username')
     list_display = ('user', 'creation', 'last_modification', 'name_id_content', 'format', 'idp', 'sp')
@@ -257,7 +251,6 @@ class SPOptionsIdPPolicyAdmin(admin.ModelAdmin):
 
 admin.site.register(SPOptionsIdPPolicy, SPOptionsIdPPolicyAdmin)
 admin.site.register(LibertyProvider, LibertyProviderAdmin)
-admin.site.register(LibertyProviderPolicy, LibertyProviderPolicyAdmin)
 
 if settings.DEBUG:
     admin.site.register(LibertySessionDump)

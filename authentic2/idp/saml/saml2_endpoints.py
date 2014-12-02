@@ -440,11 +440,12 @@ def sso(request):
                         logger=logger, warning=True)
                 logger.info('provider %s loaded with success' \
                     % provider_id)
-            if provider_loaded.service_provider.policy.authn_request_signature_check_hint == lasso.PROFILE_SIGNATURE_VERIFY_HINT_IGNORE:
-                    signed = False
-            login.setSignatureVerifyHint(
-                    provider_loaded.service_provider.policy \
-                            .authn_request_signature_check_hint)
+            if policy.authn_request_signed:
+                verify_hint = lasso.PROFILE_SIGNATURE_VERIFY_HINT_FORCE
+            else:
+                verify_hint = lasso.PROFILE_SIGNATURE_VERIFY_HINT_IGNORE
+                signed = False
+            login.setSignatureVerifyHint(verify_hint)
     if signed and not check_destination(request, login.request):
         logger.warning('wrong or absent destination')
         return return_login_error(request, login,
