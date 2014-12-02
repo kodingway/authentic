@@ -12,6 +12,17 @@ try:
 except ImportError:
     from django.db.transaction import commit_on_success
 
+try:
+    import lasso
+except ImportError:
+    class MockLasso(object):
+        def __getattr__(self, key):
+            if key[0].isupper():
+                return ''
+            return AttributeError('Please install lasso')
+    lasso = MockLasso()
+
+
 from . import app_settings, utils
 
 user_model_label = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')

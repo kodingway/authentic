@@ -25,7 +25,7 @@ import random
 import string
 from functools import wraps
 
-import lasso
+from authentic2.compat import lasso
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist

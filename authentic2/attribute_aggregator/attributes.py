@@ -19,7 +19,7 @@
 
 
 import logging
-import lasso
+from authentic2.compat import lasso
 
 from authentic2.saml.models import LibertyProvider
 from authentic2.idp.models import get_attribute_policy

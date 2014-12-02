@@ -7,7 +7,7 @@ import logging
 import re
 import datetime
 
-import lasso
+from authentic2.compat import lasso
 from django.template import RequestContext
 from django.conf import settings
 from django.http import HttpResponseRedirect, Http404, HttpResponse

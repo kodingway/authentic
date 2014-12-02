@@ -23,10 +23,7 @@ from django.contrib.auth.models import Group
 from django.db import DatabaseError
 from django.db import transaction
 
-try:
-    import lasso
-except ImportError:
-    pass
+from authentic2.compat import lasso
 
 from authentic2.decorators import to_list
 from authentic2.compat import get_user_model, commit_on_success

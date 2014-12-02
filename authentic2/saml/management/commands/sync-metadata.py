@@ -3,7 +3,7 @@ import sys
 import xml.etree.ElementTree as etree
 import os
 
-import lasso
+from authentic2.compat import lasso
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from django.template.defaultfilters import slugify

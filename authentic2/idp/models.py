@@ -2,7 +2,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-import lasso
+from authentic2.compat import lasso
 
 from authentic2.attribute_aggregator.mapping_loader import ATTRIBUTE_NAMESPACES
 

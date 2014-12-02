@@ -4,7 +4,7 @@ import numbers
 import datetime
 
 import requests
-import lasso
+from authentic2.compat import lasso
 
 from django.db import models
 from django.db.models import Q

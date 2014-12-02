@@ -1,5 +1,5 @@
 import xml.etree.ElementTree as etree
-import lasso
+from authentic2.compat import lasso
 from authentic2.saml import x509utils
 from authentic2.saml.saml2utils import bool2xs, NamespacedTreeBuilder, keyinfo
 

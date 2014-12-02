@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as etree
 import collections
-import lasso
+from authentic2.compat import lasso
 import x509utils
 import base64
 import binascii

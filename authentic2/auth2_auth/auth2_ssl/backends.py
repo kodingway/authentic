@@ -136,5 +136,5 @@ settings')
 
     @classmethod
     def get_saml2_authn_context(cls):
-        import lasso
+        from authentic2.compat import lasso
         return lasso.SAML2_AUTHN_CONTEXT_X509
