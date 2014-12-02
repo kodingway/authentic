@@ -42,7 +42,7 @@ def to_int(name, default):
         raise ImproperlyConfigured('environ variable %s must be an integer' % name)
 
 
-DEBUG = to_boolean('DEBUG', default=False)
+DEBUG = to_boolean('DEBUG', default=True)
 DEBUG_PROPAGATE_EXCEPTIONS = to_boolean('DEBUG_PROPAGATE_EXCEPTIONS', default=False)
 USE_DEBUG_TOOLBAR = to_boolean('USE_DEBUG_TOOLBAR', default=False)
 TEMPLATE_DEBUG = DEBUG
