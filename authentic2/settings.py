@@ -358,22 +358,9 @@ if 'LDAP_AUTH_SETTINGS' in os.environ:
         raise ImproperlyConfigured('LDAP_AUTH_SETTINGS is not a JSON document', e)
 else:
     LDAP_AUTH_SETTINGS = []
-##################################
-# Cache configuration
-##################################
-CACHE_DIR = os.path.join('/var/cache/', PROJECT_NAME)
-if not os.access(CACHE_DIR, os.W_OK):
-    CACHE_DIR = os.path.join(PROJECT_DIR, 'cache')
-    warnings.warn('Cannot access global cache path, using in project cache directory %s' %  CACHE_DIR)
-    if not os.path.isdir(CACHE_DIR):
-        os.makedirs(CACHE_DIR)
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': CACHE_DIR,
-    },
-}
+CACHES = global_settings.CACHES
+
 if 'CACHE_BACKEND' in os.environ:
     CACHES['default'] = json.loads(os.environ['CACHE_BACKEND'])
 
