@@ -59,7 +59,7 @@ _DEFAULTS = {
     # do not try to get a Django user from the LDAP user
     # it's incompatible with a lot of Django applications, the
     # django.contrib.admin for example
-    'transient': True,
+    'transient': False,
     # active directory ?
     'active_directory': False,
     # shuffle replicas
