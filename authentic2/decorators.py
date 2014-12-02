@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, Http404
+from django.views.debug import technical_404_response
 from functools import wraps
 
 from . import utils, app_settings
@@ -30,17 +31,23 @@ def to_iter(func):
         return utils.IterableFactory(lambda: func(*args, **kwargs))
     return f
 
-def setting_enabled(name, settings=app_settings):
-    '''Generate a decorator for enabling a view based on a setting'''
+def unless(test, message):
+    '''Decorator returning a 404 status code if some condition is not met'''
     def decorator(func):
         @wraps(func)
-        def f(*args, **kwargs):
-            if not getattr(settings, name, False):
-                full_name = getattr(settings, 'prefix', '') + name
-                raise Http404('enable %s' % full_name)
-            return func(*args, **kwargs)
+        def f(request, *args, **kwargs):
+            if not test():
+                return technical_404_response(request, Http404(message))
+            return func(request, *args, **kwargs)
         return f
     return decorator
+
+def setting_enabled(name, settings=app_settings):
+    '''Generate a decorator for enabling a view based on a setting'''
+    full_name = getattr(settings, 'prefix', '') + name
+    def test():
+        return getattr(settings, name, False)
+    return unless(test, 'please enable %s' % full_name)
 
 def required(wrapping_functions,patterns_rslt):
     '''
