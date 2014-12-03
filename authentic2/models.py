@@ -226,7 +226,7 @@ class AuthenticationEvent(models.Model):
             verbose_name=_('when'))
     who = models.CharField(max_length=80,
             verbose_name=_('who'))
-    how = models.CharField(max_length=10,
+    how = models.CharField(max_length=32,
             verbose_name=_('how'))
     nonce = models.CharField(max_length=255,
             verbose_name=_('nonce'))
