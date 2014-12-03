@@ -17,7 +17,7 @@ specifications of SAML2.
 
 Authentic 2 requires Python 2.7 et Django 1.5.
 
-Full documentation available on http://packages.python.org/authentic2.
+Full documentation available on http://authentic2.readthedocs.org/en/stable/.
 
 Features
 --------
