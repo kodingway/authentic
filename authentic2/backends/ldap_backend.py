@@ -542,7 +542,8 @@ class LDAPBackend(object):
                         group_filter.format(user_dn=escape_filter_chars(dn)), [])
             except ldap.NO_SUCH_OBJECT:
                 pass
-            group_dns.update(dn for dn, attributes in results)
+            else:
+                group_dns.update(dn for dn, attributes in results)
         return group_dns
 
     def populate_user_groups(self, user, uri, dn, conn, block):
