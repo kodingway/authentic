@@ -1,9 +1,18 @@
 NEWS
 ====
 
-2.1.10 - ...
-------------
+2.1.10 - December 3rd 2014
+--------------------------
 
+- set LDAP backend default to create Django users (transien=False)
+- do not fail when lasso is uninstalled, instead show a warning in a 404 error
+	page
+- set root logger level to WARNING and only activate DEBUG level on authentic2
+	logger when DEBUG is True
+- DEBUG=True is now the default
+- removed the default cache stored on filesystem
+- documentation refactoring
+- use django-sekizai to load stylesheet and javascript files
 - make the logout URL used for simple logout uncacheable by adding a varying parameter,
 - add new way for authentication frontend to render their login block by implementing a
 	simple view named login(), this view can use django-sekizai to add CSS or JS
@@ -13,9 +22,11 @@ NEWS
 	in somes cases it does not match. A migration was created to initialize the
 	field in existing providers with the entity_id. A new method
 	update_metadata() was created on LibertyProvider, the admin action was
-	rewrittent around it.
+	rewritten around it.
 - user creation form's username field maximum length was fixed (finally)
 - french translations were added for the SAML 2.0 IdP
+- refactored the login view, new frontend API is supported where frontend only
+	implement a login() view
 
 2.1.9 - November 14th 2014
 --------------------------
