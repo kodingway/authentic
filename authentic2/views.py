@@ -280,7 +280,11 @@ def login(request, template_name='authentic2/login.html',
             block['form'] = form_class()
         blocks.append(block)
 
-    context_instance = RequestContext(request)
+    context_instance = RequestContext(request, {
+        'cancel': nonce is not None,
+        'can_reset_password': app_settings.A2_CAN_RESET_PASSWORD,
+        'registration_authorized': getattr(settings, 'REGISTRATION_OPEN', True),
+    })
 
     # New frontends API 
 
@@ -306,11 +310,8 @@ def login(request, template_name='authentic2/login.html',
             continue
         frontend = block['frontend']
         context = { 
-                'cancel': nonce is not None,
                 'submit_name': 'submit-%s' % fid,
                 redirect_field_name: redirect_to,
-                'can_reset_password': app_settings.A2_CAN_RESET_PASSWORD,
-                'registration_authorized': getattr(settings, 'REGISTRATION_OPEN', True),
                 'form': block['form']
         }
         if hasattr(frontend, 'get_context'):
