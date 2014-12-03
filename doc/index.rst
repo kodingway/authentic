@@ -7,83 +7,38 @@
 Authentic 2's documentation
 ===========================
 
-Authentic 2 is a versatile identity provider addressing a broad
-range of needs, from simple to advanced setups, around web authentication,
-attribute sharing and namespace mapping.
+Authentic 2 is a versatile identity management server aiming to address a
+broad range of needs, from simple to complex setups; it has support for many
+protocols and can bridge between them.
 
 Authentic 2 supports many protocols and standards, including SAML2, CAS, OpenID,
-LDAP, X509, OATH, and can bridge between them.
+LDAP, X509 and OAUTH2.
 
 Authentic 2 is under the GNU AGPL version 3 licence.
 
 It has support for SAMLv2 thanks to `Lasso <http://lasso.entrouvert.org>`_,
 a free (GNU GPL) implementation of the Liberty Alliance and OASIS
-specifications of SAML2, ID-FF1.2 and ID-WSF2.
+specifications of SAML2.
 
-The Documentation is under the licence Creative Commons `CC BY-SA 2.0 <http://creativecommons.org/licenses/by-sa/2.0/>`_.
+Consult current Authentic 2 activity on the `project site <http://dev.entrouvert.org/projects/authentic>`_
 
-- `Authentic 2 project site <http://dev.entrouvert.org/projects/authentic>`_
-- `Authentic 2 roadmap <http://dev.entrouvert.org/projects/authentic/roadmap>`_
-
-Documentation content
-=====================
+If you don't find an explanation, you don't understand it or one is missing,
+please report it on the list.
 
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 1
 
-   features
+    overview
 
-   installation
+    installation
 
-   production
+    configuration
 
-   upgrading
+    advanced
 
-   change_db
+    copyright
 
-   settings
-
-   auth_ldap
-
-   auth_pam
-
-   administration_with_policies
-
-   where_metadata
-
-   config_saml2_sp
-
-   config_saml2_idp
-
-   saml2_slo
-
-   sync-metadata_script
-
-   config_cas_sp
-
-   attribute_management
-
-   attribute_management_explained
-
-   attributes_in_session
-
-   consent_management
-
-Copyright
-=========
-
-Authentic and Authentic 2 are copyrighted by Entr'ouvert and are licensed
-through the GNU AFFERO GENERAL PUBLIC LICENSE, version 3 or later. A copy of
-the whole license text is available in the COPYING file.
-
-The OpenID IdP originates in the project django_openid_provider by Roman
-Barczyski, which is under the Apache 2.0 licence. This imply that you must
-distribute authentic2 under the AGPL3 licence when distributing this part of the
-project which is the only AGPL licence version compatible with the Apache 2.0
-licence.
-
-The Documentation is under the licence Creative Commons
-`CC BY-SA 2.0 <http://creativecommons.org/licenses/by-sa/2.0/>`_.
+This documentation is under the licence Creative Commons `CC BY-SA 2.0 <http://creativecommons.org/licenses/by-sa/2.0/>`_.
 
 .. Indices and tables
 .. ==================

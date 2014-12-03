@@ -36,11 +36,13 @@ Create a SAML2 service provider entry
 
 .. image:: pictures/new_saml2_sp_1.png
    :width: 800 px
+   :align: center
 
 .. image:: pictures/new_saml2_sp_2.png
    :width: 800 px
+   :align: center
 
-**The service provider must be enabled.**
+**Note:** The service provider must be enabled.
 
 See below about configuring the service provider with policies:
 
