@@ -3,6 +3,7 @@ from south.db import db
 from south.v2 import SchemaMigration
 
 from authentic2.compat import user_model_label
+from authentic2.saml.common import get_sp_options_policy
 
 class Migration(SchemaMigration):
 
@@ -14,9 +15,14 @@ class Migration(SchemaMigration):
         except ImportError:
             return
         for service_provider in orm.LibertyServiceProvider.objects.all():
-            if service_provider.policy and service_provider.policy.authn_request_signature_check_hint == lasso.PROFILE_SIGNATURE_VERIFY_HINT_IGNORE:
-                service_provider.sp_options_policy.authn_request_signed = False
-                service_provider.sp_options_policy.save()
+            if service_provider.policy:
+                value = service_provider.policy.authn_request_signature_check_hint != lasso.PROFILE_SIGNATURE_VERIFY_HINT_IGNORE
+            else:
+                value = True
+            policy = get_sp_options_policy(service_provider.liberty_provider)
+            if policy:
+                policy.authn_request_signed = value
+                policy.save()
 
     def backwards(self, orm):
         if db.dry_run:
@@ -26,8 +32,12 @@ class Migration(SchemaMigration):
         except ImportError:
             return
         for service_provider in orm.LibertyServiceProvider.objects.all():
-            if not service_provider.sp_options_policy.authn_request_signed:
-                service_provider.policy.authn_request_signature_check_hint = lasso.PROFILE_SIGNATURE_VERIFY_HINT_IGNORE
+
+            if not service_provider.sp_options_policy or service_provider.sp_options_policy.authn_request_signed:
+                service_provider.policy = orm.LibertyProviderPolicy(authn_request_signature_check_hint=lasso.PROFILE_SIGNATURE_VERIFY_HINT_MAYBE)
+            else:
+                service_provider.policy = orm.LibertyProviderPolicy(authn_request_signature_check_hint=lasso.PROFILE_SIGNATURE_VERIFY_HINT_MAYBE)
+            service_provider.policy.save()
 
     models = {
         u'attribute_aggregator.attributeitem': {
