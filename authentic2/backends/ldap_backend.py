@@ -190,6 +190,17 @@ class LDAPUser(get_user_model()):
             raise LDAPException('missing password for dn %r', self.dn)
         return password
 
+    def check_password(self, raw_password):
+        connection = get_connection(self.block)
+        try:
+            connection.simple_bind_s(self.dn, raw_password.encode('utf-8'))
+        except ldap.INVALID_CREDENTIALS:
+            return False
+        except ldap.LDAPError, e:
+            log.error('LDAPUser.check_password() failed: %s', e)
+            return False
+        return True
+
     def set_password(self, new_password):
         old_password = self.get_ldap_password()
         if old_password != new_password:
