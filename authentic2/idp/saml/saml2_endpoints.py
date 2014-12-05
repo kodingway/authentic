@@ -1107,10 +1107,10 @@ def process_logout_request(request, message, binding):
                     'slo unknown provider %s' % logout.remoteProviderId)
                 return logout, return_logout_error(request, logout,
                         AUTHENTIC_STATUS_CODE_UNKNOWN_PROVIDER)
+            policy = get_sp_options_policy(p)
             # we do not verify authn request, why verify logout requests...
-            logout.setSignatureVerifyHint(
-                    p.service_provider.policy \
-                            .authn_request_signature_check_hint)
+            if not policy.authn_request_signed:
+                logout.setSignatureVerifyHint(lasso.PROFILE_SIGNATURE_VERIFY_HINT_IGNORE)
             logout.processRequestMsg(message)
     except lasso.DsError:
         logger.error(''
