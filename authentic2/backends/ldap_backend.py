@@ -91,7 +91,7 @@ _DEFAULTS = {
     # keep password around so that Django authentification also work
     'clean_external_id_on_update': True,
     # Conserve the passsword in the Django User object
-    'keep_password': True,
+    'keep_password': False,
     # Only authenticate users coming from the corresponding realm
     'limit_to_realm': False,
     # Assign users mandatorily to some groups
@@ -192,10 +192,10 @@ class LDAPUser(get_user_model()):
         old_password = self.get_ldap_password()
         if old_password != new_password:
             conn = self.get_connection()
-            modify_password(conn, self.block, self.dn, self.get_ldap_password(),
-                    new_password)
+            modify_password(conn, self.block, self.dn, old_password, new_password)
         self.set_ldap_password(new_password)
-        super(LDAPUser, self).set_password(new_password)
+        if self.block['keep_password']:
+            super(LDAPUser, self).set_password(new_password)
 
     def get_connection(self):
         return get_connection(self.block, (self.dn, self.get_ldap_password()))
@@ -762,23 +762,25 @@ class LDAPBackend(object):
         user = LDAPUser(username=username)
         user.ldap_init(block, dn, password, transient=True)
         self.populate_user(user, uri, dn, username, conn, block, attributes)
-        user.set_password(password)
         user.pk = 'transient!{0}'.format(base64.b64encode(pickle.dumps(user)))
         return user
 
     def _return_django_user(self, uri, dn, username, password, conn, block, attributes):
         user = self.lookup_existing_user(uri, dn, username, password, conn, block, attributes)
         if user:
+            created = False
             log.debug('found existing user %r', user)
         else:
+            created = True
             user = LDAPUser()
         user.ldap_init(block, dn, password)
-        if block['keep_password']:
-            user.set_password(password)
-        else:
-            user.set_unusable_password()
         self.populate_user(user, uri, dn, username, conn, block, attributes)
         self.save_user(user, username)
+        if block['keep_password']:
+            if created:
+                self.set_password(password)
+        else:
+            self.set_unusable_password()
         user.keep_pk = user.pk
         user.pk = 'persistent!{0}'.format(base64.b64encode(pickle.dumps(user)))
         return user
