@@ -196,6 +196,8 @@ class LDAPUser(get_user_model()):
         self.set_ldap_password(new_password)
         if self.block['keep_password']:
             super(LDAPUser, self).set_password(new_password)
+        else:
+            self.set_unusable_password()
 
     def get_connection(self):
         return get_connection(self.block, (self.dn, self.get_ldap_password()))
@@ -777,9 +779,9 @@ class LDAPBackend(object):
         self.populate_user(user, uri, dn, username, conn, block, attributes)
         if block['keep_password']:
             if created:
-                self.set_password(password)
+                user.set_password(password)
         else:
-            self.set_unusable_password()
+            user.set_unusable_password()
         self.save_user(user, username)
         user.keep_pk = user.pk
         user.pk = 'persistent!{0}'.format(base64.b64encode(pickle.dumps(user)))
