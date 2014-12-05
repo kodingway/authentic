@@ -96,6 +96,8 @@ _DEFAULTS = {
     'limit_to_realm': False,
     # Assign users mandatorily to some groups
     'set_mandatory_groups': (),
+    # Can users change their password ?
+    'user_can_change_password': True,
 }
 
 _REQUIRED = ('url', 'basedn')
@@ -198,6 +200,9 @@ class LDAPUser(get_user_model()):
             super(LDAPUser, self).set_password(new_password)
         else:
             self.set_unusable_password()
+
+    def has_usable_password(self):
+        return self.block['user_can_change_password']
 
     def get_connection(self):
         return get_connection(self.block, (self.dn, self.get_ldap_password()))
