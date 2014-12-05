@@ -184,14 +184,25 @@ def fill_assertion(request, saml_request, assertion, provider_id, nid_format):
                 edu_person_targeted_id)
     assertion.subject.nameID.format = NAME_ID_FORMATS[nid_format]['samlv2']
 
-
-def add_attributes(assertion, provider, policy, ctx):
+def get_attribute_definitions(provider):
+    '''Query all attribute definitions for a providers'''
     qs = SAMLAttribute.objects.for_generic_object(provider) \
             .filter(enabled=True)
-    qs |= SAMLAttribute.objects.for_generic_object(policy) \
-            .filter(enabled=True)
-    qs = qs.distinct()
+    if provider.service_provider and provider.service_provider.sp_options_policy:
+        qs |= SAMLAttribute.objects.for_generic_object(provider.service_provider.sp_options_policy) \
+                .filter(enabled=True)
+    return qs.distinct()
 
+def add_attributes(request, assertion, provider):
+    qs = get_attribute_definitions()
+    wanted_attributes = [definition.attribute_name for definition in qs]
+
+    ctx = get_attributes({
+        'request': request,
+        'user': request.user,
+        'service': provider.entity_id,
+        '__wanted_attributes': wanted_attributes,
+    })
     if not assertion.attributeStatement:
         assertion.attributeStatement = [lasso.Saml2AttributeStatement()]
     attribute_statement = assertion.attributeStatement[0]
@@ -865,13 +876,7 @@ def sso_after_process_request(request, login, consent_obtained=False,
 
     build_assertion(request, login, nid_format=nid_format,
             attributes=attributes)
-    ctx = get_attributes({
-        'request': request,
-        'user': request.user,
-        'provider': provider,
-        'policy': saml_policy,
-    })
-    add_attributes(login.assertion, provider, saml_policy, ctx)
+    add_attributes(request, login.assertion, provider)
     return finish_sso(request, login, user=user, save=save, return_profile=return_profile)
 
 
