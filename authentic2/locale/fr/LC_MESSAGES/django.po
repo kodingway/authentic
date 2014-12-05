@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-11-13 16:55+0100\n"
-"PO-Revision-Date: 2014-11-13 16:56+0100\n"
+"PO-Revision-Date: 2014-12-05 09:24+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
 "Language: fr\n"
@@ -625,7 +625,7 @@ msgstr "Mot de passe perdu ?"
 
 #: templates/auth/login_form.html:15
 msgid "Reset it!"
-msgstr "Ré-initialiser le !"
+msgstr "Ré-initialisez le !"
 
 #: templates/auth/login_form.html:18
 msgid "Not a member?"
@@ -633,7 +633,7 @@ msgstr "Vous n'avez pas de compte ?"
 
 #: templates/auth/login_form.html:18
 msgid "Register!"
-msgstr "Enregistrez vous !"
+msgstr "Enregistrez-vous !"
 
 #: templates/authentic2/unused_account_alert_body.txt:1
 #, python-format
@@ -886,11 +886,11 @@ msgstr "Mot de passe réinitialisé avec succés"
 #: templates/registration/password_reset_form.html:5
 #: templates/registration/password_reset_form.html:10
 msgid "Resetting password"
-msgstr "Réinitialiser le mot de passe"
+msgstr "Ré-initialiser le mot de passe"
 
 #: templates/registration/password_reset_confirm.html:21
 msgid "Password reset failed"
-msgstr "Réinitialistion du mot de passe échouée"
+msgstr "Ré-initialistion du mot de passe échouée"
 
 #: templates/registration/password_reset_done.html:10
 msgid "Email with password reset instructions has been sent."
@@ -901,7 +901,7 @@ msgstr ""
 #: templates/registration/password_reset_email.html:2
 #, python-format
 msgid "Reset password at %(site_name)s"
-msgstr "Réinitialiser le mot de passe sur %(site_name)s"
+msgstr "Ré-initialiser le mot de passe sur %(site_name)s"
 
 #: templates/registration/registration_closed.html:5
 #: templates/registration/registration_closed.html:9
