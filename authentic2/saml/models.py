@@ -541,9 +541,6 @@ class LibertyServiceProvider(models.Model):
 
     objects = managers.GetByLibertyProviderManager()
 
-    def get_policy(self):
-        return get_all_custom_or_default(self, 'policy')
-
     def natural_key(self):
         return (self.liberty_provider.slug,)
 
