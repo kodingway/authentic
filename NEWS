@@ -1,6 +1,17 @@
 NEWS
 ====
 
+2.1.11 - Decembre 5th 2014
+--------------------------
+
+ 16 commits, 12 files changed, 705 insertions, 79 deletions
+
+- refactor LDAP password storage, check and modifications
+- fix some french translations
+- enlarge AuthenticationEvent.how column to accomodate currently used value 'password-on-https'
+- remove model LibertyProviderPolicy only use SPOptionsIdPPolicy now
+- fix bug in login view introduced in last release
+
 2.1.10 - December 3rd 2014
 --------------------------
 
