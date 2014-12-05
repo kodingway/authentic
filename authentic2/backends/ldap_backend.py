@@ -775,12 +775,12 @@ class LDAPBackend(object):
             user = LDAPUser()
         user.ldap_init(block, dn, password)
         self.populate_user(user, uri, dn, username, conn, block, attributes)
-        self.save_user(user, username)
         if block['keep_password']:
             if created:
                 self.set_password(password)
         else:
             self.set_unusable_password()
+        self.save_user(user, username)
         user.keep_pk = user.pk
         user.pk = 'persistent!{0}'.format(base64.b64encode(pickle.dumps(user)))
         return user
