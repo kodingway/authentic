@@ -353,7 +353,7 @@ class LDAPBackend(object):
                 self.try_admin_bind(conn, block)
                 if block['user_dn_template']:
                     template = str(block['user_dn_template'])
-                    escaped_username = escape_dn_chars(username)
+                    escaped_username = escape_dn_chars(utf8_username)
                     authz_ids.append(template.format(username=escaped_username))
                 else:
                     try:
@@ -374,6 +374,7 @@ class LDAPBackend(object):
                             results = conn.search_s(user_basedn, ldap.SCOPE_SUBTREE, query)
                             # remove search references
                             results = [ result for result in results if result[0] is not None]
+                            log.debug('found dns %r', results)
                             if len(results) == 0:
                                 log.debug('user lookup failed: no entry found, %s' % query)
                             elif not block['multimatch'] and len(results) > 1:
@@ -391,7 +392,7 @@ class LDAPBackend(object):
                         continue
                     except ldap.LDAPError, e:
                         log.error('user lookup failed: with query %r got error '
-                                '%s', username, query, e)
+                                '%s: %s', username, query, e)
                         continue
                 if not authz_ids:
                     continue
@@ -410,7 +411,7 @@ class LDAPBackend(object):
                         continue
                 except ldap.NO_SUCH_OBJECT:
                     # should not happen as we just searched for this object !
-                    log.error('user bind failed: authz_id not found %s' % ', '.join(authz_ids))
+                    log.error('user bind failed: authz_id not found %r', ', '.join(authz_ids))
                     if block['replicas']:
                         break
                 return self._return_user(uri, authz_id, username, password, conn, block)
