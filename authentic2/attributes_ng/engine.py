@@ -1,4 +1,6 @@
 from django.utils.importlib import import_module
+import logging
+
 from django.core.exceptions import ImproperlyConfigured
 
 from ..decorators import to_list
@@ -19,7 +21,7 @@ class UnsortableError(Exception):
     def __str__(self):
         return 'UnsortableError: %r' % self.unsortable_instances
 
-def topological_sort(source_and_instances, ctx):
+def topological_sort(source_and_instances, ctx, raise_on_unsortable=False):
     '''
     Sort instances topologically based on their dependency declarations.
     '''
@@ -40,7 +42,17 @@ def topological_sort(source_and_instances, ctx):
         if len(sorted_list) == len(source_and_instances): # finished !
             break
         elif count_sorted == len(sorted_list): # no progress !
-            raise UnsortableError(sorted_list, unsorted)
+            if raise_on_unsortable:
+                raise UnsortableError(sorted_list, unsorted)
+            else:
+                logger = logging.getLogger(__name__)
+                for source, instance in unsorted:
+                    dependencies = set(source.get_dependencies(instance, ctx))
+                    sorted_list.append((source, instance))
+                    logger.error('missing dependencies for instance %r of %r: %s',
+                            instance, source,
+                            list(dependencies-variables))
+                break
     return sorted_list
 
 @to_list
