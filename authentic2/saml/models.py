@@ -5,7 +5,7 @@ import datetime
 import six
 
 import requests
-from authentic2.compat import lasso
+from authentic2.compat_lasso import lasso
 
 from django.db import models
 from django.db.models import Q

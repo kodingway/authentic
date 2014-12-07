@@ -23,7 +23,7 @@ import datetime
 import logging
 
 from cPickle import loads, dumps
-from authentic2.compat import lasso
+from authentic2.compat_lasso import lasso
 
 from django.utils.translation import ugettext_lazy as _
 from django.db import models

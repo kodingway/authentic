@@ -1,6 +1,6 @@
 import urllib2
 import xml.etree.ElementTree as ET
-from authentic2.compat import lasso
+from authentic2.compat_lasso import lasso
 
 from django.forms import Form, CharField, SlugField, URLField, ValidationError
 from django.utils.translation import ugettext_lazy as _

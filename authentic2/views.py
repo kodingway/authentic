@@ -1,5 +1,5 @@
 import logging
-from authentic2.compat import lasso
+from authentic2.compat_lasso import lasso
 import thread
 import requests
 import urllib
