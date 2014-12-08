@@ -403,10 +403,10 @@ Use the file idp/attributes.py as an exemple.
 Modifying supported namespaces and attribute name mappings
 ==========================================================
 
-The mapping is defined in the file attribute_aggregatore/mapping.py
+The mapping is defined in the file attribute_aggregator/mapping.py
 
-The manual modification of this file is necessary to extend the default schema
-and mappings.
+The mapping can be modified with the variables ATTRIBUTE_NAMESPACES and
+ATTRIBUTE_MAPPING that can be redefined using settings.
 
 Add new namespaces in ATTRIBUTE_NAMESPACES.
 
