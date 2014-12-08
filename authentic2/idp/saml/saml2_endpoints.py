@@ -194,7 +194,7 @@ def get_attribute_definitions(provider):
     return qs.distinct()
 
 def add_attributes(request, assertion, provider):
-    qs = get_attribute_definitions()
+    qs = get_attribute_definitions(provider)
     wanted_attributes = [definition.attribute_name for definition in qs]
 
     ctx = get_attributes({
