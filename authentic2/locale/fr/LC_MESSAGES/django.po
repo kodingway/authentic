@@ -629,7 +629,7 @@ msgstr "Ré-initialisez le !"
 
 #: templates/auth/login_form.html:18
 msgid "Not a member?"
-msgstr "Vous n'avez pas de compte ?"
+msgstr "Pas de compte ?"
 
 #: templates/auth/login_form.html:18
 msgid "Register!"
