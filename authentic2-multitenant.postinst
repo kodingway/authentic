@@ -1,0 +1,46 @@
+#!/bin/sh
+#
+# Postinst script for authentic2
+#
+
+set -e
+
+NAME=authentic2-multitenant
+AUTHENTIC_USER=authentic-multitenant
+AUTHENTIC_GROUP=authentic-multitenant
+AUTHENTIC_HOME=/var/lib/$NAME
+
+# source debconf stuff
+. /usr/share/debconf/confmodule
+
+case "$1" in
+    configure)
+        if ! getent group $AUTHENTIC_GROUP > /dev/null 2>&1; then
+            echo -n "Adding group $AUTHENTIC_GROUP.." >&2
+            addgroup --quiet --system $AUTHENTIC_GROUP
+            echo "..done" >&2
+        fi
+        if ! getent passwd $AUTHENTIC_USER > /dev/null 2>&1; then
+            echo -n "Adding user $AUTHENTIC_USER.." >&2
+            adduser --quiet --system --gecos "Pootle daemon" \
+                    --ingroup $AUTHENTIC_GROUP \
+                    --no-create-home --home $AUTHENTIC_HOME \
+                    $AUTHENTIC_USER
+            echo "..done" >&2
+        fi
+
+        chown $AUTHENTIC_USER:$AUTHENTIC_GROUP $AUTHENTIC_HOME \
+            $AUTHENTIC_HOME/tenants \
+            /var/run/$NAME \
+            /var/log/$NAME
+
+    reconfigure|abort-upgrade|abort-remove|abort-deconfigure)
+        ;;
+
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 1
+        ;;
+esac
+
+exit 0

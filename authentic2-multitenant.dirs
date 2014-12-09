@@ -1,0 +1,5 @@
+etc/authentic2-multitenant
+usr/lib/authentic2-multitenant
+var/lib/authentic2-multitenant/tenants
+var/run/authentic2-multitenant
+var/log/authentic2-multitenant
