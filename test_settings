@@ -1,19 +1,13 @@
 import os.path
 
 DEBUG = False
-
-if DEBUG:
-	DEBUG_TOOLBAR = True
-	TEMPLATE_DEBUG = True
-	DEBUG_TOOLBAR_CONFIG = {
-			'INTERCEPT_REDIRECTS': False,
-	}
-INTERNAL_IPS = ('127.0.0.1',)
-
 SECRET_KEY = 'coin'
 
 from authentic2.settings import INSTALLED_APPS, \
-     MIDDLEWARE_CLASSES
+     MIDDLEWARE_CLASSES, AUTHENTICATION_BACKENDS
+
+# Use Django default backend to pass Django tests
+AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',) + AUTHENTICATION_BACKENDS
 
 DATABASES = {
     'default': {
@@ -29,6 +23,10 @@ if DEBUG:
 
 LANGUAGE_CODE = 'en'
 
-IDP_SAML2 = True
+A2_IDP_SAML2_ENABLE = True
 #IDP_OPENID = True
+A2_VALIDATE_EMAIL_DOMAIN = False
 
+# to pass tests from django.contrib.messages
+MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
+LOGIN_REDIRECT_URL = '/accounts/profile/'
