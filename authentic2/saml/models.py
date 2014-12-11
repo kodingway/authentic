@@ -163,9 +163,11 @@ class IdPOptionsSPPolicy(models.Model):
         providers
     '''
     name = models.CharField(_('name'), max_length=200, unique=True)
-    enabled = models.BooleanField(verbose_name = _('Enabled'))
+    enabled = models.BooleanField(verbose_name = _('Enabled'),
+            default=False)
     no_nameid_policy = models.BooleanField(
-            verbose_name = _("Do not send a nameId Policy"))
+            verbose_name = _("Do not send a nameId Policy"),
+            default=False)
     requested_name_id_format = models.CharField(
             verbose_name = _("Requested NameID format"),
             max_length = 200,
@@ -173,21 +175,25 @@ class IdPOptionsSPPolicy(models.Model):
             choices = NAME_ID_FORMATS_CHOICES)
     transient_is_persistent = models.BooleanField(
             verbose_name = \
-_("This IdP sends a transient NameID but you want a persistent behaviour for your SP"))
+_("This IdP sends a transient NameID but you want a persistent behaviour for your SP"),
+            default=False)
     persistent_identifier_attribute = models.CharField(_('Persistent '
             'identifier attribute'), max_length=200, null=True, blank=True)
     allow_create = models.BooleanField(
-            verbose_name = _("Allow IdP to create an identity"))
+            verbose_name = _("Allow IdP to create an identity"),
+            default=False)
     enable_binding_for_sso_response = models.BooleanField(
             verbose_name = _('Binding for Authnresponse \
-            (taken from metadata by the IdP if not enabled)'))
+            (taken from metadata by the IdP if not enabled)'),
+            default=False)
     binding_for_sso_response = models.CharField(
             verbose_name = _("Binding for the SSO responses"),
             max_length = 200, choices = BINDING_SSO_IDP,
             default = lasso.SAML2_METADATA_BINDING_ARTIFACT)
     enable_http_method_for_slo_request = models.BooleanField(
             verbose_name = _('HTTP method for single logout request \
-            (taken from metadata if not enabled)'))
+            (taken from metadata if not enabled)'),
+            default=False)
     http_method_for_slo_request = models.IntegerField(
             verbose_name = _("HTTP binding for the SLO requests"),
             max_length = 200, choices = HTTP_METHOD,
@@ -195,7 +201,8 @@ _("This IdP sends a transient NameID but you want a persistent behaviour for you
     enable_http_method_for_defederation_request = models.BooleanField(
             verbose_name = \
             _('HTTP method for federation termination request \
-            (taken from metadata if not enabled)'))
+            (taken from metadata if not enabled)'),
+            default=False)
     http_method_for_defederation_request = models.IntegerField(
             verbose_name = _("HTTP method for the defederation requests"),
             max_length = 200, choices = HTTP_METHOD,
@@ -205,11 +212,14 @@ _("This IdP sends a transient NameID but you want a persistent behaviour for you
                 _("Require the user consent be given at account linking"),
             default=False)
     want_force_authn_request = models.BooleanField(
-            verbose_name = _("Force authentication"))
+            verbose_name = _("Force authentication"),
+            default=False)
     want_is_passive_authn_request = models.BooleanField(
-            verbose_name = _("Passive authentication"))
+            verbose_name = _("Passive authentication"),
+            default=False)
     want_authn_request_signed = models.BooleanField(
-            verbose_name = _("Want AuthnRequest signed"))
+            verbose_name = _("Want AuthnRequest signed"),
+            default=False)
     handle_persistent = models.CharField(
             max_length=200,
             verbose_name = _('Behavior with persistent NameID'),
@@ -251,18 +261,23 @@ class SPOptionsIdPPolicy(models.Model):
         Used to define SAML2 parameters employed with service providers.
     '''
     name = models.CharField(_('name'), max_length=80, unique=True)
-    enabled = models.BooleanField(verbose_name = _('Enabled'))
+    enabled = models.BooleanField(verbose_name = _('Enabled'),
+            default=False)
     prefered_assertion_consumer_binding = models.CharField(
             verbose_name = _("Prefered assertion consumer binding"),
             default = 'meta',
             max_length = 4, choices = ASSERTION_CONSUMER_PROFILES)
-    encrypt_nameid = models.BooleanField(verbose_name = _("Encrypt NameID"))
+    encrypt_nameid = models.BooleanField(verbose_name = _("Encrypt NameID"),
+            default=False)
     encrypt_assertion = models.BooleanField(
-            verbose_name = _("Encrypt Assertion"))
+            verbose_name = _("Encrypt Assertion"),
+            default=False)
     authn_request_signed = models.BooleanField(
-            verbose_name = _("Authentication request signed"))
+            verbose_name = _("Authentication request signed"),
+            default=False)
     idp_initiated_sso = models.BooleanField(
-            verbose_name = _("Allow IdP initiated SSO"))
+            verbose_name = _("Allow IdP initiated SSO"),
+            default=False)
     # XXX: format in the metadata file, should be suffixed with a star to mark
     # them as special
     default_name_id_format = models.CharField(max_length = 256,
@@ -426,7 +441,8 @@ class AuthorizationAttributeMapping(models.Model):
 
 class AuthorizationSPPolicy(models.Model):
     name = models.CharField(_('name'), max_length=80, unique=True)
-    enabled = models.BooleanField(verbose_name = _('Enabled'))
+    enabled = models.BooleanField(verbose_name = _('Enabled'),
+            default=False)
     attribute_map = models.ForeignKey(AuthorizationAttributeMap,
             related_name = "authorization_attributes",
             blank = True, null = True)
@@ -525,12 +541,15 @@ def get_all_custom_or_default(instance, name):
 class LibertyServiceProvider(models.Model):
     liberty_provider = models.OneToOneField(LibertyProvider,
             primary_key = True, related_name = 'service_provider')
-    enabled = models.BooleanField(verbose_name = _('Enabled'))
+    enabled = models.BooleanField(verbose_name = _('Enabled'),
+            default=False)
     enable_following_sp_options_policy = models.BooleanField(verbose_name = \
-        _('The following options policy will apply except if a policy for all service provider is defined.'))
+        _('The following options policy will apply except if a policy for all service provider is defined.'),
+        default=False)
     sp_options_policy = models.ForeignKey(SPOptionsIdPPolicy, related_name = "sp_options_policy", verbose_name = _('service provider options policy'), blank=True, null=True)
     enable_following_attribute_policy = models.BooleanField(verbose_name = \
-        _('The following attribute policy will apply except if a policy for all service provider is defined.'))
+        _('The following attribute policy will apply except if a policy for all service provider is defined.'),
+        default=False)
     attribute_policy = models.ForeignKey('idp.AttributePolicy',
              related_name = "attribute_policy",
             verbose_name=_("attribute policy"), null=True, blank=True)
@@ -559,17 +578,20 @@ class LibertyServiceProvider(models.Model):
 class LibertyIdentityProvider(models.Model):
     liberty_provider = models.OneToOneField(LibertyProvider,
             primary_key = True, related_name = 'identity_provider')
-    enabled = models.BooleanField(verbose_name = _('Enabled'))
+    enabled = models.BooleanField(verbose_name = _('Enabled'),
+            default=False)
     enable_following_idp_options_policy = models.BooleanField(verbose_name = \
         _('The following options policy will apply except if a policy for all '
-          'identity provider is defined.'))
+          'identity provider is defined.'),
+        default=False)
     idp_options_policy = models.ForeignKey(IdPOptionsSPPolicy,
             related_name="idp_options_policy",
             verbose_name=_('identity provider options policy'), blank=True,
             null=True)
     enable_following_authorization_policy = models.BooleanField(verbose_name = \
         _('The following authorization policy will apply except if a policy for'
-          ' all identity provider is defined.'))
+          ' all identity provider is defined.'),
+        default=False)
     authorization_policy = models.ForeignKey(AuthorizationSPPolicy,
             related_name="authorization_policy",
             verbose_name=_('authorization identity providers policy'), blank=True, null=True)

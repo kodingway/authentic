@@ -246,7 +246,8 @@ class LogoutUrlAbstract(models.Model):
         'to pass the URL of the success icon, ex.: '
         'http://example.com/logout?next={}'), max_length=255, blank=True, null=True)
     logout_use_iframe = models.BooleanField(
-            verbose_name=_('use an iframe instead of an img tag for logout'))
+            verbose_name=_('use an iframe instead of an img tag for logout'),
+            default=False)
     logout_use_iframe_timeout = models.PositiveIntegerField(
             verbose_name=_('iframe logout timeout (ms)'),
             help_text=_('if iframe logout is used, it\'s the time between the '
@@ -300,19 +301,19 @@ class Attribute(models.Model):
             unique=True)
     required = models.BooleanField(
             verbose_name=_('required'),
-            blank=True)
+            blank=True, default=False)
     asked_on_registration = models.BooleanField(
             verbose_name=_('asked on registration'),
-            blank=True)
+            blank=True, default=False)
     user_editable = models.BooleanField(
             verbose_name=_('user editable'),
-            blank=True)
+            blank=True, default=False)
     user_visible = models.BooleanField(
             verbose_name=_('user visible'),
-            blank=True)
+            blank=True, default=False)
     multiple = models.BooleanField(
             verbose_name=_('multiple'),
-            blank=True)
+            blank=True, default=False)
     kind = models.CharField(max_length=16,
             verbose_name=_('kind'),
             choices=attribute_kinds.get_choices())
