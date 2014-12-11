@@ -1,11 +1,11 @@
 import re
 import urlparse
 
+import django
 from django.core import mail
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import Client
-from django.test.utils import override_settings
 from django.contrib.auth.hashers import check_password
 from django.test.utils import override_settings
 
@@ -42,53 +42,98 @@ class SerializerTests(TestCase):
         self.assertEqual(Attribute.objects.count(), 1)
         self.assertEqual(AttributeValue.objects.count(), 1)
         s = serializers.get_serializer('json')()
-        s.serialize([u, a, av], use_natural_keys=True)
+        if django.VERSION < (1,7):
+            s.serialize([u, a, av], use_natural_keys=True)
+        else:
+            s.serialize([u, a, av], use_natural_foreign_keys=True, use_natural_primary_keys=True)
         result = s.getvalue()
         u.delete()
         a.delete()
         self.assertEqual(User.objects.count(), 0)
         self.assertEqual(Attribute.objects.count(), 0)
         self.assertEqual(AttributeValue.objects.count(), 0)
-        expected = [ {'pk': ['john.doe'],
-                   'model': 'auth.user',
-                   'fields': {
-                       'username': 'john.doe',
-                       'email': '',
-                       'first_name': '',
-                       'last_name': '',
-                       'is_active': True,
-                       'is_staff': False,
-                       'is_superuser': False,
-                       'last_login': u.last_login.isoformat()[:-3],
-                       'date_joined': u.date_joined.isoformat()[:-3],
-                       'groups': [],
-                       'user_permissions': [],
-                       'password': '',
-                   }
-                 },
-                  {'pk': ['phone'],
-                     'model': 'authentic2.attribute',
-                     'fields': {
-                         'description': '',
-                         'name': 'phone',
-                         'label': 'phone',
-                         'kind': 'string',
-                         'user_editable': False,
-                         'asked_on_registration': False,
-                         'multiple': False,
-                         'user_visible': False,
-                         'required': False,
+        if django.VERSION < (1,7):
+            expected = [ {'pk': ['john.doe'],
+                       'model': 'auth.user',
+                       'fields': {
+                           'username': 'john.doe',
+                           'email': '',
+                           'first_name': '',
+                           'last_name': '',
+                           'is_active': True,
+                           'is_staff': False,
+                           'is_superuser': False,
+                           'last_login': u.last_login.isoformat()[:-3],
+                           'date_joined': u.date_joined.isoformat()[:-3],
+                           'groups': [],
+                           'user_permissions': [],
+                           'password': '',
+                       }
+                     },
+                      {'pk': ['phone'],
+                         'model': 'authentic2.attribute',
+                         'fields': {
+                             'description': '',
+                             'name': 'phone',
+                             'label': 'phone',
+                             'kind': 'string',
+                             'user_editable': False,
+                             'asked_on_registration': False,
+                             'multiple': False,
+                             'user_visible': False,
+                             'required': False,
+                         }
+                        },
+                     {'pk': [['auth', 'user'], ['john.doe'], ['phone']],
+                      'model': 'authentic2.attributevalue',
+                      'fields': {
+                          'owner': [['auth', 'user'], ['john.doe']],
+                          'attribute': ['phone'],
+                          'content': '0101010101',
+                      }
                      }
-                    },
-                 {'pk': [['auth', 'user'], ['john.doe'], ['phone']],
-                  'model': 'authentic2.attributevalue',
-                  'fields': {
-                      'owner': [['auth', 'user'], ['john.doe']],
-                      'attribute': ['phone'],
-                      'content': '0101010101',
-                  }
-                 }
-                ]
+                    ]
+        else:
+            expected = [ {
+                       'model': 'auth.user',
+                       'fields': {
+                           'username': 'john.doe',
+                           'email': '',
+                           'first_name': '',
+                           'last_name': '',
+                           'is_active': True,
+                           'is_staff': False,
+                           'is_superuser': False,
+                           'last_login': u.last_login.isoformat()[:-3],
+                           'date_joined': u.date_joined.isoformat()[:-3],
+                           'groups': [],
+                           'user_permissions': [],
+                           'password': '',
+                       }
+                     },
+                      {
+                         'model': 'authentic2.attribute',
+                         'fields': {
+                             'description': '',
+                             'name': 'phone',
+                             'label': 'phone',
+                             'kind': 'string',
+                             'user_editable': False,
+                             'asked_on_registration': False,
+                             'multiple': False,
+                             'user_visible': False,
+                             'required': False,
+                         }
+                        },
+                     {
+                      'model': 'authentic2.attributevalue',
+                      'fields': {
+                          'owner': [['auth', 'user'], ['john.doe']],
+                          'attribute': ['phone'],
+                          'content': '0101010101',
+                      }
+                     }
+                    ]
         for obj in serializers.deserialize('json', result):
             obj.save()
         self.assertEqual(json.loads(result), expected)
