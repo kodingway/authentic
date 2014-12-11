@@ -5,10 +5,13 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.utils.translation import ugettext_lazy as _
+from django.utils.functional import allow_lazy
 from django.template.defaultfilters import capfirst
 
 from .decorators import to_list
 from . import app_settings
+
+capfirst = allow_lazy(capfirst)
 
 @to_list
 def get_choices():
