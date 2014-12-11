@@ -141,8 +141,21 @@ class LibertyProviderForm(ModelForm):
     public_key = forms.CharField(required=False,widget=TextAndFileWidget)
     ssl_certificate = forms.CharField(required=False,widget=TextAndFileWidget)
     ca_cert_chain = forms.CharField(required=False,widget=TextAndFileWidget)
+
     class Meta:
         model = LibertyProvider
+        fields = [
+                'name',
+                'slug',
+                'entity_id',
+                'entity_id_sha1',
+                'federation_source',
+                'metadata_url',
+                'metadata',
+                'public_key',
+                'ssl_certificate',
+                'ca_cert_chain',
+        ]
 
 
 def update_metadata(modeladmin, request, queryset):
@@ -178,6 +191,14 @@ class SAMLAttributeInlineForm(forms.ModelForm):
 
     class Meta:
         model = SAMLAttribute
+        fields = [
+                'name_format',
+                'name',
+                'friendly_name',
+                'attribute_name',
+                'enabled',
+        ]
+
 
 class SAMLAttributeInlineAdmin(GenericTabularInline):
     model = SAMLAttribute

@@ -123,6 +123,10 @@ class GroupAdminForm(forms.ModelForm):
 
     class Meta:
         model = Group
+        fields = [
+                'name',
+                'users',
+        ]
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)
