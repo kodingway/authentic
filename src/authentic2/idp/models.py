@@ -15,7 +15,8 @@ ATTRIBUTE_VALUE_FORMATS = (
 
 class AttributePolicy(models.Model):
     name = models.CharField(max_length = 100, unique = True)
-    enabled = models.BooleanField(verbose_name = _('Enabled'))
+    enabled = models.BooleanField(verbose_name = _('Enabled'),
+            default=False)
     ask_consent_attributes = models.BooleanField(\
             verbose_name = _("Ask the user consent before forwarding attributes"),
             default=True)
