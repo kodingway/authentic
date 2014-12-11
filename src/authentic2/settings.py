@@ -179,6 +179,10 @@ SERIALIZATION_MODULES = {
         'json': 'authentic2.serializers',
 }
 
+# Set Test runner to remove warning about test suite initialized with Django < 1.6
+if django.VERSION >= (1,7):
+    TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
