@@ -37,6 +37,8 @@ class EmailValidator(object):
             hostname = value.split('@')[-1]
         except KeyError:
             raise ValidationError(_('Enter a valid email address.'), code='invalid-email')
+        if not app_settings.A2_VALIDATE_EMAIL_DOMAIN:
+            return True
 
         mxs = self.check_mxs(hostname)
         if not mxs:
