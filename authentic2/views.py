@@ -241,13 +241,6 @@ def login(request, template_name='authentic2/login.html',
         if not hasattr(frontend, 'priority'):
             frontend.priority = 0
 
-    # If already logged, leave now
-    if not request.user.is_staff \
-            and not request.user.is_anonymous() \
-            and nonce is None \
-            and request.method != 'POST':
-        return HttpResponseRedirect(redirect_to)
-
     blocks = []
 
     # Cancel button
