@@ -25,7 +25,7 @@ class EmailValidator(object):
             return mxs
         except dns.exception.DNSException:
             try:
-                socket.gethostbyname(force_text(domain))
+                socket.gethostbyname(force_text(domain).encode('idna'))
                 return [domain]
             except socket.error:
                 pass
