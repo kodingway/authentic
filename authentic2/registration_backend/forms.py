@@ -1,12 +1,15 @@
+import copy
+
 from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, gettext
 from django.forms import Form, CharField, PasswordInput, EmailField
 from django.utils.datastructures import SortedDict
 from django.db.models.fields import FieldDoesNotExist
+from django.forms.util import ErrorList
 
 from django.contrib.auth import forms as auth_forms
 
-from .. import app_settings, compat, forms, utils, validators, widgets, fields
+from .. import app_settings, compat, forms, utils, validators
 
 
 class RegistrationForm(forms.UserAttributeFormMixin, Form):
@@ -37,10 +40,13 @@ class RegistrationForm(forms.UserAttributeFormMixin, Form):
                     if hasattr(model_field, 'validators'):
                         kwargs['validators'] = model_field.validators
                     field = model_field.formfield(**kwargs)
-                    if isinstance(field, EmailField):
-                        field = fields.EmailFieldWithValidation(**kwargs)
                     self.fields.insert(insert_idx, field_name, field)
                     insert_idx += 1
+                    if isinstance(field, EmailField):
+                        field = copy.deepcopy(field)
+                        field.label += gettext(' (validation)')
+                        self.fields.insert(insert_idx, field_name+'_validation', field)
+                        insert_idx += 1
         for field_name in self.fields:
             if field_name in required_fields:
                 self.fields[field_name].required = True
@@ -100,6 +106,13 @@ class RegistrationForm(forms.UserAttributeFormMixin, Form):
         ``non_field_errors()`` because it doesn't apply to a single
         field.
         """
+        for key in self.cleaned_data:
+            if key + '_validation' in self.cleaned_data:
+                if self.cleaned_data[key] != self.cleaned_data[key+'_validation']:
+                    if not (key+'_validation') in self._errors:
+                        self._errors[key+'_validation'] = ErrorList()
+                    self._errors[key+'_validation'].append(_("This field must match the %s field.") % self.fields[key].label.lower())
+
         if 'password1' in self.cleaned_data and 'password2' in self.cleaned_data:
             if self.cleaned_data['password1'] != self.cleaned_data['password2']:
                 raise ValidationError(_("The two password fields didn't match."))
