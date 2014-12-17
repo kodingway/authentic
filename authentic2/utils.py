@@ -320,3 +320,13 @@ def continue_to_next_url(request, keep_params=True,
     next_url = request.REQUEST.get(REDIRECT_FIELD_NAME, settings.LOGIN_REDIRECT_URL)
     return redirect(request, to=next_url, keep_params=keep_params,
             include=include, **kwargs)
+
+def record_authentication_event(request, how):
+    from . import models
+    kwargs = {
+            'who': unicode(request.user)[:80],
+            'how': how,
+    }
+    if constants.NONCE_FIELD_NAME in request.REQUEST:
+        kwargs['nonce'] = request.REQUEST[constants.NONCE_FIELD_NAME]
+    models.AuthenticationEvent.objects.create(**kwargs)
