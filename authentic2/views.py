@@ -474,20 +474,6 @@ def login_password_profile(request, *args, **kwargs):
                             context_instance=context_instance)
 
 
-def redirect_to_login(request, next=None, nonce=None, keep_qs=False):
-    '''Redirect to the login, eventually adding a nonce'''
-    if next is None:
-        if keep_qs:
-            next = request.get_full_path()
-        else:
-            next = request.path
-    qs = { REDIRECT_FIELD_NAME: next }
-    if nonce is not None:
-        qs.update({ constants.NONCE_FIELD_NAME: nonce })
-    return HttpResponseRedirect('%s?%s' % (reverse('auth_login'), urlencode(qs)))
-
-
-
 class LoggedInView(View):
     '''JSONP web service to detect if an user is logged'''
     http_method_names = [u'get']
