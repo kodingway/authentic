@@ -13,7 +13,7 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanen
 from django.core.exceptions import ImproperlyConfigured
 from django.core import urlresolvers
 from django.http.request import QueryDict
-from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login
 
 from authentic2.saml.saml2utils import filter_attribute_private_key, \
     filter_element_private_key
@@ -330,3 +330,10 @@ def record_authentication_event(request, how):
     if constants.NONCE_FIELD_NAME in request.REQUEST:
         kwargs['nonce'] = request.REQUEST[constants.NONCE_FIELD_NAME]
     models.AuthenticationEvent.objects.create(**kwargs)
+
+def login(request, user, how, **kwargs):
+    '''Login a user model, record the authentication event and redirect to next
+       URL or settings.LOGIN_REDIRECT_URL.'''
+    auth_login(request, user)
+    record_authentication_event(request, how)
+    return continue_to_next_url(request, **kwargs)
