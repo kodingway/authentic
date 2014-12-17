@@ -1,15 +1,8 @@
-import urllib
-
 from django.utils.translation import gettext_noop
-from django.http import HttpResponseRedirect
-from django.contrib.auth import REDIRECT_FIELD_NAME
 import django.forms
 
-
-from authentic2.constants import NONCE_FIELD_NAME
-
-
 from . import views, app_settings
+from authentic2.utils import redirect_to_login
 
 
 class SSLFrontend(object):
@@ -26,12 +19,7 @@ class SSLFrontend(object):
         return django.forms.Form
 
     def post(self, request, form, nonce, next_url):
-        if next_url is None:
-            next_url = request.path
-        qs = { REDIRECT_FIELD_NAME: next_url }
-        if nonce is not None:
-            qs.update({ NONCE_FIELD_NAME: nonce })
-        return HttpResponseRedirect('/sslauth?%s' % urllib.urlencode(qs))
+        return redirect_to_login(request, login_url='user_signin_ssl',)
 
     def template(self):
         return 'auth/login_form_ssl.html'

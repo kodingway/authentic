@@ -1,48 +1,24 @@
-import functools
 import logging
-import urllib
 
-
-from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
-from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response, redirect, render
+from django.shortcuts import render_to_response, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import TemplateView
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.contrib import messages
-from django.contrib.auth.views import redirect_to_login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login
-from django.contrib.auth import REDIRECT_FIELD_NAME
 
 
-import registration.views
-
-
-from authentic2.constants import NONCE_FIELD_NAME
 from authentic2.decorators import prevent_access_to_transient_users
+from authentic2.utils import continue_to_next_url, record_authentication_event, redirect, redirect_to_login
 
-from . import forms, models, util, app_settings
+from . import models, util, app_settings
 
 logger = logging.getLogger(__name__)
 
-def get_next(request):
-    next_url = request.REQUEST.get(REDIRECT_FIELD_NAME)
-    if not next_url:
-        if 'next' in request.session:
-            next_url = request.session['next']
-        elif settings.LOGIN_REDIRECT_URL:
-            next_url = settings.LOGIN_REDIRECT_URL
-        else:
-            next_url = '/'
-    return next_url
-
 def handle_request(request):
-    next_url = get_next(request)
-
     # Check certificate validity
     ssl_info  = util.SSLInfo(request)
     accept_self_signed = app_settings.ACCEPT_SELF_SIGNED
@@ -53,14 +29,14 @@ def handle_request(request):
         messages.add_message(request, messages.ERROR,
             _('SSL Client Authentication failed. '
             'No client certificate found.'))
-        return redirect_to_login(next_url)
+        return redirect_to_login(request)
     elif not accept_self_signed and not ssl_info.verify:
         logger.error('SSL Client Authentication failed: '
             'SSL CGI variable VERIFY is not SUCCESS')
         messages.add_message(request, messages.ERROR,
             _('SSL Client Authentication failed. '
             'Your client certificate is not valid.'))
-        return redirect_to_login(next_url)
+        return redirect_to_login(request)
 
     # SSL entries for this certificate?
     user = authenticate(ssl_info=ssl_info)
@@ -79,7 +55,7 @@ def handle_request(request):
             logger.error('account creation failure')
             messages.add_message(request, messages.ERROR,
             _('SSL Client Authentication failed. Internal server error.'))
-            return HttpResponseRedirect(next_url)
+            return redirect_to_login(request)
 
     # No SSL entries and no user session, redirect account linking page
     if not user and not request.user.is_authenticated():
@@ -96,17 +72,14 @@ def handle_request(request):
             logger.error('login() failed')
             messages.add_message(request, messages.ERROR,
             _('SSL Client Authentication failed. Internal server error.'))
-        return HttpResponseRedirect(next_url)
+            return redirect_to_login(request)
 
     # SSL Entries found for this certificate,
     # if the user is logged out, we login
     if not request.user.is_authenticated():
         login(request, user)
-        models.AuthenticationEvent.objects.create(who=user.username,
-                how='ssl', nonce=request.GET.get(NONCE_FIELD_NAME,''))
-        logger.info('Successful SSL Client Authentication, '
-            'redirection to %s' % next_url)
-        return HttpResponseRedirect(next_url)
+        record_authentication_event(request, how='ssl')
+        return continue_to_next_url(request)
 
     # SSL Entries found for this certificate, if the user is logged in, we
     # check that the SSL entry for the certificate is this user.
@@ -119,10 +92,7 @@ def handle_request(request):
         cert = SSLBackend().get_certificate(ssl_info)
         cert.user = request.user
         cert.save()
-
-    logger.info('Successful SSL Client Authentication, '
-        'redirection to %s' % next_url)
-    return HttpResponseRedirect(next_url)
+    return continue_to_next_url(request)
 
 ###
  # post_account_linking
@@ -138,28 +108,21 @@ def post_account_linking(request):
                 and request.POST['do_creation'] == 'on':
             logger.info('account creation asked')
             request.session['do_creation'] = 'do_creation'
-            if 'next' in request.session:
-                next_url = request.session['next']
-            else:
-                next_url = request.path
-            qs = { REDIRECT_FIELD_NAME: next_url }
-            url = '%s?%s' % (reverse('user_signin_ssl'), urllib.urlencode(qs))
-            return HttpResponseRedirect(url)
+            return redirect_to_login(request, login_url='user_signin_ssl')
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             logger.info('form valid')
             user = form.get_user()
             try:
                 login(request, user)
-                models.AuthenticationEvent.objects.create(who=user.username,
-                how='password', nonce=request.GET.get(NONCE_FIELD_NAME,''))
+                record_authentication_event(request, how='password')
             except:
                 logger.error('login() failed')
                 messages.add_message(request, messages.ERROR,
                 _('SSL Client Authentication failed. Internal server error.'))
 
             logger.debug('session opened')
-            return redirect('user_signin_ssl')
+            return redirect_to_login(request, login_url='user_signin_ssl')
         else:
             logger.warning('form not valid - Try again! (Brute force?)')
             return render(request, 'auth/account_linking_ssl.html')
@@ -182,7 +145,8 @@ def delete_certificate(request, certificate_pk):
     if count:
         logger.info('client certificate %s deleted', certificate_pk)
         messages.info(request, _('Certificate deleted.'))
-    return HttpResponseRedirect(reverse('account_management') + '#a2-ssl-certificate-profile')
+    return redirect(request, 'account_management',
+            fragment='a2-ssl-certificate-profile')
 
 class SslErrorView(TemplateView):
     template_name = 'error_ssl.html'
