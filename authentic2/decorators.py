@@ -1,5 +1,4 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, Http404
 from django.views.debug import technical_404_response
 from functools import wraps
 
@@ -15,7 +14,7 @@ def prevent_access_to_transient_users(view_func):
         '''Test if the user is transient'''
         for user_type in TRANSIENT_USER_TYPES:
             if is_transient_user(request.user):
-                return HttpResponseRedirect('/')
+                return utils.continue_to_next_url(request, keep_params=False)
         return view_func(request, *args, **kwargs)
     return login_required(wraps(view_func)(_wrapped_view))
 
