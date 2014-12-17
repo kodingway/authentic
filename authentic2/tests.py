@@ -133,3 +133,11 @@ class UtilsTests(TestCase):
         request = rf.get('/coin', data={'next': '/zob/', 'nonce': 'xxx'})
         response = continue_to_next_url(request)
         self.assertEqual(response['Location'], '/zob/?nonce=xxx')
+
+    def test_login_require(self):
+        from authentic2.utils import login_require
+        from django.test.client import RequestFactory
+        rf = RequestFactory()
+        request = rf.get('/coin', data={'next': '/zob/', 'nonce': 'xxx'})
+        response = login_require(request)
+        self.assertEqual(response['Location'], '/login/?next=%2Fcoin%3Fnonce%3Dxxx%26next%3D%252Fzob%252F')

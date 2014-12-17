@@ -337,3 +337,10 @@ def login(request, user, how, **kwargs):
     auth_login(request, user)
     record_authentication_event(request, how)
     return continue_to_next_url(request, **kwargs)
+
+def login_require(request, login_url='auth_login', **kwargs):
+    '''Require a login and come back to current URL'''
+    path = request.get_full_path()
+    params = kwargs.setdefault('params', {})
+    params[REDIRECT_FIELD_NAME] = path
+    return redirect(request, login_url, **kwargs)
