@@ -314,3 +314,9 @@ def redirect_to_login(request, login_url='auth_login', keep_params=True,
     '''Redirect to the login, eventually adding a nonce'''
     return redirect(request, login_url, keep_params=keep_params,
             include=include, **kwargs)
+
+def continue_to_next_url(request, keep_params=True,
+        include=(constants.NONCE_FIELD_NAME,), **kwargs):
+    next_url = request.REQUEST.get(REDIRECT_FIELD_NAME, settings.LOGIN_REDIRECT_URL)
+    return redirect(request, to=next_url, keep_params=keep_params,
+            include=include, **kwargs)

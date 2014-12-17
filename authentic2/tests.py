@@ -125,3 +125,11 @@ class UtilsTests(TestCase):
         request = rf.get('/coin', data={'next': '..'})
         response = redirect_to_login(request)
         self.assertEqual(response['Location'], '/login/?next=..')
+
+    def test_continue_to_next_url(self):
+        from authentic2.utils import continue_to_next_url
+        from django.test.client import RequestFactory
+        rf = RequestFactory()
+        request = rf.get('/coin', data={'next': '/zob/', 'nonce': 'xxx'})
+        response = continue_to_next_url(request)
+        self.assertEqual(response['Location'], '/zob/?nonce=xxx')
