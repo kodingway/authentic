@@ -13,11 +13,12 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanen
 from django.core.exceptions import ImproperlyConfigured
 from django.core import urlresolvers
 from django.http.request import QueryDict
+from django.contrib.auth import REDIRECT_FIELD_NAME
 
 from authentic2.saml.saml2utils import filter_attribute_private_key, \
     filter_element_private_key
 
-from . import plugins, app_settings
+from . import plugins, app_settings, constants
 
 class CleanLogMessage(logging.Filter):
     def filter(self, record):
@@ -306,3 +307,10 @@ def redirect(request, to, args=(), kwargs={}, keep_params=False, params=None,
     else:
         redirect_class = HttpResponseRedirect
     return redirect_class(url)
+
+def redirect_to_login(request, login_url='auth_login', keep_params=True,
+        include=(REDIRECT_FIELD_NAME, constants.NONCE_FIELD_NAME),
+        **kwargs):
+    '''Redirect to the login, eventually adding a nonce'''
+    return redirect(request, login_url, keep_params=keep_params,
+            include=include, **kwargs)

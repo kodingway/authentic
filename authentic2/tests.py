@@ -117,3 +117,11 @@ class UtilsTests(TestCase):
         self.assertEqual(response['Location'], '/boob/?next=..')
         response = redirect(request, '/boob/', keep_params=True, include=['next'], params={'token': 'uuu'})
         self.assertEqual(response['Location'], '/boob/?token=uuu&next=..')
+
+    def test_redirect_to_login(self):
+        from authentic2.utils import redirect_to_login
+        from django.test.client import RequestFactory
+        rf = RequestFactory()
+        request = rf.get('/coin', data={'next': '..'})
+        response = redirect_to_login(request)
+        self.assertEqual(response['Location'], '/login/?next=..')
