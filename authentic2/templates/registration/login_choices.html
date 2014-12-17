@@ -25,4 +25,11 @@
   {% endfor %}
 </ul>
 
+<p>
+  {% trans "or" %}
+  <a href="{% url "registration_create" registration_token %}">
+    {% trans "create a new account" %}
+  </a>
+</p>
+
 {% endblock %}
