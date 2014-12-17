@@ -151,11 +151,3 @@ def delete_certificate(request, certificate_pk):
 class SslErrorView(TemplateView):
     template_name = 'error_ssl.html'
 error_ssl = SslErrorView.as_view()
-
-def register(request):
-    '''Registration page for SSL auth without CA'''
-    next_url = request.GET.get(REDIRECT_FIELD_NAME, settings.LOGIN_REDIRECT_URL)
-    return registration.views.register(request, success_url=next_url,
-            form_class=functools.partial(forms.RegistrationForm,
-                request=request))
-
