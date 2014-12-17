@@ -88,3 +88,32 @@ class SerializerTests(TestCase):
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(Attribute.objects.count(), 1)
         self.assertEqual(AttributeValue.objects.count(), 1)
+
+class UtilsTests(TestCase):
+    def test_make_url(self):
+        from authentic2.utils import make_url
+        self.assertEquals(make_url('../coin'), '../coin')
+        self.assertEquals(make_url('../boob', params={'next': '..'}), '../boob?next=..')
+        self.assertEquals(make_url('../boob', params={'next': '..'}, append={'xx': 'yy'}), '../boob?xx=yy&next=..')
+        self.assertEquals(make_url('../boob', params={'next': '..'}, append={'next': 'yy'}), '../boob?next=..&next=yy')
+        self.assertEquals(make_url('auth_login', params={'next': '/zob'}), '/login/?next=%2Fzob')
+        self.assertEquals(make_url('auth_login', params={'next': '/zob'}, fragment='a2-panel'), '/login/?next=%2Fzob#a2-panel')
+
+    def test_redirect(self):
+        from authentic2.utils import redirect
+        from django.test.client import RequestFactory
+        rf = RequestFactory()
+        request = rf.get('/coin', data={'next': '..'})
+        request2 = rf.get('/coin', data={'next': '..', 'token': 'xxx'})
+        response = redirect(request, '/boob/', keep_params=True)
+        self.assertEqual(response['Location'], '/boob/?next=..')
+        response = redirect(request, '/boob/', keep_params=True, exclude=['next'])
+        self.assertEqual(response['Location'], '/boob/')
+        response = redirect(request2, '/boob/', keep_params=True)
+        self.assertEqual(response['Location'], '/boob/?token=xxx&next=..')
+        response = redirect(request, '/boob/', keep_params=True, exclude=['token'])
+        self.assertEqual(response['Location'], '/boob/?next=..')
+        response = redirect(request, '/boob/', keep_params=True, include=['next'])
+        self.assertEqual(response['Location'], '/boob/?next=..')
+        response = redirect(request, '/boob/', keep_params=True, include=['next'], params={'token': 'uuu'})
+        self.assertEqual(response['Location'], '/boob/?token=uuu&next=..')
