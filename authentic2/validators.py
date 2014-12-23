@@ -92,5 +92,5 @@ def validate_password(password):
     min_class_count = app_settings.A2_PASSWORD_POLICY_MIN_CLASSES
     if class_count < min_class_count:
         raise ValidationError(_('password must contain characters '
-            'from at least %d classes amon: lowercase letters, '
+            'from at least %d classes among: lowercase letters, '
             'uppercase letters, digits, and punctuations') % min_class_count)
