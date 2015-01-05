@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# vim: set ts=4 sw=4 fdm=indent : */
 # some code from http://www.djangosnippets.org/snippets/310/ by simon
 # and from examples/djopenid from python-openid-2.2.4
 
@@ -8,7 +7,6 @@ import hashlib
 import urlparse
 
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
@@ -20,7 +18,6 @@ import django.forms as forms
 from django.conf import settings
 from django.http import Http404
 from django.views.generic import DeleteView
-from django.core.urlresolvers import reverse_lazy
 
 from openid.consumer.discover import OPENID_IDP_2_0_TYPE, \
     OPENID_2_0_TYPE, OPENID_1_0_TYPE, OPENID_1_1_TYPE
@@ -34,7 +31,8 @@ from openid.extensions.sreg import ns_uri as SREG_TYPE, SRegRequest, \
         SRegResponse, data_fields
 
 from utils import get_store, oresponse_to_response
-from authentic2.views import redirect_to_login
+from authentic2.utils import login_require, redirect
+from authentic2.constants import NONCE_FIELD_NAME
 import models
 
 logger = logging.getLogger('authentic.idp.idp_openid')
@@ -64,7 +62,7 @@ def openid_server(request):
             return oresponse_to_response(server,
                 request.session['OPENID_REQUEST'].answer(False))
         else:
-            return HttpResponseRedirect('/')
+            return redirect('auth_homepage')
 
     # Clear AuthorizationInfo session var, if it is set
     if request.session.get('AuthorizationInfo', None):
@@ -85,7 +83,7 @@ def openid_server(request):
             # del request.session['OPENID_REQUEST']
         else:
             logger.info('No OpenID request redirecting to homepage')
-            return HttpResponseRedirect('/')
+            return redirect('auth_homepage')
     else:
         logger.info('Received OpenID request: %s' % querydict)
     sreg_request = SRegRequest.fromOpenIDRequest(orequest)
@@ -104,7 +102,7 @@ returning OpenID failure')
                 request.session['OPENID_REQUEST'] = orequest
                 logger.debug('User not logged and checkid request, \
 redirecting to login page')
-                return redirect_to_login(request, nonce='1')
+                return login_require(request, params={NONCE_FIELD_NAME: '1'})
         else:
             identity = orequest.identity
             if identity != IDENTIFIER_SELECT:
@@ -137,8 +135,7 @@ and checkid immediate, returning OpenID failure')
                     request.session['OPENID_REQUEST'] = orequest
                     logger.debug('Attributes authorization unsufficient \
 for %s, redirecting to consent page' % orequest.trust_root)
-                    return HttpResponseRedirect(
-                            reverse('openid-provider-decide'))
+                    return redirect('openid-provider-decide')
                 user_data = {}
                 for field in trusted_root.choices:
                     if field == 'email':
@@ -164,7 +161,7 @@ checkid immediate, returning OpenID failure')
                 request.session['OPENID_REQUEST'] = orequest
                 logger.info('Too much trusted root for %s, redirecting to \
 consent page' % orequest.trust_root)
-                return HttpResponseRedirect(reverse('openid-provider-decide'))
+                return redirect('openid-provider-decide')
             except models.TrustedRoot.DoesNotExist:
                 # RP does not want any interaction
                 if orequest.immediate:
@@ -175,7 +172,7 @@ immediate, returning OpenID failure')
                 request.session['OPENID_REQUEST'] = orequest
                 logger.info('Trusted root %s unknown, redirecting to \
 consent page' % orequest.trust_root)
-                return HttpResponseRedirect(reverse('openid-provider-decide'))
+                return redirect('openid-provider-decide')
 
         # Create a directed identity if needed
         if identity == IDENTIFIER_SELECT:
@@ -235,19 +232,18 @@ def openid_decide(request):
     if not orequest:
         logger.warning('OpenID decide view failed, \
 because no OpenID request is saved')
-        return HttpResponseRedirect('/')
+        return redirect('auth_homepage')
     sreg_request = SRegRequest.fromOpenIDRequest(orequest)
     logger.debug('SREG request: %s' % sreg_request.__dict__)
     if not request.user.is_authenticated():
         # Not authenticated ? Authenticate and go back to the server endpoint
-        return redirect_to_login(request, next=reverse(openid_server),
-                nonce='1')
+        return login_require(request, params={NONCE_FIELD_NAME: '1'})
 
     if request.method == 'POST':
         if 'cancel' in request.POST:
             # User refused
             logger.info('OpenID decide canceled')
-            return HttpResponseRedirect('%s?cancel' % reverse(openid_server))
+            return redirect(openid_server, params={'cancel': ''})
         else:
             form = DecideForm(sreg_request=sreg_request, data=request.POST)
             if form.is_valid():
@@ -259,7 +255,7 @@ because no OpenID request is saved')
                     + [ field for field in data if data[field] ]
                 t.save()
                 logger.debug('OpenID decide, user choice:%s' % data)
-                return HttpResponseRedirect(reverse('openid-provider-root'))
+                return redirect('openid-provider-root')
     else:
         form = DecideForm(sreg_request=sreg_request)
     logger.info('OpenID device view, orequest:%s' % orequest)
