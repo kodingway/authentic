@@ -72,7 +72,7 @@ _DEFAULTS = {
     # create missing group if needed
     'create_group': False,
     # attributes to retrieve and store with the user object
-    'attributes': [],
+    'attributes': ['uid'],
     # default value for some attributes
     'mandatory_attributes_values': {},
     # mapping from LDAP attributes name to other names
@@ -80,7 +80,7 @@ _DEFAULTS = {
     # realm for selecting an ldap configuration or formatting usernames
     'realm': 'ldap',
     # template for building username
-    'username_template': '{username}@{realm}',
+    'username_template': '{uid}@{realm}',
     # allow to match multiple user records
     'multimatch': True,
     # update username on all login, use with CAUTION !! only if you know that
@@ -447,7 +447,7 @@ class LDAPBackend(object):
                     log.error('user bind failed: authz_id not found %r', ', '.join(authz_ids))
                     if block['replicas']:
                         break
-                return self._return_user(uri, authz_id, username, password, conn, block)
+                return self._return_user(uri, authz_id, password, conn, block)
             except ldap.SERVER_DOWN:
                 log.error('ldap authentication error: %r is down', uri)
             finally:
@@ -473,11 +473,11 @@ class LDAPBackend(object):
     def backend_name(self):
         return '%s.%s' % (__name__, self.__class__.__name__)
 
-    def create_username(self, uri, dn, username, password, conn, block, attributes):
+    def create_username(self, block, attributes):
         '''Build a username using the configured template'''
         username_template = unicode(block['username_template'])
-        return username_template.format(username=username, uri=uri,
-                block=block, realm=block['realm'], **attributes)
+        return username_template.format(uri=uri, realm=block['realm'],
+                                        **attributes)
 
     def save_user(self, user, username):
         User = get_user_model()
@@ -497,8 +497,8 @@ class LDAPBackend(object):
                 transaction.savepoint_rollback(sid)
             username = u'{0}{1}@{2}'.format(left, i, right)
 
-    def populate_user_attributes(self, user, uri, dn, conn, block, attributes):
-        for legacy_attribute, legacy_field in (('email', 'email_field'), 
+    def populate_user_attributes(self, user, block, attributes):
+        for legacy_attribute, legacy_field in (('email', 'email_field'),
                 ('first_name', 'fname_field'), ('last_name', 'lname_field')):
             ldap_attribute = block[legacy_field]
             if not ldap_attribute:
@@ -529,7 +529,7 @@ class LDAPBackend(object):
             return True
         return False
 
-    def populate_admin_flags_by_group(self, user, uri, dn, conn, block, group_dns):
+    def populate_admin_flags_by_group(self, user, block, group_dns):
         '''Attribute admin flags based on groups.
 
            It supersedes is_staff, is_superuser and is_active.'''
@@ -544,7 +544,7 @@ class LDAPBackend(object):
             else:
                 setattr(user, attr, False)
 
-    def populate_groups_by_mapping(self, user, uri, dn, conn, block, group_dns):
+    def populate_groups_by_mapping(self, user, dn, conn, block, group_dns):
         '''Assign group to user based on a mapping from group DNs'''
         group_mapping = block['group_mapping']
         if not group_mapping:
@@ -559,7 +559,7 @@ class LDAPBackend(object):
                     except KeyError:
                         pass
 
-    def get_ldap_group_dns(self, user, uri, dn, conn, block):
+    def get_ldap_group_dns(self, user, dn, conn, block):
         '''Retrieve group DNs from the LDAP by attributes (memberOf) or by
            filter.
         '''
@@ -583,11 +583,11 @@ class LDAPBackend(object):
                 group_dns.update(dn for dn, attributes in results)
         return group_dns
 
-    def populate_user_groups(self, user, uri, dn, conn, block):
-        group_dns = self.get_ldap_group_dns(user, uri, dn, conn, block)
+    def populate_user_groups(self, user, dn, conn, block):
+        group_dns = self.get_ldap_group_dns(user, dn, conn, block)
         log.debug('groups for dn %r: %r', dn, group_dns)
-        self.populate_admin_flags_by_group(user, uri, dn, conn, block, group_dns)
-        self.populate_groups_by_mapping(user, uri, dn, conn, block, group_dns)
+        self.populate_admin_flags_by_group(user, block, group_dns)
+        self.populate_groups_by_mapping(user, dn, conn, block, group_dns)
 
 
     def get_group_by_name(self, block, group_name, create=None):
@@ -603,7 +603,7 @@ class LDAPBackend(object):
             except Group.DoesNotExist:
                 return None
 
-    def populate_mandatory_groups(self, user, uri, dn, conn, block):
+    def populate_mandatory_groups(self, user, block):
         mandatory_groups = block.get('set_mandatory_groups')
         if not mandatory_groups:
             return
@@ -612,19 +612,18 @@ class LDAPBackend(object):
             if group:
                 user.groups.add(group)
 
-    def populate_admin_fields(self, user, uri, dn, conn, block):
+    def populate_admin_fields(self, user, block):
         if block['is_staff'] is not None:
             user.is_staff = block['is_staff']
         if block['is_superuser'] is not None:
             user.is_superuser = block['is_superuser']
 
-    def populate_user(self, user, uri, dn, username, conn, block, attributes):
-        self.update_user_identifiers(user, uri, dn, username, conn, block,
-                attributes)
-        self.populate_user_attributes(user, uri, dn, conn, block, attributes)
-        self.populate_admin_fields(user, uri, dn, conn, block)
-        self.populate_mandatory_groups(user, uri, dn, conn, block)
-        self.populate_user_groups(user, uri, dn, conn, block)
+    def populate_user(self, user, dn, username, conn, block, attributes):
+        self.update_user_identifiers(user, username, block, attributes)
+        self.populate_user_attributes(user, block, attributes)
+        self.populate_admin_fields(user, block)
+        self.populate_mandatory_groups(user, block)
+        self.populate_user_groups(user, dn, conn, block)
 
     @classmethod
     def attribute_name_from_external_id_tuple(cls, external_id_tuple):
@@ -741,15 +740,14 @@ class LDAPBackend(object):
             except User.DoesNotExist:
                 pass
 
-    def lookup_existing_user(self, uri, dn, username, password, conn, block, attributes):
+    def lookup_existing_user(self, username, block, attributes):
         for lookup_type in block['lookups']:
             if lookup_type == 'username':
                 return self.lookup_by_username(username)
             elif lookup_type == 'external_id':
                 return self.lookup_by_external_id(block, attributes)
 
-    def update_user_identifiers(self, user, uri, dn, username, conn,
-            block, attributes):
+    def update_user_identifiers(self, user, username, block, attributes):
         if block['transient']:
             return
         # if username has changed and we propagate those changes, update it
@@ -779,14 +777,13 @@ class LDAPBackend(object):
                         .filter(user=user, source=block['realm']) \
                         .delete()
 
-    def _return_user(self, uri, dn, username, password, conn, block):
+    def _return_user(self, uri, dn, password, conn, block):
         attributes = self.get_ldap_attributes(block, conn, dn)
         if attributes is None:
             # attributes retrieval failed
             return
         log.debug('retrieved attributes for %r: %r', dn, attributes)
-        username = self.create_username(uri, dn, username, password, conn,
-                block, attributes)
+        username = self.create_username(block, attributes)
         if block['transient']:
             return self._return_transient_user(uri, dn, username, password,
                     conn, block, attributes)
@@ -797,12 +794,12 @@ class LDAPBackend(object):
     def _return_transient_user(self, uri, dn, username, password, conn, block, attributes):
         user = LDAPUser(username=username)
         user.ldap_init(block, dn, password, transient=True)
-        self.populate_user(user, uri, dn, username, conn, block, attributes)
+        self.populate_user(user, dn, username, conn, block, attributes)
         user.pk = 'transient!{0}'.format(base64.b64encode(pickle.dumps(user)))
         return user
 
     def _return_django_user(self, uri, dn, username, password, conn, block, attributes):
-        user = self.lookup_existing_user(uri, dn, username, password, conn, block, attributes)
+        user = self.lookup_existing_user(username, block, attributes)
         if user:
             created = False
             log.debug('found existing user %r', user)
@@ -810,7 +807,7 @@ class LDAPBackend(object):
             created = True
             user = LDAPUser()
         user.ldap_init(block, dn, password)
-        self.populate_user(user, uri, dn, username, conn, block, attributes)
+        self.populate_user(user, dn, username, conn, block, attributes)
         if block['keep_password']:
             if created:
                 user.set_password(password)
@@ -834,3 +831,24 @@ class LDAPBackend(object):
             names.update(cls.get_ldap_attributes_names(block))
             names.update(block['mandatory_attributes_values'].keys())
         return [(a, '%s (LDAP)' % a) for a in sorted(names)]
+
+    @classmethod
+    def get_users(cls):
+        for block in cls.get_config():
+            conn = get_connection(block)
+            user_basedn = block.get('user_basedn', block['basedn'])
+            user_filter = block['user_filter'].replace('%s', '*')
+            attrs = block['attributes']
+            users = conn.search_s(user_basedn, ldap.SCOPE_SUBTREE, user_filter, attrs)
+            backend = cls()
+            for user_dn, data in users:
+                attrs = cls.get_ldap_attributes(block, conn, user_dn)
+                username = backend.create_username(block, attrs)
+                user = backend.lookup_existing_user(username, block, attrs)
+                if not user:
+                    user = LDAPUser(username=username)
+                user.transient = False
+                backend.populate_user(user, user_dn, username, conn, block, attrs)
+                for name, value in user.attributes.iteritems():
+                    setattr(user, name, value)
+                yield user
