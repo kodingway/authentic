@@ -42,13 +42,4 @@ if settings.DEBUG:
         url(r'^static/(?P<path>.*)$', 'serve'),
     )
  
-if settings.USE_DEBUG_TOOLBAR:
-    try:
-        import debug_toolbar
-        urlpatterns += patterns('',
-            url(r'^__debug__/', include(debug_toolbar.urls)),
-        )
-    except ImportError:
-        pass
-
 urlpatterns = plugins.register_plugins_urls(urlpatterns)
