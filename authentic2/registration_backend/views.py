@@ -39,17 +39,6 @@ def login(request, user, redirect_url='auth_homepage'):
     django_login(request, user)
     return redirect(redirect_url)
 
-class LoginView(View):
-    redirect_url = 'auth_homepage'
-
-    @valid_token
-    def get(self, request, *args, **kwargs):
-        try:
-            user = User.objects.get(email=kwargs['email'], username=kwargs['username'])
-            return login(request, user)
-        except User.DoesNotExist:
-            return redirect(self.redirect_url)
-
 class RegistrationView(FormView):
     form_class = get_form_class(app_settings.A2_REGISTRATION_FORM_CLASS)
     template_name = 'registration/registration_form.html'
@@ -72,6 +61,16 @@ class RegistrationCompletionView(FormView):
                 return super(RegistrationCompletionView, self).get(request, *args, **kwargs)
             return login(request, user)
         else:
+            if 'create' in request.GET:
+                return super(RegistrationCompletionView, self).get(request, *args, **kwargs)
+            if 'username' in request.GET:
+                try:
+                    user = User.objects.get(email__iexact=kwargs['email'],
+                                            username=request.GET['username'])
+                    return login(request, user)
+                except User.DoesNotExist:
+                    pass
+
             user_accounts = User.objects.filter(email__iexact=kwargs['email'])
             if user_accounts:
                 logout(request)
@@ -94,12 +93,6 @@ class RegistrationCompletionView(FormView):
             return login(request, user)
         else:
             return self.form_invalid(form)
-
-class RegistrationCreateView(RegistrationCompletionView):
-
-    @valid_token
-    def get(self, request, *args, **kwargs):
-        return super(RegistrationCompletionView, self).get(request, *args, **kwargs)
 
 class DeleteView(TemplateView):
     def get(self, request, *args, **kwargs):

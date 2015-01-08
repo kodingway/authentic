@@ -21,13 +21,13 @@
 
 <ul>
   {% for account in accounts %}
-  <li><a href="{% url "registration_login" registration_token account.username %}">{{ account }}</a></li>
+  <li><a href="{% url "registration_activate" registration_token %}?username={{ account.username|urlencode }}">{{ account }}</a></li>
   {% endfor %}
 </ul>
 
 <p>
   {% trans "or" %}
-  <a href="{% url "registration_create" registration_token %}">
+  <a href="{% url "registration_activate" registration_token %}?create">
     {% trans "create a new account" %}
   </a>
 </p>
