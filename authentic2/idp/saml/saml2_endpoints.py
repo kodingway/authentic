@@ -188,8 +188,9 @@ def get_attribute_definitions(provider):
     '''Query all attribute definitions for a providers'''
     qs = SAMLAttribute.objects.for_generic_object(provider) \
             .filter(enabled=True)
-    if provider.service_provider and provider.service_provider.sp_options_policy:
-        qs |= SAMLAttribute.objects.for_generic_object(provider.service_provider.sp_options_policy) \
+    sp_options_policy = get_sp_options_policy(provider)
+    if sp_options_policy:
+        qs |= SAMLAttribute.objects.for_generic_object(sp_options_policy) \
                 .filter(enabled=True)
     return qs.distinct()
 
