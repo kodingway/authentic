@@ -1,7 +1,7 @@
 from pkg_resources import get_distribution
 from django.conf import settings
 
-from . import utils
+from . import utils, app_settings
 
 class UserFederations(object):
     '''Provide access to all federations of the current user'''
@@ -30,7 +30,7 @@ __AUTHENTIC2_DISTRIBUTION = None
 def a2_processor(request):
     global __AUTHENTIC2_DISTRIBUTION
     variables = {}
-    variables.update(getattr(settings, 'TEMPLATE_VARS', {}))
+    variables.update(app_settings.TEMPLATE_VARS)
     variables['federations'] = UserFederations(request)
     if __AUTHENTIC2_DISTRIBUTION is None:
         if settings.DEBUG:

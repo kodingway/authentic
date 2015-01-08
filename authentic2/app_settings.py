@@ -135,6 +135,7 @@ default_settings = dict(
     A2_PASSWORD_POLICY_MIN_LENGTH=Setting(default=6, definition='Minimum number of characters in a password'),
     A2_AUTH_PASSWORD_ENABLE=Setting(default=True, definition='Activate login/password authentication', names=('AUTH_PASSWORD',)),
     PUSH_PROFILE_UPDATES=Setting(default=False, definition='Push profile update to linked services'),
+    TEMPLATE_VARS=Setting(default={}, definition='Variable to pass to templates'),
 )
 
 app_settings = AppSettings(default_settings)
