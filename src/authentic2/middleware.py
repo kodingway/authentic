@@ -94,14 +94,15 @@ class CollectIPMiddleware(object):
 
 class OpenedSessionCookieMiddleware(object):
     def process_response(self, request, response):
+        if not app_settings.A2_OPENED_SESSION_COOKIE_DOMAIN:
+            return response
         if hasattr(request, 'user') and request.user.is_authenticated():
-            if app_settings.A2_OPENED_SESSION_COOKIE_DOMAIN:
-                response.set_cookie(
-                        app_settings.A2_OPENED_SESSION_COOKIE_NAME,
-                        value='1',
-                        max_age=None,
-                        domain=app_settings.A2_OPENED_SESSION_COOKIE_DOMAIN)
-        else:
+            response.set_cookie(
+                    app_settings.A2_OPENED_SESSION_COOKIE_NAME,
+                    value='1',
+                    max_age=None,
+                    domain=app_settings.A2_OPENED_SESSION_COOKIE_DOMAIN)
+        elif app_settings.A2_OPENED_SESSION_COOKIE_NAME in request.COOKIES:
             response.delete_cookie(
                     app_settings.A2_OPENED_SESSION_COOKIE_NAME,
                     domain=app_settings.A2_OPENED_SESSION_COOKIE_DOMAIN)
