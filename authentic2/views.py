@@ -72,39 +72,6 @@ class EditProfile(UpdateView):
     def get_object(self):
         return self.request.user
 
-    def push_attributes(self):
-        # FIXME: we should net refer to a specific idp module here
-        from authentic2.idp.saml import saml2_endpoints
-        from authentic2.saml import models as saml_models
-
-        # Push attributes to SP
-        # Policy must not require user consent
-        federations = \
-            saml_models.LibertyFederation.objects.filter(user=self.request.user)
-        for federation in federations:
-            sp_id = federation.sp_id
-            login = saml2_endpoints.idp_sso(self.request,
-                sp_id, save=False, return_profile=True)
-            if login.msgBody:
-                # Only with SP supporting SSO IdP-initiated by POST
-                url = login.msgUrl
-                data = { lasso.SAML2_FIELD_RESPONSE: login.msgBody }
-                try:
-                    session = requests.Session()
-                    session.post(url, data=data, allow_redirects=True, timeout=5)
-                except:
-                    logger.exception('exception when pushing attributes '
-                            'of %s to %s', self.request.user,
-                            sp_id)
-                else:
-                    logger.info('pushing attributes of %s to %s',
-                            self.request.user, sp_id)
-
-    def form_valid(self, form):
-        if app_settings.PUSH_PROFILE_UPDATES:
-            thread.start_new_thread(self.push_attributes, ())
-        return super(EditProfile, self).form_valid(form)
-
     def get_form_kwargs(self, **kwargs):
         kwargs = super(EditProfile, self).get_form_kwargs(**kwargs)
         kwargs['prefix'] = 'edit-profile'
