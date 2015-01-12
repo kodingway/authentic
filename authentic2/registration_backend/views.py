@@ -63,10 +63,10 @@ class RegistrationCompletionView(FormView):
         else:
             if 'create' in request.GET:
                 return super(RegistrationCompletionView, self).get(request, *args, **kwargs)
-            if 'username' in request.GET:
+            if 'uid' in request.GET:
                 try:
                     user = User.objects.get(email__iexact=kwargs['email'],
-                                            username=request.GET['username'])
+                                            username=request.GET['uid'])
                     return login(request, user)
                 except User.DoesNotExist:
                     pass
