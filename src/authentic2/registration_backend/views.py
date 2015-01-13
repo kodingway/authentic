@@ -14,7 +14,7 @@ from django.views.generic.edit import FormView
 from django.views.generic.base import TemplateView, View
 
 from authentic2.utils import get_form_class
-from .. import models, app_settings, compat
+from .. import models, app_settings, compat, cbv
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +39,7 @@ def login(request, user, redirect_url='auth_homepage'):
     django_login(request, user)
     return redirect(redirect_url)
 
-class RegistrationView(FormView):
+class RegistrationView(cbv.ValidateCSRFMixin, FormView):
     form_class = get_form_class(app_settings.A2_REGISTRATION_FORM_CLASS)
     template_name = 'registration/registration_form.html'
 
