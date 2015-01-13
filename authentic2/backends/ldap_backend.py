@@ -98,6 +98,13 @@ _DEFAULTS = {
     'set_mandatory_groups': (),
     # Can users change their password ?
     'user_can_change_password': True,
+    # Use starttls
+    'use_tls': True,
+    # LDAP library options
+    'ldap_options': {
+    },
+    'global_ldap_options': {
+    }
 }
 
 _REQUIRED = ('url', 'basedn')
@@ -111,9 +118,15 @@ def get_connection(block, credentials=()):
     if not block['url']:
         raise ImproperlyConfigured("block['url'] must contain at least one url")
     for url in block['url']:
+        for key, value in block['global_ldap_options'].iteritems():
+            ldap.set_option(key, value)
         conn = ldap.initialize(url)
+        for key, value in block['ldap_options']:
+            conn.set_option(key, value)
         conn.set_option(ldap.OPT_REFERRALS, 1 if block['referrals'] else 0)
         try:
+            if not url.startswith('ldaps://') and block['use_tls']:
+                conn.start_tls_s()
             conn.whoami_s()
         except ldap.SERVER_DOWN:
             if block['replicas']:
