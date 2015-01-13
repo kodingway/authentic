@@ -26,7 +26,7 @@ from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.http import (HttpResponseRedirect, HttpResponseForbidden,
     HttpResponse)
 from django.core.exceptions import PermissionDenied
-from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.views.decorators.cache import never_cache
 from django.contrib.auth.decorators import login_required
 from django.db.models.fields import FieldDoesNotExist
@@ -180,7 +180,8 @@ email_change_verify = EmailChangeVerifyView.as_view()
 
 logger = logging.getLogger('authentic2.idp.views')
 
-@csrf_protect
+@csrf_exempt
+@ensure_csrf_cookie
 @never_cache
 def login(request, template_name='authentic2/login.html',
           redirect_field_name=REDIRECT_FIELD_NAME):
