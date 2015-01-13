@@ -17,6 +17,7 @@ from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login
 from django import forms
 from django.forms.util import ErrorList
 from django.utils import html, http
+from django.utils.translation import ugettext as _
 
 from authentic2.saml.saml2utils import filter_attribute_private_key, \
     filter_element_private_key
@@ -430,3 +431,11 @@ def attribute_values_to_identifier(values):
     normalized = normalize_attribute_values(values)
     assert len(normalized) == 1, 'multi-valued attribute cannot be used as an identifier'
     return list(normalized)[0]
+
+def csrf_token_check(request, form):
+    '''Check a request for CSRF cookie validation, and add an error to the form
+       if check fails.
+    '''
+    if form.is_valid() and not getattr(request, 'csrf_processing_done', False):
+        msg = _('The form was out of date, please try again.')
+        form._errors[forms.forms.NON_FIELD_ERRORS] = ErrorList([msg])
