@@ -1,4 +1,4 @@
-from uuid import uuid
+from uuid import uuid4
 import django
 
 from django.conf import settings
@@ -107,6 +107,9 @@ class RegistrationCompletionForm(forms.UserAttributeFormMixin, Form):
             if field_name in self.fields:
                 new_fields[field_name] = self.fields[field_name]
         for field_name in self.fields:
+            # skip username field
+            if field_name == 'username':
+                continue
             if field_name not in new_fields:
                 new_fields[field_name] = self.fields[field_name]
         # override titles
@@ -116,29 +119,6 @@ class RegistrationCompletionForm(forms.UserAttributeFormMixin, Form):
                     self.fields[field[0]].label = field[1]
 
         self.fields = new_fields
-        if 'username' in self.fields:
-            self.fields['username'].regex = app_settings.A2_REGISTRATION_FORM_USERNAME_REGEX
-            self.fields['username'].help_text = app_settings.A2_REGISTRATION_FORM_USERNAME_HELP_TEXT
-            self.fields['username'].label = app_settings.A2_REGISTRATION_FORM_USERNAME_LABEL
-
-
-    def clean_username(self):
-        """
-        Validate that the username is alphanumeric and is not already
-        in use.
-        """
-        User = compat.get_user_model()
-        username = self.cleaned_data['username']
-        if app_settings.A2_REGISTRATION_REALM:
-            if '@' in username:
-                raise ValidationError(_('The character @ is forbidden in usernames.'))
-            username = u'{0}@{1}'.format(username, app_settings.A2_REGISTRATION_REALM)
-            self.cleaned_data['username'] = username
-        existing = User.objects.filter(username__iexact=self.cleaned_data['username'])
-        if existing.exists():
-            raise ValidationError(_("A user with that username already exists."))
-        else:
-            return self.cleaned_data['username']
 
     def clean(self):
         """
@@ -162,6 +142,8 @@ class RegistrationCompletionForm(forms.UserAttributeFormMixin, Form):
                 continue
             if field.startswith('password'):
                 continue
+            if field == 'username':
+                kwargs[field] = uuid4().get_hex()
             user_fields[field] = kwargs[field]
             if field == 'email':
                 user_fields[field] = BaseUserManager.normalize_email(kwargs[field])
