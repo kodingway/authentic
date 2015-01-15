@@ -25,9 +25,17 @@ Please choose the account you want to log in with:
 <ul>
   {% for account in accounts %}
   <li><a href="{% url "registration_activate" registration_token %}?uid={{ account.username|urlencode }}">{{ account.get_full_name }}</a>
-    {% blocktrans with creation_date=account.date_joined|date:'SHORT_DATETIME_FORMAT' login_date=account.last_login|date:'SHORT_DATETIME_FORMAT' %}
-    (created on {{ creation_date }}, last login on {{ login_date }})
+    <div>
+    {% blocktrans with creation_date=account.date_joined|date:'SHORT_DATETIME_FORMAT'%}
+    created on {{ creation_date }}
     {% endblocktrans %}
+    {% if account.last_login %}
+    <br />
+    {% blocktrans with login_date=account.last_login|date:'SHORT_DATETIME_FORMAT' %}
+    last login on {{ login_date }}
+    {% endblocktrans %}
+    {% endif %}
+    </div>
   </li>
   {% endfor %}
 </ul>
