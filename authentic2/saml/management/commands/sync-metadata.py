@@ -316,8 +316,10 @@ Any other kind of attribute filter policy is unsupported.
                         print 'Finally delete all providers for source: %s...' % source
                         LibertyProvider.objects.filter(federation_source=source).delete()
                     else:
-                        to_delete = LibertyProvider.objects.filter(federation_source=source)\
-                                .exclude(entity_id__in=loaded)
+                        to_delete = []
+                        for provider in LibertyProvider.objects.filter(federation_source=source):
+                            if provider.entity_id not in loaded:
+                                to_delete.append(provider)
                         for provider in to_delete:
                             if verbosity > 1:
                                 print _('Deleted obsolete provider %s') % provider.entity_id
