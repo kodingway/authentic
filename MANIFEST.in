@@ -21,10 +21,10 @@ recursive-include authentic2/saml/fixtures *.json
 recursive-include authentic2/locale *.po *.mo
 recursive-include authentic2/saml/locale *.po *.mo
 recursive-include authentic2/idp/locale *.po *.mo
+recursive-include authentic2/idp/saml/locale *.po *.mo
 recursive-include authentic2/idp/idp_openid/locale *.po *.mo
 recursive-include authentic2/auth2_auth/locale *.po *.mo
 recursive-include authentic2/auth2_auth/auth2_ssl/locale *.po *.mo
-recursive-include authentic2/auth2_auth/auth2_oath/locale *.po *.mo
 recursive-include authentic2/attribute_aggregator/locale *.po *.mo
 recursive-include authentic2/disco_service/locale *.po *.mo
 recursive-include authentic2/manager/locale *.po *.mo
