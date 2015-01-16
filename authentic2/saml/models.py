@@ -834,4 +834,4 @@ def get_and_delete_key_values(key):
         kv = KeyValue.objects.get(key=key)
         return kv.value
     except ObjectDoesNotExist:
-        return None
+        raise KeyError

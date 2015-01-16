@@ -570,7 +570,7 @@ def continue_sso(request):
     try:
         login_dump, consent_obtained, save, nid_format = \
                 get_and_delete_key_values(nonce)
-    except ValueError:
+    except KeyError:
         return error_redirect(request, N_('request has expired'))
     server = create_server(request)
     # Work Around for lasso < 2.3.6
@@ -1058,7 +1058,10 @@ def finish_slo(request):
     if not id:
         logger.error('missing id argument')
         return HttpResponseBadRequest('finish_slo: missing id argument')
-    logout_dump, session_key = get_and_delete_key_values(id)
+    try:
+        logout_dump, session_key = get_and_delete_key_values(id)
+    except KeyError:
+        return error_redirect(request, N_('request has expired'))
     server = create_server(request)
     logout = lasso.Logout.newFromDump(server, logout_dump)
     load_provider(request, logout.remoteProviderId, server=logout.server)
@@ -1564,7 +1567,7 @@ def slo_return(request):
     try:
         logout_dump, provider_id, next = \
             get_and_delete_key_values(relay_state)
-    except ValueError:
+    except KeyError:
         return error_redirect(request,
                 N_('unknown relay state %r'),
                 relay_state,
