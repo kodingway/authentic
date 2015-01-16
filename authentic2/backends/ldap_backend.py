@@ -37,6 +37,7 @@ _DEFAULTS = {
     'bindsasl': (),
     'user_dn_template': None,
     'user_filter': 'uid=%s',
+    'user_basedn': None,
     'group_dn_template': None,
     'member_of_attribute': None,
     'group_filter': '(&(member={user_dn})(objectClass=groupOfNames))',
@@ -378,7 +379,7 @@ class LDAPBackend(object):
             if not uri.startswith('ldaps://') and block['use_tls']:
                 conn.start_tls_s()
             authz_ids = []
-            user_basedn = block.get('user_basedn', block['basedn'])
+            user_basedn = block.get('user_basedn') or block['basedn']
 
             try:
                 # if necessary bind as admin
