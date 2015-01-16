@@ -375,6 +375,8 @@ class LDAPBackend(object):
             log.debug('try to bind user on %r', uri)
             conn = ldap.initialize(uri)
             conn.set_option(ldap.OPT_REFERRALS, 1 if block['referrals'] else 0)
+            if not uri.startswith('ldaps://') and block['use_tls']:
+                conn.start_tls_s()
             authz_ids = []
             user_basedn = block.get('user_basedn', block['basedn'])
 
