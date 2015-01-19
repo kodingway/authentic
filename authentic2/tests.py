@@ -1,3 +1,5 @@
+import urlparse
+
 from django.test import TestCase
 
 from django.contrib.auth.hashers import check_password
@@ -89,15 +91,32 @@ class SerializerTests(TestCase):
         self.assertEqual(Attribute.objects.count(), 1)
         self.assertEqual(AttributeValue.objects.count(), 1)
 
+
+
+
 class UtilsTests(TestCase):
+    def assertEqualsURL(self, url1, url2):
+        splitted1 = urlparse.urlsplit(url1)
+        splitted2 = urlparse.urlsplit(url2)
+        for i, (elt1, elt2) in enumerate(zip(splitted1, splitted2)):
+            if i == 4:
+                elt1 = urlparse.parse_qs(elt1)
+                elt2 = urlparse.parse_qs(elt2)
+                for k, v in elt1.items():
+                    elt1[k] = set(v)
+                for k, v in elt2.items():
+                    elt2[k] = set(v)
+            self.assertTrue(elt1 == elt2,
+                    "URLs are not equal: %s != %s" % (splitted1, splitted2))
+
     def test_make_url(self):
         from authentic2.utils import make_url
-        self.assertEquals(make_url('../coin'), '../coin')
-        self.assertEquals(make_url('../boob', params={'next': '..'}), '../boob?next=..')
-        self.assertEquals(make_url('../boob', params={'next': '..'}, append={'xx': 'yy'}), '../boob?xx=yy&next=..')
-        self.assertEquals(make_url('../boob', params={'next': '..'}, append={'next': 'yy'}), '../boob?next=..&next=yy')
-        self.assertEquals(make_url('auth_login', params={'next': '/zob'}), '/login/?next=%2Fzob')
-        self.assertEquals(make_url('auth_login', params={'next': '/zob'}, fragment='a2-panel'), '/login/?next=%2Fzob#a2-panel')
+        self.assertEqualsURL(make_url('../coin'), '../coin')
+        self.assertEqualsURL(make_url('../boob', params={'next': '..'}), '../boob?next=..')
+        self.assertEqualsURL(make_url('../boob', params={'next': '..'}, append={'xx': 'yy'}), '../boob?xx=yy&next=..')
+        self.assertEqualsURL(make_url('../boob', params={'next': '..'}, append={'next': 'yy'}), '../boob?next=..&next=yy')
+        self.assertEqualsURL(make_url('auth_login', params={'next': '/zob'}), '/login/?next=%2Fzob')
+        self.assertEqualsURL(make_url('auth_login', params={'next': '/zob'}, fragment='a2-panel'), '/login/?next=%2Fzob#a2-panel')
 
     def test_redirect(self):
         from authentic2.utils import redirect
@@ -106,17 +125,17 @@ class UtilsTests(TestCase):
         request = rf.get('/coin', data={'next': '..'})
         request2 = rf.get('/coin', data={'next': '..', 'token': 'xxx'})
         response = redirect(request, '/boob/', keep_params=True)
-        self.assertEqual(response['Location'], '/boob/?next=..')
+        self.assertEqualsURL(response['Location'], '/boob/?next=..')
         response = redirect(request, '/boob/', keep_params=True, exclude=['next'])
-        self.assertEqual(response['Location'], '/boob/')
+        self.assertEqualsURL(response['Location'], '/boob/')
         response = redirect(request2, '/boob/', keep_params=True)
-        self.assertEqual(response['Location'], '/boob/?token=xxx&next=..')
+        self.assertEqualsURL(response['Location'], '/boob/?token=xxx&next=..')
         response = redirect(request, '/boob/', keep_params=True, exclude=['token'])
-        self.assertEqual(response['Location'], '/boob/?next=..')
+        self.assertEqualsURL(response['Location'], '/boob/?next=..')
         response = redirect(request, '/boob/', keep_params=True, include=['next'])
-        self.assertEqual(response['Location'], '/boob/?next=..')
+        self.assertEqualsURL(response['Location'], '/boob/?next=..')
         response = redirect(request, '/boob/', keep_params=True, include=['next'], params={'token': 'uuu'})
-        self.assertEqual(response['Location'], '/boob/?token=uuu&next=..')
+        self.assertEqualsURL(response['Location'], '/boob/?token=uuu&next=..')
 
     def test_redirect_to_login(self):
         from authentic2.utils import redirect_to_login
@@ -124,7 +143,7 @@ class UtilsTests(TestCase):
         rf = RequestFactory()
         request = rf.get('/coin', data={'next': '..'})
         response = redirect_to_login(request)
-        self.assertEqual(response['Location'], '/login/?next=..')
+        self.assertEqualsURL(response['Location'], '/login/?next=..')
 
     def test_continue_to_next_url(self):
         from authentic2.utils import continue_to_next_url
@@ -132,7 +151,7 @@ class UtilsTests(TestCase):
         rf = RequestFactory()
         request = rf.get('/coin', data={'next': '/zob/', 'nonce': 'xxx'})
         response = continue_to_next_url(request)
-        self.assertEqual(response['Location'], '/zob/?nonce=xxx')
+        self.assertEqualsURL(response['Location'], '/zob/?nonce=xxx')
 
     def test_login_require(self):
         from authentic2.utils import login_require
@@ -140,4 +159,4 @@ class UtilsTests(TestCase):
         rf = RequestFactory()
         request = rf.get('/coin', data={'next': '/zob/', 'nonce': 'xxx'})
         response = login_require(request)
-        self.assertEqual(response['Location'], '/login/?next=%2Fcoin%3Fnonce%3Dxxx%26next%3D%252Fzob%252F')
+        self.assertEqualsURL(response['Location'], '/login/?next=%2Fcoin%3Fnonce%3Dxxx%26next%3D%252Fzob%252F')
