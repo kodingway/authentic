@@ -265,8 +265,12 @@ def make_url(to, args=(), kwargs={}, keep_params=False, params=None,
        You can set parameters or append to existing one.
     '''
     url = resolve_url(to, *args, **kwargs)
+    if '?' in url:
+        url, query_string = url.split('?', 1)
+    else:
+        query_string = ''
     # Django < 1.6 compat, query_string is not optional
-    url_params = QueryDict(query_string='', mutable=True)
+    url_params = QueryDict(query_string=query_string, mutable=True)
     if keep_params:
         assert request is not None, 'missing request'
         for key, value in request.GET.iteritems():
