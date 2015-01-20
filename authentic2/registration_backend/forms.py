@@ -9,7 +9,7 @@ from django.forms.util import ErrorList
 
 from django.contrib.auth import forms as auth_forms
 
-from .. import app_settings, compat, forms, utils, validators
+from .. import app_settings, compat, forms, utils, validators, models
 
 
 class RegistrationForm(forms.UserAttributeFormMixin, Form):
@@ -118,12 +118,30 @@ class RegistrationForm(forms.UserAttributeFormMixin, Form):
                 raise ValidationError(_("The two password fields didn't match."))
         return self.cleaned_data
 
-class SetPasswordForm(auth_forms.SetPasswordForm):
+class PasswordResetMixin(Form):
+    '''Remove all password reset object for the current user when password is
+       successfully changed.'''
+
+    def save(self, commit=True):
+        ret = super(SetPasswordForm, self).save(commit=commit)
+        if commit:
+            models.PasswordReset.objects.filter(user=self.user).delete()
+        else:
+            old_save = self.user.save
+            def save(*args, **kwargs):
+                ret = old_save(*args, **kwargs)
+                models.PasswordReset.objects.filter(user=self.user).delete()
+                return ret
+            self.user.save = save
+        return ret
+
+class SetPasswordForm(PasswordResetMixin, auth_forms.SetPasswordForm):
     new_password1 = CharField(label=_("New password"),
                                     widget=PasswordInput,
                                     validators=[validators.validate_password])
 
-class PasswordChangeForm(auth_forms.PasswordChangeForm):
+
+class PasswordChangeForm(PasswordResetMixin, auth_forms.PasswordChangeForm):
     new_password1 = CharField(label=_("New password"),
                                     widget=PasswordInput,
                                     validators=[validators.validate_password])

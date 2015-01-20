@@ -384,3 +384,11 @@ class AttributeValue(models.Model):
     class Meta:
         verbose_name = _('attribute value')
         verbose_name_plural = _('attribute values')
+
+class PasswordReset(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+            verbose_name=_('user'))
+
+    class Meta:
+        verbose_name = _('password reset')
+        verbose_name_plural = _('password reset')

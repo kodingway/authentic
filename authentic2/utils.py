@@ -1,3 +1,4 @@
+import random
 import time
 import hashlib
 import datetime as dt
@@ -348,3 +349,17 @@ def login_require(request, login_url='auth_login', **kwargs):
     params = kwargs.setdefault('params', {})
     params[REDIRECT_FIELD_NAME] = path
     return redirect(request, login_url, **kwargs)
+
+def generate_password():
+    '''Generate a password based on a certain composition based on number of
+       characters based on classes of characters.
+    '''
+    composition = ((2, '23456789'),
+                (6, 'ABCDEFGHJKLMNPQRSTUVWXYZ'),
+                (1, '%$/\\#@!'))
+    parts = []
+    for count, alphabet in composition:
+        for i in range(count):
+            parts.append(random.SystemRandom().choice(alphabet))
+    random.shuffle(parts, random.SystemRandom().random)
+    return ''.join(parts)

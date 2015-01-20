@@ -51,6 +51,10 @@ class ModelBackend(ModelBackend):
             queries.append(models.Q(**{username_field: upn(username, realm)}))
         return reduce(models.Q.__or__, queries)
 
+    def must_reset_password(self, user):
+        from .. import models
+        return bool(models.PasswordReset.filter(user=user).count())
+
     def authenticate(self, username=None, password=None, realm=None, **kwargs):
         UserModel = get_proxy_user_model()
         if username is None:
