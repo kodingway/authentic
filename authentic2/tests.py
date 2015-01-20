@@ -99,7 +99,7 @@ class UtilsTests(TestCase):
         splitted1 = urlparse.urlsplit(url1)
         splitted2 = urlparse.urlsplit(url2)
         for i, (elt1, elt2) in enumerate(zip(splitted1, splitted2)):
-            if i == 4:
+            if i == 3:
                 elt1 = urlparse.parse_qs(elt1)
                 elt2 = urlparse.parse_qs(elt2)
                 for k, v in elt1.items():
@@ -108,6 +108,9 @@ class UtilsTests(TestCase):
                     elt2[k] = set(v)
             self.assertTrue(elt1 == elt2,
                     "URLs are not equal: %s != %s" % (splitted1, splitted2))
+
+    def test_assert_equals_url(self):
+        self.assertEqualsURL('/test?coin=1&bob=2&coin=3', '/test?bob=2&coin=1&coin=3')
 
     def test_make_url(self):
         from authentic2.utils import make_url
