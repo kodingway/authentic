@@ -162,4 +162,5 @@ class UtilsTests(TestCase):
         rf = RequestFactory()
         request = rf.get('/coin', data={'next': '/zob/', 'nonce': 'xxx'})
         response = login_require(request)
-        self.assertEqualsURL(response['Location'], '/login/?next=%2Fcoin%3Fnonce%3Dxxx%26next%3D%252Fzob%252F')
+        self.assertEqualsURL(response['Location'].split('?', 1)[0], '/login/')
+        self.assertEqualsURL(urlparse.parse_qs(response['Location'].split('?', 1)[1])['next'][0], '/coin?nonce=xxx&next=/zob/')
