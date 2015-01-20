@@ -30,3 +30,4 @@ A2_VALIDATE_EMAIL_DOMAIN = False
 # to pass tests from django.contrib.messages
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 LOGIN_REDIRECT_URL = '/accounts/profile/'
+LOGIN_URL = '/login/'
