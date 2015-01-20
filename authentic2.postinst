@@ -9,6 +9,7 @@ NAME=authentic2
 AUTHENTIC_USER=authentic
 AUTHENTIC_GROUP=authentic
 AUTHENTIC_HOME=/var/lib/authentic2
+AUTHENTIC_SECRET_KEY="$AUTHENTIC_HOME/secret_key"
 
 # source debconf stuff
 . /usr/share/debconf/confmodule
@@ -28,17 +29,45 @@ case "$1" in
                     $AUTHENTIC_USER
             echo "..done" >&2
         fi
-        if [ ! -f "/etc/$NAME/secret" ]; then
-            echo -n "Generating Django secret.." >&2
-            echo "export SECRET_KEY='`</dev/urandom tr -dc [:alnum:]-_\!\%\^:\; | head -c70`'" > /etc/$NAME/secret
-            chmod 0600 /etc/$NAME/secret
-            chown $AUTHENTIC_USER:$AUTHENTIC_GROUP /etc/$NAME/secret
+
+        if [ ! -f $AUTHENTIC_SECRET_KEY ]; then
+            if [ -f /etc/$NAME/secret ]; then
+                echo -n "Converting storage of the secret key.." >&2
+                . /etc/$NAME/secret
+                echo -n "$SECRET_KEY" >"$AUTHENTIC_SECRET_KEY"
+                rm /etc/$NAME/secret
+                echo "..done" >&2
+            else
+                echo -n "Generating a secret key.." >&2
+                echo -n "`</dev/urandom tr -dc [:alnum:]-_\!\%\^:\; | head -c70`" > "$AUTHENTIC_SECRET_KEY"
+                chmod 0600 $AUTHENTIC_SECRET_KEY
+                echo "..done" >&2
+            fi
+        fi
+
+        if [ -d $AUTHENTIC_HOME/extra-static ]; then
+            if [ -d $AUTHENTIC_HOME/static ]; then
+               mv $AUTHENTIC_HOME/static $AUTHENTIC_HOME/static.dpkg_old
+            fi
+            mkdir -p $AUTHENTIC_HOME/static
+            echo -n "Migrate old extra-static/ to static/.." >&2
+            mv $AUTHENTIC_HOME/extra-static/* $AUTHENTIC_HOME/static/
+            mv $AUTHENTIC_HOME/extra-static $AUTHENTIC_HOME/extra-static.dpkg_old
             echo "..done" >&2
+        fi
+
+        if [ -f /etc/authentic2/authentic.conf ]; then
+            # Fix old configuration file
+            sed -i -e '/^\. \/etc\/authentic2\/secret$/d' \
+                -e '/^export *STATIC_ROOT *=/d' \
+                -e '/^. \/etc\/authentic2\/db.conf$/d' \
+                -e '/^# do not remove this line, it imports/d' \
+                /etc/authentic2/authentic.conf >&2
         fi
 
         chown $AUTHENTIC_USER:$AUTHENTIC_GROUP /var/lib/authentic2 \
             /var/lib/authentic2/static \
-            /var/lib/authentic2/extra-static \
+            /var/lib/authentic2/collectstatic \
             /var/lib/authentic2/media \
             /var/run/authentic2 \
             /var/log/authentic2 \
