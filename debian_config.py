@@ -178,7 +178,7 @@ def extract_settings_from_environ():
         except ImportError:
             raise ImproperlyConfigured('SENTRY_DSN environment variable is set but raven is not installed.')
         SENTRY_DSN = os.environ['SENTRY_DSN']
-        INSTALLED_APPS = INSTALLED_APPS + ('raven',)
+        INSTALLED_APPS = tuple(INSTALLED_APPS) + ('raven',)
 
     # extract any key starting with setting
     for key in os.environ:
