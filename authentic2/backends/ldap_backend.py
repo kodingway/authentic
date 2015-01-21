@@ -88,7 +88,7 @@ _DEFAULTS = {
     'update_username': False,
     # lookup existing user with an external id build with attributes
     'lookups': ('external_id', 'username'),
-    'external_id_tuples': (('dn:noquote',),),
+    'external_id_tuples': (('uid',),('dn:noquote',),),
     # keep password around so that Django authentification also work
     'clean_external_id_on_update': True,
     # Conserve the passsword in the Django User object
