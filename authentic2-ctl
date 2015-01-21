@@ -19,7 +19,7 @@ if __name__ == "__main__":
 
     if config_file:
         os.environ['DJANGO_CONFIG_FILE'] = config_file
-    else:
+    elif os.path.exists('./local_settings.py'):
         os.environ['DJANGO_CONFIG_FILE'] = './local_settings.py'
 
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentic2.settings")
