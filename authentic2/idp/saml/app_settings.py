@@ -58,36 +58,39 @@ TKX6tp6oI+7MIJE6ySZ0cBqOiydAkBePZhu57j6ToBkTa0dbHjn1WA==
 
     def _setting(self, name, dflt):
         from django.conf import settings
-        return getattr(settings, self.prefix+name, dflt)
+        return getattr(settings, name, dflt)
+
+    def _setting_with_prefix(self, name, dflt):
+        return self._setting(self.prefix + name, dflt)
 
     @property
     def ENABLE(self):
-        return self._setting('%sENABLE' % self.prefix,
+        return self._setting_with_prefix('ENABLE',
                    self._setting('IDP_SAML2',
                        self.__DEFAULTS['ENABLE']))
 
     @property
     def SIGNATURE_PUBLIC_KEY(self):
-        return self._setting('%sSIGNATURE_PUBLIC_KEY' % self.prefix,
+        return self._setting_with_prefix('SIGNATURE_PUBLIC_KEY',
                    self._setting('SAML_SIGNATURE_PUBLIC_KEY',
                        self.__DEFAULTS['SIGNATURE_PUBLIC_KEY']))
 
     @property
     def SIGNATURE_PRIVATE_KEY(self):
-        return self._setting('%sSIGNATURE_PRIVATE_KEY' % self.prefix,
+        return self._setting_with_prefix('SIGNATURE_PRIVATE_KEY',
                    self._setting('SAML_SIGNATURE_PRIVATE_KEY',
                        self.__DEFAULTS['SIGNATURE_PRIVATE_KEY']))
 
     @property
     def AUTHN_CONTEXT_FROM_SESSION(self):
-        return self._setting('%sAUTHN_CONTEXT_FROM_SESSION' % self.prefix,
+        return self._setting_with_prefix('AUTHN_CONTEXT_FROM_SESSION',
                    self._setting('IDP_SAML2_AUTHN_CONTEXT_FROM_SESSION',
                        self.__DEFAULTS['AUTHN_CONTEXT_FROM_SESSION']))
 
     def __getattr__(self, name):
         if name not in self.__DEFAULTS:
             raise AttributeError(name)
-        return self._setting(name, self.__DEFAULTS[name])
+        return self._setting_with_prefix(name, self.__DEFAULTS[name])
 
 
 # Ugly? Guido recommends this himself ...

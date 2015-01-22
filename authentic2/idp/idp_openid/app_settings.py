@@ -9,18 +9,21 @@ class AppSettings(object):
 
     def _setting(self, name, dflt):
         from django.conf import settings
-        return getattr(settings, self.prefix+name, dflt)
+        return getattr(settings, name, dflt)
+
+    def _setting_with_prefix(self, name, dflt):
+        return self._setting(self.prefix + name, dflt)
 
     @property
     def ENABLE(self):
-        return self._setting('%sENABLE' % self.prefix,
+        return self._setting_with_prefix('ENABLE',
                 self._settings('IDP_OPENID',
                     self.__DEFAULTS['ENABLE']))
 
     def __getattr__(self, name):
         if name not in self.__DEFAULTS:
             raise AttributeError(name)
-        return self._setting(name, self.__DEFAULTS[name])
+        return self._setting_with_prefix(name, self.__DEFAULTS[name])
 
 
 # Ugly? Guido recommends this himself ...
