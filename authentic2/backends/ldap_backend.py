@@ -839,7 +839,7 @@ class LDAPBackend(object):
             user_basedn = block.get('user_basedn', block['basedn'])
             user_filter = block['user_filter'].replace('%s', '*')
             attrs = block['attributes']
-            users = conn.search_s(user_basedn, ldap.SCOPE_SUBTREE, user_filter, attrs)
+            users = conn.search_s(user_basedn, ldap.SCOPE_SUBTREE, user_filter, [])
             backend = cls()
             for user_dn, data in users:
                 attrs = cls.get_ldap_attributes(block, conn, user_dn)
