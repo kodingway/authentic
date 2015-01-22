@@ -476,7 +476,7 @@ class LDAPBackend(object):
     def create_username(self, block, attributes):
         '''Build a username using the configured template'''
         username_template = unicode(block['username_template'])
-        return username_template.format(uri=uri, realm=block['realm'],
+        return username_template.format(realm=block['realm'],
                                         **attributes)
 
     def save_user(self, user, username):
