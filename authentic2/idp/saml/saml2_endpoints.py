@@ -69,14 +69,14 @@ from authentic2.saml.common import redirect_next, asynchronous_bindings, \
     get_entity_id
 import authentic2.saml.saml2utils as saml2utils
 from authentic2.models import AuthenticationEvent
-from common import redirect_to_login, kill_django_sessions
+from common import kill_django_sessions
 from authentic2.constants import NONCE_FIELD_NAME
 
 from authentic2.idp import signals as idp_signals
 # from authentic2.idp.models import *
 
 from authentic2.utils import (cache_and_validate, get_backends as
-        get_idp_backends, get_username)
+        get_idp_backends, get_username, login_require)
 from authentic2.decorators import is_transient_user
 from authentic2.attributes_ng.engine import get_attributes
 
@@ -496,10 +496,10 @@ def need_login(request, login, save, nid_format):
     """
     nonce = login.request.id or get_nonce()
     save_key_values(nonce, login.dump(), False, save, nid_format)
-    url = reverse(continue_sso) + '?%s=%s' % (NONCE_FIELD_NAME, nonce)
-    logger.debug('redirect to login page with next url %s' % url)
-    return redirect_to_login(url,
-            other_keys={NONCE_FIELD_NAME: nonce})
+    next_url = reverse(continue_sso)
+    logger.debug('redirect to login page with next url %s', next_url)
+    return login_require(request, next_url=next_url,
+            params={NONCE_FIELD_NAME: nonce})
 
 
 def get_url_with_nonce(request, function, nonce):
