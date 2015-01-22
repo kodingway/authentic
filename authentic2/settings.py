@@ -132,8 +132,8 @@ AUTHENTICATION_BACKENDS = plugins.register_plugins_authentication_backends(
         AUTHENTICATION_BACKENDS)
 
 LOGIN_REDIRECT_URL = '/'
-LOGIN_URL = 'auth_login'
-LOGOUT_URL = 'auth_logout'
+LOGIN_URL = '/login/'
+LOGOUT_URL = '/logout/'
 
 # Registration
 ACCOUNT_ACTIVATION_DAYS = 2
