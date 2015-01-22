@@ -121,7 +121,7 @@ INSTALLED_APPS = (
     'sekizai',
 )
 
-INSTALLED_APPS = plugins.register_plugins_installed_apps(INSTALLED_APPS)
+INSTALLED_APPS = tuple(plugins.register_plugins_installed_apps(INSTALLED_APPS))
 
 # authentication
 AUTHENTICATION_BACKENDS = (
