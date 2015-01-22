@@ -30,7 +30,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseRedirect, \
-    HttpResponseForbidden, HttpResponseBadRequest, Http404
+    HttpResponseForbidden, HttpResponseBadRequest
 from django.utils.translation import ugettext as _, ugettext_noop as N_
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import never_cache
