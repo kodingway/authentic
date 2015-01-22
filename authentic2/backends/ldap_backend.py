@@ -80,7 +80,7 @@ _DEFAULTS = {
     # realm for selecting an ldap configuration or formatting usernames
     'realm': 'ldap',
     # template for building username
-    'username_template': '{uid}@{realm}',
+    'username_template': '{uid[0]}@{realm}',
     # allow to match multiple user records
     'multimatch': True,
     # update username on all login, use with CAUTION !! only if you know that
