@@ -546,13 +546,18 @@ class LibertyServiceProvider(models.Model):
     enable_following_sp_options_policy = models.BooleanField(verbose_name = \
         _('The following options policy will apply except if a policy for all service provider is defined.'),
         default=False)
-    sp_options_policy = models.ForeignKey(SPOptionsIdPPolicy, related_name = "sp_options_policy", verbose_name = _('service provider options policy'), blank=True, null=True)
+    sp_options_policy = models.ForeignKey(SPOptionsIdPPolicy,
+            related_name="sp_options_policy",
+            verbose_name=_('service provider options policy'), blank=True,
+            null=True,
+            on_delete=models.SET_NULL)
     enable_following_attribute_policy = models.BooleanField(verbose_name = \
         _('The following attribute policy will apply except if a policy for all service provider is defined.'),
         default=False)
     attribute_policy = models.ForeignKey('idp.AttributePolicy',
              related_name = "attribute_policy",
-            verbose_name=_("attribute policy"), null=True, blank=True)
+            verbose_name=_("attribute policy"), null=True, blank=True,
+            on_delete=models.SET_NULL)
     users_can_manage_federations = models.BooleanField(
             verbose_name=_('users can manage federation'),
             default=True,
@@ -587,14 +592,16 @@ class LibertyIdentityProvider(models.Model):
     idp_options_policy = models.ForeignKey(IdPOptionsSPPolicy,
             related_name="idp_options_policy",
             verbose_name=_('identity provider options policy'), blank=True,
-            null=True)
+            null=True,
+            on_delete=models.SET_NULL)
     enable_following_authorization_policy = models.BooleanField(verbose_name = \
         _('The following authorization policy will apply except if a policy for'
           ' all identity provider is defined.'),
         default=False)
     authorization_policy = models.ForeignKey(AuthorizationSPPolicy,
             related_name="authorization_policy",
-            verbose_name=_('authorization identity providers policy'), blank=True, null=True)
+            verbose_name=_('authorization identity providers policy'), blank=True, null=True,
+            on_delete=models.SET_NULL)
 
     objects = managers.GetByLibertyProviderManager()
 
