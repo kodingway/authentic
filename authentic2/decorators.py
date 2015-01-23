@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.views.debug import technical_404_response
+from django.http import Http404
 from functools import wraps
 
 from . import utils, app_settings
