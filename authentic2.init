@@ -13,7 +13,7 @@
 
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
 DESC=authentic2
-NAME=authentic2
+NAME=gunicorn
 DAEMON=/usr/bin/gunicorn
 PID_DIR=/var/run/$NAME
 CACHE_DIR=/var/cache/$NAME
