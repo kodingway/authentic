@@ -13,7 +13,7 @@
 
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
 DESC=authentic2
-NAME=gunicorn
+NAME=authentic2
 DAEMON=/usr/bin/gunicorn
 PID_DIR=/var/run/$NAME
 CACHE_DIR=/var/cache/$NAME
@@ -126,7 +126,7 @@ do_reload() {
 	# restarting (for example, when it is sent a SIGHUP),
 	# then implement that here.
 	#
-	start-stop-daemon --stop --signal 1 --quiet --pidfile $PIDFILE --name $NAME
+	start-stop-daemon --stop --signal 1 --quiet --pidfile $PIDFILE --name `basename $DAEMON`
 	return 0
 }
 
