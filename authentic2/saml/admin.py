@@ -186,7 +186,7 @@ class SAMLAttributeInlineAdmin(GenericTabularInline):
 
 class LibertyProviderAdmin(admin.ModelAdmin):
     form = LibertyProviderForm
-    list_display = ('name', 'slug', 'entity_id', 'protocol_conformance')
+    list_display = ('name', 'slug', 'entity_id')
     search_fields = ('name', 'entity_id')
     readonly_fields = ('entity_id','protocol_conformance','entity_id_sha1','federation_source')
     fieldsets = (
@@ -204,6 +204,12 @@ class LibertyProviderAdmin(admin.ModelAdmin):
     ]
     actions = [ update_metadata ]
     prepopulated_fields = {'slug': ('name',)}
+    list_filter = (
+            'service_provider__sp_options_policy',
+            'service_provider__attribute_policy',
+            'service_provider__enabled',
+            'identity_provider__enabled',
+    )
 
     def get_urls(self):
         urls = super(LibertyProviderAdmin, self).get_urls()
