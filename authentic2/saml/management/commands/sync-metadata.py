@@ -2,6 +2,8 @@ from optparse import make_option
 import sys
 import xml.etree.ElementTree as etree
 import os
+import requests
+from StringIO import StringIO
 
 from authentic2.compat_lasso import lasso
 from django.core.management.base import BaseCommand, CommandError
@@ -245,10 +247,17 @@ Any other kind of attribute filter policy is unsupported.
                     source.decode('ascii')
             except:
                 raise CommandError('--source MUST be an ASCII string value')
-            try:
-                metadata_file = file(args[0])
-            except:
-                raise CommandError('Unable to open file %s' % args[0])
+            if args[0].startswith('http://') or args[0].startswith('https://'):
+                response = requests.get(args[0])
+                if not response.ok:
+                    raise CommandError('Unable to open url %s' % args[0])
+                metadata_file = StringIO(response.content)
+            else:
+                try:
+                    metadata_file = file(args[0])
+                except:
+                    raise CommandError('Unable to open file %s' % args[0])
+
             try:
                 doc = etree.parse(metadata_file)
             except Exception, e:
