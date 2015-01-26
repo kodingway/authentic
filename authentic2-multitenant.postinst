@@ -33,7 +33,7 @@ case "$1" in
             $AUTHENTIC_HOME/tenants \
             /var/run/$NAME \
             /var/log/$NAME
-
+        ;;
     reconfigure|abort-upgrade|abort-remove|abort-deconfigure)
         ;;
 
