@@ -123,7 +123,7 @@ class PasswordResetMixin(Form):
        successfully changed.'''
 
     def save(self, commit=True):
-        ret = super(SetPasswordForm, self).save(commit=commit)
+        ret = super(PasswordResetMixin, self).save(commit=commit)
         if commit:
             models.PasswordReset.objects.filter(user=self.user).delete()
         else:
