@@ -102,7 +102,7 @@ def extract_settings_from_environ():
     for path_env in PATH_ENVS:
         if path_env in os.environ:
             old = globals().get(path_env)
-            globals()[path_env] = os.environ[path_env].split(':') + old
+            globals()[path_env] = tuple(os.environ[path_env].split(':')) + tuple(old)
 
     INT_ENVS = (
             'SESSION_COOKIE_AGE',
