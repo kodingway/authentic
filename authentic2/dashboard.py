@@ -47,7 +47,8 @@ class CustomIndexDashboard(Dashboard):
             _('Users and groups'),
             models=(user_class,
                 'django.contrib.auth.models.*',
-                'authentic2.models.Attribute'),
+                'authentic2.models.Attribute',
+                'authentic2.models.PasswordReset'),
         ))
         self.children.append(modules.ModelList(
             _('Debug'),
