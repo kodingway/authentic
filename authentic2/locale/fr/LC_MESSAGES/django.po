@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-12-16 17:07+0100\n"
-"PO-Revision-Date: 2014-12-16 17:09+0100\n"
+"PO-Revision-Date: 2015-01-28 15:40+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
 "Language: fr\n"
@@ -928,3 +928,9 @@ msgstr "Enregistrement"
 
 #~ msgid "The two email fields didn't match."
 #~ msgstr "Les deux champs courriel ne correspondent pas."
+
+msgid "your password dit not match the regular expession %s"
+msgstr "Votre mot de passe ne valide pas l'expression régulière %s."
+
+msgid "You must change your password to continue"
+msgstr "Vous devez changer votre mot de passe avant de continuer."

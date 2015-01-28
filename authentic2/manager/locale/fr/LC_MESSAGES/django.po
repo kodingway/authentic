@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: entrouvert 2.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-08-14 09:40+0200\n"
-"PO-Revision-Date: 2014-08-14 10:15+0200\n"
+"PO-Revision-Date: 2015-01-29 18:18+0100\n"
 "Last-Translator: Benjamin Dauvergne <bdauvergne@entrouvert.com>\n"
 "Language-Team: French <fr@li.org>\n"
 "Language: \n"
@@ -196,3 +196,12 @@ msgstr "Déconnexion"
 #: vendor/gadjo/gadjo/templates/gadjo/base.html:34
 msgid "Homepage"
 msgstr "Page d'accueil"
+
+msgid "Force password change on next login"
+msgstr "Forcer ler changement de mot de passe au prochain login"
+
+msgid "User must change its password on next access to authentic"
+msgstr "L'utilisateur devra changer son mot de passe lors de sa prochaine utilisation du service"
+
+msgid "Cancel this constraint"
+msgstr "Annuler cette contrainte"
