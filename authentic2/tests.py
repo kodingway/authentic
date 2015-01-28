@@ -3,6 +3,7 @@ import urlparse
 from django.test import TestCase
 
 from django.contrib.auth.hashers import check_password
+from django.test.utils import override_settings
 
 from . import hashers
 
@@ -164,3 +165,27 @@ class UtilsTests(TestCase):
         response = login_require(request)
         self.assertEqualsURL(response['Location'].split('?', 1)[0], '/login/')
         self.assertEqualsURL(urlparse.parse_qs(response['Location'].split('?', 1)[1])['next'][0], '/coin?nonce=xxx&next=/zob/')
+
+class ValidatorsTest(TestCase):
+    def test_validate_password_(self):
+        from authentic2.validators import validate_password
+        from django.core.exceptions import ValidationError
+        with self.assertRaises(ValidationError):
+            validate_password('aaaaaZZZZZZ')
+        with self.assertRaises(ValidationError):
+            validate_password('00000aaaaaa')
+        with self.assertRaises(ValidationError):
+            validate_password('00000ZZZZZZ')
+        validate_password('000aaaaZZZZ')
+
+    @override_settings(A2_PASSWORD_POLICY_REGEX='^[0-9]{8}$',
+            A2_PASSWORD_POLICY_REGEX_ERROR_MSG='pasbon',
+            A2_PASSWORD_POLICY_MIN_LENGTH=0,
+            A2_PASSWORD_POLICY_MIN_CLASSES=0)
+    def test_digits_password_policy(self):
+        from authentic2.validators import validate_password
+        from django.core.exceptions import ValidationError
+
+        with self.assertRaisesRegexp(ValidationError, 'pasbon'):
+            validate_password('aaa')
+        validate_password('12345678')
