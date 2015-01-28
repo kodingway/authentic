@@ -1,8 +1,9 @@
 from django.conf.urls import patterns
 from django.conf.urls import url
 from django.utils.importlib import import_module
-from django.contrib.auth import views as auth_views
+from django.contrib.auth import views as auth_views, REDIRECT_FIELD_NAME
 from django.views.generic.base import TemplateView
+from django.core.urlresolvers import reverse
 
 
 from .. import app_settings
@@ -21,9 +22,19 @@ SET_PASSWORD_FORM_CLASS = get_form_class(
 CHANGE_PASSWORD_FORM_CLASS = get_form_class(
         app_settings.A2_REGISTRATION_CHANGE_PASSWORD_FORM_CLASS)
 
-
-password_change_view = decorators.setting_enabled(
-    'A2_REGISTRATION_CAN_CHANGE_PASSWORD')(auth_views.password_change)
+@decorators.setting_enabled('A2_REGISTRATION_CAN_CHANGE_PASSWORD')
+def password_change_view(request, *args, **kwargs):
+    post_change_redirect = kwargs.pop('post_change_redirect', None)
+    if 'next_url' in request.POST:
+        post_change_redirect = request.POST['next_url']
+    elif REDIRECT_FIELD_NAME in request.GET:
+        post_change_redirect = request.GET[REDIRECT_FIELD_NAME]
+    elif post_change_redirect is None:
+        post_change_redirect = reverse('account_management')
+    kwargs['post_change_redirect'] = post_change_redirect
+    extra_context = kwargs.setdefault('extra_context', {})
+    extra_context[REDIRECT_FIELD_NAME] = post_change_redirect
+    return auth_views.password_change(request, *args, **kwargs)
 
 
 urlpatterns = patterns('authentic2.registration_backend.views',

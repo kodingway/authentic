@@ -141,7 +141,8 @@ class SetPasswordForm(PasswordResetMixin, auth_forms.SetPasswordForm):
                                     validators=[validators.validate_password])
 
 
-class PasswordChangeForm(PasswordResetMixin, auth_forms.PasswordChangeForm):
+class PasswordChangeForm(forms.NextUrlFormMixin, PasswordResetMixin,
+        auth_forms.PasswordChangeForm):
     new_password1 = CharField(label=_("New password"),
                                     widget=PasswordInput,
                                     validators=[validators.validate_password])
