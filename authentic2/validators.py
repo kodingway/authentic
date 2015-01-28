@@ -74,6 +74,7 @@ email_validator = EmailValidator()
 
 def validate_password(password):
     password_set = set(password)
+    digits = set(string.digits)
     lower = set(string.lowercase)
     upper = set(string.uppercase)
     punc = set(string.punctuation)
@@ -86,7 +87,7 @@ def validate_password(password):
             'characters') % min_len)
 
     class_count = 0
-    for cls in (password_set, lower, upper, punc):
+    for cls in (digits, lower, upper, punc):
         if not password_set.isdisjoint(cls):
             class_count += 1
     min_class_count = app_settings.A2_PASSWORD_POLICY_MIN_CLASSES
