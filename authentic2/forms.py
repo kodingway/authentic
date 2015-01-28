@@ -3,6 +3,7 @@ from django.contrib.auth import models as auth_models
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
 from django.utils.datastructures import SortedDict
+from django.contrib.auth import REDIRECT_FIELD_NAME
 
 from authentic2.compat import get_user_model
 
@@ -142,3 +143,17 @@ class GroupAdminForm(forms.ModelForm):
                 group.user_set = self.cleaned_data['users']
             self.save_m2m = new_save_m2m
         return group
+
+class NextUrlFormMixin(forms.Form):
+    next_url = forms.CharField(widget=forms.HiddenInput())
+
+    def __init__(self, *args, **kwargs):
+        from .middleware import StoreRequestMiddleware
+
+        next_url = kwargs.pop('next_url', None)
+        request = StoreRequestMiddleware.get_request()
+        if not next_url and request:
+            next_url = request.GET.get(REDIRECT_FIELD_NAME)
+        super(NextUrlFormMixin, self).__init__(*args, **kwargs)
+        if next_url:
+            self.fields['next_url'].initial = next_url
