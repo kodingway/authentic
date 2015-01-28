@@ -354,6 +354,14 @@ def login_require(request, next_url=None, login_url='auth_login', **kwargs):
     params[REDIRECT_FIELD_NAME] = next_url
     return redirect(request, login_url, **kwargs)
 
+def redirect_and_come_back(request, to, **kwargs):
+    '''Redirect to a view adding current URL as next URL parameter'''
+    next_url = request.get_full_path()
+    params = kwargs.setdefault('params', {})
+    params[REDIRECT_FIELD_NAME] = next_url
+    return redirect(request, to, **kwargs)
+
+
 def generate_password():
     '''Generate a password based on a certain composition based on number of
        characters based on classes of characters.
