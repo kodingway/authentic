@@ -133,6 +133,8 @@ default_settings = dict(
     A2_VALIDATE_EMAIL_DOMAIN=Setting(default=True, definition='Validate user email domain'),
     A2_PASSWORD_POLICY_MIN_CLASSES=Setting(default=3, definition='Minimum number of characters classes to be present in passwords'),
     A2_PASSWORD_POLICY_MIN_LENGTH=Setting(default=6, definition='Minimum number of characters in a password'),
+    A2_PASSWORD_POLICY_REGEX=Setting(default=None, definition='Regular expression for validating passwords'),
+    A2_PASSWORD_POLICY_REGEX_ERROR_MSG=Setting(default=None, definition='Error message to show when the password do not validate the regular expression'),
     A2_AUTH_PASSWORD_ENABLE=Setting(default=True, definition='Activate login/password authentication', names=('AUTH_PASSWORD',)),
     PUSH_PROFILE_UPDATES=Setting(default=False, definition='Push profile update to linked services'),
     TEMPLATE_VARS=Setting(default={}, definition='Variable to pass to templates'),

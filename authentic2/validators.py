@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 import string
+import re
 
 import smtplib
 
@@ -95,3 +96,8 @@ def validate_password(password):
         raise ValidationError(_('password must contain characters '
             'from at least %d classes among: lowercase letters, '
             'uppercase letters, digits, and punctuations') % min_class_count)
+    if app_settings.A2_PASSWORD_POLICY_REGEX:
+        if not re.match(app_settings.A2_PASSWORD_POLICY_REGEX, password):
+            msg = app_settings.A2_PASSWORD_POLICY_REGEX_ERROR_MSG
+            msg = msg or _('your password dit not match the regular expession %s') % app_settings.A2_PASSWORD_POLICY_REGEX
+            raise ValidationError(msg)
