@@ -138,7 +138,7 @@ class ViewRestrictionMiddleware(object):
     def process_view(self, request, view_func, view_args, view_kwargs):
         '''If current view is not the one we should be, redirect'''
         view = self.check_view_restrictions(request)
-        if not view or request.resolver_match.url_name == view:
+        if not view or request.resolver_match.url_name in (view, 'auth_logout'):
             return
         if view == 'auth_password_change':
             messages.warning(request, _('You must change your password to continue'))
