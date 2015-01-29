@@ -6,16 +6,9 @@ if __name__ == "__main__":
     config_file = False
 
     argv = sys.argv[1:]
-    for arg in list(argv):
-        if arg.startswith('--'):
-            if arg.startswith('--config='):
-                config_file = arg.split('=')[1]
-                argv.pop(0)
-            else:
-                print >>sys.stderr, 'ERR: Unsupported flag', arg
-                sys.exit(1)
-        else:
-            break
+    if argv and argv[0].startswith('--config='):
+        config_file = argv[0].split('=')[1]
+        argv.pop(0)
 
     if config_file:
         os.environ['DJANGO_CONFIG_FILE'] = config_file
