@@ -393,6 +393,9 @@ class PasswordReset(models.Model):
         verbose_name = _('password reset')
         verbose_name_plural = _('password reset')
 
+    def __unicode__(self):
+        return unicode(self.user)
+
 from . import fix_user_model, compat
 fix_user_model.patch_user_model(compat.get_user_model())
 fix_user_model.patch_email()
