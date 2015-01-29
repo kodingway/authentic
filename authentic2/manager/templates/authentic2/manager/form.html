@@ -32,6 +32,8 @@
         {% endif %}
         {% csrf_token %}
         {{ form.as_p }}
+        {% block afterform %}
+        {% endblock %}
         <div class="buttons">
           <button>{% if action %}{{ action }}{% else %}{% trans "Save" %}{% endif %}</button>
           <a class="cancel" href="..">{% trans "Cancel" %}</a>

@@ -23,11 +23,14 @@ from authentic2.compat import get_user_model
 
 from . import app_settings, utils, tables, forms, resources
 
+from authentic2.models import PasswordReset
+
 class Action(object):
-    def __init__(self, name, title, confirm=None):
+    def __init__(self, name, title, confirm=None, display=True):
         self.name = name
         self.title = title
         self.confirm = confirm
+        self.display = display
 
 class ManagerMixin(object):
     def get_context_data(self, **kwargs):
@@ -89,11 +92,14 @@ class OtherActionsMixin(object):
 
     def get_context_data(self, **kwargs):
         ctx = super(OtherActionsMixin, self).get_context_data(**kwargs)
-        ctx['other_actions'] = tuple(self.get_other_actions())
+        ctx['other_actions'] = tuple(self.get_displayed_other_actions())
         return ctx
 
     def get_other_actions(self):
         return self.other_actions or ()
+
+    def get_displayed_other_actions(self):
+        return [action for action in self.get_other_actions() if action.display]
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -206,12 +212,12 @@ class RoleUsersExportView(UserExportMixin, View):
         return utils.get_role_users(active_role, **kwargs)
 
 
-roles = permission_required('group.add', raise_exception=True)(RolesView.as_view())
-role_add = permission_required('group.add', raise_exception=True)(RoleAddView.as_view())
-role_edit = permission_required('group.change', raise_exception=True)(RoleEditView.as_view())
-role_delete = permission_required('group.delete', raise_exception=True)(RoleDeleteView.as_view())
-role = permission_required('group.delete', raise_exception=True)(RoleView.as_view())
-role_users_export = permission_required('group.change', raise_exception=True)(RoleUsersExportView.as_view())
+roles = permission_required('group.add')(RolesView.as_view())
+role_add = permission_required('group.add')(RoleAddView.as_view())
+role_edit = permission_required('group.change')(RoleEditView.as_view())
+role_delete = permission_required('group.delete')(RoleDeleteView.as_view())
+role = permission_required('group.delete')(RoleView.as_view())
+role_users_export = permission_required('group.change')(RoleUsersExportView.as_view())
 
 
 class UsersView(RolesMixin, TemplateView):
@@ -245,6 +251,7 @@ class UserEditView(UserMixin, OtherActionsMixin, ActionMixin, TitleMixin,
         AjaxFormViewMixin, UpdateView):
     title = _('Edit user')
     fields = ['username', 'first_name', 'last_name', 'email']
+    template_name = 'authentic2/manager/user_edit.html'
 
     def get_other_actions(self):
         yield Action('password_reset', _('Reset password'))
@@ -252,9 +259,16 @@ class UserEditView(UserMixin, OtherActionsMixin, ActionMixin, TitleMixin,
             yield Action('deactivate', _('Deactivate'))
         else:
             yield Action('activate', _('Activate'))
+        if PasswordReset.objects.filter(user=self.object).exists():
+            yield Action('delete_password_reset', '', display=False)
+        else:
+            yield Action('force_password_change', _('Force password change on next login'))
         yield Action('delete',
                 _('Delete'),
                 _('Do you really want to delete "%s" ?') % self.object.username)
+
+    def action_force_password_change(self, request, *args, **kwargs):
+        PasswordReset.objects.get_or_create(user=self.object)
 
     def action_activate(self, request, *args, **kwargs):
         self.object.is_active = True
@@ -284,6 +298,9 @@ class UserEditView(UserMixin, OtherActionsMixin, ActionMixin, TitleMixin,
         form.save(**opts)
         messages.info(request, _('A mail was sent to %s') % self.object.email)
 
+    def action_delete_password_reset(self, request, *args, **kwargs):
+        PasswordReset.objects.filter(user=self.object).delete()
+
 class UsersExportView(UserExportMixin, View):
     export_prefix = 'users-'
 
@@ -293,11 +310,11 @@ class UsersExportView(UserExportMixin, View):
             kwargs = {'search': self.request.GET['search']}
         return utils.get_users(**kwargs)
 
-users_export = permission_required('user.delete', raise_exception=True)(UsersExportView.as_view())
+users_export = permission_required('user.delete')(UsersExportView.as_view())
 
-users = permission_required('user.delete', raise_exception=True)(UsersView.as_view())
-user_add = permission_required('user.add', raise_exception=True)(UserAddView.as_view())
-user_edit = permission_required('user.change', raise_exception=True)(UserEditView.as_view())
+users = permission_required('user.delete')(UsersView.as_view())
+user_add = permission_required('user.add')(UserAddView.as_view())
+user_edit = permission_required('user.change')(UserEditView.as_view())
 
 class HomepageView(ManagerMixin, TemplateView):
     template_name = 'authentic2/manager/homepage.html'

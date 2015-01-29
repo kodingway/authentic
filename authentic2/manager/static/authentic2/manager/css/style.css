@@ -135,6 +135,7 @@ table.users tbody tr td:nth-child(2):hover {
   display: block;
   margin: 5px;
   width: 100%;
+  white-space: normal;
 }
 
 ul.messages {
@@ -164,12 +165,23 @@ ul.messages li {
 	border: none;
 }
 
-input[type=submit][name=password_reset] {
-  white-space: normal;
-}
-
 li#roles a { background-image: url(icon-personnes.png); }
 li#roles a:hover { background-image: url(icon-personnes-hover.png); }
 
 li#users a { background-image: url(icon-user.png); }
 li#users a:hover { background-image: url(icon-user-hover.png); }
+
+.warning-box {
+	padding: 1ex;
+	margin: 1ex;
+	border-size: 0px;
+	-moz-border-radius:7px;
+	-webkit-border-radius:7px;
+	border-radius:7px;
+	border: none;
+  background: orange;
+}
+
+.warning-box input[type=submit] {
+  float: right;
+}
