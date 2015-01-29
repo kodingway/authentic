@@ -29,3 +29,7 @@ class UserCreationForm(forms.UserAttributeFormMixin,
         except User.DoesNotExist:
             return username
         raise ValidationError(self.error_messages['duplicate_username'])
+
+from . import fix_user_model
+fix_user_model.patch_forms((UserChangeForm, UserCreationForm))
+fix_user_model.patch_forms((AuthUserChangeForm, AuthUserCreationForm))
