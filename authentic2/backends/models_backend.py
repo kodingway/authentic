@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
 
 from .. import app_settings
+from authentic2.user_login_failure import user_login_success, user_login_failure
 
 def upn(username, realm):
     '''Build an UPN from a username and a realm'''
@@ -66,4 +67,7 @@ class ModelBackend(ModelBackend):
         users = users.order_by(UserModel.USERNAME_FIELD)
         for user in users:
             if user.check_password(password):
+                user_login_success(user.get_username())
                 return user
+            else:
+                user_login_failure(user.get_username())

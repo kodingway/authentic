@@ -136,6 +136,10 @@ default_settings = dict(
     A2_PASSWORD_POLICY_REGEX=Setting(default=None, definition='Regular expression for validating passwords'),
     A2_PASSWORD_POLICY_REGEX_ERROR_MSG=Setting(default=None, definition='Error message to show when the password do not validate the regular expression'),
     A2_AUTH_PASSWORD_ENABLE=Setting(default=True, definition='Activate login/password authentication', names=('AUTH_PASSWORD',)),
+    A2_LOGIN_FAILURE_COUNT_BEFORE_WARNING=Setting(default=0,
+            definition='Failure count before logging a warning to '
+            'authentic2.user_login_failure. No warning will be send if value is '
+            '0.'),
     PUSH_PROFILE_UPDATES=Setting(default=False, definition='Push profile update to linked services'),
     TEMPLATE_VARS=Setting(default={}, definition='Variable to pass to templates'),
 )

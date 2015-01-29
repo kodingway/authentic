@@ -30,6 +30,7 @@ from authentic2.decorators import to_list
 from authentic2.compat import get_user_model
 from authentic2.models import UserExternalId
 from authentic2.middleware import StoreRequestMiddleware
+from authentic2.user_login_failure import user_login_failure, user_login_success
 
 _DEFAULTS = {
     'binddn': None,
@@ -434,8 +435,10 @@ class LDAPBackend(object):
                     for authz_id in authz_ids:
                         try:
                             conn.simple_bind_s(authz_id, utf8_password)
+                            user_login_success(authz_id)
                             break
                         except ldap.INVALID_CREDENTIALS:
+                            user_login_failure(authz_id)
                             pass
                     else:
                         log.debug('user bind failed: invalid credentials' % uri)
@@ -816,6 +819,7 @@ class LDAPBackend(object):
         self.save_user(user, username)
         user.keep_pk = user.pk
         user.pk = 'persistent!{0}'.format(base64.b64encode(pickle.dumps(user)))
+        user_login_success(user.get_username())
         return user
 
     def has_usable_password(self, user):
