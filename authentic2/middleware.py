@@ -6,8 +6,10 @@ except ImportError:
     threading = None
 
 from django.conf import settings
+from django.contrib import messages
+from django.utils.translation import ugettext as _
 
-from . import app_settings
+from . import app_settings, utils
 
 class ThreadCollector(object):
     def __init__(self):
@@ -118,3 +120,26 @@ class StoreRequestMiddleware(object):
     @classmethod
     def get_request(cls):
         return cls.collection.get(threading.currentThread())
+
+class ViewRestrictionMiddleware(object):
+    RESTRICTION_SESSION_KEY = 'view-restriction'
+
+    def check_view_restrictions(self, request):
+        '''Check if a restriction on accessible views must be applied'''
+        from django.db.models import Model
+        from .models import PasswordReset
+
+        user = request.user
+        if user.is_authenticated() \
+                and isinstance(user, Model) \
+                and PasswordReset.objects.filter(user=request.user).exists():
+            return 'auth_password_change'
+
+    def process_view(self, request, view_func, view_args, view_kwargs):
+        '''If current view is not the one we should be, redirect'''
+        view = self.check_view_restrictions(request)
+        if not view or request.resolver_match.url_name == view:
+            return
+        if view == 'auth_password_change':
+            messages.warning(request, _('You must change your password to continue'))
+        return utils.redirect_and_come_back(request, view)

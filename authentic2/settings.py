@@ -73,6 +73,7 @@ MIDDLEWARE_CLASSES += (
     'authentic2.idp.middleware.DebugMiddleware',
     'authentic2.middleware.CollectIPMiddleware',
     'authentic2.middleware.StoreRequestMiddleware',
+    'authentic2.middleware.ViewRestrictionMiddleware',
 )
 
 A2_OPENED_SESSION_COOKIE_DOMAIN = os.environ.get('A2_OPENED_SESSION_COOKIE_DOMAIN')
