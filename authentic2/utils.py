@@ -15,6 +15,9 @@ from django.core.exceptions import ImproperlyConfigured
 from django.core import urlresolvers
 from django.http.request import QueryDict
 from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login
+from django import forms
+from django.forms.util import ErrorList
+from django.utils import html
 
 from authentic2.saml.saml2utils import filter_attribute_private_key, \
     filter_element_private_key
@@ -375,3 +378,11 @@ def generate_password():
             parts.append(random.SystemRandom().choice(alphabet))
     random.shuffle(parts, random.SystemRandom().random)
     return ''.join(parts)
+
+def form_add_error(form, msg, safe=False):
+    # without this line form._errors is not initialized
+    form.errors
+    errors = form._errors.setdefault(forms.forms.NON_FIELD_ERRORS, ErrorList())
+    if safe:
+        msg = html.mark_safe(msg)
+    errors.append(msg)
