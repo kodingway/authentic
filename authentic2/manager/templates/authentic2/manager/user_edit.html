@@ -1,0 +1,10 @@
+{% extends "authentic2/manager/form.html" %}
+{% load i18n %}
+
+{% block afterform %}
+  {% if object.passwordreset_set.exists %}
+    <div class="warning-box">{% trans "User must change its password on next access to authentic" %}
+      <input type="submit" name="delete_password_reset" value="{% trans "Cancel this constraint" %}"/>
+    </div>
+  {% endif %}
+{% endblock %}
