@@ -2,3 +2,4 @@
 
 /usr/sbin/service authentic2 manage clearsessions
 /usr/sbin/service authentic2 manage cleanupauthentic
+/usr/sbin/service authentic2 manage sync-ldap-users
