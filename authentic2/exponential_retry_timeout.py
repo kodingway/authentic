@@ -35,6 +35,8 @@ class ExponentialRetryTimeout(object):
         '''Return the duration in seconds until the next time when an action can be
            done.
         '''
+        if not self.duration:
+            return
         now = time.time()
         what = cache.get(self.key(request))
         if what and what[1] > now:
@@ -43,11 +45,15 @@ class ExponentialRetryTimeout(object):
     def success(self, request):
         '''Signal an action success, delete exponential backoff cache.
         '''
+        if not self.duration:
+            return
         cache.delete(self.key(request))
 
     def failure(self, request):
         '''Signal an action failure, augment the exponential backoff one level.
         '''
+        if not self.duration:
+            return
         what = cache.get(self.key(request))
         if not what:
             now = time.time()

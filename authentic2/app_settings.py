@@ -142,6 +142,15 @@ default_settings = dict(
             '0.'),
     PUSH_PROFILE_UPDATES=Setting(default=False, definition='Push profile update to linked services'),
     TEMPLATE_VARS=Setting(default={}, definition='Variable to pass to templates'),
+    A2_LOGIN_EXPONENTIAL_RETRY_TIMEOUT_FACTOR=Setting(default=1.8,
+            definition='exponential backoff factor duration as seconds until '
+            'next try after a login failure'),
+    A2_LOGIN_EXPONENTIAL_RETRY_TIMEOUT_DURATION=Setting(default=0,
+            definition='exponential backoff base factor duration as secondss '
+            'until next try after a login failure'),
+    A2_LOGIN_EXPONENTIAL_RETRY_TIMEOUT_MAX_DURATION=Setting(default=3600,
+            definition='exponential backoff maximum duration as seconds until '
+            'time until next try after a login failure'),
 )
 
 app_settings = AppSettings(default_settings)
