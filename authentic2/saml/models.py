@@ -395,6 +395,10 @@ class SAMLAttribute(models.Model):
         atvs = []
         for value in values:
             atv = lasso.Saml2AttributeValue()
+            if isinstance(value, bool):
+                value = unicode(value).lower()
+            else:
+                value = unicode(value)
             value = value.encode('utf-8')
             tn = lasso.MiscTextNode.newWithString(value)
             tn.textChild = True
