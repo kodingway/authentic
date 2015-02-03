@@ -106,7 +106,9 @@ _DEFAULTS = {
     'ldap_options': {
     },
     'global_ldap_options': {
-    }
+    },
+    # Use Password Modify extended operation
+    'use_password_modify': True,
 }
 
 _REQUIRED = ('url', 'basedn')
@@ -155,13 +157,24 @@ def ad_encoding(s):
 
 def modify_password(conn, block, dn, old_password, new_password):
     '''Change user password with adaptation for Active Directory'''
-    if block['active_directory']:
-        old_entry = { 'unicodePwd': [ ad_encoding(old_password) ] }
-        new_entry = { 'unicodePwd': [ ad_encoding(new_password) ] }
+    if block['use_password_modify'] and not block['active_directory']:
+        conn.passwd_s(dn, old_password or None, new_password)
     else:
-        old_entry = { 'userPassword': [ old_password.encode('utf-8') ] }
-        new_entry = { 'userPassword': [ new_password.encode('utf-8') ] }
-    conn.modify_s(dn, ldap.modlist.modifyModlist(old_entry, new_entry))
+        modlist = []
+        if block['active_directory']:
+            key = 'unicodePwd'
+            value = ad_encoding(new_password)
+            if old_password:
+                modlist = [
+                        (ldap.MOD_DELETE, key, [ad_encoding(old_password)]),
+                        (ldap.MOD_ADD, key, [value])]
+            else:
+                modlist = [(ldap.MOD_REPLACE, key, [value])]
+        else:
+            key = 'userPassword'
+            value = new_password.encode('utf-8')
+            modlist = [(ldap.MOD_REPLACE, key, [value])]
+        conn.modify_s(dn, modlist)
     log.debug('modified password for dn %r', dn)
 
 def normalize_ldap_results(attributes, encoding='utf-8'):
