@@ -60,6 +60,8 @@ class ModelBackend(ModelBackend):
         UserModel = get_proxy_user_model()
         if username is None:
             username = kwargs.get(UserModel.USERNAME_FIELD)
+        if not username:
+            return
         query = self.get_query(username, realm)
         users = UserModel.objects.filter(query)
         # order by username to make username without realm come before usernames with realms
