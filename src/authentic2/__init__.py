@@ -15,5 +15,7 @@ if django.VERSION >= (1,7):
         label = 'authentic2'
 
         def ready(self):
-            from . import fix_user_model
+            from . import fix_user_model, compat
+            fix_user_model.patch_user_model(compat.get_user_model())
+            fix_user_model.patch_email()
     default_app_config = 'authentic2.Authentic2Config'

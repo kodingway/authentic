@@ -2,6 +2,7 @@ import time
 import re
 import urlparse
 
+import django
 from django.utils import timezone
 from django.utils.http import urlquote
 from django.conf import settings
@@ -365,6 +366,7 @@ class PasswordReset(models.Model):
     def __unicode__(self):
         return unicode(self.user)
 
-from . import fix_user_model, compat
-fix_user_model.patch_user_model(compat.get_user_model())
-fix_user_model.patch_email()
+if django.VERSION < (1,7):
+    from . import fix_user_model, compat
+    fix_user_model.patch_user_model(compat.get_user_model())
+    fix_user_model.patch_email()
