@@ -198,12 +198,17 @@ class LDAPUser(get_user_model()):
         proxy = True
         app_label = 'authentic2'
 
-    def ldap_init(self, block, dn, password, transient=False):
+    def ldap_init(self, block, dn, password=None, transient=False):
         self.block = block
         self.dn = dn
         self.is_active = True
-        self.set_ldap_password(password)
         self.transient = transient
+        if password:
+            self.set_ldap_password(password)
+            if block['keep_password']:
+                self.set_password(password)
+            else:
+                self.set_unusable_password()
 
     def set_ldap_password(self, password):
         request = StoreRequestMiddleware.get_request()
@@ -819,18 +824,12 @@ class LDAPBackend(object):
     def _return_django_user(self, dn, username, password, conn, block, attributes):
         user = self.lookup_existing_user(username, block, attributes)
         if user:
-            created = False
             log.debug('found existing user %r', user)
         else:
-            created = True
             user = LDAPUser()
+            user.set_unusable_password()
         user.ldap_init(block, dn, password)
         self.populate_user(user, dn, username, conn, block, attributes)
-        if block['keep_password']:
-            if created:
-                user.set_password(password)
-        else:
-            user.set_unusable_password()
         self.save_user(user, username)
         user.keep_pk = user.pk
         user.pk = 'persistent!{0}'.format(base64.b64encode(pickle.dumps(user)))
