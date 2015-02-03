@@ -127,6 +127,7 @@ INSTALLED_APPS = tuple(plugins.register_plugins_installed_apps(INSTALLED_APPS))
 # authentication
 AUTHENTICATION_BACKENDS = (
     'authentic2.backends.ldap_backend.LDAPBackend',
+    'authentic2.backends.ldap_backend.LDAPBackendPasswordLost',
     'authentic2.backends.models_backend.ModelBackend',
 )
 AUTHENTICATION_BACKENDS = plugins.register_plugins_authentication_backends(

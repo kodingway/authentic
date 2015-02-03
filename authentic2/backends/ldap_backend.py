@@ -870,3 +870,36 @@ class LDAPBackend(object):
                 for name, value in user.attributes.iteritems():
                     setattr(user, name, value)
                 yield user
+
+class LDAPBackendPasswordLost(LDAPBackend):
+    def authenticate(self, user=None, **kwargs):
+        if not user:
+            return
+        config = self.get_config()
+        if not config:
+            return
+        for user_external_id in user.userexternalid_set.all():
+            external_id = user_external_id.external_id
+            for block in config:
+                if user_external_id.source != unicode(block['realm']):
+                    continue
+                for external_id_tuple in block['external_id_tuples']:
+                    conn = get_connection(block)
+                    try:
+                        if external_id_tuple == ('dn:noquote',):
+                            dn = external_id
+                            results = conn.search_s(dn, ldap.SCOPE_BASE)
+                        else:
+                            ldap_filter = self.external_id_to_filter(external_id, external_id_tuple)
+                            results = conn.search_s(block['basedn'], ldap.SCOPE_SUBTREE, ldap_filter)
+                            if not results:
+                                log.error('unable to find user %r based on '
+                                        'external id %s', unicode(user),
+                                        external_id)
+                                continue
+                            dn = results[0][0]
+                    except ldap.LDAPError:
+                        log.error('unable to find user %r based on external id '
+                                '%s', unicode(user), external_id)
+                        continue
+                    return self._return_user(dn, None, conn, block)
