@@ -465,7 +465,7 @@ class LDAPBackend(object):
                     log.error('user bind failed: authz_id not found %r', ', '.join(authz_ids))
                     if block['replicas']:
                         break
-                return self._return_user(uri, authz_id, password, conn, block)
+                return self._return_user(authz_id, password, conn, block)
             except ldap.SERVER_DOWN:
                 log.error('ldap authentication error: %r is down', uri)
             finally:
@@ -795,7 +795,7 @@ class LDAPBackend(object):
                         .filter(user=user, source=block['realm']) \
                         .delete()
 
-    def _return_user(self, uri, dn, password, conn, block):
+    def _return_user(self, dn, password, conn, block):
         attributes = self.get_ldap_attributes(block, conn, dn)
         if attributes is None:
             # attributes retrieval failed
@@ -803,20 +803,20 @@ class LDAPBackend(object):
         log.debug('retrieved attributes for %r: %r', dn, attributes)
         username = self.create_username(block, attributes)
         if block['transient']:
-            return self._return_transient_user(uri, dn, username, password,
+            return self._return_transient_user(dn, username, password,
                     conn, block, attributes)
         else:
-            return self._return_django_user(uri, dn, username, password, conn,
+            return self._return_django_user(dn, username, password, conn,
                     block, attributes)
 
-    def _return_transient_user(self, uri, dn, username, password, conn, block, attributes):
+    def _return_transient_user(self, dn, username, password, conn, block, attributes):
         user = LDAPUser(username=username)
         user.ldap_init(block, dn, password, transient=True)
         self.populate_user(user, dn, username, conn, block, attributes)
         user.pk = 'transient!{0}'.format(base64.b64encode(pickle.dumps(user)))
         return user
 
-    def _return_django_user(self, uri, dn, username, password, conn, block, attributes):
+    def _return_django_user(self, dn, username, password, conn, block, attributes):
         user = self.lookup_existing_user(username, block, attributes)
         if user:
             created = False
