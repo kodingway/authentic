@@ -215,8 +215,6 @@ class LDAPUser(get_user_model()):
         request = StoreRequestMiddleware.get_request()
         cache = request.session.setdefault(self.SESSION_PASSWORD_KEY, {})
         password = cache.get(self.dn)
-        if password is None:
-            raise LDAPException('missing password for dn %r', self.dn)
         return password
 
     def check_password(self, raw_password):
