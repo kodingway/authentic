@@ -243,7 +243,11 @@ class LDAPUser(get_user_model()):
         return self.block['user_can_change_password']
 
     def get_connection(self):
-        return get_connection(self.block, (self.dn, self.get_ldap_password()))
+        ldap_password = self.get_ldap_password()
+        credentials = ()
+        if ldap_password:
+            credentials = (self.dn, ldap_password)
+        return get_connection(self.block, credentials=credentials)
 
     def get_attributes(self):
         conn = self.get_connection()
