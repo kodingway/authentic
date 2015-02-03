@@ -855,7 +855,7 @@ class LDAPBackend(object):
     def get_users(cls):
         for block in cls.get_config():
             conn = get_connection(block)
-            user_basedn = block.get('user_basedn', block['basedn'])
+            user_basedn = block.get('user_basedn') or block['basedn']
             user_filter = block['user_filter'].replace('%s', '*')
             attrs = block['attributes']
             users = conn.search_s(user_basedn, ldap.SCOPE_SUBTREE, user_filter, [])
