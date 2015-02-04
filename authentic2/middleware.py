@@ -9,7 +9,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 
-from . import app_settings, utils
+from . import app_settings, utils, plugins
 
 class ThreadCollector(object):
     def __init__(self):
@@ -134,6 +134,11 @@ class ViewRestrictionMiddleware(object):
                 and isinstance(user, Model) \
                 and PasswordReset.objects.filter(user=request.user).exists():
             return 'auth_password_change'
+        for plugin in plugins.get_plugins():
+            if hasattr(plugin, 'check_view_restrictions'):
+                view = plugin.check_view_restrictions(request)
+                if view:
+                    return view
 
     def process_view(self, request, view_func, view_args, view_kwargs):
         '''If current view is not the one we should be, redirect'''
