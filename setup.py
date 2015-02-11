@@ -4,7 +4,6 @@
    Setup script for Authentic 2
 '''
 
-import glob
 import re
 import sys
 import os
@@ -30,7 +29,7 @@ class compile_translations(Command):
         try:
             from django.core.management.commands.compilemessages import \
                     compile_messages
-            for path, dirs, files in os.walk('authentic2'):
+            for path, dirs, files in os.walk('src/authentic2'):
                 if 'locale' not in dirs:
                     continue
                 curdir = os.getcwd()
@@ -76,18 +75,11 @@ def get_version():
         version = version_file.read()
         version_file.close()
         return version
-    for d in glob.glob('*'):
-        if not os.path.isdir(d):
-            continue
-        module_file = os.path.join(d, '__init__.py')
-        if not os.path.exists(module_file):
-            continue
-        for v in re.findall("""__version__ *= *['"](.*)['"]""",
-                open(module_file).read()):
-            assert version is None
-            version = v
-        if version:
-            break
+    module_file = os.path.join('src', 'authentic2', '__init__.py')
+    for v in re.findall("""__version__ *= *['"](.*)['"]""",
+            open(module_file).read()):
+        assert version is None
+        version = v
     assert version is not None
     if os.path.exists('.git'):
         import subprocess
@@ -111,7 +103,10 @@ setup(name="authentic2",
       maintainer="Benjamin Dauvergne",
       maintainer_email="bdauvergne@entrouvert.com",
       scripts = ('authentic2-ctl',),
-      packages=find_packages(),
+      packages=find_packages('src'),
+      package_dir={
+          '': 'src',
+      },
       include_package_data=True,
       install_requires=['django >= 1.5, < 1.7',
         'south>=0.8.4',

@@ -2,53 +2,54 @@ recursive-include data *
 recursive-include tests *
 
 # static
-recursive-include authentic2/static *.css *.js *.ico *.gif *.png *.jpg
-recursive-include authentic2/manager/static *.css *.js *.png
+recursive-include src/authentic2/static *.css *.js *.ico *.gif *.png *.jpg
+recursive-include src/authentic2/manager/static *.css *.js *.png
 
 # templates
-recursive-include authentic2/saml/templates *.html *.txt *.xml
-recursive-include authentic2/templates *.html *.txt *.xml
-recursive-include authentic2/idp/templates *.html *.txt *.xml
-recursive-include authentic2/idp/idp_openid/templates *.html *.txt *.xml
-recursive-include authentic2/idp/saml/templates *.html *.txt *.xml
-recursive-include authentic2/auth2_auth/auth2_ssl/templates *.html *.txt *.xml
-recursive-include authentic2/auth2_auth/templates *.html *.txt *.xml
-recursive-include authentic2/auth2_auth/auth2_oath/templates *.html *.txt *.xml
-recursive-include authentic2/manager/templates *.html
+recursive-include src/authentic2/saml/templates *.html *.txt *.xml
+recursive-include src/authentic2/templates *.html *.txt *.xml
+recursive-include src/authentic2/idp/templates *.html *.txt *.xml
+recursive-include src/authentic2/idp/idp_openid/templates *.html *.txt *.xml
+recursive-include src/authentic2/idp/saml/templates *.html *.txt *.xml
+recursive-include src/authentic2/auth2_auth/auth2_ssl/templates *.html *.txt *.xml
+recursive-include src/authentic2/auth2_auth/templates *.html *.txt *.xml
+recursive-include src/authentic2/auth2_auth/auth2_oath/templates *.html *.txt *.xml
+recursive-include src/authentic2/manager/templates *.html
 
-recursive-include authentic2/vendor/totp_js/js *.js
-recursive-include authentic2/saml/fixtures *.json
-recursive-include authentic2/locale *.po *.mo
-recursive-include authentic2/saml/locale *.po *.mo
-recursive-include authentic2/idp/locale *.po *.mo
-recursive-include authentic2/idp/saml/locale *.po *.mo
-recursive-include authentic2/idp/idp_openid/locale *.po *.mo
-recursive-include authentic2/auth2_auth/locale *.po *.mo
-recursive-include authentic2/auth2_auth/auth2_ssl/locale *.po *.mo
-recursive-include authentic2/attribute_aggregator/locale *.po *.mo
-recursive-include authentic2/disco_service/locale *.po *.mo
-recursive-include authentic2/manager/locale *.po *.mo
-recursive-include authentic2 README  xrds.xml *.txt yadis.xrdf
+recursive-include src/authentic2/vendor/totp_js/js *.js
+recursive-include src/authentic2/saml/fixtures *.json
+recursive-include src/authentic2/locale *.po *.mo
+recursive-include src/authentic2/saml/locale *.po *.mo
+recursive-include src/authentic2/idp/locale *.po *.mo
+recursive-include src/authentic2/idp/saml/locale *.po *.mo
+recursive-include src/authentic2/idp/idp_openid/locale *.po *.mo
+recursive-include src/authentic2/auth2_auth/locale *.po *.mo
+recursive-include src/authentic2/auth2_auth/auth2_ssl/locale *.po *.mo
+recursive-include src/authentic2/attribute_aggregator/locale *.po *.mo
+recursive-include src/authentic2/disco_service/locale *.po *.mo
+recursive-include src/authentic2/manager/locale *.po *.mo
+recursive-include src/authentic2 README  xrds.xml *.txt yadis.xrdf
 
 # gadjo submodule
-recursive-include authentic2/manager/vendor/gadjo *
+recursive-include src/authentic2/manager/vendor/gadjo *
 
 recursive-include samples *
 
 include doc/*.rst
 include doc/pictures/*
 include COPYING NEWS README.rst AUTHORS.txt
-include authentic2/vendor/oath/TODO
-include authentic2/vendor/totp_js/README.rst
+include src/authentic2/vendor/oath/TODO
+include src/authentic2/vendor/totp_js/README.rst
 include diagnose.py
 include ez_setup.py
-include authentic2/auth2_auth/auth2_ssl/authentic_ssl.vhost
+include src/authentic2/auth2_auth/auth2_ssl/authentic_ssl.vhost
 include requirements.txt
 include test_settings
 include getlasso.sh
-include authentic2/vendor/dpam/LICENSE
-include authentic2/nonce/README.rst
+include src/authentic2/vendor/dpam/LICENSE
+include src/authentic2/nonce/README.rst
 include doc/conf.py doc/Makefile doc/README.rst.bak 
 include local_settings.py.example
 include MANIFEST.in
 include VERSION
+include README
