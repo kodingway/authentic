@@ -30,9 +30,6 @@ recursive-include src/authentic2/disco_service/locale *.po *.mo
 recursive-include src/authentic2/manager/locale *.po *.mo
 recursive-include src/authentic2 README  xrds.xml *.txt yadis.xrdf
 
-# gadjo submodule
-recursive-include src/authentic2/manager/vendor/gadjo *
-
 recursive-include samples *
 
 include doc/*.rst
