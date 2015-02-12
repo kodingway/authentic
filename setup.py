@@ -125,6 +125,9 @@ setup(name="authentic2",
         'django-sekizai',
         'six',
       ],
+      extra_requires = {
+          'idp-openid': ['python-openid'],
+      },
       zip_safe=False,
       classifiers=[
           "Development Status :: 5 - Production/Stable",
@@ -149,6 +152,7 @@ setup(name="authentic2",
           'authentic2.plugin': [
               'authentic2-auth-ssl = authentic2.auth2_auth.auth2_ssl:Plugin',
               'authentic2-idp-saml2 = authentic2.idp.saml:Plugin',
+              'authentic2-idp-openid = authentic2_idp_openid:Plugin',
           ],
       },
 )

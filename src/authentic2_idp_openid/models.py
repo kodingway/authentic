@@ -10,6 +10,7 @@ import openid.store.nonce
 from django.db import models
 from django.utils.timezone import now, utc
 from django.conf import settings
+from django.utils.translation import ugettext_lazy as _
 
 from authentic2.saml.fields import PickledObjectField
 
@@ -30,6 +31,12 @@ class TrustedRoot(models.Model):
     def __unicode__(self):
         return unicode(self.trust_root)
 
+    class Meta:
+        verbose_name = _('trusted root')
+        verbose_name_plural = _('trusted roots')
+        db_table = 'idp_openid_trustedroot' # app was named idp_openid before
+
+
 
 class Association(models.Model):
     server_url = models.CharField(max_length=768, blank=False)
@@ -47,6 +54,9 @@ be expired")
 
     class Meta:
         unique_together = ('server_url', 'handle')
+        verbose_name = _('association')
+        verbose_name_plural = _('associations')
+        db_table = 'idp_openid_association' # app was named idp_openid before
 
     def save(self, *args, **kwargs):
         '''Overload default save() method to compute the expire field'''
@@ -112,7 +122,10 @@ class Nonce(models.Model):
     objects = NonceManager()
 
     class Meta:
+        verbose_name = _('nonce')
+        verbose_name_plural = _('nonces')
         unique_together = ('server_url', 'salt')
+        db_table = 'idp_openid_nonce' # app was named idp_openid before
 
     @classmethod
     def use_nonce(cls, server_url, timestamp, salt):

@@ -1,7 +1,6 @@
 import logging
 
 from django.core.urlresolvers import reverse
-from django.conf import settings
 
 from authentic2.utils import Service
 
