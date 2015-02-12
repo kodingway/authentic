@@ -75,8 +75,7 @@ from authentic2.constants import NONCE_FIELD_NAME
 from authentic2.idp import signals as idp_signals
 # from authentic2.idp.models import *
 
-from authentic2.utils import (cache_and_validate, get_backends as
-        get_idp_backends, get_username, login_require)
+from authentic2.utils import (get_backends as get_idp_backends, get_username, login_require)
 from authentic2.decorators import is_transient_user
 from authentic2.attributes_ng.engine import get_attributes
 
@@ -99,7 +98,6 @@ metadata_map = (
             lasso.SAML2_METADATA_BINDING_SOAP, '/artifact')
 )
 
-@cache_and_validate(lambda: app_settings.LOCAL_METADATA_CACHE_TIMEOUT)
 def metadata(request):
     '''Endpoint to retrieve the metadata file'''
     logger.info('return metadata')

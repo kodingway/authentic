@@ -68,67 +68,6 @@ class MWT(object):
         return func
 
 
-def cache_and_validate(timeout, hashing=hashlib.md5):
-    '''
-       Decorator to add caching, with support for ETag and Last-modified
-       validation.
-
-       Just give it the time for caching.
-    '''
-    def transform(f):
-        f.cache = dict()
-        def get_content(request, *args, **kwargs):
-            '''
-               Content is kept as
-
-                (last_generation_time, last_modified_time, etag, content)
-
-               inside the f.cache dictionnary
-            '''
-            key=args+tuple(sorted(kwargs.items()))
-            if request.method == 'PURGE' and request.environ.get('REMOTE_ADDR') \
-                    in settings.INTERNAL_IPS:
-                # purge the cache place
-                f.cache.pop(key, None)
-            now = dt.datetime.now()
-            if key in f.cache:
-                date, last_modified, etag, mime_type, old_content = f.cache[key]
-                if callable(timeout):
-                    real_timeout = timeout()
-                else:
-                    real_timeout = timeout
-                if now - date < dt.timedelta(seconds=real_timeout):
-                    return date, last_modified, etag, mime_type, old_content
-                else:
-                    content = f(request, *args, **kwargs)
-                    if old_content == content.content:
-                        data = (now, last_modified, etag, mime_type, old_content)
-                        return data
-            else:
-                content = f(request, *args, **kwargs)
-            if content.status_code == 200:
-                content_type = content.get('Content-Type', None)
-                data = now, now, hashing(content.content).hexdigest(), content_type, content.content
-                f.cache[key] = data
-            else:
-                data = None, None, None, None, content
-            return data
-        def get_last_modified(request, *args, **kwargs):
-            _, last_modified, _, _, _ = get_content(request, *args, **kwargs)
-            return last_modified
-        def get_etag(request, *args, **kwargs):
-            _, _, etag, _, _ = get_content(request, *args, **kwargs)
-            return etag
-        @condition(etag_func=get_etag, last_modified_func=get_last_modified)
-        def replacement(request, *args, **kwargs):
-            _, _, _, content_type, content = get_content(request, *args, **kwargs)
-            if isinstance(content, six.string_types):
-                return HttpResponse(content, content_type=content_type)
-            else:
-                return content
-        return replacement
-    return transform
-
 def import_from(module, name):
     module = __import__(module, fromlist=[name])
     return getattr(module, name)

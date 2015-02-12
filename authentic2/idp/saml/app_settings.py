@@ -1,7 +1,6 @@
 class AppSettings(object):
     __DEFAULTS = dict(
             ENABLE=False,
-            LOCAL_METADATA_CACHE_TIMEOUT=600,
             METADATA_OPTIONS={},
             SECONDS_TOLERANCE=60,
             AUTHN_CONTEXT_FROM_SESSION=True,
