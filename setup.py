@@ -125,7 +125,7 @@ setup(name="authentic2",
         'django-sekizai',
         'six',
       ],
-      extra_requires = {
+      extras_require = {
           'idp-openid': ['python-openid'],
       },
       zip_safe=False,
