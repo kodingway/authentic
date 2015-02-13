@@ -247,8 +247,8 @@ LOGGING = {
 # Load configuration file
 #
 
-if 'DJANGO_CONFIG_FILE' in os.environ:
-    execfile(os.environ['DJANGO_CONFIG_FILE'])
+if 'AUTHENTIC2_SETTINGS_FILE' in os.environ:
+    execfile(os.environ['AUTHENTIC2_SETTINGS_FILE'])
 
 #
 # Apply monkey patches
