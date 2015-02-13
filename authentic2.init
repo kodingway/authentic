@@ -132,7 +132,12 @@ do_reload() {
 
 do_migrate() {
     log_action_msg "Applying new migrations .."
-    su $USER -p -c "$CTL syncdb --migrate --noinput"
+    VERSION=`dpkg-query --show --showformat '${Version}' python-django`
+    if dpkg --compare-versions $VERSION lt 1.7; then
+      su $USER -p -c "$CTL syncdb --migrate --noinput"
+    else
+      su $USER -p -c "$CTL migrate"
+    fi
     log_action_msg ".. done"
 }
 
