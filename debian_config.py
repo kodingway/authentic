@@ -1,4 +1,5 @@
 import os
+import warnings
 
 # Debian defaults
 DEBUG = False
@@ -196,3 +197,7 @@ extract_settings_from_environ()
 CONFIG_FILE = '/etc/authentic2/config.py'
 if os.path.exists(CONFIG_FILE):
     execfile(CONFIG_FILE)
+
+# Warn if DEFAULT_FROM_EMAIL is the default value
+if DEFAULT_FROM_EMAIL == 'webmaster@localhost':
+    warnings.warn('DEFAULT_FROM_EMAIL must be customized')
