@@ -10,13 +10,14 @@ X-Python-Version: >= 2.6
 
 Package: python-authentic2
 Architecture: all
-Pre-Depends: python-django (>= 1.5), python-django (< 1.6), openssl
+Pre-Depends: python-django (>= 1.5), python-django (<< 1.8), openssl
 Depends: ${misc:Depends}, ${python:Depends},
     python-django-registration (>= 1.0),
     python-requests,
-    python-django-south (>= 0.7), python-django-south (<< 0.9),
+    python-django-south (>= 1.0),
     python-django-admin-tools, python-lasso, python-dnspython,
     python-gadjo, python-django-tables2, python-django-import-export
+Provides: ${python:Provides}
 Recommends: python-openid, python-ldap
 Suggests: python-raven
 Description: Versatile identity server
@@ -29,13 +30,14 @@ Description: Versatile identity server
 
 Package: authentic2
 Architecture: all
-Pre-Depends: python-django (>= 1.5)
+Pre-Depends: python-django (>= 1.5), postgresql
 Depends: ${misc:Depends}, adduser,
     python-authentic2 (= ${binary:Version}), python-psycopg2,
     gunicorn, dbconfig-common,
     debconf | debconf-2.0, ucf
 Recommends: postgresql-client
 Suggests: nginx
+Conflicts: authentic2-multitenant
 Description: Versatile identity server Python module
  Authentic is a versatile identity provider aiming to address a broad
  range of needs, from simple to complex setups; it has support for many
@@ -46,7 +48,7 @@ Description: Versatile identity server Python module
 
 Package: authentic2-multitenant
 Architecture: all
-Pre-Depends: python-django (>= 1.5)
+Pre-Depends: python-django (>= 1.5), postgresql
 Depends: ${misc:Depends}, adduser,
     python-authentic2 (= ${binary:Version}), python-psycopg2,
     python-django-tenant-schemas,
@@ -55,6 +57,7 @@ Depends: ${misc:Depends}, adduser,
     debconf | debconf-2.0, ucf
 Recommends: postgresql-client
 Suggests: nginx
+Conflicts: authentic2
 Description: Multitenant versatile identity server Python module
  Authentic is a versatile identity provider aiming to address a broad
  range of needs, from simple to complex setups; it has support for many
