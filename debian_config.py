@@ -8,6 +8,8 @@ STATIC_ROOT = '/var/lib/authentic2/collectstatic/'
 STATICFILES_DIRS = ('/var/lib/authentic2/static',) + STATICFILES_DIRS
 TEMPLATE_DIRS = ('/var/lib/authentic2/templates',) + TEMPLATE_DIRS
 
+ADMINS = (('root', 'root@localhost'),)
+
 if os.path.exists('/var/lib/authentic2/secret_key'):
     SECRET_KEY = file('/var/lib/authentic2/secret_key').read()
 
