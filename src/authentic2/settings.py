@@ -100,7 +100,6 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'south',
     'admin_tools',
     'admin_tools.theming',
     'admin_tools.menu',
@@ -120,6 +119,9 @@ INSTALLED_APPS = (
     'gadjo',
     'sekizai',
 )
+
+if django.VERSION < (1,7):
+    INSTALLED_APPS += ('south',)
 
 INSTALLED_APPS = tuple(plugins.register_plugins_installed_apps(INSTALLED_APPS))
 
