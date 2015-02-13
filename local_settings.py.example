@@ -1,27 +1,17 @@
-import os.path
 
-DEBUG = True
+# To run you must set a secret key
+SECRET_KEY = 'changeme'
 
-if DEBUG:
-	DEBUG_TOOLBAR = True
-	TEMPLATE_DEBUG = True
-	DEBUG_TOOLBAR_CONFIG = {
-			'INTERCEPT_REDIRECTS': False,
-	}
-INTERNAL_IPS = ('127.0.0.1',)
+# Activate SAML 2 idp
+A2_IDP_SAML2_ENABLE = True
 
-SECRET_KEY = 'coin'
+# Activate OpenID idp
+A2_IDP_OPENID_ENABLE = True
 
-from authentic2.settings import INSTALLED_APPS, \
-     MIDDLEWARE_CLASSES
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(os.path.dirname(__file__), 'authentic2.sqlite'),
-    },
-}
-
-if DEBUG:
+# Debugging helper
+try:
+	import debug_toolbar
+except ImportError
+	pass
+else:
 	INSTALLED_APPS += ('debug_toolbar',)
-	MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
