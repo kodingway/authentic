@@ -22,7 +22,7 @@ PIDFILE=$PID_DIR/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 CTL=/usr/bin/$NAME-ctl
 BIND=unix:$PID_DIR/$NAME.sock
-DJANGO_CONFIG_FILE=/usr/share/$NAME/debian_config.py
+AUTHENTIC2_SETTINGS_FILE=/usr/share/$NAME/debian_config.py
 
 USER=authentic
 GROUP=authentic
@@ -83,7 +83,7 @@ do_start()
 	#   0 if daemon has been started
 	#   1 if daemon was already running
 	#   2 if daemon could not be started
-	export DJANGO_CONFIG_FILE
+	export AUTHENTIC2_SETTINGS_FILE
 	start-stop-daemon --start --quiet --pidfile $PIDFILE --exec $DAEMON --test > /dev/null \
 		|| return 1
 	start-stop-daemon --start --quiet --exec $DAEMON -- \

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-export DJANGO_CONFIG_FILE=/usr/share/authentic2/debian_config.py
+export AUTHENTIC2_SETTINGS_FILE=/usr/share/authentic2/debian_config.py
 
 if [ "$(whoami)" != "authentic" ]; then
     if which sudo >/dev/null; then

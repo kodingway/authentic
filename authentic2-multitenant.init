@@ -22,7 +22,7 @@ PIDFILE=$PID_DIR/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 BIND=unix:$RUN_DIR/$NAME.sock
 
-export DJANGO_CONFIG_FILE=/usr/lib/$NAME/multitenant_config.py
+export AUTHENTIC2_CONFIG=/usr/lib/$NAME/multitenant_config.py
 
 USER=authentic-multitenant
 GROUP=authentic-multitenant
