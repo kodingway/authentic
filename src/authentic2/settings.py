@@ -181,7 +181,7 @@ SERIALIZATION_MODULES = {
 
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': False,
+    'disable_existing_loggers': True,
     'filters': {
         'cleaning': {
             '()':  'authentic2.utils.CleanLogMessage',
@@ -192,53 +192,34 @@ LOGGING = {
             'format': '[%(asctime)s] %(levelname)s %(name)s.%(funcName)s: %(message)s',
             'datefmt': '%Y-%m-%d %a %H:%M:%S'
         },
-        'syslog': {
-            'format': '%(levelname)s %(name)s.%(funcName)s: %(message)s',
-        },
     },
     'handlers': {
-        'null': {
-            'level': 'DEBUG',
-            'class':'django.utils.log.NullHandler',
-        },
         'console': {
             'level': 'DEBUG',
             'class':'logging.StreamHandler',
             'formatter': 'verbose',
-            'filters': ['cleaning'],
         },
-        'syslog': {
-            'level': 'DEBUG',
-            'address': '/dev/log',
-            'class': 'logging.handlers.SysLogHandler',
-            'filters': ['cleaning'],
-            'formatter': 'syslog',
-        },
-        'mail_admins': {
-            'level': 'ERROR',
-            'class': 'django.utils.log.AdminEmailHandler',
-            'include_html': True,
-            'filters': ['cleaning'],
-        }
     },
     'loggers': {
-        # disable default handlers
-        'django.request': {
-            'handlers': [],
-            'propagate': True,
-        },
-        'django.db': {
-            'handlers': ['null'],
-            'propagate': True,
-        },
-        'lasso': {
-                'handlers': ['mail_admins', 'syslog'],
+        'django': {
+                'handlers': ['console'],
                 'level': 'WARNING',
                 'propagate': False,
         },
-        '': {
-                'handlers': ['mail_admins', 'syslog'],
+        'lasso': {
+                'handlers': ['console'],
                 'level': 'WARNING',
+                'propagate': False,
+        },
+        'authentic2': {
+                'handlers': ['console'],
+                'level': 'INFO',
+                'propagate': False,
+        },
+        'authentic2_idp_openid': {
+                'handlers': ['console'],
+                'level': 'INFO',
+                'propagate': False,
         },
     },
 }
