@@ -12,7 +12,6 @@ Package: python-authentic2
 Architecture: all
 Pre-Depends: python-django (>= 1.5), python-django (<< 1.8), openssl
 Depends: ${misc:Depends}, ${python:Depends},
-    python-django-registration (>= 1.0),
     python-requests,
     python-django-south (>= 1.0),
     python-django-admin-tools, python-lasso, python-dnspython,
