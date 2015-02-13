@@ -11,6 +11,57 @@ TEMPLATE_DIRS = ('/var/lib/authentic2/templates',) + TEMPLATE_DIRS
 if os.path.exists('/var/lib/authentic2/secret_key'):
     SECRET_KEY = file('/var/lib/authentic2/secret_key').read()
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'filters': {
+        'cleaning': {
+            '()':  'authentic2.utils.CleanLogMessage',
+        },
+    },
+    'formatters': {
+        'syslog': {
+            'format': '%(levelname)s %(name)s.%(funcName)s: %(message)s',
+        },
+    },
+    'handlers': {
+        'syslog': {
+            'level': 'DEBUG',
+            'address': '/dev/log',
+            'class': 'logging.handlers.SysLogHandler',
+            'filters': ['cleaning'],
+            'formatter': 'syslog',
+        },
+    },
+    'loggers': {
+        'py.warnings': {
+                'handlers': ['syslog'],
+                'level': 'WARNING',
+                'propagate': False,
+        },
+        'django': {
+                'handlers': ['syslog'],
+                'level': 'WARNING',
+                'propagate': False,
+        },
+        'lasso': {
+                'handlers': ['syslog'],
+                'level': 'WARNING',
+                'propagate': False,
+        },
+        'authentic2': {
+                'handlers': ['syslog'],
+                'level': 'INFO',
+                'propagate': False,
+        },
+        'authentic2_idp_openid': {
+                'handlers': ['syslog'],
+                'level': 'INFO',
+                'propagate': False,
+        },
+    },
+}
+
 # Old settings method
 def extract_settings_from_environ():
     import os
