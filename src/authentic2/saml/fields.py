@@ -4,6 +4,7 @@ except ImportError:
     import pickle
 import six
 
+import django
 from django import forms
 from django.db import models
 from django.core.exceptions import ValidationError
@@ -163,9 +164,10 @@ class MultiSelectField(models.Field):
             func = lambda self, fieldname = name, choicedict = dict(self.choices):",".join([choicedict.get(value,value) for value in getattr(self,fieldname)])
             setattr(cls, 'get_%s_display' % self.name, func)
 
-try:
-    # Let South handle our custom fields
-    from south.modelsinspector import add_introspection_rules
-    add_introspection_rules([], ["^authentic2\.saml\.fields\."])
-except ImportError:
-    pass
+if django.VERSION < (1,7):
+    try:
+        # Let South handle our custom fields
+        from south.modelsinspector import add_introspection_rules
+        add_introspection_rules([], ["^authentic2\.saml\.fields\."])
+    except ImportError:
+        pass

@@ -82,9 +82,9 @@ class RegistrationCompletionForm(forms.UserAttributeFormMixin, Form):
         """
         super(RegistrationCompletionForm, self).__init__(*args, **kwargs)
         User = compat.get_user_model()
-        insert_idx = 0
         field_names = compat.get_registration_fields()
         required_fields = set(compat.get_required_fields())
+        new_fields = SortedDict()
         for field_name in field_names:
             if field_name not in self.fields:
                 try:
@@ -98,18 +98,19 @@ class RegistrationCompletionForm(forms.UserAttributeFormMixin, Form):
                     field = model_field.formfield(**kwargs)
                     if isinstance(field, EmailField):
                         continue
-                    self.fields.insert(insert_idx, field_name, field)
-                    insert_idx += 1
+                    new_fields[field_name] = field
                     if isinstance(field, EmailField):
                         field = copy.deepcopy(field)
                         field.label += gettext(' (validation)')
-                        self.fields.insert(insert_idx, field_name+'_validation', field)
-                        insert_idx += 1
+                        new_fields[field_name+'_validation'] = field
+        for key, value in self.fields.iteritems():
+            new_fields[key] = value
+        self.fields = new_fields
+        new_fields = SortedDict()
         for field_name in self.fields:
             if field_name in required_fields:
                 self.fields[field_name].required = True
         # reorder fields obeying A2_REGISTRATION_FIELDS
-        new_fields = SortedDict()
         for field_name in utils.field_names(app_settings.A2_REGISTRATION_FIELDS):
             if field_name in self.fields:
                 new_fields[field_name] = self.fields[field_name]
