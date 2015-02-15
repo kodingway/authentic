@@ -202,7 +202,7 @@ class RegistrationTests(TestCase):
                                     {'email': 'testbot@entrouvert.com'})
         self.assertRedirects(response, reverse('registration_complete'))
         self.assertEqual(len(mail.outbox), 1)
-        links = re.findall('http[s]://.*/', mail.outbox[0].body)
+        links = re.findall('https?://.*/', mail.outbox[0].body)
         self.assertIsInstance(links, list) and self.assertIsNot(links, [])
         link = links[0]
         completion = self.client.get(link)
