@@ -18,8 +18,7 @@ from django import get_version
 from django.template.loader import render_to_string
 from django.core.urlresolvers import reverse
 
-from .. import app_settings, compat, forms, utils,\
-    validators, widgets, fields, models
+from .. import app_settings, compat, forms, utils, validators, models
 
 User = compat.get_user_model()
 
@@ -58,6 +57,7 @@ class RegistrationForm(Form):
         subject = ''.join(subject.splitlines())
         message = render_to_string('registration/activation_email.txt',
                                    ctx_dict)
+
         if django.VERSION >= (1, 7, 0):
             html_message = render_to_string('registration/activation_email.html',
                                             ctx_dict)
