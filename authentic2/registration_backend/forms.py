@@ -146,6 +146,35 @@ class RegistrationCompletionForm(forms.UserAttributeFormMixin, Form):
                 raise ValidationError(_("The two password fields didn't match."))
         return self.cleaned_data
 
+    def save(self, *args, **kwargs):
+        user_fields = {}
+        for field in compat.get_registration_fields():
+            # save User model fields
+            try:
+                User._meta.get_field(field)
+            except FieldDoesNotExist:
+                continue
+            if field.startswith('password'):
+                continue
+            if field == 'username':
+                kwargs[field] = uuid4().get_hex()
+            user_fields[field] = kwargs[field]
+            if field == 'email':
+                user_fields[field] = BaseUserManager.normalize_email(kwargs[field])
+
+        new_user = User(is_active=True, **user_fields)
+        new_user.clean()
+        new_user.set_password(kwargs['password1'])
+        new_user.save()
+
+        if app_settings.A2_REGISTRATION_GROUPS:
+            groups = []
+            for name in app_settings.A2_REGISTRATION_GROUPS:
+                group, created = Group.objects.get_or_create(name=name)
+                groups.append(group)
+            new_user.groups = groups
+        return new_user, kwargs['next_url']
+
 
 class PasswordResetMixin(Form):
     '''Remove all password reset object for the current user when password is
