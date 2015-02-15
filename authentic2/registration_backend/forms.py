@@ -1,5 +1,8 @@
 import copy
+from uuid import uuid4
 
+import django
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _, gettext
 from django.forms import Form, CharField, PasswordInput, EmailField
@@ -7,12 +10,65 @@ from django.utils.datastructures import SortedDict
 from django.db.models.fields import FieldDoesNotExist
 from django.forms.util import ErrorList
 
+from django.contrib.auth.models import BaseUserManager, Group
 from django.contrib.auth import forms as auth_forms
+from django.core.mail import send_mail
+from django.core import signing
+from django import get_version
+from django.template.loader import render_to_string
+from django.core.urlresolvers import reverse
 
-from .. import app_settings, compat, forms, utils, validators, models
+from .. import app_settings, compat, forms, utils,\
+    validators, widgets, fields, models
 
+User = compat.get_user_model()
 
-class RegistrationForm(forms.UserAttributeFormMixin, Form):
+class RegistrationForm(Form):
+    error_css_class = 'form-field-error'
+    required_css_class = 'form-field-required'
+
+    email = EmailField()
+
+    def clean_email(self):
+        """
+        Verify if email is unique
+        """
+        User = compat.get_user_model()
+        if app_settings.A2_REGISTRATION_EMAIL_IS_UNIQUE and \
+           User.objects.filter(email__iexact=self.cleaned_data['email']).exists():
+            raise ValidationError(_('This email address is already in '
+                                    'use. Please supply a different email address.'))
+        return self.cleaned_data['email']
+
+    def save(self, request):
+        data = self.cleaned_data
+        data.update({'next_url': request.GET.get('next_url')})
+        registration_token = signing.dumps(data)
+        ctx_dict = {'registration_url': request.build_absolute_uri(
+            reverse('registration_activate',
+            kwargs={'registration_token': registration_token})),
+                    'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
+                    'email': data['email'],
+                    'site': request.get_host()}
+        ctx_dict.update(self.cleaned_data)
+
+        subject = render_to_string('registration/activation_email_subject.txt',
+                                   ctx_dict)
+
+        subject = ''.join(subject.splitlines())
+        message = render_to_string('registration/activation_email.txt',
+                                   ctx_dict)
+        if django.VERSION >= (1, 7, 0):
+            html_message = render_to_string('registration/activation_email.html',
+                                            ctx_dict)
+            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL,
+                      [data['email']], fail_silently=True,
+                      html_message=message)
+        else:
+            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL,
+                      [data['email']], fail_silently=True)
+
+class RegistrationCompletionForm(forms.UserAttributeFormMixin, Form):
     error_css_class = 'form-field-error'
     required_css_class = 'form-field-required'
 
@@ -24,7 +80,7 @@ class RegistrationForm(forms.UserAttributeFormMixin, Form):
         """
         Inject required fields in registration form
         """
-        super(RegistrationForm, self).__init__(*args, **kwargs)
+        super(RegistrationCompletionForm, self).__init__(*args, **kwargs)
         User = compat.get_user_model()
         insert_idx = 0
         field_names = compat.get_registration_fields()
@@ -40,6 +96,8 @@ class RegistrationForm(forms.UserAttributeFormMixin, Form):
                     if hasattr(model_field, 'validators'):
                         kwargs['validators'] = model_field.validators
                     field = model_field.formfield(**kwargs)
+                    if isinstance(field, EmailField):
+                        continue
                     self.fields.insert(insert_idx, field_name, field)
                     insert_idx += 1
                     if isinstance(field, EmailField):
@@ -56,6 +114,9 @@ class RegistrationForm(forms.UserAttributeFormMixin, Form):
             if field_name in self.fields:
                 new_fields[field_name] = self.fields[field_name]
         for field_name in self.fields:
+            # skip username field
+            if field_name == 'username':
+                continue
             if field_name not in new_fields:
                 new_fields[field_name] = self.fields[field_name]
         # override titles
@@ -65,39 +126,6 @@ class RegistrationForm(forms.UserAttributeFormMixin, Form):
                     self.fields[field[0]].label = field[1]
 
         self.fields = new_fields
-        if 'username' in self.fields:
-            self.fields['username'].regex = app_settings.A2_REGISTRATION_FORM_USERNAME_REGEX
-            self.fields['username'].help_text = app_settings.A2_REGISTRATION_FORM_USERNAME_HELP_TEXT
-            self.fields['username'].label = app_settings.A2_REGISTRATION_FORM_USERNAME_LABEL
-
-    def clean_username(self):
-        """
-        Validate that the username is alphanumeric and is not already
-        in use.
-        """
-        User = compat.get_user_model()
-        username = self.cleaned_data['username']
-        if app_settings.A2_REGISTRATION_REALM:
-            if '@' in username:
-                raise ValidationError(_('The character @ is forbidden in usernames.'))
-            username = u'{0}@{1}'.format(username, app_settings.A2_REGISTRATION_REALM)
-            self.cleaned_data['username'] = username
-        existing = User.objects.filter(username__iexact=self.cleaned_data['username'])
-        if existing.exists():
-            raise ValidationError(_("A user with that username already exists."))
-        else:
-            return self.cleaned_data['username']
-
-    def clean_email(self):
-        """
-        Verify if email is unique
-        """
-        User = compat.get_user_model()
-        if app_settings.A2_REGISTRATION_EMAIL_IS_UNIQUE:
-            if User.objects.filter(email__iexact=self.cleaned_data['email']):
-                raise ValidationError(_('This email address is already in '
-                    'use. Please supply a different email address.'))
-        return self.cleaned_data['email']
 
     def clean(self):
         """
@@ -118,6 +146,7 @@ class RegistrationForm(forms.UserAttributeFormMixin, Form):
                 raise ValidationError(_("The two password fields didn't match."))
         return self.cleaned_data
 
+
 class PasswordResetMixin(Form):
     '''Remove all password reset object for the current user when password is
        successfully changed.'''
@@ -134,6 +163,7 @@ class PasswordResetMixin(Form):
                 return ret
             self.user.save = save
         return ret
+
 
 class SetPasswordForm(PasswordResetMixin, auth_forms.SetPasswordForm):
     new_password1 = CharField(label=_("New password"),

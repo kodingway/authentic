@@ -1,7 +1,11 @@
+import re
 import urlparse
 
+from django.core import mail
+from django.core.urlresolvers import reverse
 from django.test import TestCase
-
+from django.test.client import Client
+from django.test.utils import override_settings
 from django.contrib.auth.hashers import check_password
 from django.test.utils import override_settings
 
@@ -91,8 +95,6 @@ class SerializerTests(TestCase):
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(Attribute.objects.count(), 1)
         self.assertEqual(AttributeValue.objects.count(), 1)
-
-
 
 
 class UtilsTests(TestCase):
@@ -189,3 +191,37 @@ class ValidatorsTest(TestCase):
         with self.assertRaisesRegexp(ValidationError, 'pasbon'):
             validate_password('aaa')
         validate_password('12345678')
+
+
+class RegistrationTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_registration(self):
+        response = self.client.post(reverse('registration_register'),
+                                    {'email': 'testbot@entrouvert.com'})
+        self.assertRedirects(response, reverse('registration_complete'))
+        self.assertEqual(len(mail.outbox), 1)
+        links = re.findall('http[s]://.*/', mail.outbox[0].body)
+        self.assertIsInstance(links, list) and self.assertIsNot(links, [])
+        link = links[0]
+        completion = self.client.get(link)
+        self.assertEqual(completion.status_code, 200)
+        self.bad_password_test(link)
+        self.good_password_test(link)
+        mail.outbox = []
+
+    def bad_password_test(self, url):
+        """
+        test short filled password
+        """
+        completion = self.client.post(url, {'username': 'toto',
+                                            'password1': 'toto',
+                                            'password2': 'toto'})
+        self.assertEqual(completion.status_code, 200)
+
+    def good_password_test(self, url):
+        completion = self.client.post(url, {'username': 'toto',
+                                            'password1': 'T0toto',
+                                            'password2': 'T0toto'})
+        self.assertEqual(completion.status_code, 302)

@@ -1,104 +1,110 @@
 import logging
+from datetime import datetime
 
-
+from django.conf import settings
 from django.shortcuts import redirect, render
 from django.utils.translation import ugettext as _
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.contrib.sites.models import RequestSite
-from django.contrib.sites.models import Site
-from django.contrib.auth.models import BaseUserManager, Group
-from django.conf import settings
-from django.db.models.fields import FieldDoesNotExist
+from django.contrib.auth import authenticate, login as django_login, logout
+from django.db.models import FieldDoesNotExist
+from django.db import IntegrityError
+from django.template.loader import render_to_string
+from django.core import signing
+from django.views.generic.edit import FormView
+from django.views.generic.base import TemplateView, View
 
-
-from registration.views import RegistrationView as BaseRegistrationView
-from registration.models import RegistrationProfile
-from registration import signals
-
+from authentic2.utils import get_form_class
 from .. import models, app_settings, compat
-from . import urls
-
 
 logger = logging.getLogger(__name__)
 
+User = compat.get_user_model()
 
-class RegistrationView(BaseRegistrationView):
-    form_class = urls.get_form_class(app_settings.A2_REGISTRATION_FORM_CLASS)
+def valid_token(method):
+    def f(obj, *args, **kwargs):
+        try:
+            registration_kwargs = signing.loads(kwargs['registration_token'],
+                                                max_age=settings.ACCOUNT_ACTIVATION_DAYS*3600*24)
+            params = kwargs.copy()
+            params.update(registration_kwargs)
+        except signing.SignatureExpired:
+            return redirect('registration_activation_expired')
+        except signing.BadSignature:
+            return redirect('registration_activation_failed')
+        return method(obj, *args, **params)
+    return f
 
-    def register(self, request, **cleaned_data):
-        User = compat.get_user_model()
-        if Site._meta.installed:
-            site = Site.objects.get_current()
-        else:
-            site = RequestSite(request)
-        user_fields = {}
-        for field in compat.get_registration_fields():
-            # save User model fields
+def login(request, user, redirect_url='auth_homepage'):
+    user.backend = 'authentic2.backends.ModelBackend'
+    django_login(request, user)
+    return redirect(redirect_url)
+
+class RegistrationView(FormView):
+    form_class = get_form_class(app_settings.A2_REGISTRATION_FORM_CLASS)
+    template_name = 'registration/registration_form.html'
+
+    def form_valid(self, form):
+        form.save(self.request)
+        return redirect('registration_complete')
+
+class RegistrationCompletionView(FormView):
+    form_class = get_form_class(app_settings.A2_REGISTRATION_COMPLETION_FORM_CLASS)
+    http_method_names = ['get', 'post']
+    template_name = 'registration/registration_completion_form.html'
+
+    @valid_token
+    def get(self, request, *args, **kwargs):
+        if app_settings.A2_REGISTRATION_EMAIL_IS_UNIQUE:
             try:
-                User._meta.get_field(field)
-            except FieldDoesNotExist:
-                continue
-            if field.startswith('password'):
-                continue
-            user_fields[field] = cleaned_data[field]
-            if field == 'email':
-                user_fields[field] = BaseUserManager.normalize_email(user_fields[field])
-        new_user = User(is_active=False, **user_fields)
-        new_user.clean()
-        new_user.set_password(cleaned_data['password1'])
-        new_user.save()
-        attributes = models.Attribute.objects.filter(
-                asked_on_registration=True)
-        if attributes:
-            for attribute in attributes:
-                attribute.set_value(new_user, cleaned_data[attribute.name])
-        if app_settings.A2_REGISTRATION_GROUPS:
-            groups = []
-            for name in app_settings.A2_REGISTRATION_GROUPS:
-                group, created = Group.objects.get_or_create(name=name)
-                groups.append(group)
-            new_user.groups = groups
-        registration_profile = RegistrationProfile.objects.create_profile(new_user)
-        registration_profile.send_activation_email(site)
+                user = User.objects.get(email__iexact=kwargs['email'])
+            except User.DoesNotExist:
+                return super(RegistrationCompletionView, self).get(request, *args, **kwargs)
+            return login(request, user)
+        else:
+            if 'create' in request.GET:
+                return super(RegistrationCompletionView, self).get(request, *args, **kwargs)
+            if 'uid' in request.GET:
+                try:
+                    user = User.objects.get(email__iexact=kwargs['email'],
+                                            username=request.GET['uid'])
+                    return login(request, user)
+                except User.DoesNotExist:
+                    pass
 
-        signals.user_registered.send(sender=self.__class__,
-                                     user=new_user,
-                                     request=request)
-        return new_user
+            user_accounts = User.objects.filter(email__iexact=kwargs['email'])
+            if user_accounts:
+                logout(request)
+                context = kwargs.copy()
+                context.update({'accounts': user_accounts})
+                self.template_name = 'registration/login_choices.html'
+                return self.render_to_response(context)
+            else:
+                return super(RegistrationCompletionView, self).get(request, *args, **kwargs)
 
-    def registration_allowed(self, request):
-        """
-        Indicate whether account registration is currently permitted,
-        based on the value of the setting ``REGISTRATION_OPEN``. This
-        is determined as follows:
+    @valid_token
+    def post(self, request, *args, **kwargs):
+        form = self.get_form(self.form_class)
+        if form.is_valid():
+            params = form.cleaned_data.copy()
+            params.update(kwargs)
+            user, next_url = form.save(**params)
+            if next_url:
+                return login(request, user, next_url)
+            return login(request, user)
+        else:
+            return self.form_invalid(form)
 
-        * If ``REGISTRATION_OPEN`` is not specified in settings, or is
-          set to ``True``, registration is permitted.
+class DeleteView(TemplateView):
+    def get(self, request, *args, **kwargs):
+        next_url = request.build_absolute_uri(request.META.get('HTTP_REFERER')\
+                                              or request.GET.get('next_url'))
+        if not app_settings.A2_REGISTRATION_CAN_DELETE_ACCOUNT:
+            return redirect(next_url)
+        return render(request, 'registration/delete_account.html')
 
-        * If ``REGISTRATION_OPEN`` is both specified and set to
-          ``False``, registration is not permitted.
-        
-        """
-        return getattr(settings, 'REGISTRATION_OPEN', True)
-
-    def get_success_url(self, request, user):
-        """
-        Return the name of the URL to redirect to after successful
-        user registration.
-        
-        """
-        return ('registration_complete', (), {})
-
-register = RegistrationView.as_view()
-
-
-@login_required
-def delete(request, next_url='/'):
-    next_url = request.build_absolute_uri(request.META.get('HTTP_REFERER') or next_url)
-    if not app_settings.A2_REGISTRATION_CAN_DELETE_ACCOUNT:
-        return redirect(next_url)
-    if request.method == 'POST':
+    def post(self, request, *args, **kwargs):
+        next_url = request.build_absolute_uri(request.META.get('HTTP_REFERER')\
+                                              or request.GET.get('next_url'))
         if 'submit' in request.POST:
             models.DeletedUser.objects.delete_user(request.user)
             logger.info(u'deletion of account %s requested' % request.user)
@@ -106,4 +112,3 @@ def delete(request, next_url='/'):
             return redirect('auth_logout')
         else:
             return redirect(next_url)
-    return render(request, 'registration/delete_account.html')

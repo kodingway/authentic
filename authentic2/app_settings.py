@@ -92,6 +92,8 @@ default_settings = dict(
                 definition='Root urlconf for the /accounts endpoints'),
     A2_REGISTRATION_FORM_CLASS = Setting(default='authentic2.registration_backend.forms.RegistrationForm',
                 definition='Default registration form'),
+    A2_REGISTRATION_COMPLETION_FORM_CLASS = Setting(default='authentic2.registration_backend.forms.RegistrationCompletionForm',
+                definition='Default registration completion form'),
     A2_REGISTRATION_SET_PASSWORD_FORM_CLASS = Setting(default='authentic2.registration_backend.forms.SetPasswordForm',
                 definition='Default set password form'),
     A2_REGISTRATION_CHANGE_PASSWORD_FORM_CLASS = Setting(default='authentic2.registration_backend.forms.PasswordChangeForm',

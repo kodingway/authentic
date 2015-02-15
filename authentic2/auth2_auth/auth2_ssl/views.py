@@ -151,3 +151,4 @@ def delete_certificate(request, certificate_pk):
 class SslErrorView(TemplateView):
     template_name = 'error_ssl.html'
 error_ssl = SslErrorView.as_view()
+

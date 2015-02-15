@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load breadcrumbs i18n %}
+
+{% block title %}
+{% trans "Login" %}
+{% endblock %}
+
+{% block breadcrumbs %}
+{{ block.super }}
+{% breadcrumb_url 'Register' %}
+{% endblock %}
+
+
+{% block content %}
+
+<h2>{% trans "Login" %}</h2>
+{% blocktrans count accounts_number=accounts|length %}
+An account already exists for this email. Please click on the account name to log in with.
+{% plural %}
+More accounts are associated to this email.
+Please choose the account you want to log in with:
+</p>
+{% endblocktrans %}
+
+<ul>
+  {% for account in accounts %}
+  <li><a href="{% url "registration_activate" registration_token %}?uid={{ account.username|urlencode }}">{{ account.get_full_name }}</a>
+    <div>
+    {% blocktrans with creation_date=account.date_joined|date:'SHORT_DATETIME_FORMAT'%}
+    created on {{ creation_date }}
+    {% endblocktrans %}
+    {% if account.last_login %}
+    <br />
+    {% blocktrans with login_date=account.last_login|date:'SHORT_DATETIME_FORMAT' %}
+    last login on {{ login_date }}
+    {% endblocktrans %}
+    {% endif %}
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+
+<p>
+  {% trans "or" %}
+  <a href="{% url "registration_activate" registration_token %}?create">
+    {% trans "create a new account" %}
+  </a>
+</p>
+
+{% endblock %}
