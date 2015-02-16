@@ -51,7 +51,7 @@ Pre-Depends: python-django (>= 1.5), postgresql
 Depends: ${misc:Depends}, adduser,
     python-authentic2 (= ${binary:Version}), python-psycopg2,
     python-django-tenant-schemas,
-    python-entrouvert,
+    python-hobo,
     gunicorn, dbconfig-common,
     debconf | debconf-2.0, ucf
 Recommends: postgresql-client
