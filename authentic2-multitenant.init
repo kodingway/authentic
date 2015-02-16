@@ -20,9 +20,9 @@ CACHE_DIR=/var/cache/$NAME
 LOG_DIR=/var/log/$NAME
 PIDFILE=$PID_DIR/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
-BIND=unix:$RUN_DIR/$NAME.sock
+BIND=unix:$PID_DIR/$NAME.sock
 
-export AUTHENTIC2_CONFIG=/usr/lib/$NAME/multitenant_config.py
+export AUTHENTIC2_SETTINGS_FILE=/usr/lib/$NAME/multitenant_config.py
 
 USER=authentic-multitenant
 GROUP=authentic-multitenant
@@ -118,12 +118,7 @@ do_reload() {
 
 do_migrate() {
     log_action_msg "Applying new migrations .."
-    VERSION=`dpkg-query --show --showformat '${Version}' python-django`
-    if dpkg --compare-versions $VERSION lt 1.7; then
-      su $USER -p -c "/usr/bin/authentic2-multitenant-ctl sync_schemas --noinput"
-    else
-    su $USER -p -c "/usr/bin/authentic2-multitenant-ctl migrate_schemas --noinput"
-    fi
+    su $USER -p -c "/usr/bin/authentic2-multitenant-ctl migrate_tenants --noinput"
     log_action_msg ".. done"
 }
 
