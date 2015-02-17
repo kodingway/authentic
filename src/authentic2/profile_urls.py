@@ -1,13 +1,29 @@
 from django.conf.urls import patterns, url
-from django.contrib.auth import views as auth_views
+from django.contrib.auth import views as auth_views, REDIRECT_FIELD_NAME
+from django.core.urlresolvers import reverse
 
 from authentic2.utils import get_form_class
-from . import app_settings
+from . import app_settings, decorators
 
 SET_PASSWORD_FORM_CLASS = get_form_class(
         app_settings.A2_REGISTRATION_SET_PASSWORD_FORM_CLASS)
 CHANGE_PASSWORD_FORM_CLASS = get_form_class(
         app_settings.A2_REGISTRATION_CHANGE_PASSWORD_FORM_CLASS)
+
+@decorators.setting_enabled('A2_REGISTRATION_CAN_CHANGE_PASSWORD')
+def password_change_view(request, *args, **kwargs):
+    post_change_redirect = kwargs.pop('post_change_redirect', None)
+    if 'next_url' in request.POST and request.POST['next_url']:
+        post_change_redirect = request.POST['next_url']
+    elif REDIRECT_FIELD_NAME in request.GET:
+        post_change_redirect = request.GET[REDIRECT_FIELD_NAME]
+    elif post_change_redirect is None:
+        post_change_redirect = reverse('account_management')
+    kwargs['post_change_redirect'] = post_change_redirect
+    extra_context = kwargs.setdefault('extra_context', {})
+    extra_context[REDIRECT_FIELD_NAME] = post_change_redirect
+    return auth_views.password_change(request, *args, **kwargs)
+
 
 urlpatterns = patterns('authentic2.views',
     url(r'^logged-in/$', 'logged_in', name='logged-in'),
@@ -17,7 +33,7 @@ urlpatterns = patterns('authentic2.views',
         name='email-change-verify'),
     url(r'^$', 'profile', name='account_management'),
     url(r'^password/change/$',
-        auth_views.password_change,
+        password_change_view,
         {'password_change_form': CHANGE_PASSWORD_FORM_CLASS},
         name='auth_password_change'),
     url(r'^password/change/done/$',
