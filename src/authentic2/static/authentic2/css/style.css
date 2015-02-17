@@ -34,9 +34,10 @@ div#wrap {
 	width: 640px;
 	margin: 5em auto;
 	padding: 15px;
+	border-radius: 6px;
 	-moz-border-radius: 6px;
 	-webkit-border-radius:6px;
-	-moz-box-shadow: 0 0 4px rgba(0,0,0,0.75);
+	box-shadow: 0 0 4px rgba(0,0,0,0.75);
 	-webkit-box-shadow: 0 0 4px rgba(0,0,0,0.75);
 	position: relative;
 }
@@ -45,6 +46,7 @@ div#wrap {
 {
 	position: absolute;
 	background: #FF7800 url(../images/a8.gif) repeat-x;
+	border-radius: 6px 0 0 6px;
 	-moz-border-radius: 6px 0 0 6px;
 	-webkit-border-radius: 6px 0 0 6px;
 	width: 202px;
@@ -76,6 +78,7 @@ div#wrap {
 	background: #EAEAE2 url(../images/a10.jpg) no-repeat;
 	width: 410px;
 	height: 92px;
+	border-radius: 0 6px 6px 0;
 	-moz-border-radius: 0 6px 6px 0;
 	-webkit-border-radius: 0 6px 6px 0;
 }
