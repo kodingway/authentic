@@ -30,6 +30,9 @@ def get_url_pycurl(url):
         c.perform()
         r = buf.getvalue()
         buf.close()
+        http_code = c.getinfo(pycurl.HTTP_CODE)
+        if http_code != 200:
+            raise urllib2.HTTPError(url, http_code, None, None, None)
         return r
     except pycurl.error, e:
         # Wrap error
