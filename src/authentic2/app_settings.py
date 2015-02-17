@@ -153,6 +153,7 @@ default_settings = dict(
     A2_LOGIN_EXPONENTIAL_RETRY_TIMEOUT_MAX_DURATION=Setting(default=3600,
             definition='exponential backoff maximum duration as seconds until '
             'time until next try after a login failure'),
+    A2_VERIFY_SSL=Setting(default=True, definition='Verify SSL certificate in HTTP requests'),
 )
 
 app_settings = AppSettings(default_settings)

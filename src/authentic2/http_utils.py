@@ -25,8 +25,12 @@ def get_url_pycurl(url):
         c.setopt(c.WRITEFUNCTION, buf.write)
         c.setopt(pycurl.CAINFO, app_settings.CAFILE)
         c.setopt(pycurl.CAPATH, app_settings.CAPATH)
-        c.setopt(pycurl.SSL_VERIFYHOST, 2)
-        c.setopt(pycurl.SSL_VERIFYPEER, 1)
+        if app_settings.A2_VERIFY_SSL:
+            c.setopt(pycurl.SSL_VERIFYHOST, 2)
+            c.setopt(pycurl.SSL_VERIFYPEER, 1)
+        else:
+            c.setopt(pycurl.SSL_VERIFYHOST, 0)
+            c.setopt(pycurl.SSL_VERIFYPEER, 0)
         c.perform()
         r = buf.getvalue()
         buf.close()
