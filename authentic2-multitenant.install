@@ -1,4 +1,4 @@
-debian/conf/nginx-multitenant-example.conf       /etc/authentic2-multitenant
-debian/authentic2-multitenant-ctl                /usr/bin
-debian/config.py                                 /etc/authentic2-multitenant
-debian/multitenant_config.py                     /usr/lib/authentic2-multitenant
+debian/multitenant/nginx-example.conf            /etc/authentic2-multitenant
+debian/multitenant/authentic2-multitenant-manage /usr/bin
+debian/multitenant/config.py                     /etc/authentic2-multitenant
+debian/multitenant/debian_config.py              /usr/lib/authentic2-multitenant

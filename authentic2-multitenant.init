@@ -22,7 +22,7 @@ PIDFILE=$PID_DIR/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 BIND=unix:$PID_DIR/$NAME.sock
 
-export AUTHENTIC2_SETTINGS_FILE=/usr/lib/$NAME/multitenant_config.py
+export AUTHENTIC2_SETTINGS_FILE=/usr/lib/$NAME/debian_config.py
 
 USER=authentic-multitenant
 GROUP=authentic-multitenant
@@ -118,7 +118,7 @@ do_reload() {
 
 do_migrate() {
     log_action_msg "Applying new migrations .."
-    su $USER -p -c "/usr/bin/authentic2-multitenant-ctl migrate_schemas --noinput"
+    su $USER -p -c "/usr/bin/authentic2-multitenant-manage migrate_schemas --noinput"
     log_action_msg ".. done"
 }
 
