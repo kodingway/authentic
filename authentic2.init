@@ -20,7 +20,7 @@ CACHE_DIR=/var/cache/$NAME
 LOG_DIR=/var/log/$NAME
 PIDFILE=$PID_DIR/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
-CTL=/usr/bin/$NAME-ctl
+MANAGE_SCRIPT=/usr/bin/$NAME-ctl
 BIND=unix:$PID_DIR/$NAME.sock
 AUTHENTIC2_SETTINGS_FILE=/usr/share/$NAME/debian_config.py
 
@@ -134,9 +134,9 @@ do_migrate() {
     log_action_msg "Applying new migrations .."
     VERSION=`dpkg-query --show --showformat '${Version}' python-django`
     if dpkg --compare-versions $VERSION lt 1.7; then
-      su $USER -p -c "$CTL syncdb --migrate --noinput"
+      su $USER -p -c "$MANAGE_SCRIPT syncdb --migrate --noinput"
     else
-      su $USER -p -c "$CTL migrate"
+      su $USER -p -c "$MANAGE_SCRIPT migrate"
     fi
     log_action_msg ".. done"
 }
@@ -212,9 +212,9 @@ case "$1" in
   manage)
     shift
     if [ $(id -un) != "$USER" ]; then
-        sudo -u $USER -- $CTL "$@"
+        sudo -u $USER -- $MANAGE_SCRIPT "$@"
     else
-        $CTL "$@"
+        $MANAGE_SCRIPT "$@"
     fi
   ;;
   *)
