@@ -14,6 +14,8 @@ ETC_DIR = os.path.join('/etc', PROJECT_NAME)
 
 STATIC_ROOT = os.path.join(VAR_DIR, 'collected-static')
 STATICFILES_DIRS = (os.path.join(VAR_DIR, 'static'),) + STATICFILES_DIRS
+TEMPLATE_DIRS = (os.path.join(VAR_DIR, 'templates'),) + TEMPLATE_DIRS
+LOCALE_PATHS = (os.path.join(VAR_DIR, 'locale'),) + LOCALE_PATHS
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
