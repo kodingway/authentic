@@ -126,7 +126,7 @@ do_reload() {
 
 do_migrate() {
     log_action_msg "Applying new migrations .."
-    su $USER -p -c "/usr/bin/authentic2-multitenant-manage migrate_schemas --noinput"
+    su $USER -p -c "$MANAGE_SCRIPT migrate_schemas --noinput"
     log_action_msg ".. done"
 }
 
