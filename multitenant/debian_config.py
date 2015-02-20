@@ -12,6 +12,9 @@ except ImportError:
 VAR_DIR = os.path.join('/var/lib', PROJECT_NAME)
 ETC_DIR = os.path.join('/etc', PROJECT_NAME)
 
+STATIC_ROOT = os.path.join(VAR_DIR, 'collected-static')
+STATICFILES_DIRS = (os.path.join(VAR_DIR, 'static'),) + STATICFILES_DIRS
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 TEMPLATE_DEBUG = False

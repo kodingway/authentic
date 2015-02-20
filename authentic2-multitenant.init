@@ -23,6 +23,7 @@ SCRIPTNAME=/etc/init.d/$NAME
 BIND=unix:$PID_DIR/$NAME.sock
 
 export AUTHENTIC2_SETTINGS_FILE=/usr/lib/$NAME/debian_config.py
+MANAGE_SCRIPT="/usr/bin/$NAME-manage"
 
 USER=authentic-multitenant
 GROUP=authentic-multitenant
@@ -60,6 +61,13 @@ fi
 if [ ! -d $CACHE_DIR ]; then
     install -d -m 755 -o $USER -g $GROUP $CACHE_DIR
 fi
+
+# Function collecting static files
+do_collectstatic() {
+    log_action_msg "Collect static files.."
+    su $USER -p -c "$MANAGE_SCRIPT collectstatic --noinput"
+    log_action_msg ".. done"
+}
 
 #
 # Function that starts the daemon/service
@@ -125,6 +133,7 @@ do_migrate() {
 case "$1" in
   start)
     do_migrate
+    do_collectstatic
     log_daemon_msg "Starting $DESC " "$NAME"
     do_start
     case "$?" in
@@ -159,7 +168,8 @@ case "$1" in
 	#
 	log_daemon_msg "Restarting $DESC" "$NAME"
 	do_stop
-    do_migrate
+        do_migrate
+        do_collectstatic
 	case "$?" in
 	  0|1)
 		do_start

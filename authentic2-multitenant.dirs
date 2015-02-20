@@ -1,5 +1,7 @@
 etc/authentic2-multitenant
 usr/lib/authentic2-multitenant
 var/lib/authentic2-multitenant/tenants
+var/lib/authentic2-multitenant/static
+var/lib/authentic2-multitenant/collected-static
 var/run/authentic2-multitenant
 var/log/authentic2-multitenant
