@@ -1,0 +1,120 @@
+# Authentic2 IdP CAS french translations
+# Copyright (C) 2014 Entr'ouvert
+# This file is distributed under the same license as the PACKAGE package.
+# Benjamin Dauvergne <bdauvergne@entrouvert.com>, 2015.
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: authentic2_idp_cas 1.0 \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-02-27 15:53+0100\n"
+"PO-Revision-Date: 2015-02-27 15:54+0100\n"
+"Last-Translator: Benjamin Dauvergne <bdauvergne@entrouvert.com>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: __init__.py:41
+msgid "CAS"
+msgstr ""
+
+#: admin.py:20 admin.py:34
+msgid "None"
+msgstr "Aucun"
+
+#: admin.py:61
+msgid "Logout"
+msgstr ""
+
+#: models.py:22
+msgid "name"
+msgstr "nom"
+
+#: models.py:24 models.py:73
+msgid "slug"
+msgstr ""
+
+#: models.py:26
+msgid "urls"
+msgstr "URLs"
+
+#: models.py:28 models.py:75
+msgid "attribute name"
+msgstr "nom de l'attribut"
+
+#: models.py:30
+msgid "proxy"
+msgstr ""
+
+#: models.py:31
+msgid "services who can request proxy tickets for this service"
+msgstr "services qui peuvent demander un ticket proxy vers ce service"
+
+#: models.py:42
+#, python-format
+msgid "%s is an invalid URL"
+msgstr "%s n'est pas une URL valide"
+
+#: models.py:67 models.py:72 models.py:100
+msgid "service"
+msgstr ""
+
+#: models.py:68
+msgid "services"
+msgstr ""
+
+#: models.py:77
+msgid "enabled"
+msgstr ""
+
+#: models.py:84
+msgid "CAS attribute"
+msgstr "attribut pour les tickets"
+
+#: models.py:85
+msgid "CAS attributes"
+msgstr "attributs pour les tickets"
+
+#: models.py:93
+msgid "ticket id"
+msgstr "identifiant du ticket"
+
+#: models.py:97
+msgid "fresh authentication"
+msgstr "nécessite une ré-authentification"
+
+#: models.py:99
+msgid "valid"
+msgstr "valide"
+
+#: models.py:102
+msgid "service URL"
+msgstr "URL du service"
+
+#: models.py:105
+msgid "user"
+msgstr "utilisateur"
+
+#: models.py:107
+msgid "creation"
+msgstr "date de création"
+
+#: models.py:109
+msgid "expire"
+msgstr "date d'expiration"
+
+#: models.py:111
+msgid "django session key"
+msgstr "clé de session django"
+
+#: models.py:113
+msgid "proxies"
+msgstr "proxys"
+
+#: templates/authentic2_idp_cas/logout_fragment.html:2
+#, python-format
+msgid "Sending logout to %(name)s...."
+msgstr "Déconnexion de %(name)s...."

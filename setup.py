@@ -153,6 +153,7 @@ setup(name="authentic2",
               'authentic2-auth-ssl = authentic2.auth2_auth.auth2_ssl:Plugin',
               'authentic2-idp-saml2 = authentic2.idp.saml:Plugin',
               'authentic2-idp-openid = authentic2_idp_openid:Plugin',
+              'authentic2-idp-cas = authentic2_idp_cas:Plugin',
           ],
       },
 )
