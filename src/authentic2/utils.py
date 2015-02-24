@@ -273,14 +273,38 @@ def continue_to_next_url(request, keep_params=True,
             include=include, **kwargs)
 
 def record_authentication_event(request, how):
+    '''Record an authentication event in the session and in the database, in
+       later version the database persistence can be removed'''
     from . import models
+    authentication_events = request.session.setdefault(constants.AUTHENTICATION_EVENTS_SESSION_KEY, [])
+    # As we update a persistent object and not a session key we must
+    # explicitly state that the session has been modified
+    request.session.modified = True
+    event = {
+                'who': unicode(request.user),
+                'who_id': getattr(request.user, 'pk', None),
+                'how': how,
+    }
     kwargs = {
             'who': unicode(request.user)[:80],
             'how': how,
     }
     if constants.NONCE_FIELD_NAME in request.REQUEST:
-        kwargs['nonce'] = request.REQUEST[constants.NONCE_FIELD_NAME]
+        nonce = request.REQUEST[constants.NONCE_FIELD_NAME]
+        kwargs['nonce'] = nonce
+        event['nonce'] = nonce
+    authentication_events.append(event)
+
     models.AuthenticationEvent.objects.create(**kwargs)
+
+def find_authentication_event(request, nonce):
+    '''Find an authentication event occurring during this session and matching
+       this nonce.'''
+    authentication_events = request.session.pop(constants.AUTHENTICATION_EVENTS_SESSION_KEY, [])
+    for event in authentication_events:
+        if event.get('nonce') == nonce:
+            return event
+    return None
 
 def login(request, user, how, **kwargs):
     '''Login a user model, record the authentication event and redirect to next
