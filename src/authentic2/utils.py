@@ -320,6 +320,13 @@ def login_require(request, next_url=None, login_url='auth_login', **kwargs):
     params[REDIRECT_FIELD_NAME] = next_url
     return redirect(request, login_url, **kwargs)
 
+def redirect_to_logout(request, next_url=None, logout_url='auth_logout', **kwargs):
+    '''Redirect to the logout and come back to the current page.'''
+    next_url = next_url or request.get_full_path()
+    params = kwargs.setdefault('params', {})
+    params[REDIRECT_FIELD_NAME] = next_url
+    return redirect(request, logout_url, **kwargs)
+
 def redirect_and_come_back(request, to, **kwargs):
     '''Redirect to a view adding current URL as next URL parameter'''
     next_url = request.get_full_path()
