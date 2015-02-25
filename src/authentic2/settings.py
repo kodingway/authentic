@@ -68,6 +68,8 @@ if django.VERSION < (1, 6, 0):
     MIDDLEWARE_CLASSES += (
         'django.middleware.transaction.TransactionMiddleware',
     )
+else:
+    DATABASES['default']['ATOMIC_REQUESTS'] = True
 
 MIDDLEWARE_CLASSES += (
     'authentic2.idp.middleware.DebugMiddleware',
