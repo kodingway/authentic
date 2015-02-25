@@ -9,7 +9,33 @@ from django.test.client import Client
 from django.contrib.auth.hashers import check_password
 from django.test.utils import override_settings
 
-from . import hashers
+from . import hashers, utils
+
+class Authentic2TestCase(TestCase):
+    def assertEqualsURL(self, url1, url2, **kwargs):
+        splitted1 = urlparse.urlsplit(url1)
+        url2 = utils.make_url(url2, params=kwargs)
+        splitted2 = urlparse.urlsplit(url2)
+        for i, (elt1, elt2) in enumerate(zip(splitted1, splitted2)):
+            if i == 3:
+                elt1 = urlparse.parse_qs(elt1)
+                elt2 = urlparse.parse_qs(elt2)
+                for k, v in elt1.items():
+                    elt1[k] = set(v)
+                for k, v in elt2.items():
+                    elt2[k] = set(v)
+            self.assertTrue(elt1 == elt2,
+                    "URLs are not equal: %s != %s" % (splitted1, splitted2))
+
+    def assertRedirectsComplex(self, response, expected_url, **kwargs):
+        self.assertEquals(response.status_code, 302)
+        scheme, netloc, path, query, fragment = urlparse.urlsplit(response.url)
+        e_scheme, e_netloc, e_path, e_query, e_fragment = urlparse.urlsplit(expected_url)
+        e_scheme = e_scheme if e_scheme else scheme or 'http'
+        e_netloc = e_netloc if e_netloc else netloc
+        expected_url = urlparse.urlunsplit((e_scheme, e_netloc, e_path, e_query, e_fragment))
+        self.assertEqualsURL(response['Location'], expected_url, **kwargs)
+
 
 class HashersTests(TestCase):
     def test_sha256_hasher(self):
@@ -142,21 +168,7 @@ class SerializerTests(TestCase):
         self.assertEqual(AttributeValue.objects.count(), 1)
 
 
-class UtilsTests(TestCase):
-    def assertEqualsURL(self, url1, url2):
-        splitted1 = urlparse.urlsplit(url1)
-        splitted2 = urlparse.urlsplit(url2)
-        for i, (elt1, elt2) in enumerate(zip(splitted1, splitted2)):
-            if i == 3:
-                elt1 = urlparse.parse_qs(elt1)
-                elt2 = urlparse.parse_qs(elt2)
-                for k, v in elt1.items():
-                    elt1[k] = set(v)
-                for k, v in elt2.items():
-                    elt2[k] = set(v)
-            self.assertTrue(elt1 == elt2,
-                    "URLs are not equal: %s != %s" % (splitted1, splitted2))
-
+class UtilsTests(Authentic2TestCase):
     def test_assert_equals_url(self):
         self.assertEqualsURL('/test?coin=1&bob=2&coin=3', '/test?bob=2&coin=1&coin=3')
 
