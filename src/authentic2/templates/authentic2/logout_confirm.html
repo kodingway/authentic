@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load i18n sekizai_tags gadjo %}
+
+
+{% block title %}
+  {% trans "Logout" %}
+{% endblock %}
+
+{% block user %}
+{% endblock %}
+
+{% block content %}
+  <p>{% blocktrans %}You are going to do a global logout, do you want to continue ?{% endblocktrans %}
+  </p>
+  <p>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ next_url }}">
+      <input type="submit" name="submit" value="{% trans "Continue" %}">
+      <a href="{{ next_url }}">{% trans "Cancel" %}</a>
+    </form>
+  </p>
+{% endblock %}
+
+

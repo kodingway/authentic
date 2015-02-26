@@ -20,7 +20,7 @@ from django.core import mail, signing
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.utils.translation import ugettext as _
-from django.utils.http import urlencode
+from django.utils.http import urlencode, same_origin
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.http import (HttpResponseRedirect, HttpResponseForbidden,
@@ -179,8 +179,6 @@ class EmailChangeVerifyView(TemplateView):
 email_change_verify = EmailChangeVerifyView.as_view()
 
 logger = logging.getLogger('authentic2.idp.views')
-
-__logout_redirection_timeout = getattr(settings, 'IDP_LOGOUT_TIMEOUT', 600)
 
 @csrf_protect
 @never_cache
@@ -402,35 +400,48 @@ def logout_list(request):
     '''Return logout links from idp backends'''
     return utils.accumulate_from_backends(request, 'logout_list')
 
-def logout(request, next_page='/', redirect_field_name=REDIRECT_FIELD_NAME,
-        template = 'idp/logout.html'):
-    global __logout_redirection_timeout
-    "Logs out the user and displays 'You are logged out' message."
-    do_local = 'local' in request.REQUEST
-    context = RequestContext(request)
-    context['redir_timeout'] = __logout_redirection_timeout
-    next_page = request.REQUEST.get(redirect_field_name, next_page)
+def logout(request, next_url=None, default_next_url='auth_homepage',
+        redirect_field_name=REDIRECT_FIELD_NAME,
+        template='idp/logout.html', do_local=True, check_referer=True):
+    '''Logout first check if a logout request is authorized, i.e.
+       that logout was done using a POST with CSRF token or with a GET
+       from the same site.
+
+       Logout endpoints of IdP module must re-user the view by setting
+       check_referer and do_local to False.
+    '''
+    next_url = next_url or request.REQUEST.get(redirect_field_name,
+            utils.make_url(default_next_url))
+    ctx = {}
+    ctx['next_url'] = next_url
+    ctx['redir_timeout'] = 60
+    # Shortcut !
+    if not request.user.is_authenticated():
+        return utils.redirect(request, next_url)
+    if check_referer and not utils.check_referer(request):
+        return render(request, 'authentic2/logout_confirm.html', ctx)
+    do_local = do_local and 'local' in request.REQUEST
     if not do_local:
         l = logout_list(request)
         if l:
             # Full logout
-            next_page = '/logout?local=ok&next=%s' % urllib.quote(next_page)
-            context['logout_list'] = l
-            logger.debug('logout: %r' % unicode(context['logout_list']))
-            context['next_page'] = next_page
-            context['message'] = _('Logging out from all your services')
-            return render_to_response(template, context_instance = context)
+            next_url = utils.make_url('auth_logout', params={
+                'local': 'ok',
+                REDIRECT_FIELD_NAME: next_url})
+            ctx['next_url'] = next_url
+            ctx['logout_list'] = l
+            ctx['message'] = _('Logging out from all your services')
+            return render(request, template, ctx)
     # Local logout
     auth_logout(request)
-    context['next_page'] = next_page
-    context['message'] = _('Logged out')
-    response = render_to_response(template, context_instance=context)
-    response.set_cookie('a2_just_logged_out', 1, max_age=60)
-    return response
-
-def redirect_to_logout(request, next_page='/'):
-    return HttpResponseRedirect('%s?next=%s' % (reverse(logout), urllib.quote(next_page)))
-
+    messages.info(request, _('You have been logged out'))
+    if next_url.startswith('/'):
+        return utils.redirect(request, next_url)
+    else:
+        # Show intermediate page
+        response = render(request, template, ctx)
+        response.set_cookie('a2_just_logged_out', 1, max_age=60)
+        return response
 
 def login_password_profile(request, *args, **kwargs):
     context_instance = kwargs.pop('context_instance', None) or RequestContext(request)

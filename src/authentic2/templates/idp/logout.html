@@ -2,40 +2,44 @@
 {% load i18n %}
 
 {% block title %}
-{% trans "Logout" %}
-{% endblock %}
-{% block bodyargs %}
-onload="window.iframe_count -= 1"
+  {% trans "Logout" %}
 {% endblock %}
 
-{% comment %}Initialize iframe coutndown {% endcomment %}
+{% block user %}
+{% endblock %}
+
+{% block bodyargs %}
+  onload="window.iframe_count -= 1"
+{% endblock %}
+
+{% comment %}Initialize iframe countdown {% endcomment %}
 {% block extra_scripts %}
-<script>
-  window.iframe_count = 1;
-</script>
+  <script>
+    window.iframe_count = 1;
+  </script>
 {% endblock %}
 
 {% block content %}
-<h1>{% trans message %}</h1>
-<ul class="logout-list">
-    {% for fragment in logout_list %}
-        {{ fragment|safe }}
-    {% endfor %}
-</ul>
-<!-- Hack alert !!! block loading indefinitely by loading an inacessible IP -->
-<script>
-  window.iframe_count += document.getElementsByTagName("iframe").length;
-  var refresh_launched = 0;
-  setInterval(function () {
-    if (iframe_count == 0) {
-      if (refresh_launched == 0) {
-        refresh_launched = 1;
-        setTimeout(function () { window.location = '{{ next_page }}' }, 300);
+  <h1>{% trans message %}</h1>
+  <ul class="logout-list">
+      {% for fragment in logout_list %}
+          {{ fragment|safe }}
+      {% endfor %}
+  </ul>
+  <script>
+    window.iframe_count += document.getElementsByTagName("iframe").length;
+    var refresh_launched = 0;
+    setInterval(function () {
+      if (iframe_count == 0) {
+        if (refresh_launched == 0) {
+          refresh_launched = 1;
+          setTimeout(function () { window.location = '{{ next_url }}' }, 300);
+        }
       }
-    }
-  }, {{ redir_timeout }})
-</script>
+    }, {{ redir_timeout }})
+  </script>
 
-<div id="continue-link"><a href="{{ next_page }}">{% trans "Continue logout" %}</div>
-
+  <div id="continue-link">
+    <a href="{{ next_url }}">{% trans "Continue logout" %}</a>
+  </div>
 {% endblock %}
