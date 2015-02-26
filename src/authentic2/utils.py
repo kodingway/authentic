@@ -17,7 +17,7 @@ from django.http.request import QueryDict
 from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login
 from django import forms
 from django.forms.util import ErrorList
-from django.utils import html
+from django.utils import html, http
 
 from authentic2.saml.saml2utils import filter_attribute_private_key, \
     filter_element_private_key
@@ -362,3 +362,14 @@ def get_form_class(form_class):
     module = import_module(module)
     return getattr(module, form_class)
 
+def check_referer(request, skip_post=True):
+    '''Check that the current referer match current origin.
+
+       Post requests are usually ignored as they are already check by the
+       CSRF middleware.
+    '''
+    if skip_post and request.method == 'POST':
+        return True
+    referer = request.META.get('HTTP_REFERER')
+    return referer and http.same_origin(request.build_absolute_uri(),
+            referer)
