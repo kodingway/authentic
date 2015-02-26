@@ -27,15 +27,15 @@ class compile_translations(Command):
 
     def run(self):
         try:
-            from django.core.management.commands.compilemessages import \
-                    compile_messages
-            for path, dirs, files in os.walk('src/authentic2'):
-                if 'locale' not in dirs:
-                    continue
-                curdir = os.getcwd()
-                os.chdir(os.path.realpath(path))
-                compile_messages(sys.stderr)
-                os.chdir(curdir)
+            from django.core.management import call_command
+            for dir in ('src/authentic2', 'src/authentic2_idp_openid', 'src/authentic2_idp_cas'):
+                for path, dirs, files in os.walk(dir):
+                    if 'locale' not in dirs:
+                        continue
+                    curdir = os.getcwd()
+                    os.chdir(os.path.realpath(path))
+                    call_command('compilemessages')
+                    os.chdir(curdir)
         except ImportError:
             print
             sys.stderr.write('!!! Please install Django >= 1.4 to build translations')
