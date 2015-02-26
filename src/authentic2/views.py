@@ -402,7 +402,7 @@ def logout_list(request):
 
 def logout(request, next_url=None, default_next_url='auth_homepage',
         redirect_field_name=REDIRECT_FIELD_NAME,
-        template='idp/logout.html', do_local=True, check_referer=True):
+        template='authentic2/logout.html', do_local=True, check_referer=True):
     '''Logout first check if a logout request is authorized, i.e.
        that logout was done using a POST with CSRF token or with a GET
        from the same site.
