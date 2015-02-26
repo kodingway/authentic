@@ -373,3 +373,14 @@ def check_referer(request, skip_post=True):
     referer = request.META.get('HTTP_REFERER')
     return referer and http.same_origin(request.build_absolute_uri(),
             referer)
+
+def check_session_key(session_key):
+    '''Check that a session exists for a given session_key.'''
+    from importlib import import_module
+    from django.conf import settings
+
+    SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
+    s = SessionStore(session_key=session_key)
+    # If session is empty, it's new
+    return s._session != {}
+
