@@ -74,7 +74,7 @@ from authentic2.constants import NONCE_FIELD_NAME
 from authentic2.idp import signals as idp_signals
 # from authentic2.idp.models import *
 
-from authentic2.utils import (get_backends as get_idp_backends,
+from authentic2.utils import (make_url, get_backends as get_idp_backends,
         get_username, login_require, find_authentication_event)
 from authentic2.decorators import is_transient_user
 from authentic2.attributes_ng.engine import get_attributes
@@ -1436,8 +1436,10 @@ def slo(request):
     # Save some values for cleaning up
     save_key_values(logout.request.id, logout.dump(),
             request.session.session_key)
-    return a2_views.redirect_to_logout(request, next_page='%s?id=%s' %
-            (reverse(finish_slo), urllib.quote(logout.request.id)))
+
+    # Use the logout view and come back to the finish slo view
+    next_url = make_url(finish_slo, params={'id': logout.request.id})
+    return a2_views(next_url=next_url, do_local=False, check_referer=False)
 
 
 def icon_url(name):
