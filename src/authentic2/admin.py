@@ -16,6 +16,17 @@ from django.contrib.auth import REDIRECT_FIELD_NAME
 from .nonce.models import Nonce
 from . import forms, models, admin_forms, compat, app_settings
 
+def cleanup_action(modeladmin, request, queryset):
+    queryset.cleanup()
+cleanup_action.short_description = _('Cleanup expired objects')
+
+class CleanupAdminMixin(admin.ModelAdmin):
+    def get_actions(self, request):
+        actions = super(CleanupAdminMixin, self).get_actions(request)
+        if hasattr(self.model.objects.none(), 'cleanup'):
+            actions['cleanup_action'] = cleanup_action, 'cleanup_action', cleanup_action.short_description
+        return actions
+
 class NonceModelAdmin(admin.ModelAdmin):
     list_display = ("value", "context", "not_on_or_after")
 admin.site.register(Nonce, NonceModelAdmin)
