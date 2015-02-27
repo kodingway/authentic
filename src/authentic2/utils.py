@@ -413,3 +413,20 @@ def to_iter(func):
     def f(*args, **kwargs):
         return IterableFactory(lambda: func(*args, **kwargs))
     return f
+
+def normalize_attribute_values(values):
+    '''Take a list of values or a single one and normalize it'''
+    values_set = set()
+    if not isinstance(values, (tuple, list)):
+        values = [values]
+    for value in values:
+        if isinstance(value, bool):
+            value = str(value).lower()
+        values_set.add(unicode(value))
+    return values_set
+
+def attribute_values_to_identifier(values):
+    '''Try to find an identifier from attribute values'''
+    normalized = normalize_attribute_values(values)
+    assert len(normalized) == 1, 'multi-valued attribute cannot be used as an identifier'
+    return list(normalized)[0]
