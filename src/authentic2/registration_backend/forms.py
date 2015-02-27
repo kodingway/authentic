@@ -57,15 +57,11 @@ class RegistrationForm(Form):
         message = render_to_string('registration/activation_email.txt',
                                    ctx_dict)
 
-        if django.VERSION >= (1, 7, 0):
-            html_message = render_to_string('registration/activation_email.html',
-                                            ctx_dict)
-            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL,
-                      [data['email']], fail_silently=True,
-                      html_message=html_message)
-        else:
-            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL,
-                      [data['email']], fail_silently=True)
+        html_message = render_to_string('registration/activation_email.html',
+                                        ctx_dict)
+        send_mail(subject, message, settings.DEFAULT_FROM_EMAIL,
+                  [data['email']], fail_silently=True,
+                  html_message=html_message)
 
 class RegistrationCompletionForm(forms.UserAttributeFormMixin, Form):
     error_css_class = 'form-field-error'

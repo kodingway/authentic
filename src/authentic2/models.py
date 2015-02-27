@@ -25,9 +25,7 @@ except ImportError:
 from django.contrib.contenttypes.models import ContentType
 
 
-from . import managers, plugins
-
-plugins.init()
+from . import managers
 
 class UserManager(BaseUserManager):
     def create_user(self, username, email=None, password=None, **extra_fields):

@@ -1,4 +1,3 @@
-import django
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
@@ -11,11 +10,7 @@ from authentic2.utils import check_session_key
 
 from . import managers, utils, constants
 
-if django.VERSION < (1, 7):
-    # scheme can be unsupported, whatever..
-    url_validator = URLValidator()
-else:
-    url_validator = URLValidator(schemes=['http', 'https'])
+url_validator = URLValidator(schemes=['http', 'https'])
 
 class Service(LogoutUrlAbstract):
     name = models.CharField(max_length=128, unique=True,

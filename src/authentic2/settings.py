@@ -67,12 +67,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
-if django.VERSION < (1, 6, 0):
-    MIDDLEWARE_CLASSES += (
-        'django.middleware.transaction.TransactionMiddleware',
-    )
-else:
-    DATABASES['default']['ATOMIC_REQUESTS'] = True
+DATABASES['default']['ATOMIC_REQUESTS'] = True
 
 MIDDLEWARE_CLASSES += (
     'authentic2.idp.middleware.DebugMiddleware',
@@ -124,9 +119,6 @@ INSTALLED_APPS = (
     'gadjo',
     'sekizai',
 )
-
-if django.VERSION < (1,7):
-    INSTALLED_APPS += ('south',)
 
 INSTALLED_APPS = tuple(plugins.register_plugins_installed_apps(INSTALLED_APPS))
 
@@ -183,14 +175,13 @@ ADMIN_TOOLS_INDEX_DASHBOARD = 'authentic2.dashboard.CustomIndexDashboard'
 ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'authentic2.dashboard.CustomAppIndexDashboard'
 ADMIN_TOOLS_MENU = 'authentic2.menu.CustomMenu'
 
-# Remove after Django 1.7
+# Serialization module to support natural keys in generic foreign keys
 SERIALIZATION_MODULES = {
         'json': 'authentic2.serializers',
 }
 
 # Set Test runner to remove warning about test suite initialized with Django < 1.6
-if django.VERSION >= (1,7):
-    TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 LOGGING_CONFIG = None
 LOGGING = {

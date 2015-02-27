@@ -1,4 +1,3 @@
-import django
 from django.utils.translation import ugettext_lazy as _
 
 class Plugin(object):
@@ -33,10 +32,9 @@ class Plugin(object):
     def get_idp_backends(self):
         return ['authentic2.idp.saml.backend.SamlBackend']
 
-if django.VERSION >= (1,7):
-    from django.apps import AppConfig
-    class SAML2IdPConfig(AppConfig):
-        name = 'authentic2.idp.saml'
-        label = 'authentic2_idp_saml'
-    default_app_config = 'authentic2.idp.saml.SAML2IdPConfig'
+from django.apps import AppConfig
+class SAML2IdPConfig(AppConfig):
+    name = 'authentic2.idp.saml'
+    label = 'authentic2_idp_saml'
+default_app_config = 'authentic2.idp.saml.SAML2IdPConfig'
 

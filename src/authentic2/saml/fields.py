@@ -163,11 +163,3 @@ class MultiSelectField(models.Field):
         if self.choices:
             func = lambda self, fieldname = name, choicedict = dict(self.choices):",".join([choicedict.get(value,value) for value in getattr(self,fieldname)])
             setattr(cls, 'get_%s_display' % self.name, func)
-
-if django.VERSION < (1,7):
-    try:
-        # Let South handle our custom fields
-        from south.modelsinspector import add_introspection_rules
-        add_introspection_rules([], ["^authentic2\.saml\.fields\."])
-    except ImportError:
-        pass
