@@ -384,3 +384,22 @@ def check_session_key(session_key):
     # If session is empty, it's new
     return s._session != {}
 
+def get_user_from_session_key(session_key):
+    '''Get the user logged in an active session'''
+    from importlib import import_module
+    from django.conf import settings
+    from django.contrib.auth import (load_backend, SESSION_KEY,
+        BACKEND_SESSION_KEY)
+    from django.contrib.auth.models import AnonymousUser
+
+    SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
+    session = SessionStore(session_key=session_key)
+    try:
+        user_id = session[SESSION_KEY]
+        backend_path = session[BACKEND_SESSION_KEY]
+        assert backend_path in settings.AUTHENTICATION_BACKENDS
+        backend = load_backend(backend_path)
+        user = backend.get_user(user_id) or AnonymousUser()
+    except (KeyError, AssertionError):
+        user = AnonymousUser()
+    return user
