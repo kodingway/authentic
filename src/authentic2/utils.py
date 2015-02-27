@@ -1,16 +1,14 @@
 import random
 import time
-import hashlib
-import datetime as dt
 import logging
 import urllib
 import six
+from functools import wraps
 
 from importlib import import_module
 
-from django.views.decorators.http import condition
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect
+from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.core.exceptions import ImproperlyConfigured
 from django.core import urlresolvers
 from django.http.request import QueryDict
@@ -403,3 +401,15 @@ def get_user_from_session_key(session_key):
     except (KeyError, AssertionError):
         user = AnonymousUser()
     return user
+
+def to_list(func):
+    @wraps(func)
+    def f(*args, **kwargs):
+        return list(func(*args, **kwargs))
+    return f
+
+def to_iter(func):
+    @wraps(func)
+    def f(*args, **kwargs):
+        return IterableFactory(lambda: func(*args, **kwargs))
+    return f
