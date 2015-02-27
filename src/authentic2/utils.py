@@ -3,6 +3,7 @@ import time
 import logging
 import urllib
 import six
+import urlparse
 from functools import wraps
 
 from importlib import import_module
@@ -210,10 +211,9 @@ def make_url(to, args=(), kwargs={}, keep_params=False, params=None,
        You can set parameters or append to existing one.
     '''
     url = resolve_url(to, *args, **kwargs)
-    if '?' in url:
-        url, query_string = url.split('?', 1)
-    else:
-        query_string = ''
+    scheme, netloc, path, query_string, o_fragment = urlparse.urlsplit(url)
+    url = urlparse.urlunsplit((scheme, netloc, path, '', ''))
+    fragment = fragment or o_fragment
     # Django < 1.6 compat, query_string is not optional
     url_params = QueryDict(query_string=query_string, mutable=True)
     if keep_params:
