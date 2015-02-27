@@ -286,6 +286,7 @@ class RegistrationTests(TestCase):
     def setUp(self):
         self.client = Client()
 
+    @override_settings(A2_VALIDATE_EMAIL_DOMAIN=False)
     def test_registration(self):
         response = self.client.post(reverse('registration_register'),
                                     {'email': 'testbot@entrouvert.com'})
