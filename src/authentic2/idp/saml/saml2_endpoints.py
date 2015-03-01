@@ -68,14 +68,14 @@ from authentic2.saml.common import redirect_next, asynchronous_bindings, \
     get_saml2_metadata, get_sp_options_policy, \
     get_entity_id
 import authentic2.saml.saml2utils as saml2utils
-from authentic2.models import AuthenticationEvent
 from common import kill_django_sessions
 from authentic2.constants import NONCE_FIELD_NAME
 
 from authentic2.idp import signals as idp_signals
 # from authentic2.idp.models import *
 
-from authentic2.utils import (get_backends as get_idp_backends, get_username, login_require)
+from authentic2.utils import (get_backends as get_idp_backends,
+        get_username, login_require, find_authentication_event)
 from authentic2.decorators import is_transient_user
 from authentic2.attributes_ng.engine import get_attributes
 
@@ -308,22 +308,21 @@ def build_assertion(request, login, nid_format='transient', attributes=None):
             authn_context = lasso.SAML2_AUTHN_CONTEXT_PASSWORD_PROTECTED_TRANSPORT
     else:
         try:
-            auth_event = AuthenticationEvent.objects.\
-                get(nonce=login.request.id)
-            logger.debug("authentication from stored event "
-                "%s" % auth_event)
-            if auth_event.how == 'password':
+            event = find_authentication_event(request, login.request.id)
+            logger.debug("authentication from stored event %r", event)
+            how = event['how']
+            if how == 'password':
                 authn_context = lasso.SAML2_AUTHN_CONTEXT_PASSWORD
-            elif auth_event.how == 'password-on-https':
+            elif how == 'password-on-https':
                 authn_context = \
                     lasso.SAML2_AUTHN_CONTEXT_PASSWORD_PROTECTED_TRANSPORT
-            elif auth_event.how == 'ssl':
+            elif how == 'ssl':
                 authn_context = lasso.SAML2_AUTHN_CONTEXT_X509
-            elif auth_event.how.startswith('oath-totp'):
+            elif how.startswith('oath-totp'):
                 authn_context = lasso.SAML2_AUTHN_CONTEXT_TIME_SYNC_TOKEN
             else:
-                raise NotImplementedError('Unknown authentication method %r' \
-                    % auth_event.how)
+                raise NotImplementedError('Unknown authentication method %s',
+                        how)
         except ObjectDoesNotExist:
             # TODO: previous session over secure transport (ssl) ?
             authn_context = lasso.SAML2_AUTHN_CONTEXT_PREVIOUS_SESSION
@@ -622,7 +621,7 @@ def sso_after_process_request(request, login, consent_obtained=False,
     """
     nonce = login.request.id
     user = user or request.user
-    did_auth = AuthenticationEvent.objects.filter(nonce=nonce).exists()
+    did_auth = find_authentication_event(request, nonce) is not None
     force_authn = login.request.forceAuthn
     passive = login.request.isPassive
 
