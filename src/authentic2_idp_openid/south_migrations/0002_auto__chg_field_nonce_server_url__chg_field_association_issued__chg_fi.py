@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
+from ..migration_utils import was_applied
 
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        if was_applied(__file__, 'idp_openid'):
+            return
 
         # Changing field 'Nonce.server_url'
         db.alter_column(u'idp_openid_nonce', 'server_url', self.gf('django.db.models.fields.CharField')(max_length=768))
@@ -30,7 +31,7 @@ class Migration(SchemaMigration):
         db.alter_column(u'idp_openid_association', 'server_url', self.gf('django.db.models.fields.CharField')(max_length=2047))
 
     models = {
-        u'idp_openid.association': {
+        u'authentic2_idp_openid.association': {
             'Meta': {'unique_together': "(('server_url', 'handle'),)", 'object_name': 'Association'},
             'assoc_type': ('django.db.models.fields.CharField', [], {'max_length': '64'}),
             'expire': ('django.db.models.fields.DateTimeField', [], {}),
@@ -41,14 +42,14 @@ class Migration(SchemaMigration):
             'secret': ('authentic2.saml.fields.PickledObjectField', [], {}),
             'server_url': ('django.db.models.fields.CharField', [], {'max_length': '768'})
         },
-        u'idp_openid.nonce': {
+        u'authentic2_idp_openid.nonce': {
             'Meta': {'unique_together': "(('server_url', 'salt'),)", 'object_name': 'Nonce'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'salt': ('django.db.models.fields.CharField', [], {'max_length': '40'}),
             'server_url': ('django.db.models.fields.CharField', [], {'max_length': '768'}),
             'timestamp': ('django.db.models.fields.IntegerField', [], {})
         },
-        u'idp_openid.trustedroot': {
+        u'authentic2_idp_openid.trustedroot': {
             'Meta': {'object_name': 'TrustedRoot'},
             'choices': ('authentic2.saml.fields.PickledObjectField', [], {}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -57,4 +58,4 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['idp_openid']
+    complete_apps = ['authentic2_idp_openid']
