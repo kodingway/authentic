@@ -1439,7 +1439,7 @@ def slo(request):
 
     # Use the logout view and come back to the finish slo view
     next_url = make_url(finish_slo, params={'id': logout.request.id})
-    return a2_views(next_url=next_url, do_local=False, check_referer=False)
+    return a2_views.logout(request, next_url=next_url, do_local=False, check_referer=False)
 
 
 def icon_url(name):
