@@ -75,7 +75,6 @@ class TicketAdmin(CleanupAdminMixin, admin.ModelAdmin):
             'service',
             'service_url',
             'user',
-            'identifier',
             'creation',
             'expire'
     )
