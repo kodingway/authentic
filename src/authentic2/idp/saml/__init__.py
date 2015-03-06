@@ -39,6 +39,6 @@ if django.VERSION >= (1,7):
     from django.apps import AppConfig
     class SAML2IdPConfig(AppConfig):
         name = 'authentic2.idp.saml'
-        label = 'SAML IdP'
+        label = 'authentic2_idp_saml'
     default_app_config = 'authentic2.idp.saml.SAML2IdPConfig'
 
