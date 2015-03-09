@@ -35,7 +35,7 @@ def valid_token(method):
     return f
 
 def login(request, user, redirect_url='auth_homepage'):
-    user.backend = 'authentic2.backends.ModelBackend'
+    user.backend = 'authentic2.backends.models_backend.ModelBackend'
     django_login(request, user)
     return redirect(redirect_url)
 
