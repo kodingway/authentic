@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-16 17:07+0100\n"
+"POT-Creation-Date: 2015-03-09 17:26+0100\n"
 "PO-Revision-Date: 2015-02-26 17:53+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -17,85 +17,104 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n>1;\n"
 
-#: admin.py:62
+#: admin.py:21
+msgid "Cleanup expired objects"
+msgstr "Nettoyer les objets qui ont expiré"
+
+#: admin.py:73
 msgid "session data"
 msgstr "données de session"
 
-#: admin.py:73
+#: admin.py:84
 msgid "IP adresses"
 msgstr "adresses IP"
 
-#: admin.py:89
+#: admin.py:100
 #, python-format
 msgid "deleted user %r"
 msgstr "utilisateur supprimé %r"
 
-#: admin.py:91 models.py:89 models.py:189 models.py:199
+#: admin.py:102 models.py:88 models.py:159 models.py:169 models.py:360
 msgid "user"
 msgstr "utilisateur"
 
-#: admin.py:95
+#: admin.py:106
 msgid "clear expired sessions"
 msgstr "Supprimer les sessions expirées"
 
-#: admin.py:100
+#: admin.py:111
 msgid "external"
 msgstr "identifiant externe"
 
-#: admin.py:106 templates/registration/delete_account.html:13
+#: admin.py:117 templates/registration/delete_account.html:13
 msgid "Yes"
 msgstr "Oui"
 
-#: admin.py:107 templates/registration/delete_account.html:14
+#: admin.py:118 templates/registration/delete_account.html:14
 msgid "No"
 msgstr "Non"
 
-#: admin.py:125
+#: admin.py:136
 msgid "realm"
 msgstr "domaine"
 
-#: admin.py:153
+#: admin.py:164
 msgid "Personal info"
 msgstr "Informations personnelles"
 
-#: admin.py:154
+#: admin.py:165
 msgid "Permissions"
 msgstr ""
 
-#: admin.py:156
+#: admin.py:167
 msgid "Important dates"
 msgstr "Dates importantes"
 
-#: admin.py:182
+#: admin.py:193
 msgid "Attributes"
 msgstr "Attributs"
 
-#: app_settings.py:114
+#: app_settings.py:116
 msgid "Required. At most 30 characters. Letters, digits, and @/./+/-/_ only."
 msgstr ""
 "Requis. 30 caractères maximum. Uniquement des lettres, nombres et les "
 "caractères « @ », « . », « + », « - » et « _ »."
 
-#: app_settings.py:116
+#: app_settings.py:118
 msgid "Username"
 msgstr "Identifiant"
 
-#: attribute_kinds.py:28
+#: attribute_kinds.py:31
 msgid "SIRET number must contain 14 digits"
 msgstr "Le SIRET doit contenir 14 chiffres"
 
-#: attribute_kinds.py:31
+#: attribute_kinds.py:34
 msgid "SIRET validation code does not match"
 msgstr "Les clé de validation de votre SIRET sont inexactes"
 
-#: attribute_kinds.py:59
+#: attribute_kinds.py:62
 msgid "string"
 msgstr "chaîne de caractère"
 
-#: auth_frontends.py:19 forms.py:93 registration_backend/forms.py:19
+#: attributes_ng/sources/django_user.py:28
+msgid "User domain"
+msgstr "Domaine de l'utilisateur."
+
+#: attributes_ng/sources/django_user.py:29
+msgid "User identifier"
+msgstr "Identifiant de l'utilisateur"
+
+#: auth_frontends.py:16 forms.py:94 registration_backend/forms.py:75
 #: templates/auth/login_password_profile.html:2
 msgid "Password"
 msgstr "Mot de passe"
+
+#: auth_frontends.py:52
+#, python-format
+msgid ""
+"You made too many login errors recently, you must wait <span class=\"js-"
+"seconds-until\">%s</span> seconds to try again."
+msgstr ""
 
 #: dashboard.py:30
 msgid "Quick links"
@@ -117,31 +136,31 @@ msgstr "Me déconnecter"
 msgid "Users and groups"
 msgstr "Utilisateurs et groupes"
 
-#: dashboard.py:53
+#: dashboard.py:54
 msgid "Debug"
 msgstr "Débogage"
 
-#: dashboard.py:72 dashboard.py:112
+#: dashboard.py:74 dashboard.py:114
 msgid "Recent Actions"
 msgstr "Actions récentes"
 
-#: dashboard.py:76
+#: dashboard.py:78
 msgid "Support"
 msgstr ""
 
-#: dashboard.py:79
+#: dashboard.py:81
 msgid "Authentic2 documentation"
 msgstr "Documentation sur authentic2"
 
-#: dashboard.py:84
+#: dashboard.py:86
 msgid "Authentic2 project"
 msgstr "Projet Authentic2"
 
-#: dashboard.py:89
+#: dashboard.py:91
 msgid "Authentic Mailing List"
 msgstr "List de diffusion sur Authentic"
 
-#: fix_user_model.py:32
+#: fix_user_model.py:34
 #, python-format
 msgid ""
 "Required, %s characters or fewer. Only letters, numbers, and @, ., +, -, or "
@@ -150,19 +169,19 @@ msgstr ""
 "Requis. %s caractères maximum. Uniquement des lettres, nombres et les "
 "caractères « @ », « . », « + », « - » et « _ »."
 
-#: fix_user_model.py:37 models.py:67
+#: fix_user_model.py:39 models.py:66
 msgid "username"
 msgstr "Identifiant"
 
-#: forms.py:95
+#: forms.py:96
 msgid "New email"
 msgstr "Nouveau courriel"
 
-#: forms.py:105
+#: forms.py:106
 msgid "Incorrect password."
 msgstr "Mot de passe incorrect."
 
-#: forms.py:119 models.py:90
+#: forms.py:120 models.py:89
 msgid "users"
 msgstr "utilisateurs"
 
@@ -186,105 +205,109 @@ msgstr "condensé"
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
-#: models.py:68
+#: middleware.py:150
+msgid "You must change your password to continue"
+msgstr "Vous devez changer votre mot de passe avant de continuer."
+
+#: models.py:67
 msgid ""
 "Required. 30 characters or fewer. Letters, numbers and @/./+/-/_ characters"
 msgstr ""
 "Requis. 30 caractères maximum. Uniquement des lettres, des nombres et les "
 "caractères « @ », « . », « + », « - » et « _ »."
 
-#: models.py:71
+#: models.py:70
 msgid "Enter a valid username."
 msgstr "Entrez un identifiant correct."
 
-#: models.py:73
+#: models.py:72
 msgid "staff status"
 msgstr ""
 
-#: models.py:74
+#: models.py:73
 msgid "Designates whether the user can log into this admin site."
 msgstr ""
 
-#: models.py:76
+#: models.py:75
 msgid "active"
 msgstr ""
 
-#: models.py:77
+#: models.py:76
 msgid ""
 "Designates whether this user should be treated as active. Unselect this "
 "instead of deleting accounts."
 msgstr ""
 
-#: models.py:79
+#: models.py:78
 msgid "date joined"
 msgstr ""
 
-#: models.py:191 models.py:205
+#: models.py:161 models.py:175
 msgid "creation date"
 msgstr "date de création"
 
-#: models.py:194
+#: models.py:164
 msgid "user to delete"
 msgstr "utilisateur à effacer"
 
-#: models.py:195
+#: models.py:165
 msgid "users to delete"
 msgstr "utilisateurs à effacer"
 
-#: models.py:201
+#: models.py:171
 msgid "source"
 msgstr ""
 
-#: models.py:203
+#: models.py:173
 msgid "external id"
 msgstr "identifiant externe"
 
-#: models.py:207
+#: models.py:177
 msgid "last update date"
 msgstr "dernière date de mise à jour"
 
-#: models.py:220
+#: models.py:190
 msgid "user external id"
 msgstr "identifiant externe d'un utilisateur"
 
-#: models.py:221
+#: models.py:191
 msgid "user external ids"
 msgstr "identifiants externes des utilisateurs"
 
-#: models.py:226
+#: models.py:196
 msgid "when"
 msgstr "quand"
 
-#: models.py:228
+#: models.py:198
 msgid "who"
 msgstr "qui"
 
-#: models.py:230
+#: models.py:200
 msgid "how"
 msgstr "comment"
 
-#: models.py:232
+#: models.py:202
 msgid "nonce"
 msgstr "numéro unique"
 
-#: models.py:237
+#: models.py:207
 msgid "authentication log"
 msgstr "Journal des authentifications"
 
-#: models.py:238
+#: models.py:208
 msgid "authentication logs"
 msgstr "Journaux des authentification"
 
-#: models.py:241
+#: models.py:211
 #, python-format
 msgid "Authentication of %(who)s by %(how)s at %(when)s"
 msgstr "Authentification de %(who)s par %(how)s à %(when)s"
 
-#: models.py:245
+#: models.py:215
 msgid "url"
 msgstr ""
 
-#: models.py:245
+#: models.py:215
 msgid ""
 "you can use a {} to pass the URL of the success icon, ex.: http://example."
 "com/logout?next={}"
@@ -292,15 +315,15 @@ msgstr ""
 "vous pouvez utiliser la chaîne {} pour passer l'URL de l'icône de succès,  "
 "ex.: http://example.com/logout?next={}"
 
-#: models.py:249
+#: models.py:219
 msgid "use an iframe instead of an img tag for logout"
 msgstr "utiliser une iframe au lieu d'un tag img pour la déconnexion"
 
-#: models.py:252
+#: models.py:222
 msgid "iframe logout timeout (ms)"
 msgstr "temps d'expiration pour les iframe de déconnexion (en ms)"
 
-#: models.py:253
+#: models.py:223
 msgid ""
 "if iframe logout is used, it's the time between the onload event for this "
 "iframe and the moment we consider its loading to be really finished"
@@ -309,210 +332,113 @@ msgstr ""
 "l'évènement onload pour cette iframe et le moment où l'on peut considérer "
 "que le chargement vraiment terminé."
 
-#: models.py:269 models.py:362
+#: models.py:239 models.py:332
 msgid "content type"
 msgstr "type d'objet"
 
-#: models.py:271 models.py:364
+#: models.py:241 models.py:334
 msgid "object identifier"
 msgstr "identifiant d'objet"
 
-#: models.py:275 models.py:276
+#: models.py:245 models.py:246
 msgid "logout URL"
 msgstr "URL de déconnexion"
 
-#: models.py:280
+#: models.py:250
 msgid "provider"
 msgstr "fournisseur"
 
-#: models.py:282
+#: models.py:252
 msgid "about"
 msgstr "à propos"
 
-#: models.py:284
+#: models.py:254
 msgid "service"
 msgstr ""
 
-#: models.py:286
+#: models.py:256
 msgid "format identifier"
 msgstr "identifiant du format"
 
-#: models.py:288
+#: models.py:258
 msgid "identifier"
 msgstr "identifiant"
 
-#: models.py:293
+#: models.py:263
 msgid "federation identifier"
 msgstr "identifiant de fédération"
 
-#: models.py:294
+#: models.py:264
 msgid "federation identifiers"
 msgstr "identifiants de fédération"
 
-#: models.py:297
+#: models.py:267
 msgid "label"
 msgstr "label"
 
-#: models.py:299
+#: models.py:269
 msgid "description"
 msgstr ""
 
-#: models.py:300
+#: models.py:270
 msgid "name"
 msgstr "identifiant"
 
-#: models.py:303
+#: models.py:273
 msgid "required"
 msgstr "requis"
 
-#: models.py:306
+#: models.py:276
 msgid "asked on registration"
 msgstr "demandé à l'enregistrement"
 
-#: models.py:309
+#: models.py:279
 msgid "user editable"
 msgstr "éditable par l'utilisateur"
 
-#: models.py:312
+#: models.py:282
 msgid "user visible"
 msgstr "visible de l'utilisateur"
 
-#: models.py:315
+#: models.py:285
 msgid "multiple"
 msgstr ""
 
-#: models.py:318
+#: models.py:288
 msgid "kind"
 msgstr "type"
 
-#: models.py:357
+#: models.py:327
 msgid "attribute definition"
 msgstr "définition d'un attribut"
 
-#: models.py:358
+#: models.py:328
 msgid "attribute definitions"
 msgstr "définition des attributs"
 
-#: models.py:368
+#: models.py:338
 msgid "attribute"
 msgstr "attribut"
 
-#: models.py:370
+#: models.py:340
 msgid "content"
 msgstr "contenu"
 
-#: models.py:385
+#: models.py:355
 msgid "attribute value"
 msgstr "valeur d'un attribut"
 
-#: models.py:386
+#: models.py:356
 msgid "attribute values"
 msgstr "valeurs des attributs"
 
-#: validators.py:39
-msgid "Enter a valid email address."
-msgstr "Entrez une adresse de courriel valide."
+#: models.py:363 models.py:364
+#, fuzzy
+#| msgid "Password reset failed"
+msgid "password reset"
+msgstr "Ré-initialistion du mot de passe échouée"
 
-#: validators.py:45
-msgid "Email domain is invalid"
-msgstr "Le domaine de l'adresse de courriel est invalide."
-
-#: validators.py:61
-msgid "Invalid email address."
-msgstr "Adresse de courriel invalide."
-
-#: validators.py:69
-msgid "Nonexistent domain."
-msgstr "Domaine inexistant."
-
-#: validators.py:71
-msgid "Nonexistent email address."
-msgstr "Adresse de courriel inexistante."
-
-#: validators.py:85
-#, python-format
-msgid "password must contain at least %d characters"
-msgstr "Le mot de passe doit contenir au moins %d caractères."
-
-#: validators.py:94
-#, python-format
-msgid ""
-"password must contain characters from at least %d classes amon: lowercase "
-"letters, uppercase letters, digits, and punctuations"
-msgstr ""
-"Le mot de passe doit contenir des caractères d'au moins %d types parmi: "
-"minuscules, majuscules, chiffres et ponctuations"
-
-#: views.py:173
-msgid ""
-"Your request for changing your email is received. An email of validation was "
-"sent to you. Please click on the link contained inside."
-msgstr ""
-"Votre demande de changement d'adresse de courriel a bien été reçue. Un "
-"courriel de validation vous a été envoyé. Veuillez cliquer sur le lien "
-"contenu dans ce courriel."
-
-#: views.py:193
-msgid "your request for changing your email for {0} is successful"
-msgstr "Votre demande de changement d'adresse de courriel pour {0} est validée"
-
-#: views.py:196
-msgid "your request for changing your email is too old, try again"
-msgstr ""
-"Votre demande de changement d'adresse de courriel est trop ancienne, "
-"veuillez réessayez"
-
-#: views.py:199
-msgid "your request for changing your email is invalid, try again"
-msgstr ""
-"Votre demande de changement d'adresse de courriel est invalide, veuillez "
-"réessayer"
-
-#: views.py:202
-msgid "your request for changing your email was not on this site, try again"
-msgstr ""
-"Votre demande de changement d'adresse de courriel vient d'un autre site que "
-"celui-ci."
-
-#: views.py:205
-msgid "your request for changing your email is for an unknown user, try again"
-msgstr ""
-"Votre demande de changement d'adresse de courriel concerne un utilisateur "
-"inconnu."
-
-#: views.py:461
-msgid "Logging out from all your services"
-msgstr "Déconnexion de tous vos services"
-
-#: views.py:466 templates/registration/logout.html:9
-msgid "Logged out"
-msgstr "Déconnecté"
-
-#: attributes_ng/sources/django_user.py:28
-msgid "User domain"
-msgstr "Domaine de l'utilisateur."
-
-#: attributes_ng/sources/django_user.py:29
-msgid "User identifier"
-msgstr "Identifiant de l'utilisateur"
-
-#: registration_backend/forms.py:21
-msgid "Password (again)"
-msgstr "Mot de passe (encore une fois)"
-
-#: registration_backend/forms.py:47
-msgid " (validation)"
-msgstr " (confirmation)"
-
-#: registration_backend/forms.py:82
-msgid "The character @ is forbidden in usernames."
-msgstr "Le caractère @ est interdit dans les identifiants."
-
-#: registration_backend/forms.py:87
-msgid "A user with that username already exists."
-msgstr "Un autre utilisateur utilise déjà cet identifiant."
-
-#: registration_backend/forms.py:98
+#: registration_backend/forms.py:38
 msgid ""
 "This email address is already in use. Please supply a different email "
 "address."
@@ -520,20 +446,28 @@ msgstr ""
 "Cette adresse de courriel est déjà utilisée. Utilisez s'il vous plait une "
 "autre adresse de courriel."
 
-#: registration_backend/forms.py:114
+#: registration_backend/forms.py:77
+msgid "Password (again)"
+msgstr "Mot de passe (encore une fois)"
+
+#: registration_backend/forms.py:104
+msgid " (validation)"
+msgstr " (confirmation)"
+
+#: registration_backend/forms.py:143
 #, python-format
 msgid "This field must match the %s field."
 msgstr "Ce champ doit être identique au champ « %s »."
 
-#: registration_backend/forms.py:118
+#: registration_backend/forms.py:147
 msgid "The two password fields didn't match."
 msgstr "Les deux champs mot de passe ne correspondent pas."
 
-#: registration_backend/forms.py:122 registration_backend/forms.py:127
+#: registration_backend/forms.py:199 registration_backend/forms.py:206
 msgid "New password"
 msgstr "Nouveau mot de passe"
 
-#: registration_backend/views.py:105
+#: registration_backend/views.py:111
 msgid ""
 "Your account has been scheduled for deletion. You cannot use it anymore."
 msgstr ""
@@ -558,38 +492,6 @@ msgstr ""
 #: templates/500.html:10
 msgid "We're sorry but a server error has occurred."
 msgstr "Nous sommes désolé mais nous constatons une erreur serveur."
-
-#: templates/base.html:20 templates/base_no_sekizai.html:18
-msgid "Versatile Identity Management Server"
-msgstr "Serveur de gestion d'identité versatile"
-
-#: templates/base.html:30 templates/base_no_sekizai.html:28
-#, python-format
-msgid "Hello %(username)s."
-msgstr "Bonjour %(username)s"
-
-#: templates/base.html:31 templates/base_no_sekizai.html:29
-#: templates/idp/logout.html:5
-msgid "Logout"
-msgstr "Déconnexion"
-
-#: templates/error.html:8 templates/idp/account_management.html:63
-#: templates/registration/logout.html:10
-#: templates/registration/registration_complete.html:10
-msgid "Back"
-msgstr "Retour"
-
-#: templates/error_ssl.html:4
-msgid "Error: authentication failure"
-msgstr "Erreur: échec de l'authentification"
-
-#: templates/error_ssl.html:8
-msgid "Authentication failure"
-msgstr "Échec de l'authentification"
-
-#: templates/error_ssl.html:10
-msgid "The SSL authentication has failed"
-msgstr "L'authentification SSL a échouée"
 
 #: templates/admin/base_site.html:4
 msgid "Authentic site admin"
@@ -619,6 +521,7 @@ msgid "Log in"
 msgstr "Connexion"
 
 #: templates/authentic2/login_password_form.html:8
+#: templates/authentic2/logout_confirm.html:20
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -637,6 +540,26 @@ msgstr "Pas de compte ?"
 #: templates/authentic2/login_password_form.html:18
 msgid "Register!"
 msgstr "Enregistrez-vous !"
+
+#: templates/authentic2/logout.html:5
+#: templates/authentic2/logout_confirm.html:6 templates/base.html:31
+#: templates/base_no_sekizai.html:29
+msgid "Logout"
+msgstr "Déconnexion"
+
+#: templates/authentic2/logout.html:44
+msgid "Continue logout"
+msgstr "Continuer la déconnexion"
+
+#: templates/authentic2/logout_confirm.html:13
+msgid "You are going to do a global logout, do you want to continue ?"
+msgstr "Vous avez demandé un déconnexion globale, voulez-vous continuer ?"
+
+#: templates/authentic2/logout_confirm.html:19
+#, fuzzy
+#| msgid "Continue logout"
+msgid "Continue"
+msgstr "Continuer la déconnexion"
 
 #: templates/authentic2/unused_account_alert_body.txt:1
 #, python-format
@@ -667,53 +590,31 @@ msgstr ""
 msgid "Notification: %(user)s, your account has been deleted"
 msgstr ""
 
-#: templates/idp/account_management.html:5
-msgid "Authentic - Account Management"
-msgstr "Authentic - Gestion du compte"
+#: templates/base.html:19 templates/base_no_sekizai.html:18
+msgid "Versatile Identity Management Server"
+msgstr "Serveur de gestion d'identité versatile"
 
-#: templates/idp/account_management.html:10 templates/idp/homepage.html:13
-msgid "Account Management"
-msgstr "Gestion de votre compte"
+#: templates/base.html:30 templates/base_no_sekizai.html:28
+#, python-format
+msgid "Hello %(username)s."
+msgstr "Bonjour %(username)s"
 
-#: templates/idp/account_management.html:11
-msgid "Profile"
-msgstr "Profil"
+#: templates/error.html:8 templates/registration/logout.html:10
+#: templates/registration/registration_complete.html:10
+msgid "Back"
+msgstr "Retour"
 
-#: templates/idp/account_management.html:29
-msgid "Change email"
-msgstr "Modifier votre adresse électronique"
+#: templates/error_ssl.html:4
+msgid "Error: authentication failure"
+msgstr "Erreur: échec de l'authentification"
 
-#: templates/idp/account_management.html:32
-msgid "Edit profile"
-msgstr "Éditer votre profil"
+#: templates/error_ssl.html:8
+msgid "Authentication failure"
+msgstr "Échec de l'authentification"
 
-#: templates/idp/account_management.html:35
-msgid "Delete profile"
-msgstr "Supprimer votre profil"
-
-#: templates/idp/account_management.html:38
-msgid "Credentials"
-msgstr "Moyens d'authentification"
-
-#: templates/idp/account_management.html:44
-msgid "Federation management"
-msgstr "Gestion des liaisons"
-
-#: templates/idp/homepage.html:5
-msgid "Authentic"
-msgstr "Authentic"
-
-#: templates/idp/homepage.html:20
-msgid "Services"
-msgstr "Services"
-
-#: templates/idp/homepage.html:50
-msgid "Administration"
-msgstr "Administration"
-
-#: templates/idp/logout.html:40
-msgid "Continue logout"
-msgstr "Continuer la déconnexion"
+#: templates/error_ssl.html:10
+msgid "The SSL authentication has failed"
+msgstr "L'authentification SSL a échouée"
 
 #: templates/interaction/consent_attributes.html:4
 msgid "Consent page for attribute propagation"
@@ -823,6 +724,8 @@ msgid "Change email on %(domain)s"
 msgstr "Changer l'adresse de courriel sur %(domain)s"
 
 #: templates/registration/activate.html:5
+#: templates/registration/activation_expired.html:9
+#: templates/registration/activation_failed.html:9
 msgid "Account activation"
 msgstr "Activation du compte"
 
@@ -831,6 +734,7 @@ msgid "Account successfully activated"
 msgstr "Activation du compte réussie"
 
 #: templates/registration/activate.html:18
+#: templates/registration/activation_failed.html:5
 msgid "Account activation failed"
 msgstr "Échec à l'activation du compte"
 
@@ -838,8 +742,28 @@ msgstr "Échec à l'activation du compte"
 msgid "Your account is now activated"
 msgstr "Votre compte est maintenant activé"
 
+#: templates/registration/activation_email.html:2
+#, fuzzy
+#| msgid "Account activation"
+msgid "Account creation"
+msgstr "Activation du compte"
+
+#: templates/registration/activation_email.html:4
+#, python-format
+msgid ""
+"\n"
+"To continue your account creation on %(site)s please <a href=\"%(site)s"
+"%(registration_token)s\">click here</a>\n"
+msgstr ""
+
+#: templates/registration/activation_email.html:8
+#, fuzzy, python-format
+#| msgid "Link is valid for %(expiration_days)s days."
+msgid "This link is valid for %(expiration_days)s days."
+msgstr "Ce lien est valide pendant %(expiration_days)s jours."
+
 #: templates/registration/activation_email.txt:2
-msgid "Activate account at"
+msgid "Activate account"
 msgstr "Activer le compte sur"
 
 #: templates/registration/activation_email.txt:6
@@ -851,6 +775,24 @@ msgstr "Ce lien est valide pendant %(expiration_days)s jours."
 msgid "Account activation on"
 msgstr "Activation du compte sur"
 
+#: templates/registration/activation_expired.html:5
+#, fuzzy
+#| msgid "Account activation failed"
+msgid "Account activation expired"
+msgstr "Échec à l'activation du compte"
+
+#: templates/registration/activation_expired.html:10
+#, fuzzy
+#| msgid "Account activation failed"
+msgid "Your activation key is expired"
+msgstr "Échec à l'activation du compte"
+
+#: templates/registration/activation_failed.html:10
+#, fuzzy
+#| msgid "Account activation failed"
+msgid "Activation failed"
+msgstr "Échec à l'activation du compte"
+
 #: templates/registration/delete_account.html:5
 msgid "Delete account"
 msgstr "Supprimer votre compte"
@@ -859,14 +801,83 @@ msgstr "Supprimer votre compte"
 msgid "Delete my account and all my personal datas ?"
 msgstr "Supprimer votre compte et toutes vos données personnelles ?"
 
+#: templates/registration/login_choices.html:5
+#: templates/registration/login_choices.html:16
+msgid "Login"
+msgstr "Connexion"
+
+#: templates/registration/login_choices.html:17
+msgid ""
+"\n"
+"An account already exists for this email. Please click on the account name "
+"to log in with.\n"
+msgid_plural ""
+"\n"
+"More accounts are associated to this email.\n"
+"Please choose the account you want to log in with:\n"
+"</p>\n"
+msgstr[0] ""
+"\n"
+"Un compte associé à cette adresse courriel existe déjà.\n"
+"Veuillez cliquer sur le nom du compte afin de vous connecter: \n"
+msgstr[1] ""
+"\n"
+"Plusieurs comptes sont associés à cette adresse courriel.\n"
+"Veuillez choisir le compte avec lequel vous souhaitez vous connecter:\n"
+
+#: templates/registration/login_choices.html:28
+#, python-format
+msgid ""
+"\n"
+"      Account #%(c)s: %(fullname)s\n"
+"      "
+msgstr ""
+"\n"
+"Compte #%(c)s: %(fullname)s\n"
+"      "
+
+#: templates/registration/login_choices.html:33
+#, python-format
+msgid ""
+"\n"
+"    created on %(creation_date)s\n"
+"    "
+msgstr ""
+"\n"
+"créé le %(creation_date)s\n"
+"    "
+
+#: templates/registration/login_choices.html:38
+#, python-format
+msgid ""
+"\n"
+"    last login on %(login_date)s\n"
+"    "
+msgstr ""
+"\n"
+"date de dernière connexion: %(login_date)s\n"
+"    "
+
+#: templates/registration/login_choices.html:48
+msgid "or"
+msgstr "ou"
+
+#: templates/registration/login_choices.html:50
+msgid "create a new account"
+msgstr "créez un nouveau compte"
+
 #: templates/registration/logout.html:5
 msgid "Logging out"
 msgstr "Déconnexion"
 
+#: templates/registration/logout.html:9
+msgid "Logged out"
+msgstr "Déconnecté"
+
 #: templates/registration/password_change_done.html:5
 #: templates/registration/password_change_form.html:5
 msgid "Changing password"
-msgstr "Modifier le mot de passe"
+msgstr "Modification du mot de passe"
 
 #: templates/registration/password_change_done.html:9
 msgid "Password changed"
@@ -875,6 +886,7 @@ msgstr "Mot de passe modifié"
 #: templates/registration/password_change_form.html:13
 #: templates/registration/password_reset_confirm.html:16
 #: templates/registration/password_reset_form.html:16
+#: templates/registration/registration_completion_form.html:21
 #: templates/registration/registration_form.html:22
 msgid "Submit"
 msgstr "Valider"
@@ -889,7 +901,7 @@ msgstr "Mot de passe réinitialisé avec succés"
 #: templates/registration/password_reset_form.html:5
 #: templates/registration/password_reset_form.html:10
 msgid "Resetting password"
-msgstr "Ré-initialiser le mot de passe"
+msgstr "Ré-initialisation le mot de passe"
 
 #: templates/registration/password_reset_confirm.html:21
 msgid "Password reset failed"
@@ -916,27 +928,102 @@ msgid "Successful registration"
 msgstr "Enregistrement réussi"
 
 #: templates/registration/registration_complete.html:9
-msgid "You are now registered. Activation email sent."
+msgid "Thank you for registering. Activation email sent."
 msgstr ""
 "Vous êtes maintenant enregistré. Un courriel d'activation vient de vous être "
 "envoyé."
 
+#: templates/registration/registration_completion_form.html:5
+#: templates/registration/registration_completion_form.html:16
 #: templates/registration/registration_form.html:5
 #: templates/registration/registration_form.html:16
 msgid "Registration"
 msgstr "Enregistrement"
 
-#~ msgid "The two email fields didn't match."
-#~ msgstr "Les deux champs courriel ne correspondent pas."
+#: templates/registration/registration_completion_form.html:17
+msgid "Please fill the formm to complete your registration"
+msgstr "Veuillez remplir le formulaire afin de finir l'enregistrement"
 
+#: validators.py:40
+msgid "Enter a valid email address."
+msgstr "Entrez une adresse de courriel valide."
+
+#: validators.py:46
+msgid "Email domain is invalid"
+msgstr "Le domaine de l'adresse de courriel est invalide."
+
+#: validators.py:62
+msgid "Invalid email address."
+msgstr "Adresse de courriel invalide."
+
+#: validators.py:70
+msgid "Nonexistent domain."
+msgstr "Domaine inexistant."
+
+#: validators.py:72
+msgid "Nonexistent email address."
+msgstr "Adresse de courriel inexistante."
+
+#: validators.py:87
+#, python-format
+msgid "password must contain at least %d characters"
+msgstr "Le mot de passe doit contenir au moins %d caractères."
+
+#: validators.py:96
+msgid ""
+"password must contain characters from at least %d classes among: lowercase "
+"letters, uppercase letters, digits, and punctuations"
+msgstr ""
+"Le mot de passe doit contenir des caractères d'au moins %d types parmi: "
+"minuscules, majuscules, chiffres et ponctuations"
+
+#: validators.py:102
+#, python-format
 msgid "your password dit not match the regular expession %s"
 msgstr "Votre mot de passe ne valide pas l'expression régulière %s."
 
-msgid "You must change your password to continue"
-msgstr "Vous devez changer votre mot de passe avant de continuer."
+#: views.py:140
+msgid ""
+"Your request for changing your email is received. An email of validation was "
+"sent to you. Please click on the link contained inside."
+msgstr ""
+"Votre demande de changement d'adresse de courriel a bien été reçue. Un "
+"courriel de validation vous a été envoyé. Veuillez cliquer sur le lien "
+"contenu dans ce courriel."
 
-msgid "Cleanup expired objects"
-msgstr "Nettoyer les objets qui ont expiré"
+#: views.py:160
+#, python-brace-format
+msgid "your request for changing your email for {0} is successful"
+msgstr "Votre demande de changement d'adresse de courriel pour {0} est validée"
 
-msgid "You are going to do a global logout, do you want to continue ?"
-msgstr "Vous avez demandé un déconnexion globale, voulez-vous continuer ?"
+#: views.py:163
+msgid "your request for changing your email is too old, try again"
+msgstr ""
+"Votre demande de changement d'adresse de courriel est trop ancienne, "
+"veuillez réessayez"
+
+#: views.py:166
+msgid "your request for changing your email is invalid, try again"
+msgstr ""
+"Votre demande de changement d'adresse de courriel est invalide, veuillez "
+"réessayer"
+
+#: views.py:169
+msgid "your request for changing your email was not on this site, try again"
+msgstr ""
+"Votre demande de changement d'adresse de courriel vient d'un autre site que "
+"celui-ci."
+
+#: views.py:172
+msgid "your request for changing your email is for an unknown user, try again"
+msgstr ""
+"Votre demande de changement d'adresse de courriel concerne un utilisateur "
+"inconnu."
+
+#: views.py:433
+msgid "Logging out from all your services"
+msgstr "Déconnexion de tous vos services"
+
+#: views.py:437
+msgid "You have been logged out"
+msgstr ""
