@@ -120,7 +120,7 @@ default_settings = dict(
     A2_REGISTRATION_GROUPS=Setting(default=[], definition='Default groups for self-registered users'),
     A2_PROFILE_FIELDS=Setting(default=[], definition='Fields to show to the user in the profile page'),
     A2_REGISTRATION_FIELDS=Setting(default=[], definition='Fields from the user model that must appear on the registration form'),
-    A2_REGISTRATION_REQUIRED_FIELDS=Setting(default=[], definition='Fields from the registration form that must be required'),
+    A2_REGISTRATION_REQUIRED_FIELDS=Setting(default=['first_name', 'last_name'], definition='Fields from the registration form that must be required'),
     A2_REALMS=Setting(default=[], definition='List of realms to search user accounts'),
     A2_USERNAME_REGEX=Setting(default=None, definition='Regex that username must validate'),
     A2_USERNAME_HELP_TEXT=Setting(default=None, definition='Help text to explain validation rules of usernames'),
