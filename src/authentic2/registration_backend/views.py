@@ -71,7 +71,7 @@ class RegistrationCompletionView(FormView):
                 except User.DoesNotExist:
                     pass
 
-            user_accounts = User.objects.filter(email__iexact=kwargs['email'])
+            user_accounts = User.objects.filter(email__iexact=kwargs['email']).order_by('date_joined')
             if user_accounts:
                 logout(request)
                 context = kwargs.copy()
