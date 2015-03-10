@@ -305,13 +305,15 @@ class RegistrationTests(TestCase):
         """
         test short filled password
         """
-        completion = self.client.post(url, {'username': 'toto',
+        completion = self.client.post(url, {'first_name': 'Test',
+                                            'last_name': 'User',
                                             'password1': 'toto',
                                             'password2': 'toto'})
         self.assertEqual(completion.status_code, 200)
 
     def good_password_test(self, url):
-        completion = self.client.post(url, {'username': 'toto',
+        completion = self.client.post(url, {'first_name': 'Test',
+                                            'last_name': 'User',
                                             'password1': 'T0toto',
                                             'password2': 'T0toto'})
         self.assertEqual(completion.status_code, 302)
