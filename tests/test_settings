@@ -42,3 +42,4 @@ MIGRATION_MODULES = {
 INSTALLED_APPS += ('django.contrib.sites',)
 SITE_ID = 1
 TEMPLATE_DIRS = ('tests/templates',) + TEMPLATE_DIRS
+CSRF_FAILURE_VIEW =	'django.views.csrf.csrf_failure'
