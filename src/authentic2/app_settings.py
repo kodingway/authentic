@@ -33,7 +33,7 @@ class AppSettings(object):
     @property
     def ACCEPT_EMAIL_AUTHENTICATION(self):
         return getattr(self.settings,
-                'A2_ACCEPT_EMAIL_AUTHENTICATION', False)
+                'A2_ACCEPT_EMAIL_AUTHENTICATION', True)
 
     @property
     def REALMS(self):
