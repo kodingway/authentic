@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-09 17:26+0100\n"
+"POT-Creation-Date: 2015-03-10 12:57+0100\n"
 "PO-Revision-Date: 2015-02-26 17:53+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -64,7 +64,7 @@ msgstr "Informations personnelles"
 
 #: admin.py:165
 msgid "Permissions"
-msgstr ""
+msgstr "Permissions"
 
 #: admin.py:167
 msgid "Important dates"
@@ -96,14 +96,6 @@ msgstr "Les clé de validation de votre SIRET sont inexactes"
 msgid "string"
 msgstr "chaîne de caractère"
 
-#: attributes_ng/sources/django_user.py:28
-msgid "User domain"
-msgstr "Domaine de l'utilisateur."
-
-#: attributes_ng/sources/django_user.py:29
-msgid "User identifier"
-msgstr "Identifiant de l'utilisateur"
-
 #: auth_frontends.py:16 forms.py:94 registration_backend/forms.py:75
 #: templates/auth/login_password_profile.html:2
 msgid "Password"
@@ -115,6 +107,8 @@ msgid ""
 "You made too many login errors recently, you must wait <span class=\"js-"
 "seconds-until\">%s</span> seconds to try again."
 msgstr ""
+"Vous avez fait trop d'erreurs de connexions, vous devez attendre <span class=\"js-"
+"seconds-until\">%s</span> secondes avant de pouvoir à nouveau essayer."
 
 #: dashboard.py:30
 msgid "Quick links"
@@ -146,7 +140,7 @@ msgstr "Actions récentes"
 
 #: dashboard.py:78
 msgid "Support"
-msgstr ""
+msgstr "Support"
 
 #: dashboard.py:81
 msgid "Authentic2 documentation"
@@ -222,25 +216,27 @@ msgstr "Entrez un identifiant correct."
 
 #: models.py:72
 msgid "staff status"
-msgstr ""
+msgstr "statut équipe"
 
 #: models.py:73
 msgid "Designates whether the user can log into this admin site."
-msgstr ""
+msgstr "Précise si l'utilisateur peut se connecter à ce site d'administration."
 
 #: models.py:75
 msgid "active"
-msgstr ""
+msgstr "actif"
 
 #: models.py:76
 msgid ""
 "Designates whether this user should be treated as active. Unselect this "
 "instead of deleting accounts."
 msgstr ""
+"Précise si l'utilisateur doit être considéré comme actif. Décochez ceci "
+"plutôt que de supprimer le compte."
 
 #: models.py:78
 msgid "date joined"
-msgstr ""
+msgstr "date d'inscription"
 
 #: models.py:161 models.py:175
 msgid "creation date"
@@ -256,7 +252,7 @@ msgstr "utilisateurs à effacer"
 
 #: models.py:171
 msgid "source"
-msgstr ""
+msgstr "source"
 
 #: models.py:173
 msgid "external id"
@@ -305,7 +301,7 @@ msgstr "Authentification de %(who)s par %(how)s à %(when)s"
 
 #: models.py:215
 msgid "url"
-msgstr ""
+msgstr "url"
 
 #: models.py:215
 msgid ""
@@ -354,7 +350,7 @@ msgstr "à propos"
 
 #: models.py:254
 msgid "service"
-msgstr ""
+msgstr "service"
 
 #: models.py:256
 msgid "format identifier"
@@ -378,7 +374,7 @@ msgstr "label"
 
 #: models.py:269
 msgid "description"
-msgstr ""
+msgstr "description"
 
 #: models.py:270
 msgid "name"
@@ -402,7 +398,7 @@ msgstr "visible de l'utilisateur"
 
 #: models.py:285
 msgid "multiple"
-msgstr ""
+msgstr "multiple"
 
 #: models.py:288
 msgid "kind"
@@ -434,9 +430,16 @@ msgstr "valeurs des attributs"
 
 #: models.py:363 models.py:364
 #, fuzzy
-#| msgid "Password reset failed"
 msgid "password reset"
 msgstr "Ré-initialistion du mot de passe échouée"
+
+#: attributes_ng/sources/django_user.py:28
+msgid "User domain"
+msgstr "Domaine de l'utilisateur."
+
+#: attributes_ng/sources/django_user.py:29
+msgid "User identifier"
+msgstr "Identifiant de l'utilisateur"
 
 #: registration_backend/forms.py:38
 msgid ""
@@ -487,11 +490,44 @@ msgstr "Erreur interne (500)"
 
 #: templates/500.html:8
 msgid "Server Error"
-msgstr ""
+msgstr "Erreur de serveur"
 
 #: templates/500.html:10
 msgid "We're sorry but a server error has occurred."
 msgstr "Nous sommes désolé mais nous constatons une erreur serveur."
+
+#: templates/base.html:19 templates/base_no_sekizai.html:18
+msgid "Versatile Identity Management Server"
+msgstr "Serveur de gestion d'identité versatile"
+
+#: templates/base.html:30 templates/base_no_sekizai.html:28
+#, python-format
+msgid "Hello %(username)s."
+msgstr "Bonjour %(username)s"
+
+#: templates/base.html:31 templates/base_no_sekizai.html:29
+#: templates/authentic2/logout.html:5
+#: templates/authentic2/logout_confirm.html:6
+msgid "Logout"
+msgstr "Déconnexion"
+
+#: templates/error.html:8 templates/idp/account_management.html:63
+#: templates/registration/logout.html:10
+#: templates/registration/registration_complete.html:10
+msgid "Back"
+msgstr "Retour"
+
+#: templates/error_ssl.html:4
+msgid "Error: authentication failure"
+msgstr "Erreur: échec de l'authentification"
+
+#: templates/error_ssl.html:8
+msgid "Authentication failure"
+msgstr "Échec de l'authentification"
+
+#: templates/error_ssl.html:10
+msgid "The SSL authentication has failed"
+msgstr "L'authentification SSL a échouée"
 
 #: templates/admin/base_site.html:4
 msgid "Authentic site admin"
@@ -503,15 +539,15 @@ msgstr "Administration d'Authentic"
 
 #: templates/admin/log_view.html:4
 msgid "Logs"
-msgstr ""
+msgstr "Logs"
 
 #: templates/admin/log_view.html:6
 msgid "Home"
-msgstr ""
+msgstr "Accueil"
 
 #: templates/admin/log_view.html:10
 msgid "Logs page"
-msgstr ""
+msgstr "Page de logs"
 
 #: templates/authentic2/login.html:5
 #: templates/authentic2/login_password_form.html:6
@@ -541,12 +577,6 @@ msgstr "Pas de compte ?"
 msgid "Register!"
 msgstr "Enregistrez-vous !"
 
-#: templates/authentic2/logout.html:5
-#: templates/authentic2/logout_confirm.html:6 templates/base.html:31
-#: templates/base_no_sekizai.html:29
-msgid "Logout"
-msgstr "Déconnexion"
-
 #: templates/authentic2/logout.html:44
 msgid "Continue logout"
 msgstr "Continuer la déconnexion"
@@ -563,10 +593,8 @@ msgid "The form was out of date, please try again."
 msgstr "Ce formulaire était périmé, veuillez ré-essayer."
 
 #: templates/authentic2/logout_confirm.html:19
-#, fuzzy
-#| msgid "Continue logout"
 msgid "Continue"
-msgstr "Continuer la déconnexion"
+msgstr "Continuer"
 
 #: templates/authentic2/unused_account_alert_body.txt:1
 #, python-format
@@ -577,11 +605,15 @@ msgid ""
 "your account\n"
 "will be deleted."
 msgstr ""
+"Bonjour %(user)s,\n"
+"\n"
+"Vous ne vous êtes pas connecté depuis %(threshold)s jours. Dans %(clean_threshold)s jours \n"
+"votre compte sera supprimé.\n"
 
 #: templates/authentic2/unused_account_alert_subject.txt:1
 #, python-format
 msgid "Alert: %(user)s you have not logged since %(threshold)s"
-msgstr ""
+msgstr "Alerte: %(user)s, vous ne vous êtes pas connecté depuis %(threshold)s"
 
 #: templates/authentic2/unused_account_delete_body.txt:1
 #, python-format
@@ -591,37 +623,59 @@ msgid ""
 "You have not logged since %(threshold)s days so your account has been "
 "deleted."
 msgstr ""
+"Bonjour %(user)s,\n"
+"\n"
+"Vous ne vous êtes pas connecté dépuis %(threshold)s jours, votre compte a donc\n"
+"été supprimé."
 
 #: templates/authentic2/unused_account_delete_subject.txt:1
 #, python-format
 msgid "Notification: %(user)s, your account has been deleted"
-msgstr ""
+msgstr "Notification: %(user)s, votre compte a été supprimé"
 
-#: templates/base.html:19 templates/base_no_sekizai.html:18
-msgid "Versatile Identity Management Server"
-msgstr "Serveur de gestion d'identité versatile"
+#: templates/idp/account_management.html:5
+msgid "Authentic - Account Management"
+msgstr "Authentic - Gestion du compte"
 
-#: templates/base.html:30 templates/base_no_sekizai.html:28
-#, python-format
-msgid "Hello %(username)s."
-msgstr "Bonjour %(username)s"
+#: templates/idp/account_management.html:10 templates/idp/homepage.html:13
+msgid "Account Management"
+msgstr "Gestion de votre compte"
 
-#: templates/error.html:8 templates/registration/logout.html:10
-#: templates/registration/registration_complete.html:10
-msgid "Back"
-msgstr "Retour"
+#: templates/idp/account_management.html:11
+msgid "Profile"
+msgstr "Profil"
 
-#: templates/error_ssl.html:4
-msgid "Error: authentication failure"
-msgstr "Erreur: échec de l'authentification"
+#: templates/idp/account_management.html:29
+msgid "Change email"
+msgstr "Modifier votre adresse électronique"
 
-#: templates/error_ssl.html:8
-msgid "Authentication failure"
-msgstr "Échec de l'authentification"
+#: templates/idp/account_management.html:32
+msgid "Edit profile"
+msgstr "Éditer votre profil"
 
-#: templates/error_ssl.html:10
-msgid "The SSL authentication has failed"
-msgstr "L'authentification SSL a échouée"
+#: templates/idp/account_management.html:35
+msgid "Delete profile"
+msgstr "Supprimer votre profil"
+
+#: templates/idp/account_management.html:38
+msgid "Credentials"
+msgstr "Moyens d'authentification"
+
+#: templates/idp/account_management.html:44
+msgid "Federation management"
+msgstr "Gestion des liaisons"
+
+#: templates/idp/homepage.html:5
+msgid "Authentic"
+msgstr "Authentic"
+
+#: templates/idp/homepage.html:20
+msgid "Services"
+msgstr "Services"
+
+#: templates/idp/homepage.html:50
+msgid "Administration"
+msgstr "Administration"
 
 #: templates/interaction/consent_attributes.html:4
 msgid "Consent page for attribute propagation"
@@ -734,7 +788,7 @@ msgstr "Changer l'adresse de courriel sur %(domain)s"
 #: templates/registration/activation_expired.html:9
 #: templates/registration/activation_failed.html:9
 msgid "Account activation"
-msgstr "Activation du compte"
+msgstr "Activer le compte sur"
 
 #: templates/registration/activate.html:12
 msgid "Account successfully activated"
@@ -750,10 +804,8 @@ msgid "Your account is now activated"
 msgstr "Votre compte est maintenant activé"
 
 #: templates/registration/activation_email.html:2
-#, fuzzy
-#| msgid "Account activation"
 msgid "Account creation"
-msgstr "Activation du compte"
+msgstr "Création de compte"
 
 #: templates/registration/activation_email.html:4
 #, python-format
@@ -762,16 +814,18 @@ msgid ""
 "To continue your account creation on %(site)s please <a href=\"%(site)s"
 "%(registration_token)s\">click here</a>\n"
 msgstr ""
+"\n"
+"Pour continuer la création du compte sur %(site)s, <a href=\"%(site)s"
+"%(registration_token)s\">cliquez ici</a>.\n"
 
 #: templates/registration/activation_email.html:8
-#, fuzzy, python-format
-#| msgid "Link is valid for %(expiration_days)s days."
+#, python-format
 msgid "This link is valid for %(expiration_days)s days."
 msgstr "Ce lien est valide pendant %(expiration_days)s jours."
 
 #: templates/registration/activation_email.txt:2
 msgid "Activate account"
-msgstr "Activer le compte sur"
+msgstr "Activation du compte"
 
 #: templates/registration/activation_email.txt:6
 #, python-format
@@ -783,20 +837,14 @@ msgid "Account activation on"
 msgstr "Activation du compte sur"
 
 #: templates/registration/activation_expired.html:5
-#, fuzzy
-#| msgid "Account activation failed"
 msgid "Account activation expired"
-msgstr "Échec à l'activation du compte"
+msgstr "Activation expirée"
 
 #: templates/registration/activation_expired.html:10
-#, fuzzy
-#| msgid "Account activation failed"
 msgid "Your activation key is expired"
-msgstr "Échec à l'activation du compte"
+msgstr "Votre clé d'activation a expiré"
 
 #: templates/registration/activation_failed.html:10
-#, fuzzy
-#| msgid "Account activation failed"
 msgid "Activation failed"
 msgstr "Échec à l'activation du compte"
 
@@ -977,6 +1025,7 @@ msgid "password must contain at least %d characters"
 msgstr "Le mot de passe doit contenir au moins %d caractères."
 
 #: validators.py:96
+#, python-format
 msgid ""
 "password must contain characters from at least %d classes among: lowercase "
 "letters, uppercase letters, digits, and punctuations"
@@ -1033,4 +1082,4 @@ msgstr "Déconnexion de tous vos services"
 
 #: views.py:437
 msgid "You have been logged out"
-msgstr ""
+msgstr "Vous avez été déconnecté."
