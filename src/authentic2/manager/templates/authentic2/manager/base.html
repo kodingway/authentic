@@ -22,12 +22,10 @@
   </script>
 {% endblock %}
 
-{% block site-url %}{{ management_homepage_url }}{% endblock %}
-{% block site-title %}{% trans "Management" %}{% endblock %}
+{% block homepage-url %}{{ homepage_url }}{% endblock %}
+{% block homepage-title %}{% trans "Management" as default_homepage_title %}{% firstof homepage_title default_homepage_title %}{% endblock %}
 
-{% block logout-url %}{{ management_logout_url }}{% endblock %}
-
-{% block homepage-url %}{% url "a2-manager-homepage" %}{% endblock %}
+{% block logout-url %}{{ logout_url }}{% endblock %}
 
 {% block appbar %}
   <h2>{% block page_title %}{% endblock %}</h2>
