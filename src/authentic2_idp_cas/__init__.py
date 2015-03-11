@@ -3,8 +3,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from .constants import SESSION_CAS_LOGOUTS
 
-__version__ = '1.0'
-
 class Plugin(object):
     def get_before_urls(self):
         from . import app_settings
