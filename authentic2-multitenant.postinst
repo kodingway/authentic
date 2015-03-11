@@ -10,9 +10,6 @@ AUTHENTIC_USER=authentic-multitenant
 AUTHENTIC_GROUP=authentic-multitenant
 AUTHENTIC_HOME=/var/lib/$NAME
 
-# source debconf stuff
-. /usr/share/debconf/confmodule
-
 case "$1" in
     configure)
         if ! getent group $AUTHENTIC_GROUP > /dev/null 2>&1; then
