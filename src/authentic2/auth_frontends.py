@@ -27,6 +27,8 @@ class LoginPasswordBackend(object):
         is_post = request.method == 'POST' and self.submit_name in request.POST
         data = request.POST if is_post else None
         form = forms.AuthenticationForm(data=data)
+        if app_settings.ACCEPT_EMAIL_AUTHENTICATION:
+            form.fields['username'].label = _('Username or email')
         is_secure = request.is_secure
         context = {
             'submit_name': self.submit_name,

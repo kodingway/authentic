@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-10 12:57+0100\n"
+"POT-Creation-Date: 2015-03-12 11:15+0100\n"
 "PO-Revision-Date: 2015-02-26 17:53+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -1083,3 +1083,7 @@ msgstr "Déconnexion de tous vos services"
 #: views.py:437
 msgid "You have been logged out"
 msgstr "Vous avez été déconnecté."
+
+#: auth_frontends.py:16
+msgid "Username or email"
+msgstr "Identifiant ou courriel"
