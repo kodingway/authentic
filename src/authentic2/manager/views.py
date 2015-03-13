@@ -35,8 +35,6 @@ class Action(object):
 class ManagerMixin(object):
     def get_context_data(self, **kwargs):
         ctx = super(ManagerMixin, self).get_context_data(**kwargs)
-        ctx['homepage_url'] = app_settings.HOMEPAGE_URL or reverse('auth_homepage')
-        ctx['homepage_title'] = app_settings.HOMEPAGE_TITLE
         ctx['logout_url'] = app_settings.LOGOUT_URL or reverse('auth_logout')
         return ctx
 

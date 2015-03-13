@@ -22,8 +22,8 @@
   </script>
 {% endblock %}
 
-{% block homepage-url %}{{ homepage_url }}{% endblock %}
-{% block homepage-title %}{% trans "Management" as default_homepage_title %}{% firstof homepage_title default_homepage_title %}{% endblock %}
+{% block homepage-url %}{% url 'a2-manager-homepage' as default_homepage_url %}{% firstof manager_homepage_url default_homepage_url %}{% endblock %}
+{% block homepage-title %}{% trans "Management" as default_homepage_title %}{% firstof manager_homepage_title default_homepage_title %}{% endblock %}
 
 {% block logout-url %}{{ logout_url }}{% endblock %}
 
