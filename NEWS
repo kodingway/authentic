@@ -1,6 +1,324 @@
 NEWS
 ====
 
+2.1.12 - March 13th 2015
+------------------------
+
+It's the last release supporting Django 1.5 & 1.6, the next will be Django 1.7
+only. You will need to update to this release before updating to the next one
+for migrations to work. Notables changes:
+ - new CAS 1.0 & 2.0 idp with support for proxy tickets and authorization
+	 between services
+ - expiration of SamlKeyValue objects
+ - worked around problem of CSRF cookie change when navigating in different
+	 tabs
+ - email authentication is now activated by default
+ - password change over LDAP works
+ - LDAP now support STARTTLS
+ - log a warning when user fails to log in more than a certain times
+ - add an exponential retry timeout before authentication failures
+ - add a flag to force user to change their password at next login
+ - add the possibility to validate passwords by using regular expression
+
+Commits
+~~~~~~~
+
+855 files changed, 55961 insertions(+), 51943 deletions(-)
+
+ - Reorder migrations of the saml application (e30917e)
+ - ldap: fix logging call (3648e4a)
+ - Do not pass homepage url through settings, use variables set in the template
+	 context by a template context processor (refs #6690) (7a9423e)
+ - login label updated when email authentication enabled (6669) (f41a12b)
+ - Support variable MANAGER_HOMEPAGE_URL and MANAGER_HOMEPAGE_TILE for the
+	 first element of the manager breadcrumb (fixes #6690) (6b9606a)
+ - Add created filed to SamlKeyValue to permit expiration of stored values
+	 (fixes #5639) (c38ee5e)
+ - Add an ExpireManager to share common code around expiration of models (refs
+	 #5639) (d5675f2)
+ - Remove LibertyFederation model (refs #5639) (1d6a4d9)
+ - Add missing newline in translations that broke msgfmt (4df0d05)
+ - Deactivate custom csrf view for tests (6f4c045)
+ - update French translation (5907b85)
+ - Use new CSRF cookie validation on login view (refs #5617) (f257370)
+ - Update french translation (fixes #5617) (8fd5446)
+ - Use new mixin on registration view to show a form error on CSRF token
+	 validation error instead of a redirect (refs #5617) (0baa91c)
+ - Allow validation of CSRF cookie to be done in view using a CBV mixin or an
+	 helper function (refs #5617) (31c743d)
+ - Use setting CSRF_FAILURE_VIEW to prevent user seeing 403 on CSRF failure,
+	 instead redirect them to the same page and display a warning (refs #5617)
+	 (25ef99f)
+ - registration tests updated to new settings (#6661) (28a1581)
+ - email authentication enabled by default (7de4f82)
+ - locale: french translation for registration backend (4b74662)
+ - typo fix on login choices page (#6634) (8a97ddd)
+ - first and last names mandatory on registration (#6653) (a025418)
+ - user fullname prefixed by account number on login choices page (#6634)
+	 (433737b)
+ - auth model backend path fix (#6635) (1051624)
+ - limit username to 30 chars (#6636) (e9d6739)
+ - Only remove the opened session cookie when the feature is activated (#6265)
+	 (a838d08)
+ - Use a valid python identifier for lable of SAML 2.0 IdP AppConfig (#6518)
+	 (ab50dce)
+ - Fix OpenID 2.0 IdP migrations since the application was renamed (6b48ab8)
+ - Fix use of the logout view by SAML 2.0 IdP (5f018c7)
+ - Remove Ticket.identifier from the admin, the field has been removed
+	 (976ab8e)
+ - Add a CAS IdP module (9b958d3)
+ - Makes make_url() accepts a fragment in the base url (b8716b9)
+ - Makes registration tests pass without network (e927faf)
+ - Add helper methods to normalize attributes values (69df370)
+ - Move to_list() and to_iter() in utils.py (a73adab)
+ - Add a helper method to retrieve the user from a session given the session
+	 key (ab3dd57)
+ - Make compile_translations target of setup.py compatible with Django 1.7
+	 (8dd988a)
+ - Add helper method check_session_key() to verify that session is still valid
+	 (4d15508)
+ - Refactor SAML 2.0 SP initiated slo to use the refactored logout view
+	 (e0db633)
+ - Rename idp/logout.html template to authentic2/logout.html (15d87d5)
+ - Refactor the logout view (ef59354)
+ - Add check_referer() helper method to check that referer match the current
+	 domain (581f34d)
+ - Create a ModelAdmin mixin for adding a default cleanup action to any model
+	 admin (0bee142)
+ - Add test method to check XML contents for some properties (9f796c0)
+ - Create a base class for tests providing 2 new helper methods (09e8a66)
+ - With Django >= 1.7 activate ATOMIC_REQUESTS on the default db (e2d3f04)
+ - Add new helper method redirect_to_logout (cfac918)
+ - Adapt SAML 2.0 IdP to new authentication events recording (15d4dde)
+ - Refactor testing for fresh authentication by storing the nonce in the
+	 session (45da549)
+ - password change view restored (3d81025)
+ - misc: add a settings option to disable https ssl checks (#6539) (783977b)
+ - misc: raise an urllib2.HTTPError if get_url returns a non 200 response
+	 (#6539) (f8543c9)
+ - style: add non-prefixed css properties (#6510) (c0c0706)
+ - At least install tox and pylnt (d6156bc)
+ - Just use tox (358a8e7)
+ - jenkins.sh: just install authentic2 using pip (4d62374)
+ - [django-1.7] SortedDict.insert() method was removed (c687a87)
+ - Rename README.rst to README to supress a warning (fe4f447)
+ - Fix typo in setup.py (4a3c9b6)
+ - [django-1.7] Rename all migrations/ directories to south_migrations/
+	 (5ac3c8a)
+ - [django-1.7] tox: adapt settings and commands (40850ef)
+ - [django-1.7] Monkey patch default Django user model for Django 1.7 (f328f6f)
+ - [django-1.7] Prevent Django 1.7 showing a warning about test suites
+	 initialized before Django 1.6 (db95cc2)
+ - [django-1.7] Natural primary key support have been added to Django 1.7, we
+	 only need natural generic foreign key support now (252476d)
+ - [django-1.6] Not settings Meta.fields or Meta.exclude has been deprecated
+	 (cbdcf5d)
+ - [django-1.6] Add missing default value to AttributePolicy.enabled field
+	 (0a4acfb)
+ - [django-1.7] Use allow lazy to apply string tranformation to translatable
+	 string in models definitions (db8dc58)
+ - [django-1.7] Use application configuration to rename the SAML 2.0 idp
+	 application and prevent name collision (af4ea67)
+ - [django-1.7] Use new application config ready() method to fix user models
+	 (6000feb)
+ - [django-1.7] User profiles were deprecated in django 1.5, partially remove
+	 the functionnality from our copy of AbstractUser (3d24f74)
+ - [django-1.7] Declare authentic2 compatible with django 1.7 (32d1c6f)
+ - Simplify default logging settings (f7bdd57)
+ - OpenID IdP: raise ImproperlyConfigured if it is enabled but python-openid is
+	 not installed (fcae7f2)
+ - Update local_settings.py.example (8837014)
+ - Rename environment variable DJANGO_CONFIG_FILE to AUTHENTIC2_CONFIG
+	 (c43721b)
+ - Move test_settings in the tests/ subdirectory (31927d1)
+ - Make a plugin from the OpenID 2.0 IdP (4be3b68)
+ - tests: Add templates (4fbcbeb)
+ - Remove include of gadjo files (72c3242)
+ - Move authentic2 into src/ (2949cfe)
+ - Remove init scripts not used anymore (e2f03ef)
+ - test fix (4e01add)
+ - registration: custom save method added (809f8bd)
+ - removed modules import fixed (ec69ab2)
+ - Merge branch 'wip/registration' (a8fd23b)
+ - remove cache on metadata view (#6487) (3a83a64)
+ - boolean attributes convertered to unicode and lower-cased and the other
+	 converted to unicode (262a8a1)
+ - middleware: allow other view restrictions from plugins (6a168d2)
+ - ldap_backend: add a new backend LDAPBAckendPasswordLost for use by lost
+	 passwords views (6ba68b5)
+ - ldap_backend: move all initialization of the password in
+	 LDAPUser.ldap_init() (98ddc4b)
+ - ldap_backend: ignore `user_basedn` if it's empty or None (8aebe1e)
+ - ldap_backend: remove the uri parameter to the return*user class of functions
+	 (7c3ef42)
+ - ldap_password: if no password is stored, LDAPUser.get_connection() should
+	 return the default connection (6359ac9)
+ - ldap_backend: do not raise if LDAPUser.get_password() fails, returns None
+	 (70aaa6b)
+ - ldap_backend: reimplement password change (5c07c39)
+ - models_backend: abandon if username if empty or None (954de2e)
+ - manager: add missing template user_edit.html (dd03347)
+ - auth_frontends: add an exponential retry timeout after authentication
+	 (6adba07)
+ - implement an object to compute exponential retry timeout (39a9d42)
+ - utils: add form_add_error an helper method to set a global error on a form
+	 (9a6224b)
+ - backends: signal if login with an account failed more than n times (984f98f)
+ - middleware: permit logout event a view restriction is applied (9014877)
+ - locale: update french translation (d98d55c)
+ - manager: add buttons to force user to reset its password on next login
+	 (c516cad)
+ - middleware: implement restriction to the password change view when password
+	 reset is requested (6cf91d2)
+ - registration: add a next URL parameter to the password change view (d8ffeaa)
+ - forms: new form mixin to store next URL parameter in forms (a6d7e9e)
+ - utils: new helper method redirect_and_come_back to redirect to a view
+	 passing it the current URL as the next parameter (3dd3106)
+ - admin: register PasswordReset in the admin application (597d763)
+ - models: add __unicode__ method to PasswordReset (91a1f08)
+ - fix_user_model: dispatch monkey patching of user related models and forms in
+	 their respective files (59f3e12)
+ - tests: add tests on the password validator (3c61e02)
+ - validators: make possible to validate password using a regular expression
+	 (62de751)
+ - validators: add digits as a character class when validating passwords
+	 (43d9d45)
+ - ctl: do not consider --help as an invalid option (b0b5bce)
+ - Fix error in call to parent implementation (5d74ae7)
+ - handling metadata from the web (81ca01d)
+ - In the admin allow filtering provider by their policy, remove protocol
+	 conformance column from the listing (a89df5f)
+ - Set on_delete attribute on foreign keys of the saml application's models
+	 (1823cb1)
+ - Fix missing import (7b066c2)
+ - ldap: remove reference to undefined variable (ba4d5e3)
+ - ldap: do not retrieve attributes in the base search for users (d2a356a)
+ - LDAP attribute can be multivalued, any reference to a mono-valued attribute
+	 must be suffixed with [0] (c7ab420)
+ - Fix app_settings of SAML and OpenID IdP, they forced their prefix on all
+	 access to the settings module (eafe34f)
+ - Come back to explicit path for LOGIN_URL and LOGOUT_URL and it break
+	 compatibility with Django 1.5 (ed4be3d)
+ - Replace use of authentic2.idp.saml.common.redirect_to_login by
+	 authentic2.utils.login_require (f30c356)
+ - Add a next_url parameter to login_require to come back to another URL than
+	 the current one (53c23d9)
+ - Do not change the type of INSTALLED_APPS keep it as a tuple (7ee6f4b)
+ - Remove unused imported symbols (1a3440c)
+ - Change default external_id_tuple to use uid as the primary key with the LDAP
+	 server (6b96d6e)
+ - user's account history information display updated (2e939d5)
+ - username is uuid, not viewable or editable by user (461c3e4)
+ - user full name and account creation, last login date displayed on login
+	 choices (33e7c80)
+ - login page text fix (14ca8a7)
+ - account creation and login urls refactored (3027128)
+ - on user multiple accounts propose to log in with one of them or create a new
+	 account (c6a9960)
+ - Registration refactored: email validation done first and registration
+	 process finished on profile completion. (efa4305)
+ - ldap to database users synchronization command. ldap backend's methods
+	 refactored (717c7ee)
+ - ldap_backend: username computed from uid by default (c984435)
+ - Set DJANGO_CONFIG_FILE only if local_settings.py exists (0ab6736)
+ - Adapt tox tests to cleaned settings (e3082f8)
+ - Make authentic2-ctl default to load the local_settings.py file in the
+	 current directory (50c4737)
+ - Improve test on the login_require helper function (e4c9362)
+ - Fix assertEqualsURL, query string is index 3 in a splitted URL (1f979f8)
+ - Add new --config flag to authentic2-ctl (fixes #5960) (7ae6ffd)
+ - Simplify settings, remove all extraction from environment (refs #5960)
+	 (b47b151)
+ - Remove caching of server object in SAML 2.0 IdP, it's incompatible with
+	 multi-tenant (refs #5960) (3addece)
+ - Remove the PUSH_PROFILE_UPDATES feature (refs #5960) (97d4e14)
+ - Use app_settings to set default value for TEMPLATE_VARS settings (refs
+	 #5960) (155f895)
+ - Remove loading of debug toolbar in urls.py (refs #5960) (1892fef)
+ - Refactor default settings for the SAML 2.0 IdP (refs #5960) (6556776)
+ - Do not cache settings in disco_responder use late binding (refs #5960)
+	 (e7535f0)
+ - Remove IDP_OPENID setting, rename it A2_IDP_OPENID_ENABLE and store default
+	 in an app_settings.py file (refs #5960) (f3481b3)
+ - Convert urls.py in OpenID IdP for direct import of views (refs #5960)
+	 (54d03aa)
+ - Add a feature to force users to change before using the IdP (f3e884a)
+ - Add helper function to compare URLs in tests (7f8aef2)
+ - In utils.make_url if the target URL contains a query string, extract it and
+	 use it as a base for building the new query string (fixes #6314) (8d8cb91)
+ - Add a default value for the user_basedn setting (7766d65)
+ - Do not traceback when request is too old during SAML login or logout request
+	 handling (fixes #6306) (3830935)
+ - Add missing start_tls_s() in the LDAP authentication code (76dff5f)
+ - Try to not overflow the limit on SQL statement length by doing filtering
+	 client side instead of using a NOT IN clause (6ffa1a1)
+ - Remove SSL registration view as it's not working anymore, must be redone
+	 using new registration views (f1a41e2)
+ - Update idp_openid with new redirect helpers (62e351c)
+ - Remove legacy redirect_to_login helper method (8412402)
+ - Use new helper methods in decorators (d58ddf2)
+ - Use new helper methods in default login/password authentication frontend
+	 (822ab9a)
+ - Use new helper method in auth2_ssl (e86916d)
+ - Add helper method to require a login (6c72edf)
+ - Add helper method for logging in an user doing all needed bookkeeping
+	 (67e2c2d)
+ - Add helper method to record an authentication event (b9f5b1b)
+ - Add helper method to redirect user to next URL (072df70)
+ - Add helper method to request a login, copying nonce and next parameters
+	 (c1dd770)
+ - Add new utilities to help building URLs with parameters (2676e6f)
+ - Make the logout set a cookie to let other views know that a logout occured
+	 recently (e57015b)
+ - Distribute locale for SAML 2.0 IdP (65058be)
+ - Default to use starttls on ldap:// connections, also allow to set
+	 python-ldap options locally or globally (fixes #6097) (3ea847e)
+ - Fix error logging when an exception occur during admin bind in LDAP backend
+	 (fixes #6036) (0b2e5c1)
+ - Use a second field for confirmation of emails, not a special widget
+	 (7a7870c)
+ - idp/saml: use get_sp_options_policy() to get the policy in
+	 get_attribute_definitions (542c806)
+ - trivial: fix typo in error message (#6203) (7ba9603)
+ - Always show the login page (b564e15)
+ - Validate email domain containing non ASCII characters (72f6433)
+ - Add Django 1.7 environment to tox configuration (58d827d)
+ - Run tox as part of the continuous integration script, stop the script on any
+	 error (bf4754d)
+ - Add default value to test_setting to accomodate needs of Django tests
+	 (0c36445)
+ - Add setting A2_VALIDATE_EMAIL_DOMAIN to completely disable email domain
+	 checking (c498ab7)
+ - Create a base_no_sekizai.html base template for 404 and 500 templates as
+	 they are used by Django tests which do not install django-sekizai (956a520)
+ - changed mimetype to content_type as per django1.5 deprecation rules.
+	 (a17812b)
+ - changed .raw_post_data to .body as per django1.4 deprecation rules.
+	 (8cb6fa6)
+ - Added tox as a test-runner. (e2213b9)
+ - [django-1.6] add default value to all BooleanField missing it (242815a)
+ - [django-1.6] LDAPUser application cannot be deduced without a Meta.app_label
+	 (266e6ed)
+ - [django-1.6] authentication backends import path must match the canonical
+	 __module__.__class__ (f72155c)
+ - [django-1.6] use ATOMIC_REQUESTS setting instead of TransactionMiddleware
+	 (010b922)
+ - [django-1.6] middleware: do not store set() object in sessions only lists
+	 (b3def63)
+ - [django-1.6] adapt to API change on EmailValidator (e031cab)
+ - [django-1.6] fix import path of FieldDoesNotExist exception (c2e98e1)
+ - documentation: fix block of code displays in quick ldap backend file.
+	 (9f37735)
+ - misc: minor change to French translation (#6124) (92edfa2)
+ - Fix bug introduced in commit 52f380d (95d9e48)
+ - documentation: update mapping subject of attribute management. (6e3622d)
+ - Prevent circular imports of settings (92af1ff)
+ - NEw experimental attribute source computed_targeted_id to create
+	 eduPersonTargetedId like values from existing attributes (ed8bab6)
+ - Do not block on failure of the topological sort of attribute sources by
+	 their dependencies (7467d3d)
+ - Refactor SAML 2.0 IdP and attributes engine interface (52f380d)
+
 2.1.11 - Decembre 5th 2014
 --------------------------
 
