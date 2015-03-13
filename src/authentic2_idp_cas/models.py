@@ -85,6 +85,8 @@ class Attribute(models.Model):
         verbose_name_plural = _('CAS attributes')
         unique_together = (('service', 'slug', 'attribute_name',),)
 
+def make_uuid():
+    return utils.make_id(constants.SERVICE_TICKET_PREFIX)
 
 class Ticket(models.Model):
     '''Session ticket with a CAS 1.0 or 2.0 consumer'''
@@ -92,7 +94,7 @@ class Ticket(models.Model):
     ticket_id   = models.CharField(max_length=64,
                     verbose_name=_('ticket id'),
                     unique=True,
-                    default=lambda: utils.make_id(constants.SERVICE_TICKET_PREFIX))
+                    default=make_uuid)
     renew       = models.BooleanField(default=False,
             verbose_name=_('fresh authentication'))
     validity    = models.BooleanField(default=False,
