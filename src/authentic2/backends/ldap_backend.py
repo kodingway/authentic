@@ -461,7 +461,7 @@ class LDAPBackend(object):
                             user_login_failure(authz_id)
                             pass
                     else:
-                        log.debug('user bind failed: invalid credentials' % uri)
+                        log.debug('user bind failed: invalid credentials')
                         if block['replicas']:
                             break
                         continue
