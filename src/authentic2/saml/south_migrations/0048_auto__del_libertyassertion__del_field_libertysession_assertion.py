@@ -56,7 +56,8 @@ class Migration(SchemaMigration):
             'namespace': ('django.db.models.fields.CharField', [], {'default': "('Default', 'Default')", 'max_length': '100'})
         },
         user_model_label: {
-            'Meta': {'object_name':  user_model_label.split('.')[-1]},
+            'Meta': {'object_name': user_model_label.split('.')[-1]},
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
         },
         u'contenttypes.contenttype': {
             'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
@@ -133,7 +134,6 @@ class Migration(SchemaMigration):
         },
         u'saml.keyvalue': {
             'Meta': {'object_name': 'KeyValue'},
-            'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'key': ('django.db.models.fields.CharField', [], {'max_length': '128', 'primary_key': 'True'}),
             'value': ('authentic2.saml.fields.PickledObjectField', [], {})
         },
@@ -181,17 +181,12 @@ class Migration(SchemaMigration):
             'federation_source': ('django.db.models.fields.CharField', [], {'max_length': '64', 'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'metadata': ('django.db.models.fields.TextField', [], {}),
+            'metadata_url': ('django.db.models.fields.URLField', [], {'max_length': '256', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '140', 'blank': 'True'}),
             'protocol_conformance': ('django.db.models.fields.IntegerField', [], {'max_length': '10'}),
             'public_key': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '140'}),
             'ssl_certificate': ('django.db.models.fields.TextField', [], {'blank': 'True'})
-        },
-        u'saml.libertyproviderpolicy': {
-            'Meta': {'object_name': 'LibertyProviderPolicy'},
-            'authn_request_signature_check_hint': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '64'})
         },
         u'saml.libertyserviceprovider': {
             'Meta': {'object_name': 'LibertyServiceProvider'},
@@ -200,8 +195,8 @@ class Migration(SchemaMigration):
             'enable_following_sp_options_policy': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'enabled': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'liberty_provider': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'service_provider'", 'unique': 'True', 'primary_key': 'True', 'to': u"orm['saml.LibertyProvider']"}),
-            'policy': ('django.db.models.fields.related.ForeignKey', [], {'default': '1', 'to': u"orm['saml.LibertyProviderPolicy']", 'null': 'True'}),
-            'sp_options_policy': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'sp_options_policy'", 'null': 'True', 'to': u"orm['saml.SPOptionsIdPPolicy']"})
+            'sp_options_policy': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'sp_options_policy'", 'null': 'True', 'to': u"orm['saml.SPOptionsIdPPolicy']"}),
+            'users_can_manage_federations': ('django.db.models.fields.BooleanField', [], {'default': 'True'})
         },
         u'saml.libertysession': {
             'Meta': {'object_name': 'LibertySession'},
@@ -231,12 +226,13 @@ class Migration(SchemaMigration):
             'session_index': ('django.db.models.fields.CharField', [], {'max_length': '80'})
         },
         u'saml.samlattribute': {
-            'Meta': {'object_name': 'SAMLAttribute'},
+            'Meta': {'unique_together': "(('content_type', 'object_id', 'name_format', 'name', 'friendly_name', 'attribute_name'),)", 'object_name': 'SAMLAttribute'},
             'attribute_name': ('django.db.models.fields.CharField', [], {'max_length': '64'}),
             'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']"}),
+            'enabled': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'friendly_name': ('django.db.models.fields.CharField', [], {'max_length': '64', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '64', 'blank': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '128', 'blank': 'True'}),
             'name_format': ('django.db.models.fields.CharField', [], {'default': "'basic'", 'max_length': '64'}),
             'object_id': ('django.db.models.fields.PositiveIntegerField', [], {})
         },
