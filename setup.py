@@ -4,7 +4,7 @@
    Setup script for Authentic 2
 '''
 
-import re
+import subprocess
 import sys
 import os
 
@@ -68,29 +68,23 @@ class install_lib(_install_lib):
 
 
 def get_version():
-
-    version = None
+    '''Use the VERSION, if absent generates a version with git describe, if not
+       tag exists, take 0.0.0- and add the length of the commit log.
+    '''
     if os.path.exists('VERSION'):
-        version_file = open('VERSION', 'r')
-        version = version_file.read()
-        version_file.close()
-        return version
-    module_file = os.path.join('src', 'authentic2', '__init__.py')
-    for v in re.findall("""__version__ *= *['"](.*)['"]""",
-            open(module_file).read()):
-        assert version is None
-        version = v
-    assert version is not None
+        with open('VERSION', 'r') as v:
+            return v.read()
     if os.path.exists('.git'):
-        import subprocess
         p = subprocess.Popen(['git','describe','--dirty','--match=v*'],
-                stdout=subprocess.PIPE)
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         result = p.communicate()[0]
-        assert p.returncode == 0, 'git returned non-zero'
-        new_version = result.split()[0][1:]
-        assert new_version.split('-')[0] == version, '__version__ must match the last git annotated tag'
-        version = new_version.replace('-', '.')
-    return version
+        if p.returncode == 0:
+            return result.split()[0][1:].replace('-', '.')
+        else:
+            return '0.0.0-%s' % len(
+                    subprocess.check_output(
+                            ['git', 'rev-list', 'HEAD']).splitlines())
+    return '0.0.0'
 
 
 setup(name="authentic2",
