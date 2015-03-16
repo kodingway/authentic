@@ -118,6 +118,7 @@ INSTALLED_APPS = (
     'authentic2.attribute_aggregator',
     'authentic2.disco_service',
     'authentic2.manager',
+    'authentic2_provisionning_ldap',
     'authentic2',
     'django_rbac',
     'authentic2.a2_rbac',
