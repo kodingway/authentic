@@ -44,9 +44,13 @@ TEMPLATE_CONTEXT_PROCESSORS = ('django.core.context_processors.request',) + TEMP
 
 MIDDLEWARE_CLASSES = (
     'hobo.multitenant.middleware.TenantMiddleware',
-    'hobo.middleware.settings.AuthenticSettingsMiddleware',
-    'hobo.middleware.context.TemplateVarsMiddleware',
+    'hobo.multitenant.middleware.TenantSettingsMiddleware',
 ) + MIDDLEWARE_CLASSES
+
+TENANT_SETTINGS_MIDDLEWARE_LOADERS = (
+    'hobo.multitenant.settings_loaders.TemplateVars',
+    'hobo.multitenant.settings_loaders.Authentic',
+)
 
 DEFAULT_FILE_STORAGE = 'hobo.multitenant.storage.TenantFileSystemStorage'
 
