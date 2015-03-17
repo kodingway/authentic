@@ -563,3 +563,7 @@ def batch(iterable, size):
 def lower_keys(d):
     '''Convert all keys in dictionary d to lowercase'''
     return dict((key.lower(), value) for key, value in d.iteritems())
+
+def to_dict_of_set(d):
+    '''Convert a dictionary of sequence into a dictionary of sets'''
+    return dict((k, set(v)) for k, v in d.iteritems())
