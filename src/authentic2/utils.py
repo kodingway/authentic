@@ -6,6 +6,7 @@ import six
 import urlparse
 import uuid
 from functools import wraps
+from itertools import islice, chain
 
 from importlib import import_module
 
@@ -548,3 +549,13 @@ def send_registration_mail(request, email, template_names, next_url=None,
         'site': request.get_host()
     })
     send_templated_mail(email, template_names, ctx)
+
+
+def batch(iterable, size):
+    '''Batch an iterable as an iterable of iterables of at most size element
+       long.
+    '''
+    sourceiter = iter(iterable)
+    while True:
+        batchiter = islice(sourceiter, size)
+        yield chain([batchiter.next()], batchiter)
