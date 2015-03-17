@@ -82,12 +82,8 @@ default_settings = dict(
         definition='List of attribute backend classes or modules',
     ),
     CAFILE = Setting(names=('AUTHENTIC2_CAFILE', 'CAFILE'),
-            default='/etc/ssl/certs/ca-certificates.crt',
+            default=None,
             definition='File containing certificate chains as PEM certificates'),
-    CAPATH = Setting(names=('AUTHENTIC2_CAPATH', 'CAPATH'), default='/etc/ssl/certs/',
-            definition='Directory containing PEM certificates named'
-            ' using OpenSSL certificate directory convention. '
-            'See http://www.openssl.org/docs/apps/verify.html#item__CApath'),
     A2_REGISTRATION_URLCONF = Setting(default='authentic2.registration_backend.urls',
                 definition='Root urlconf for the /accounts endpoints'),
     A2_REGISTRATION_FORM_CLASS = Setting(default='authentic2.registration_backend.forms.RegistrationForm',
