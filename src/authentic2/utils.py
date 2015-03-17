@@ -559,3 +559,7 @@ def batch(iterable, size):
     while True:
         batchiter = islice(sourceiter, size)
         yield chain([batchiter.next()], batchiter)
+
+def lower_keys(d):
+    '''Convert all keys in dictionary d to lowercase'''
+    return dict((key.lower(), value) for key, value in d.iteritems())
