@@ -11,7 +11,7 @@ from django.template.defaultfilters import capfirst
 from .decorators import to_list
 from . import app_settings
 
-capfirst = allow_lazy(capfirst)
+capfirst = allow_lazy(capfirst, unicode)
 
 @to_list
 def get_choices():
