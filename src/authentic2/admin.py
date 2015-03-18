@@ -12,6 +12,7 @@ from django.contrib.auth.admin import GroupAdmin, UserAdmin
 from django.contrib.auth.models import Group
 from django.contrib.sessions.models import Session
 from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.contrib.admin.utils import flatten_fieldsets
 
 from .nonce.models import Nonce
 from . import forms, models, admin_forms, compat, app_settings
@@ -192,6 +193,20 @@ class AuthenticUserAdmin(UserAdmin):
             fieldsets.insert(insertion_idx, 
                     (_('Attributes'), {'fields': [at.name for at in qs]}))
         return fieldsets
+
+    def get_form(self, request, obj=None, **kwargs):
+        if 'fields' in kwargs:
+            fields = kwargs.pop('fields')
+        else:
+            fields = flatten_fieldsets(self.get_fieldsets(request, obj))
+        if obj:
+            qs = models.Attribute.objects.all()
+        else:
+            qs = models.Attribute.objects.filter(required=True)
+        non_model_fields = [a.name for a in qs]
+        fields = list(set(fields) - set(non_model_fields))
+        kwargs['fields'] = fields
+        return super(AuthenticUserAdmin, self).get_form(request, obj=obj, **kwargs)
 
 User = compat.get_user_model()
 if User.__module__ == 'django.contrib.auth.models':
