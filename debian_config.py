@@ -4,10 +4,9 @@ import warnings
 # Debian defaults
 DEBUG = False
 
-AUTHENTIC2_DIR = '/var/lib/authentic2'
-STATIC_ROOT = os.path.join(AUTHENTIC2_DIR, 'collectstatic')
-STATICFILES_DIRS = (os.path.join(AUTHENTIC2_DIR, 'static'),) + STATICFILES_DIRS
-TEMPLATE_DIRS = (os.path.join(AUTHENTIC2_DIR, 'templates'),) + TEMPLATE_DIRS
+STATIC_ROOT = '/var/lib/authentic2/collectstatic/'
+STATICFILES_DIRS = ('/var/lib/authentic2/static',) + STATICFILES_DIRS
+TEMPLATE_DIRS = ('/var/lib/authentic2/templates',) + TEMPLATE_DIRS
 
 ADMINS = (('root', 'root@localhost'),)
 
@@ -64,9 +63,6 @@ LOGGING = {
         },
     },
 }
-
-# Include hobo agent
-INSTALLED_APPS += ('hobo.agent.authentic2_mono',)
 
 # Old settings method
 def extract_settings_from_environ():
