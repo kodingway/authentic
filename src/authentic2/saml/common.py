@@ -27,6 +27,7 @@ from authentic2.saml import models
 from authentic2.saml import saml2utils
 
 from authentic2.http_utils import get_url
+from authentic2.decorators import RequestCache
 from .. import nonce
 
 AUTHENTIC_STATUS_CODE_NS = "http://authentic.entrouvert.org/status_code/"
@@ -634,36 +635,51 @@ def soap_fault(request, faultcode='soap:Client', faultstring=None):
 </soap:Envelope>''' % locals()
     return HttpResponse(content, content_type = "text/xml")
 
-def get_idp_options_policy(provider):
+@RequestCache
+def get_idp_options_policy_all():
     try:
         return IdPOptionsSPPolicy.objects.get(name='All', enabled=True)
     except IdPOptionsSPPolicy.DoesNotExist:
         pass
-    if provider.identity_provider.enable_following_idp_options_policy:
-        if provider.identity_provider.idp_options_policy:
-            return provider.identity_provider.idp_options_policy
+
+@RequestCache
+def get_idp_options_policy_default():
     try:
         return IdPOptionsSPPolicy.objects.get(name='Default', enabled=True)
     except IdPOptionsSPPolicy.DoesNotExist:
         pass
-    return None
 
-def get_sp_options_policy(provider):
+def get_idp_options_policy(provider):
+    policy = get_idp_options_policy_all()
+    if not policy and provider.identity_provider.enable_following_idp_options_policy:
+        policy = provider.identity_provider.idp_options_policy
+        if policy and policy.enabled:
+            return provider.identity_provider.idp_options_policy
+    return get_idp_options_policy_default()
+
+@RequestCache
+def get_sp_options_policy_all():
     try:
         return SPOptionsIdPPolicy.objects.get(name='All', enabled=True)
     except SPOptionsIdPPolicy.DoesNotExist:
         pass
-    try:
-        if provider.service_provider.enable_following_sp_options_policy:
-            if provider.service_provider.sp_options_policy:
-                return provider.service_provider.sp_options_policy
-    except:
-        pass
+
+@RequestCache
+def get_sp_options_policy_default():
     try:
         return SPOptionsIdPPolicy.objects.get(name='Default', enabled=True)
     except SPOptionsIdPPolicy.DoesNotExist:
         pass
-    return None
+
+def get_sp_options_policy(provider):
+    policy = get_sp_options_policy_all()
+    if policy:
+        return policy
+    if provider.service_provider.enable_following_sp_options_policy:
+        policy = provider.service_provider.enable_following_sp_options_policy
+        if policy and policy.enabled:
+            return provider.service_provider.sp_options_policy
+    return get_sp_options_policy_default()
 
 def get_authorization_policy(provider):
     try:
