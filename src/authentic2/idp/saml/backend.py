@@ -1,5 +1,6 @@
 import logging
 import urllib
+import operator
 
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
@@ -18,9 +19,31 @@ logger = logging.getLogger(__name__)
 
 class SamlBackend(object):
     def service_list(self, request):
-        q = models.LibertyServiceProvider.objects.filter(enabled = True)
+        q = models.LibertyServiceProvider.objects.filter(enabled = True) \
+                .select_related()
         ls = []
-        for service_provider in q:
+        sessions = models.LibertySession.objects.filter(
+                django_session_key=request.session.session_key)
+        sessions_eids = set(session.provider_id for session in sessions)
+        all_policy = common.get_sp_options_policy_all()
+        default_policy = common.get_sp_options_policy_default()
+        queries = []
+        if all_policy and all_policy.idp_initiated_sso:
+            queries.append(q)
+            queries.append(q.filter(liberty_provider__entity_id__in=sessions_eids))
+        else:
+            queries.append(q.filter(sp_options_policy__enabled=True,
+                sp_options_policy__idp_initiated_sso=True))
+            queries.append(q.filter(sp_options_policy__enabled=True,
+                sp_options_policy__accept_slo=True,
+                liberty_provider__entity_id__in=sessions_eids))
+            if default_policy and default_policy.idp_initiated_sso:
+                queries.append(q.filter(sp_options_policy__isnull=True))
+            if default_policy and default_policy.accept_slo:
+                queries.append(q.filter(sp_options_policy__isnull=True,
+                    liberty_provider__entity_id__in=sessions_eids))
+        qs = reduce(operator.__or__, queries)
+        for service_provider in qs:
             liberty_provider = service_provider.liberty_provider
             policy = common.get_sp_options_policy(liberty_provider)
             if policy:
@@ -31,10 +54,7 @@ class SamlBackend(object):
                     actions.append(('login', 'POST',
                         '/idp/%s/idp_sso/' % protocol,
                         (('provider_id', entity_id ),)))
-                if policy.accept_slo and \
-                        models.LibertySession.objects.filter(
-                            django_session_key=request.session.session_key,
-                            provider_id=entity_id).exists():
+                if policy.accept_slo and entity_id in sessions_eids:
                     actions.append(('logout', 'POST',
                         '/idp/%s/idp_slo/' % protocol,
                         (( 'provider_id', entity_id ),)))
