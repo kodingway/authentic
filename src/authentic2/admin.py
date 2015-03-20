@@ -13,9 +13,11 @@ from django.contrib.auth.models import Group
 from django.contrib.sessions.models import Session
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.admin.utils import flatten_fieldsets
+from django.forms import ModelForm, Select
 
 from .nonce.models import Nonce
-from . import forms, models, admin_forms, compat, app_settings
+from . import (forms, models, admin_forms, compat, app_settings, decorators,
+        attribute_kinds)
 
 def cleanup_action(modeladmin, request, queryset):
     queryset.cleanup()
@@ -214,7 +216,23 @@ if User.__module__ == 'django.contrib.auth.models':
         admin.site.unregister(User)
     admin.site.register(User, AuthenticUserAdmin)
 
+class AttributeForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(AttributeForm, self).__init__(*args, **kwargs)
+        choices = self.kind_choices()
+        self.fields['kind'].choices = choices
+        self.fields['kind'].widget = Select(choices=choices)
+
+    @decorators.to_iter
+    def kind_choices(self):
+        return attribute_kinds.get_choices()
+
+    class Meta:
+        model = models.Attribute
+        fields = '__all__'
+
 class AttributeAdmin(admin.ModelAdmin):
+    form = AttributeForm
     list_display = ('label', 'name', 'kind', 'required',
             'asked_on_registration', 'user_editable',
             'user_visible')

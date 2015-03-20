@@ -16,7 +16,6 @@ from django.contrib.auth import load_backend
 
 from model_utils.managers import QueryManager
 
-from . import attribute_kinds
 
 
 try:
@@ -285,8 +284,7 @@ class Attribute(models.Model):
             verbose_name=_('multiple'),
             blank=True, default=False)
     kind = models.CharField(max_length=16,
-            verbose_name=_('kind'),
-            choices=attribute_kinds.get_choices())
+            verbose_name=_('kind'))
 
     objects = managers.GetByNameManager()
     registration_attributes = QueryManager(asked_on_registration=True)
