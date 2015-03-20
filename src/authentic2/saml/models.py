@@ -262,7 +262,7 @@ class SPOptionsIdPPolicy(models.Model):
     '''
     name = models.CharField(_('name'), max_length=80, unique=True)
     enabled = models.BooleanField(verbose_name = _('Enabled'),
-            default=False)
+            default=False, db_index=True)
     prefered_assertion_consumer_binding = models.CharField(
             verbose_name = _("Prefered assertion consumer binding"),
             default = 'meta',
@@ -277,7 +277,7 @@ class SPOptionsIdPPolicy(models.Model):
             default=False)
     idp_initiated_sso = models.BooleanField(
             verbose_name = _("Allow IdP initiated SSO"),
-            default=False)
+            default=False, db_index=True)
     # XXX: format in the metadata file, should be suffixed with a star to mark
     # them as special
     default_name_id_format = models.CharField(max_length = 256,
@@ -294,7 +294,7 @@ class SPOptionsIdPPolicy(models.Model):
         verbose_name = _('Ask user for consent when creating a federation'), default = False)
     accept_slo = models.BooleanField(\
             verbose_name = _("Accept to receive Single Logout requests"),
-            default=True)
+            default=True, db_index=True)
     forward_slo = models.BooleanField(\
             verbose_name = _("Forward Single Logout requests"),
             default=True)
@@ -546,7 +546,7 @@ class LibertyServiceProvider(models.Model):
     liberty_provider = models.OneToOneField(LibertyProvider,
             primary_key = True, related_name = 'service_provider')
     enabled = models.BooleanField(verbose_name = _('Enabled'),
-            default=False)
+            default=False, db_index=True)
     enable_following_sp_options_policy = models.BooleanField(verbose_name = \
         _('The following options policy will apply except if a policy for all service provider is defined.'),
         default=False)
@@ -565,7 +565,8 @@ class LibertyServiceProvider(models.Model):
     users_can_manage_federations = models.BooleanField(
             verbose_name=_('users can manage federation'),
             default=True,
-            blank=True)
+            blank=True,
+            db_index=True)
 
     objects = managers.GetByLibertyProviderManager()
 
