@@ -65,9 +65,9 @@ privileges  like this:
 Upgrade
 =======
 .. WARNING::
-   Version 2.1.13 is the first version supporting only Django 1.7, if you are
+   Version 2.2.0 is the first version supporting only Django 1.7, if you are
    using a previous one you must first upgrade to 2.1.12 before tempting
-   upgrade to a release later than 2.1.12.
+   upgrade to a release later than 2.2.0.
 
 Support
 =======
