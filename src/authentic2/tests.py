@@ -317,3 +317,40 @@ class RegistrationTests(TestCase):
                                             'password1': 'T0toto',
                                             'password2': 'T0toto'})
         self.assertEqual(completion.status_code, 302)
+
+class CacheTests(TestCase):
+    def test_cache_decorator_base(self):
+        import random
+        from authentic2.decorators import CacheDecoratorBase
+
+        class GlobalCache(CacheDecoratorBase):
+            def __init__(self, *args, **kwargs):
+                self.cache = {}
+                super(GlobalCache, self).__init__(*args, **kwargs)
+
+            def set(self, key, value):
+                self.cache[key] = value
+
+            def get(self, key):
+                return self.cache.get(key, (None, None))
+
+            def delete(self, key, value):
+                if key in self.cache and self.cache[key] == value:
+                    del self.cache[key]
+
+        def f():
+            return random.random()
+        # few chances the same value comme two times in a row
+        self.assertNotEquals(f(), f())
+
+        # with cache the same value will come back
+        g = GlobalCache(f)
+        values = set()
+        for x in range(10):
+            values.add(g())
+        self.assertEquals(len(values), 1)
+        # null timeout, no cache
+        h = GlobalCache(timeout=0)(f)
+        self.assertNotEquals(h(), h())
+
+
