@@ -1,9 +1,11 @@
+import time
+from functools import wraps
+
 from django.contrib.auth.decorators import login_required
 from django.views.debug import technical_404_response
 from django.http import Http404
-from functools import wraps
 
-from . import utils, app_settings
+from . import utils, app_settings, middleware
 from .utils import to_list, to_iter
 
 TRANSIENT_USER_TYPES = []
@@ -97,3 +99,79 @@ def _wrap_instance__resolve(wrapping_functions,instance):
     setattr(instance,'resolve',_wrap_func_in_returned_resolver_match)
 
     return instance
+
+class CacheDecoratorBase(object):
+    '''Base class to build cache decorators.
+
+       It helps for building keys from function arguments.
+    '''
+    def __new__(cls, *args, **kwargs):
+        if len(args) > 1:
+            raise TypeError('%s got unexpected arguments, only one argument '
+                    'must be given, the function to decorate' % cls.__name__)
+        if args:
+            # Case of a decorator used directly
+            return cls(**kwargs)(args[0])
+        return super(CacheDecoratorBase, cls).__new__(cls, *args, **kwargs)
+
+    def __init__(self, timeout=None):
+        self.timeout = timeout
+
+    def set(self, key, value):
+        raise NotImplementedError
+
+    def get(self, key):
+        raise NotImplementedError
+
+    def __call__(self, func):
+        @wraps(func)
+        def f(*args, **kwargs):
+            now = time.time()
+            key = self.key(*args, **kwargs)
+            value, tstamp = self.get(key)
+            if tstamp is not None:
+                if self.timeout is None or \
+                   tstamp + self.timeout > now:
+                       return value
+                if hasattr(self, 'delete'):
+                    self.delete(key, (key, tstamp))
+            value = func(*args, **kwargs)
+            self.set(key, (value, now))
+            return value
+        return f
+
+    def key(self, *args, **kwargs):
+        '''Transform arguments to string and build a key from it'''
+        parts = [str(id(self))] # add cache instance to the key
+        for arg in args:
+            parts.append(unicode(arg))
+        for kw, arg in sorted(kwargs.iteritems(), key=lambda x: x[0]):
+            parts.append(u'%s-%s' % (unicode(kw), unicode(arg)))
+        return u'|'.join(parts)
+
+class SimpleDictionnaryCacheMixin(object):
+    '''Default implementations of set, get and delete for a cache implemented
+       using a dictionary. The dictionnary must be returned by a property named
+       'cache'.
+    '''
+    def set(self, key, value):
+        self.cache[key] = value
+
+    def get(self, key):
+        return self.cache.get(key, (None, None))
+
+    def delete(self, key, value):
+        if key in self.cache and self.cache[key] == value:
+            del self.cache[key]
+
+class RequestCache(SimpleDictionnaryCacheMixin, CacheDecoratorBase):
+    def __init__(self, **kwargs):
+        super(RequestCache, self).__init__(**kwargs)
+
+    @property
+    def cache(self):
+        request = middleware.StoreRequestMiddleware.get_request()
+        if not request:
+            return {}
+        # create a cache dictionary on the request
+        return request.__dict__.setdefault(self.__class__.__name__, {})
