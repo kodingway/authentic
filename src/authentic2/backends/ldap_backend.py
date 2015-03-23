@@ -252,6 +252,10 @@ class LDAPUser(get_user_model()):
         credentials = ()
         if ldap_password:
             credentials = (self.dn, ldap_password)
+        # must be redone if session is older than current code update and new
+        # options have been added to the setting dictionnary for LDAP
+        # authentication
+        update_default(self.block)
         return get_connection(self.block, credentials=credentials)
 
     def get_attributes(self):
@@ -271,6 +275,79 @@ class LDAPUser(get_user_model()):
 class LDAPBackendError(RuntimeError):
     pass
 
+def update_default(block):
+    '''Add missing key to block based on default values'''
+    for key in block:
+        if not key in _VALID_CONFIG_KEYS:
+            raise ImproperlyConfigured(
+                ('"{}" : invalid LDAP_AUTH_SETTINGS key, '
+                +'available are {}').format(key, _VALID_CONFIG_KEYS))
+
+    for r in _REQUIRED:
+        if r not in block:
+            raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: missing required configuration option %r' % r)
+
+    for d in _DEFAULTS:
+        if d not in block:
+            block[d] = _DEFAULTS[d]
+        else:
+            if isinstance(_DEFAULTS[d], six.string_types):
+                if not isinstance(block[d], six.string_types):
+                    raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: '
+                            'attribute %r must be a string' % d)
+                try:
+                    block[d] = str(block[d])
+                except UnicodeEncodeError:
+                    raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: '
+                            'attribute %r must be a string' % d)
+            if isinstance(_DEFAULTS[d], bool) and not isinstance(block[d], bool):
+                raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: '
+                        'attribute %r must be a boolean' % d)
+            if isinstance(_DEFAULTS[d], (list, tuple)) and not isinstance(block[d], (list, tuple)):
+                raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: '
+                        'attribute %r must be a list or a tuple' % d)
+            if isinstance(_DEFAULTS[d], dict) and not isinstance(block[d], dict):
+                raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: '
+                        'attribute %r must be a dictionary' % d)
+            if not isinstance(_DEFAULTS[d], bool) and d in _REQUIRED and not block[d]:
+                raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: '
+                        'attribute %r is required but is empty')
+    for i in _TO_ITERABLE:
+        if isinstance(block[i], six.string_types):
+            block[i] = (block[i],)
+    # lowercase LDAP attribute names
+    block['external_id_tuples'] = map(lambda t: map(str.lower, map(str, t)), block['external_id_tuples'])
+    block['attribute_mappings'] = map(lambda t: map(str.lower, map(str, t)), block['attribute_mappings'])
+    for key in _TO_LOWERCASE:
+        # we handle strings, list of strings and list of list or tuple whose first element is a string
+        if isinstance(block[key], six.string_types):
+            block[key] = str(block[key]).lower()
+        elif isinstance(block[key], (list, tuple)):
+            new_seq = []
+            for elt in block[key]:
+                if isinstance(elt, six.string_types):
+                    elt = str(elt).lower()
+                elif isinstance(elt, (list, tuple)):
+                    elt = list(elt)
+                    elt[0] = str(elt[0]).lower()
+                    elt = tuple(elt)
+                new_seq.append(elt)
+            block[key] = tuple(new_seq)
+        elif isinstance(block[key], dict):
+            newdict = {}
+            for subkey in block[key]:
+                newdict[str(subkey).lower()] = block[key][subkey]
+            block[key] = newdict
+        else:
+            raise NotImplementedError('LDAP setting %r cannot be '
+                    'converted to lowercase '
+                    'setting, its type is %r'
+                    % (key, type(block[key])))
+    # Want to randomize our access, otherwise what's the point of having multiple servers?
+    block['url'] = list(block['url'])
+    if block['shuffle_replicas']:
+        random.shuffle(block['url'])
+
 class LDAPBackend(object):
     @classmethod
     @to_list
@@ -289,76 +366,7 @@ class LDAPBackend(object):
             blocks = (self._parse_simple_config(),)
         # First get our configuration into a standard format
         for block in blocks:
-            for key in block:
-                if not key in _VALID_CONFIG_KEYS:
-                    raise ImproperlyConfigured(
-                        ('"{}" : invalid LDAP_AUTH_SETTINGS key, '
-                        +'available are {}').format(key, _VALID_CONFIG_KEYS))
-
-            for r in _REQUIRED:
-                if r not in block:
-                    raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: missing required configuration option %r' % r)
-
-            for d in _DEFAULTS:
-                if d not in block:
-                    block[d] = _DEFAULTS[d]
-                else:
-                    if isinstance(_DEFAULTS[d], six.string_types):
-                        if not isinstance(block[d], six.string_types):
-                            raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: '
-                                    'attribute %r must be a string' % d)
-                        try:
-                            block[d] = str(block[d])
-                        except UnicodeEncodeError:
-                            raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: '
-                                    'attribute %r must be a string' % d)
-                    if isinstance(_DEFAULTS[d], bool) and not isinstance(block[d], bool):
-                        raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: '
-                                'attribute %r must be a boolean' % d)
-                    if isinstance(_DEFAULTS[d], (list, tuple)) and not isinstance(block[d], (list, tuple)):
-                        raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: '
-                                'attribute %r must be a list or a tuple' % d)
-                    if isinstance(_DEFAULTS[d], dict) and not isinstance(block[d], dict):
-                        raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: '
-                                'attribute %r must be a dictionary' % d)
-                    if not isinstance(_DEFAULTS[d], bool) and d in _REQUIRED and not block[d]:
-                        raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: '
-                                'attribute %r is required but is empty')
-            for i in _TO_ITERABLE:
-                if isinstance(block[i], six.string_types):
-                    block[i] = (block[i],)
-            # lowercase LDAP attribute names
-            block['external_id_tuples'] = map(lambda t: map(str.lower, map(str, t)), block['external_id_tuples'])
-            block['attribute_mappings'] = map(lambda t: map(str.lower, map(str, t)), block['attribute_mappings'])
-            for key in _TO_LOWERCASE:
-                # we handle strings, list of strings and list of list or tuple whose first element is a string
-                if isinstance(block[key], six.string_types):
-                    block[key] = str(block[key]).lower()
-                elif isinstance(block[key], (list, tuple)):
-                    new_seq = []
-                    for elt in block[key]:
-                        if isinstance(elt, six.string_types):
-                            elt = str(elt).lower()
-                        elif isinstance(elt, (list, tuple)):
-                            elt = list(elt)
-                            elt[0] = str(elt[0]).lower()
-                            elt = tuple(elt)
-                        new_seq.append(elt)
-                    block[key] = tuple(new_seq)
-                elif isinstance(block[key], dict):
-                    newdict = {}
-                    for subkey in block[key]:
-                        newdict[str(subkey).lower()] = block[key][subkey]
-                    block[key] = newdict
-                else:
-                    raise NotImplementedError('LDAP setting %r cannot be '
-                            'converted to lowercase '
-                            'setting, its type is %r'
-                            % (key, type(block[key])))
-            # Want to randomize our access, otherwise what's the point of having multiple servers?
-            block['url'] = list(block['url'])
-            if block['shuffle_replicas']:
-                random.shuffle(block['url'])
+            update_default(block)
         log.debug('got config %r', blocks)
         return blocks
 
