@@ -234,6 +234,11 @@ LOGGING = {
     },
 }
 
+# Temporary fix for User.username field length
+MIGRATION_MODULES = {
+        'auth': 'authentic2.auth_migrations',
+}
+
 #
 # Load configuration file
 #
