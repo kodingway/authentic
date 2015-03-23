@@ -1,6 +1,23 @@
 NEWS
 ====
 
+2.1.13 - Match 23th 2015
+------------------------
+
+Never say never, another Django 1.5 release. It fixes slowdown in homepage when
+a lot of service providers are registered.
+
+Commits
+~~~~~~~
+
+6 files changed, 267 insertions(+), 91 deletions(-)
+
+ - prepare 2.1.13
+ - ldap: update block saved in LDAP users objects with default values (#6784) (2d8fbdc)
+ - Optimize queries in SamlBackend.service_list() (22d382e)
+ - In get_sp_options_policy() and get_idp_options_policy() cache query for default and all queries (96ab51e)
+ - Add decorator to cache function results in request (d69eec9)
+
 2.1.12 - March 13th 2015
 ------------------------
 
