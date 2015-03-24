@@ -1,13 +1,15 @@
 from __future__ import unicode_literals
 import string
 import re
+import six
 
 import smtplib
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ugettext
 from django.utils.encoding import force_text
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
+from django.utils.functional import lazy
 
 import socket
 import dns.resolver
@@ -84,13 +86,14 @@ def validate_password(password):
     lower = set(string.lowercase)
     upper = set(string.uppercase)
     punc = set(string.punctuation)
+    errors = []
 
     if not password:
         return
     min_len = app_settings.A2_PASSWORD_POLICY_MIN_LENGTH
     if len(password) < min_len:
-        raise ValidationError(_('password must contain at least %d '
-            'characters') % min_len)
+        errors.append(ValidationError(_('password must contain at least %d '
+            'characters') % min_len))
 
     class_count = 0
     for cls in (digits, lower, upper, punc):
@@ -98,16 +101,39 @@ def validate_password(password):
             class_count += 1
     min_class_count = app_settings.A2_PASSWORD_POLICY_MIN_CLASSES
     if class_count < min_class_count:
-        raise ValidationError(_('password must contain characters '
+        errors.append(ValidationError(_('password must contain characters '
             'from at least %d classes among: lowercase letters, '
-            'uppercase letters, digits, and punctuations') % min_class_count)
+            'uppercase letters, digits, and punctuations') % min_class_count))
     if app_settings.A2_PASSWORD_POLICY_REGEX:
         if not re.match(app_settings.A2_PASSWORD_POLICY_REGEX, password):
             msg = app_settings.A2_PASSWORD_POLICY_REGEX_ERROR_MSG
             msg = msg or _('your password dit not match the regular expession %s') % app_settings.A2_PASSWORD_POLICY_REGEX
-            raise ValidationError(msg)
+            errors.append(ValidationError(msg))
+    if errors:
+        raise ValidationError(errors)
+
 
 class UsernameValidator(RegexValidator):
     def __init__(self, *args, **kwargs):
         self.regex = app_settings.A2_REGISTRATION_FORM_USERNAME_REGEX
         super(UsernameValidator, self).__init__(*args, **kwargs)
+
+
+def __password_help_text_helper():
+    if app_settings.A2_PASSWORD_POLICY_MIN_LENGTH:
+        yield ugettext('Your password must contain at least %(min_length)d characters.') % {'min_length': app_settings.A2_PASSWORD_POLICY_MIN_LENGTH}
+    if app_settings.A2_PASSWORD_POLICY_MIN_CLASSES:
+        yield ugettext('Your password must contain characters from at least %(min_classes)d '
+                'classes among: lowercase letters, uppercase letters, digits, '
+                'and punctuations') % {'min_classes': app_settings.A2_PASSWORD_POLICY_MIN_CLASSES}
+    if app_settings.A2_PASSWORD_POLICY_REGEX:
+        yield ugettext(app_settings.A2_PASSWORD_POLICY_REGEX_ERROR_MSG) or \
+                ugettext('Your password must match the regular expression: '
+                        '%(regexp)s, please change this message using the '
+                        'A2_PASSWORD_POLICY_REGEX_ERROR_MSG setting.') % \
+                        {'regexp': app_settings.A2_PASSWORD_POLICY_REGEX}
+
+def password_help_text():
+    return ' '.join(__password_help_text_helper())
+
+password_help_text = lazy(password_help_text, six.text_type)

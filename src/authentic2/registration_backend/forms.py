@@ -70,7 +70,8 @@ class RegistrationCompletionForm(forms.BaseUserForm):
 
 
     password1 = CharField(widget=PasswordInput, label=_("Password"),
-            validators=[validators.validate_password])
+            validators=[validators.validate_password],
+            help_text=validators.password_help_text())
     password2 = CharField(widget=PasswordInput, label=_("Password (again)"))
 
     def clean(self):
@@ -145,13 +146,15 @@ class PasswordResetMixin(Form):
 class SetPasswordForm(PasswordResetMixin, auth_forms.SetPasswordForm):
     new_password1 = CharField(label=_("New password"),
                                     widget=PasswordInput,
-                                    validators=[validators.validate_password])
+                                    validators=[validators.validate_password],
+                                    help_text=validators.password_help_text())
 
 
 class PasswordChangeForm(forms.NextUrlFormMixin, PasswordResetMixin,
         auth_forms.PasswordChangeForm):
     new_password1 = CharField(label=_("New password"),
                                     widget=PasswordInput,
-                                    validators=[validators.validate_password])
+                                    validators=[validators.validate_password],
+                                    help_text=validators.password_help_text())
 
 
