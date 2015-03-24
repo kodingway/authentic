@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import re
 import urlparse
 from xml.etree import ElementTree as ET
@@ -281,12 +282,33 @@ class ValidatorsTest(TestCase):
             validate_password('aaa')
         validate_password('12345678')
 
+def can_resolve_dns():
+    '''Verify that DNS resolving is available'''
+    import socket
+    try:
+        return isinstance(socket.gethostbyname('entrouvert.com'), str)
+    except:
+        return False
 
+@override_settings(A2_VALIDATE_EMAIL_DOMAIN=can_resolve_dns(), LANGUAGE_CODE='en-us')
 class RegistrationTests(TestCase):
     def setUp(self):
         self.client = Client()
 
-    @override_settings(A2_VALIDATE_EMAIL_DOMAIN=False)
+    def test_registration_bad_email(self):
+        response = self.client.post(reverse('registration_register'),
+                                    {'email': 'fred@0d..be'})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, '<ul class="errorlist"><li>Email domain is invalid</li></ul>', count=1, html=True)
+        response = self.client.post(reverse('registration_register'),
+                                    {'email': u'ééééé'})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, '<ul class="errorlist"><li>Email domain is invalid</li></ul>', count=1, html=True)
+        response = self.client.post(reverse('registration_register'),
+                                    {'email': u''})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, ' <ul class="errorlist"><li>This field is required.</li></ul>', count=1, html=True)
+
     def test_registration(self):
         response = self.client.post(reverse('registration_register'),
                                     {'email': 'testbot@entrouvert.com'})
