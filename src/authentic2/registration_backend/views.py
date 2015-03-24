@@ -1,17 +1,13 @@
 import logging
-from datetime import datetime
 
 from django.conf import settings
 from django.shortcuts import redirect, render
 from django.utils.translation import ugettext as _
 from django.contrib import messages
-from django.contrib.auth import authenticate, login as django_login, logout
-from django.db.models import FieldDoesNotExist
-from django.db import IntegrityError
-from django.template.loader import render_to_string
+from django.contrib.auth import login as django_login, logout
 from django.core import signing
 from django.views.generic.edit import FormView
-from django.views.generic.base import TemplateView, View
+from django.views.generic.base import TemplateView
 
 from authentic2.utils import get_form_class
 from .. import models, app_settings, compat, cbv

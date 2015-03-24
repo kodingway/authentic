@@ -14,7 +14,6 @@ from django.contrib.auth.models import BaseUserManager, Group
 from django.contrib.auth import forms as auth_forms
 from django.core.mail import send_mail
 from django.core import signing
-from django import get_version
 from django.template.loader import render_to_string
 from django.core.urlresolvers import reverse
 
