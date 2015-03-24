@@ -130,8 +130,22 @@ def get_connection(block, credentials=()):
         conn.set_option(ldap.OPT_REFERRALS, 1 if block['referrals'] else 0)
         try:
             if not url.startswith('ldaps://') and block['use_tls']:
-                conn.start_tls_s()
+                try:
+                    conn.start_tls_s()
+                except ldap.CONNECT_ERROR:
+                    log.error('connection to %r failed when activating TLS, did '
+                            'you forget to declare the TLS certificate in '
+                            '/etc/ldap/ldap.conf ?', url)
+                    continue
             conn.whoami_s()
+        except ldap.TIMEOUT:
+            log.error('connection to %r timed out', url)
+            continue
+        except ldap.CONNECT_ERROR:
+            log.error('connection to %r failed when activating TLS, did '
+                    'you forget to declare the TLS certificate in '
+                    '/etc/ldap/ldap.conf ?', url)
+            continue
         except ldap.SERVER_DOWN:
             if block['replicas']:
                 log.warning('ldap %r is down', url)
@@ -406,7 +420,17 @@ class LDAPBackend(object):
             conn = ldap.initialize(uri)
             conn.set_option(ldap.OPT_REFERRALS, 1 if block['referrals'] else 0)
             if not uri.startswith('ldaps://') and block['use_tls']:
-                conn.start_tls_s()
+                try:
+                    conn.start_tls_s()
+                except ldap.TIMEOUT:
+                    log.error('connection to %r timed out', uri)
+                    continue
+                except (ldap.CONNECT_ERROR, ldap.SERVER_DOWN):
+                    log.error('connection to %r failed when activating TLS, did '
+                            'you forget to declare the TLS certificate in '
+                            '/etc/ldap/ldap.conf ? or maybe timeout are not long '
+                            'enough', uri)
+                    continue
             authz_ids = []
             user_basedn = block.get('user_basedn') or block['basedn']
 
@@ -479,6 +503,12 @@ class LDAPBackend(object):
                     if block['replicas']:
                         break
                 return self._return_user(authz_id, password, conn, block)
+            except ldap.CONNECT_ERROR:
+                log.error('connection to %r failed, did '
+                        'you forget to declare the TLS certificate in '
+                        '/etc/ldap/ldap.conf ?', uri)
+            except ldap.TIMEOUT:
+                log.error('connection to %r timed out', uri)
             except ldap.SERVER_DOWN:
                 log.error('ldap authentication error: %r is down', uri)
             finally:
