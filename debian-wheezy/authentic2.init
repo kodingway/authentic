@@ -136,7 +136,7 @@ do_migrate() {
     if dpkg --compare-versions $VERSION lt 1.7; then
       su $USER -p -c "$MANAGE_SCRIPT syncdb --migrate --noinput"
     else
-      su $USER -p -c "$MANAGE_SCRIPT migrate"
+      su $USER -p -c "$MANAGE_SCRIPT migrate --noinput"
     fi
     log_action_msg ".. done"
 }
