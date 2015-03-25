@@ -149,7 +149,7 @@ class GroupAdminForm(forms.ModelForm):
         return group
 
 class NextUrlFormMixin(forms.Form):
-    next_url = forms.CharField(widget=forms.HiddenInput())
+    next_url = forms.CharField(widget=forms.HiddenInput(), required=False)
 
     def __init__(self, *args, **kwargs):
         from .middleware import StoreRequestMiddleware
