@@ -71,7 +71,7 @@ def extract_settings_from_environ():
     from django.core.exceptions import ImproperlyConfigured
     global MANAGERS, DATABASES, SENTRY_DSN, INSTALLED_APPS, \
             SECURE_PROXY_SSL_HEADER, CACHES, SESSION_ENGINE, \
-            LDAP_AUTH_SETTINGS
+            LDAP_AUTH_SETTINGS, RAVEN_CONFIG
 
     BOOLEAN_ENVS = (
            'DEBUG',
@@ -232,7 +232,10 @@ def extract_settings_from_environ():
         except ImportError:
             raise ImproperlyConfigured('SENTRY_DSN environment variable is set but raven is not installed.')
         SENTRY_DSN = os.environ['SENTRY_DSN']
-        INSTALLED_APPS = tuple(INSTALLED_APPS) + ('raven',)
+        RAVEN_CONFIG = {
+                'dsn': SENTRY_DSN,
+        }
+        INSTALLED_APPS = tuple(INSTALLED_APPS) + ('raven.contrib.django.raven_compat',)
 
     # extract any key starting with setting
     for key in os.environ:
