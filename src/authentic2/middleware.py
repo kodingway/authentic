@@ -148,7 +148,7 @@ class ViewRestrictionMiddleware(object):
         if user.is_authenticated() \
                 and isinstance(user, Model) \
                 and PasswordReset.objects.filter(user=request.user).exists():
-            return 'auth_password_change'
+            return 'password_change'
         for plugin in plugins.get_plugins():
             if hasattr(plugin, 'check_view_restrictions'):
                 view = plugin.check_view_restrictions(request)
@@ -160,7 +160,7 @@ class ViewRestrictionMiddleware(object):
         view = self.check_view_restrictions(request)
         if not view or request.resolver_match.url_name in (view, 'auth_logout'):
             return
-        if view == 'auth_password_change':
+        if view == 'password_change':
             messages.warning(request, _('You must change your password to continue'))
         return utils.redirect_and_come_back(request, view)
 
