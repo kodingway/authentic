@@ -47,7 +47,7 @@ MIDDLEWARE_CLASSES = (
     'hobo.multitenant.middleware.TenantSettingsMiddleware',
 ) + MIDDLEWARE_CLASSES
 
-TENANT_SETTINGS_MIDDLEWARE_LOADERS = (
+TENANT_SETTINGS_LOADERS = (
     'hobo.multitenant.settings_loaders.TemplateVars',
     'hobo.multitenant.settings_loaders.Authentic',
 )
