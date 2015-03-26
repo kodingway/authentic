@@ -1,5 +1,11 @@
 import json
 
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode
+from django.template import loader
+from django.core.mail import EmailMultiAlternatives
+
 from django.views.generic import (TemplateView, FormView, UpdateView,
         CreateView, DeleteView, View)
 from django.http import HttpResponse, HttpResponseRedirect
@@ -10,8 +16,6 @@ from django.forms import models as model_forms
 from django.core.urlresolvers import reverse
 
 from django.contrib.auth.models import Group
-from django.contrib.auth.forms import PasswordResetForm
-from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.decorators import (permission_required,
     login_required)
 
@@ -287,18 +291,43 @@ class UserEditView(UserMixin, OtherActionsMixin, ActionMixin, TitleMixin,
     def action_password_reset(self, request, *args, **kwargs):
         # FIXME: a bit hacky, could break if PasswordResetForm implementation changes
         # copied from django.contrib.auth.views and django.contrib.auth.forms
-        form = PasswordResetForm()
-        form.users_cache = [self.object]
-        opts = {
-            'use_https': request.is_secure(),
-            'token_generator': default_token_generator,
-            'request': request,
+        user = self.object
+        site_name = domain = request.get_host()
+        context = {
+            'email': user.email,
+            'domain': domain,
+            'site_name': site_name,
+            'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+            'user': user,
+            'token': default_token_generator.make_token(user),
+            'protocol': 'https' if request.is_secure() else 'http',
         }
-        form.save(**opts)
+
+        subject_template_name='registration/password_reset_subject.txt'
+        email_template_name='registration/password_reset_email.html'
+
+        self.send_mail(subject_template_name, email_template_name,
+                       context, user.email)
+
         messages.info(request, _('A mail was sent to %s') % self.object.email)
 
     def action_delete_password_reset(self, request, *args, **kwargs):
         PasswordReset.objects.filter(user=self.object).delete()
+
+    # Copied from PasswordResetForm implementation
+    def send_mail(self, subject_template_name, email_template_name,
+                  context, to_email):
+        """
+        Sends a django.core.mail.EmailMultiAlternatives to `to_email`.
+        """
+        subject = loader.render_to_string(subject_template_name, context)
+        # Email subject *must not* contain newlines
+        subject = ''.join(subject.splitlines())
+        body = loader.render_to_string(email_template_name, context)
+
+        email_message = EmailMultiAlternatives(subject, body, to=[to_email])
+        email_message.send()
+
 
 class UsersExportView(UserExportMixin, View):
     export_prefix = 'users-'
