@@ -10,6 +10,11 @@
   <a rel="popup" href="{% url "a2-manager-user-add" %}" id="add-user-btn">{% trans "Add user" %}</a>
 {% endblock %}
 
+{% block more-user-links %}
+  {{ block.super }}
+  <a href="{% url 'a2-manager-users' %}">{% trans 'User management' %}</a>
+{% endblock %}
+
 {% block sidebar %}
   <div>
     <h3>{% trans "Search" %}</h3>

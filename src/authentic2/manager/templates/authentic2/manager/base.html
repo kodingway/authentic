@@ -3,6 +3,8 @@
 
 {% block page-title %}{% trans "Management" %}{% endblock %}
 
+{% block site-title %}Authentic2{% endblock %}
+
 {% block css %}
   <link rel="stylesheet" type="text/css" media="all" href="{% static "authentic2/manager/css/style.css" %}"/>
 {% endblock %}
@@ -23,7 +25,15 @@
 {% endblock %}
 
 {% block homepage-url %}{% url 'a2-manager-homepage' as default_homepage_url %}{% firstof manager_homepage_url default_homepage_url %}{% endblock %}
+
 {% block homepage-title %}{% trans "Management" as default_homepage_title %}{% firstof manager_homepage_title default_homepage_title %}{% endblock %}
+
+{% block more-user-links %}
+  {{ block.super }}
+  {% if manager_homepage_url %}
+    <a href="{% url 'a2-manager-homepage' %}">{% trans 'Authentic2 management' %}</a>
+  {% endif %}
+{% endblock %}
 
 {% block logout-url %}{{ logout_url }}{% endblock %}
 

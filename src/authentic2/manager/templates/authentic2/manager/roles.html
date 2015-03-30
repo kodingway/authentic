@@ -7,6 +7,11 @@
 {% if active_role %} — {{ active_role.name }}{% endif %}
 {% endblock %}
 
+{% block more-user-links %}
+  {{ block.super }}
+  <a href="{% url 'a2-manager-roles' %}">{% trans 'Role management' %}</a>
+{% endblock %}
+
 {% block appbar %}
   {{ block.super }}
   {% if active_role %}
