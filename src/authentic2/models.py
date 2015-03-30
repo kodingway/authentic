@@ -16,7 +16,7 @@ from django.contrib.auth import load_backend
 
 from model_utils.managers import QueryManager
 
-
+from . import attribute_kinds
 
 try:
     from django.contrib.contenttypes.fields import GenericForeignKey
