@@ -676,7 +676,7 @@ def get_sp_options_policy(provider):
     if policy:
         return policy
     if provider.service_provider.enable_following_sp_options_policy:
-        policy = provider.service_provider.enable_following_sp_options_policy
+        policy = provider.service_provider.sp_options_policy
         if policy and policy.enabled:
             return provider.service_provider.sp_options_policy
     return get_sp_options_policy_default()
