@@ -207,12 +207,18 @@ def add_attributes(request, assertion, provider):
         assertion.attributeStatement = [lasso.Saml2AttributeStatement()]
     attribute_statement = assertion.attributeStatement[0]
     saml_attributes = list(attribute_statement.attribute)
+    seen = set()
     for definition in qs:
+        value = ctx.get(definition.attribute_name)
+        key = (definition.name, definition.name_format, value)
+        if key in seen:
+            continue
+        seen.add(key)
         saml_attribute = definition.to_lasso_attribute(ctx)
         if not saml_attribute:
             continue
-        logger.debug('adding attribute %r with value %r',
-                definition.name, ctx.get(definition.attribute_name))
+        logger.debug('adding attribute %r with value %r', definition.name,
+                value)
         saml_attributes.append(saml_attribute)
     attribute_statement.attribute = saml_attributes
 
