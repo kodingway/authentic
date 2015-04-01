@@ -819,7 +819,11 @@ class KeyValue(models.Model):
         verbose_name_plural = _("key value associations")
 
 def save_key_values(key, *values):
-    KeyValue(key = key, value = values).save()
+    # never update an existing key, key are nonces
+    kv, created = KeyValue.objects.get_or_create(key=key, defaults={'value': values})
+    if not created:
+        kv.value = values
+        kv.save()
 
 def get_and_delete_key_values(key):
     try:
