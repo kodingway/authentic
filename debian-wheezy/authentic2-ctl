@@ -1,0 +1,23 @@
+#!/bin/sh
+
+export AUTHENTIC2_SETTINGS_FILE=/usr/share/authentic2/debian_config.py
+
+if [ "$(whoami)" != "authentic" ]; then
+    if which sudo >/dev/null; then
+      if sudo -v -u authentic; then
+        sudo -u authentic authentic2-ctl "$@"
+        exit $?
+      fi
+      echo "You must run this script with authentic user"
+      exit 1
+    fi
+fi
+
+if [ -f /etc/authentic2/db.conf ]; then
+    . /etc/authentic2/db.conf
+fi
+if [ -f /etc/authentic2/authentic.conf ]; then
+    . /etc/authentic2/authentic.conf
+fi
+
+/usr/lib/authentic2/manage.py "$@"

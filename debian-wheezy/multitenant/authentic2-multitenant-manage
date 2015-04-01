@@ -1,0 +1,19 @@
+#!/bin/sh
+
+NAME="authentic2-multitenant"
+MANAGE="/usr/lib/authentic2/manage.py"
+
+export AUTHENTIC2_SETTINGS_FILE=/usr/lib/$NAME/debian_config.py
+
+if [ "$(whoami)" != "authentic-multitenant" ]; then
+    if which sudo; then
+      if sudo -v -u authentic-multitenant; then
+        sudo -u authentic-multitenant authentic2-multitenant-manage "$@"
+        exit $?
+      fi
+      echo "You must run this script with authentic-multitenant user"
+      exit 1
+    fi
+fi
+
+python ${MANAGE} "$@"

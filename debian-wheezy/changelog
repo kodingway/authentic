@@ -1,0 +1,108 @@
+authentic2 (2.0.2.293.g51cfb00-1) stable; urgency=low
+
+  * Update to last mast commit 
+
+ -- Jérôme Schneider <jschneider@entrouvert.com>  Tue, 06 Aug 2013 10:54:59 +0200
+
+authentic2 (2.0.2.292.ga6ad42e-1) stable; urgency=low
+
+  * Update to last mast commit
+
+ -- Jérôme Schneider <jschneider@entrouvert.com>  Thu, 01 Aug 2013 18:00:18 +0200
+
+authentic2 (2.0.2.291.g2b09e18-1) stable; urgency=low
+
+  * Update to last mast commit
+
+ -- Jérôme Schneider <jschneider@entrouvert.com>  Thu, 01 Aug 2013 17:25:20 +0200
+
+authentic2 (2.0.2.289.gce06aec-1) stable; urgency=low
+
+  * Update to last mast commit
+
+ -- Jérôme Schneider <jschneider@entrouvert.com>  Thu, 01 Aug 2013 17:05:50 +0200
+
+authentic2 (2.0.2.232.g37e9606-1) stable; urgency=low
+
+  * Update to last mast commit
+
+ -- Jérôme Schneider <jschneider@entrouvert.com>  Fri, 28 Jun 2013 17:24:03 +0200
+
+authentic2 (2.0.2.220.gcde5387-2) stable; urgency=low
+
+  * complete configuration file
+  * complete apache example
+
+ -- Jérôme Schneider <jschneider@entrouvert.com>  Wed, 19 Jun 2013 11:20:20 +0200
+
+authentic2 (2.0.2.220.gcde5387-1) stable; urgency=low
+
+  * update to last master commit
+  * move manage.py to /usr/lib/authentic2 to follow :
+    http://wiki.debian.org/DjangoPackagingDraft
+
+ -- Jérôme Schneider <jschneider@entrouvert.com>  Tue, 18 Jun 2013 18:02:30 +0200
+
+authentic2 (2.0.2.214.g4e64a8e-4) stable; urgency=low
+
+  * authentic.conf: replace ENGINE by DATABASE_ENGINE
+
+ -- Jérôme Schneider <jschneider@entrouvert.com>  Tue, 18 Jun 2013 16:21:52 +0200
+
+authentic2 (2.0.2.214.g4e64a8e-3) unstable; urgency=low
+
+  * change south dependency
+
+ -- Jérôme Schneider <jschneider@entrouvert.com>  Tue, 18 Jun 2013 13:42:56 +0200
+
+authentic2 (2.0.2.214.g4e64a8e-2) unstable; urgency=low
+
+  * Split into two packages : authentic2 and python-authentic2
+  * Add authentic2 postrm to delete authentic user
+
+ -- Jérôme Schneider <jschneider@entrouvert.com>  Sat, 15 Jun 2013 16:09:37 +0200
+
+authentic2 (2.0.2.214.g4e64a8e-1) unstable; urgency=low
+
+  * update to last upstream commit
+
+ -- Jérôme Schneider <jschneider@entrouvert.com>  Sat, 15 Jun 2013 09:57:51 +0200
+
+authentic2 (2.0.2.212.g41b7e09-3) unstable; urgency=low
+
+  * debian: fix postinst
+
+ -- Jérôme Schneider <jschneider@entrouvert.com>  Sat, 15 Jun 2013 09:49:30 +0200
+
+authentic2 (2.0.2.212.g41b7e09-2) unstable; urgency=low
+
+  * debian: add adduser dependency
+
+ -- Jérôme Schneider <jschneider@entrouvert.com>  Fri, 14 Jun 2013 22:14:38 +0200
+
+authentic2 (2.0.2.212.g41b7e09-1) stable; urgency=low
+
+  * using environment variables for the configuration
+
+ -- Jérôme Schneider <jschneider@entrouvert.com>  Fri, 14 Jun 2013 15:49:31 +0200
+
+authentic2 (2.0.2.199.g5ddda2a-1) unstable; urgency=low
+
+  * debian: add mission local_config.py
+  * fix setup.py
+
+ -- Jérôme Schneider <jschneider@entrouvert.com>  Thu, 13 Jun 2013 20:33:09 +0200
+
+authentic2 (2.0.2.196.g8409882-1) unstable; urgency=low
+
+  * debian: port to squeeze
+  * debian: add an init script
+  * debian: add static files
+
+ -- Jérôme Schneider <jschneider@entrouvert.com>  Thu, 13 Jun 2013 17:14:30 +0200
+
+authentic2 (1.9.0-0) unstable; urgency=low
+
+  * Initial packaging.
+
+ -- Frederic Peters <fpeters@debian.org>  Tue, 01 Jun 2010 14:28:56 +0200
