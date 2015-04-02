@@ -206,22 +206,42 @@ def add_attributes(request, assertion, provider):
     if not assertion.attributeStatement:
         assertion.attributeStatement = [lasso.Saml2AttributeStatement()]
     attribute_statement = assertion.attributeStatement[0]
-    saml_attributes = list(attribute_statement.attribute)
+    attributes = {}
     seen = set()
-    for definition in qs:
-        value = ctx.get(definition.attribute_name)
-        key = (definition.name, definition.name_format, value)
-        if key in seen:
+    # Keep current attributes, mark string values as already added
+    for attribute in attribute_statement.attribute:
+        name = attribute.name.decode('utf-8')
+        name_format = attribute.nameFormat.decode('utf-8')
+        attributes[(name, name_format)] = attribute
+        for atv in attribute.attributeValue:
+            if atv.any and len(atv.any) == 1 and isinstance(atv.any[0], lasso.MiscTextNode) and \
+                    atv.any[0].textChild:
+                seen.add((name, name_format, atv.any[0].content.decode('utf-8')))
+    tuples = [tuple(t) for definition in qs for t in definition.to_tuples(ctx) ]
+    seen = set()
+    logger.info("%r", tuples)
+    for name, name_format, friendly_name, value in tuples:
+        # prevent repeating attribute values
+        if (name, name_format, value) in seen:
             continue
-        seen.add(key)
-        saml_attribute = definition.to_lasso_attribute(ctx)
-        if not saml_attribute:
-            continue
-        logger.debug('adding attribute %r with value %r', definition.name,
-                value)
-        saml_attributes.append(saml_attribute)
-    attribute_statement.attribute = saml_attributes
-
+        seen.add((name, name_format, value))
+        if (name, name_format) in attributes:
+            attribute, values = attributes[(name, name_format)]
+        else:
+            attribute, values = attributes[(name, name_format)] = lasso.Saml2Attribute(), []
+            attribute.name = name.encode('utf-8')
+            attribute.nameFormat = name_format.encode('utf-8')
+        # We keep only one friendly name
+        if not attribute.friendlyName and friendly_name:
+            attribute.friendlyName = friendly_name.encode('utf-8')
+        atv = lasso.Saml2AttributeValue()
+        tn = lasso.MiscTextNode.newWithString(value.encode('utf-8'))
+        tn.textChild = True
+        atv.any = [tn]
+        values.append(atv)
+    for attribute, values in attributes.itervalues():
+        attribute.attributeValue = list(attribute.attributeValue) + values
+    attribute_statement.attribute = [attribute for attribute, values in attributes.itervalues()]
 
 def saml2_add_attribute_values(assertion, attributes):
     if not attributes:

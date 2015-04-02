@@ -377,39 +377,26 @@ class SAMLAttribute(models.Model):
         else:
             raise NotImplementedError
 
-    def to_lasso_attribute(self, ctx):
+    def to_tuples(self, ctx):
         if not self.attribute_name in ctx:
-            return None
-        at = lasso.Saml2Attribute()
-        at.nameFormat = self.name_format_uri()
-        at.name = self.name.encode('utf-8')
-        if self.friendly_name:
-            at.friendlyName = self.friendly_name.encode('utf-8')
+            return
+        name_format = self.name_format_uri()
+        name = self.name
+        friendly_name = self.friendly_name or None
         values = ctx.get(self.attribute_name)
-        if isinstance(values, tuple(six.string_types) + (numbers.Number, datetime.datetime, datetime.date)):
+        if not isinstance(values, (tuple, list)):
             values = [values]
-        elif isinstance(values, (tuple, list)):
-            pass
-        else:
-            raise NotImplementedError
-        atvs = []
         for value in values:
-            atv = lasso.Saml2AttributeValue()
+            if not isinstance(value, tuple(six.string_types) + (bool,
+                numbers.Number, datetime.datetime, datetime.date)):
+                raise NotImplementedError('type of value unsupported: %s' % type(value))
+            text_value = unicode(value)
             if isinstance(value, bool):
-                value = unicode(value).lower()
-            else:
-                value = unicode(value)
-            value = value.encode('utf-8')
-            tn = lasso.MiscTextNode.newWithString(value)
-            tn.textChild = True
-            atv.any = [tn]
-            atvs.append(atv)
-        at.attributeValue = atvs
-        return at
+                text_value = text_value.lower()
+            yield (name, name_format, friendly_name, text_value)
 
     def __unicode__(self):
-        ctx = {self.attribute_name: 'coin'}
-        return unicode(self.to_lasso_attribute(ctx).exportToXml(), 'utf-8')
+        return u'%s %s %s' % (self.name, self.name_format_uri(), self.attribute_name)
 
     def natural_key(self):
         if not hasattr(self.provider, 'natural_key'):
