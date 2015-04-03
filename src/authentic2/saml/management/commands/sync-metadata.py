@@ -53,9 +53,11 @@ def build_saml_attribute_kwargs(provider, name):
         'content_type': content_type,
         'object_id': object_id,
         'name_format': 'uri',
-        'friendly_name': name,
         'name': 'urn:oid:%s' % oid,
-    }, attribute_name
+    }, {
+        'attribute_name': attribute_name.lower(),
+        'friendly_name': name,
+    }
 
 def check_support_saml2(tree):
     if tree is not None and lasso.SAML2_PROTOCOL_HREF in tree.get(PROTOCOL_SUPPORT_ENUMERATION):
@@ -134,16 +136,12 @@ def load_one_entity(tree, options, sp_policy=None, idp_policy=None, afp=None):
         if afp and provider.entity_id in afp:
             pks = []
             for name in afp[provider.entity_id]:
-                kwargs, attribute_name = build_saml_attribute_kwargs(provider, name)
+                kwargs, defaults = build_saml_attribute_kwargs(provider, name)
                 if not kwargs:
                     if verbosity > 1:
                         print >>sys.stderr, _('Unable to find an LDAP definition for attribute %(name)s on %(provider)s') % \
                             {'name': name, 'provider': provider}
                     continue
-                attribute_name = attribute_name.lower()
-                defaults = {
-                    'attribute_name': attribute_name,
-                }
                 # create object with default attribute mapping to the same name
                 # as the attribute if no SAMLAttribute model already exists,
                 # otherwise do nothing
