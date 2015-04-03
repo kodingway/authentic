@@ -20,6 +20,82 @@ Use the following command::
 
     path_to_project/authentic2$ python manage.py sync-metadata file_name [options]
 
+Configuration of attributes
+===========================
+
+If a service provider has AttributeConsumingService nodes in its
+SPSSODescriptor then we create an attribute declaration for each declared
+attribute. If the attribute is optional, the attribute declaration is created
+disabled.
+
+Currently it only supports the LDAP and the LDAP attribute profile of SAML,
+i.e. SAML attribute names must be LDAP attributes oid, the NameFormat must be
+URI, and an LDAP server must declared so that LDAP attributes can be resolved.
+Authentic2 contains a databases of the more common LDAP schemas to help the
+resolution of attributes OIDs.
+
+Example of an AttributeConsumingService node::
+
+    <md:AttributeConsumingService index="0">
+         <md:ServiceName
+               xml:lang="fr">Université Paris 1 - cours en ligne</md:ServiceName>
+
+        <md:ServiceDescription xml:lang="fr">Cours en ligne de l'université
+            Paris 1 Panthéon - Sorbonne (LMS Moodle)
+        </md:ServiceDescription>
+
+
+        <md:RequestedAttribute FriendlyName="sn" Name="urn:oid:2.5.4.4"
+           NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"
+           isRequired="true">
+
+        </md:RequestedAttribute>
+
+        <md:RequestedAttribute FriendlyName="mail"
+           Name="urn:oid:0.9.2342.19200300.100.1.3"
+           NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"
+           isRequired="true">
+
+        </md:RequestedAttribute>
+
+        <md:RequestedAttribute FriendlyName="displayName"
+           Name="urn:oid:2.16.840.1.113730.3.1.241"
+           NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"
+           isRequired="true">
+
+        </md:RequestedAttribute>
+
+        <md:RequestedAttribute FriendlyName="eduPersonPrincipalName"
+           Name="urn:oid:1.3.6.1.4.1.5923.1.1.1.6"
+           NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"
+           isRequired="true">
+
+        </md:RequestedAttribute>
+
+        <md:RequestedAttribute FriendlyName="eduPersonAffiliation"
+           Name="urn:oid:1.3.6.1.4.1.5923.1.1.1.1"
+           NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"
+           isRequired="true">
+
+        </md:RequestedAttribute>
+
+        <md:RequestedAttribute FriendlyName="givenName" Name="urn:oid:2.5.4.42"
+           NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"
+           isRequired="true">
+
+        </md:RequestedAttribute>
+
+        <md:RequestedAttribute FriendlyName="cn" Name="urn:oid:2.5.4.3"
+           NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"
+           isRequired="true">
+
+        </md:RequestedAttribute>
+
+    </md:AttributeConsumingService>
+
+If you do not want the attribute declarations to be automatically created pass
+the option `--dont-load-attribute-consuming-service` to the `sync-metadata` command.
+
 Options
 =======
 
@@ -43,11 +119,9 @@ Options
 
     **For reloading, a source can only be associated with a unique metadata
     file. This is due to the fact that all providers of a source not found in
-    the metadata file are removed.**
+    the metadata file are removed.** ::
 
-::
-
-    path_to_project/authentic2$ python manage.py sync-metadata file_name --source=french_federation
+      path_to_project/authentic2$ python manage.py sync-metadata file_name --source=french_federation
 
 * sp-policy
 
@@ -73,9 +147,9 @@ Options
     of the script with this option.
     The policy is then associated to all service providers created.
 
-::
+    ::
 
-    path_to_project/authentic2$ python manage.py sync-metadata file_name --idp-policy=idp_policy_name
+      path_to_project/authentic2$ python manage.py sync-metadata file_name --idp-policy=idp_policy_name
 
 * delete
 
@@ -88,3 +162,31 @@ Options
 * ignore-errors
 
     If loading of one EntityDescriptor fails, continue loading
+
+* reset-atributes
+
+    When loading shibboleth attribute filter policies, start by removing all
+    existing SAML attributes for each provider, beware that it will delete any
+    customization of the attribute policy for each service provider.
+
+* dont-load-attribute-consuming-service
+
+    Prevent loading of the attribute policy from AttributeConsumingService nodes
+    in the metadata file.
+
+* shibboleth-attribute-filter-policy
+
+    Path to a file containing an Attribute Filter Policy for the
+    Shibboleth IdP, that will be used to configure SAML attributes for
+    each provider. The following schema is supported::
+
+        <AttributeFilterPolicy id="<whatever>">
+            <PolicyRequirementRule xsi:type="basic:AttributeRequesterString" value="<entityID>" >
+            [
+              <AttributeRule attributeID="<attribute-name>">
+                    <PermitValueRule xsi:type="basic:ANY"/>
+              </AttributeRule>
+            ]*
+        </AttributeFilterPolicy>
+
+    Any other kind of attribute filter policy is unsupported.

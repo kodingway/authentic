@@ -4,6 +4,7 @@ import xml.etree.ElementTree as etree
 import os
 import requests
 from StringIO import StringIO
+import warnings
 
 from django.core.management.base import BaseCommand, CommandError
 from django.template.defaultfilters import slugify
@@ -14,7 +15,8 @@ from authentic2.compat_lasso import lasso
 from authentic2.saml.models import *
 from authentic2.saml.shibboleth.afp_parser import parse_attribute_filters_file
 from authentic2.attribute_aggregator.core import (get_definition_from_alias,
-        get_full_definition, get_def_name_from_alias)
+        get_full_definition, get_def_name_from_alias, get_def_name_from_oid,
+        get_definition_from_oid)
 
 SAML2_METADATA_UI_HREF = 'urn:oasis:names:tc:SAML:metadata:ui'
 
@@ -32,10 +34,26 @@ ORGANIZATION_DISPLAY_NAME = md_element_name('OrganizationDisplayName')
 ORGANIZATION_NAME = md_element_name('OrganizationName')
 ORGANIZATION = md_element_name('Organization')
 EXTENSIONS = md_element_name('Extensions')
+ATTRIBUTE_CONSUMING_SERVICE = md_element_name('AttributeConsumingService')
+SERVICE_NAME = md_element_name('ServiceName')
+SERVICE_DESCRIPTION = md_element_name('ServiceDescription')
+REQUESTED_ATTRIBUTE = md_element_name('RequestedAttribute')
+
 UI_INFO = mdui_element_name('UIInfo')
 DISPLAY_NAME = mdui_element_name('DisplayName')
+
 ENTITY_ID = 'entityID'
 PROTOCOL_SUPPORT_ENUMERATION = 'protocolSupportEnumeration'
+IS_REQUIRED = 'isRequired'
+NAME_FORMAT = 'NameFormat'
+NAME = 'Name'
+FRIENDLY_NAME = 'FriendlyName'
+
+def resolve_urn_oid(urn_oid):
+    if not urn_oid.startswith('urn:oid:'):
+        return None, None
+    oid = urn_oid[8:]
+    return get_def_name_from_oid(oid), get_definition_from_oid(oid)
 
 def build_saml_attribute_kwargs(provider, name):
     '''Build SAML attribute following the LDAP profile'''
@@ -63,6 +81,50 @@ def check_support_saml2(tree):
     if tree is not None and lasso.SAML2_PROTOCOL_HREF in tree.get(PROTOCOL_SUPPORT_ENUMERATION):
         return True
     return False
+
+def text_child(tree, tag, default=''):
+    elt = tree.find(tag)
+    return elt.text if not elt is None else default
+
+def load_acs(tree, provider, pks, verbosity):
+    acss = tree.iter(ATTRIBUTE_CONSUMING_SERVICE)
+    for acs in acss:
+        for ra in acs.iter(REQUESTED_ATTRIBUTE):
+            oid = ra.get(NAME, '')
+            name_format = ra.get(NAME_FORMAT, '')
+            friendly_name = ra.get(FRIENDLY_NAME, '')
+            is_required = ra.get(IS_REQUIRED, 'false') == 'true'
+            if name_format != lasso.SAML2_ATTRIBUTE_NAME_FORMAT_URI:
+                continue
+            def_name, defn = resolve_urn_oid(oid)
+            if def_name is None:
+                warnings.warn('attribute %s/%s unsupported on service provider %s' % (
+                    oid, name_format, provider.entity_id))
+                continue
+            content_type = ContentType.objects.get_for_model(LibertyProvider)
+            object_id = provider.pk
+            kwargs = {
+                'content_type': content_type,
+                'object_id': object_id,
+                'name_format': 'uri',
+                'name': oid,
+            }
+            defaults = {
+                'attribute_name': def_name.lower(),
+                'friendly_name': friendly_name or def_name,
+                'enabled': is_required,
+            }
+
+            try:
+                attribute, created = SAMLAttribute.objects.get_or_create(defaults=defaults,
+                        **kwargs)
+                if created and verbosity > 1:
+                    print _('Created new attribute %(name)s for %(provider)s') % \
+                            {'name': oid, 'provider': provider}
+                pks.append(attribute.pk)
+            except SAMLAttribute.MultipleObjectsReturned:
+                pks.extend(SAMLAttribute.objects.filter(**kwargs).values_list('pk', flat=True))
+
 
 def load_one_entity(tree, options, sp_policy=None, idp_policy=None, afp=None):
     '''Load or update an EntityDescriptor into the database'''
@@ -134,6 +196,8 @@ def load_one_entity(tree, options, sp_policy=None, idp_policy=None, afp=None):
                 service_provider.sp_options_policy = sp_policy
             service_provider.save()
             pks = []
+            if options['load_attribute_consuming_service']:
+                load_acs(tree, provider, pks, verbosity)
             if afp and provider.entity_id in afp:
                 for name in afp[provider.entity_id]:
                     kwargs, defaults = build_saml_attribute_kwargs(provider, name)
@@ -204,6 +268,12 @@ existing providers with the same tag will be removed if they do not exist\
             default=False,
             help='When loading shibboleth attribute filter policies, start by '
                  'removing all existing SAML attributes for each provider'),
+        make_option('--dont-load-attribute-consuming-service',
+            dest='load_attribute_consuming_service',
+            default=True,
+            action='store_false',
+            help='Prevent loading of the attribute policy from '
+                 'AttributeConsumingService nodes in the metadata file.'),
         make_option('--shibboleth-attribute-filter-policy',
             dest='attribute-filter-policy',
             default=None,
