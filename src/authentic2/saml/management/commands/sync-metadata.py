@@ -133,30 +133,30 @@ def load_one_entity(tree, options, sp_policy=None, idp_policy=None, afp=None):
             if sp_policy:
                 service_provider.sp_options_policy = sp_policy
             service_provider.save()
-        if afp and provider.entity_id in afp:
             pks = []
-            for name in afp[provider.entity_id]:
-                kwargs, defaults = build_saml_attribute_kwargs(provider, name)
-                if not kwargs:
-                    if verbosity > 1:
-                        print >>sys.stderr, _('Unable to find an LDAP definition for attribute %(name)s on %(provider)s') % \
-                            {'name': name, 'provider': provider}
-                    continue
-                # create object with default attribute mapping to the same name
-                # as the attribute if no SAMLAttribute model already exists,
-                # otherwise do nothing
-                try:
-                    attribute, created = SAMLAttribute.objects.get_or_create(defaults=defaults,
-                            **kwargs)
-                    if created and verbosity > 1:
-                        print _('Created new attribute %(name)s for %(provider)s') % \
+            if afp and provider.entity_id in afp:
+                for name in afp[provider.entity_id]:
+                    kwargs, defaults = build_saml_attribute_kwargs(provider, name)
+                    if not kwargs:
+                        if verbosity > 1:
+                            print >>sys.stderr, _('Unable to find an LDAP definition for attribute %(name)s on %(provider)s') % \
                                 {'name': name, 'provider': provider}
-                    pks.append(attribute.pk)
-                except SAMLAttribute.MultipleObjectsReturned:
-                    pks.extend(SAMLAttribute.objects.filter(**kwargs).values_list('pk', flat=True))
-            if options.get('reset-attributes'):
-                # remove attributes not matching the filters
-                SAMLAttribute.objects.for_generic_object(provider).exclude(pk__in=pks).delete()
+                        continue
+                    # create object with default attribute mapping to the same name
+                    # as the attribute if no SAMLAttribute model already exists,
+                    # otherwise do nothing
+                    try:
+                        attribute, created = SAMLAttribute.objects.get_or_create(defaults=defaults,
+                                **kwargs)
+                        if created and verbosity > 1:
+                            print _('Created new attribute %(name)s for %(provider)s') % \
+                                    {'name': name, 'provider': provider}
+                        pks.append(attribute.pk)
+                    except SAMLAttribute.MultipleObjectsReturned:
+                        pks.extend(SAMLAttribute.objects.filter(**kwargs).values_list('pk', flat=True))
+                if options.get('reset-attributes'):
+                    # remove attributes not matching the filters
+                    SAMLAttribute.objects.for_generic_object(provider).exclude(pk__in=pks).delete()
 
 class Command(BaseCommand):
     '''Load SAMLv2 metadata file into the LibertyProvider, LibertyServiceProvider
