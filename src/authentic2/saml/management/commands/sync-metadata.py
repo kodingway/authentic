@@ -5,12 +5,12 @@ import os
 import requests
 from StringIO import StringIO
 
-from authentic2.compat_lasso import lasso
 from django.core.management.base import BaseCommand, CommandError
-from django.db import transaction
 from django.template.defaultfilters import slugify
 from django.utils.translation import gettext as _
 
+from authentic2.compat import commit_on_success
+from authentic2.compat_lasso import lasso
 from authentic2.saml.models import *
 from authentic2.saml.shibboleth.afp_parser import parse_attribute_filters_file
 from authentic2.attribute_aggregator.core import (get_definition_from_alias,
@@ -234,112 +234,106 @@ Any other kind of attribute filter policy is unsupported.
     args = '<metadata_file>'
     help = 'Load the specified SAMLv2 metadata file'
 
-    @transaction.commit_manually
+    @commit_on_success
     def handle(self, *args, **options):
         verbosity = int(options['verbosity'])
         source = options['source']
+        if not args:
+            raise CommandError('No metadata file on the command line')
+        # Check sources
         try:
-            if not args:
-                raise CommandError('No metadata file on the command line')
-            # Check sources
-            try:
-                if source is not None:
-                    source.decode('ascii')
-            except:
-                raise CommandError('--source MUST be an ASCII string value')
-            if args[0].startswith('http://') or args[0].startswith('https://'):
-                response = requests.get(args[0])
-                if not response.ok:
-                    raise CommandError('Unable to open url %s' % args[0])
-                metadata_file = StringIO(response.content)
-            else:
-                try:
-                    metadata_file = file(args[0])
-                except:
-                    raise CommandError('Unable to open file %s' % args[0])
-
-            try:
-                doc = etree.parse(metadata_file)
-            except Exception, e:
-                raise CommandError('XML parsing error: %s' % str(e))
-            if doc.getroot().tag == ENTITY_DESCRIPTOR_TN:
-                load_one_entity(doc.getroot(), options)
-            elif doc.getroot().tag == ENTITIES_DESCRIPTOR_TN:
-                afp = None
-                if 'attribute-filter-policy' in options and options['attribute-filter-policy']:
-                    path = options['attribute-filter-policy']
-                    if not os.path.isfile(path):
-                        raise CommandError(
-                            'No attribute filter policy file %s' % path)
-                    afp = parse_attribute_filters_file(
-                        options['attribute-filter-policy'])
-                sp_policy = None
-                if 'sp_policy' in options and options['sp_policy']:
-                    sp_policy_name = options['sp_policy']
-                    try:
-                        sp_policy = SPOptionsIdPPolicy.objects.get(name=sp_policy_name)
-                        if verbosity > 1:
-                            print 'Service providers are set with the following SAML2 \
-                                options policy: %s' % sp_policy
-                    except:
-                        if verbosity > 0:
-                            print >>sys.stderr, _('SAML2 service provider options policy with name %s not found') % sp_policy_name
-                            raise CommandError()
-                else:
-                    if verbosity > 1:
-                        print 'No SAML2 service provider options policy provided'
-                idp_policy = None
-                if 'idp_policy' in options and options['idp_policy']:
-                    idp_policy_name = options['idp_policy']
-                    try:
-                        idp_policy = IdPOptionsSPPolicy.objects.get(name=idp_policy_name)
-                        if verbosity > 1:
-                            print 'Identity providers are set with the following SAML2 \
-                                options policy: %s' % idp_policy
-                    except:
-                        if verbosity > 0:
-                            print >>sys.stderr, _('SAML2 identity provider options policy with name %s not found') % idp_policy_name
-                            raise CommandError()
-                else:
-                    if verbosity > 1:
-                        print _('No SAML2 identity provider options policy provided')
-                loaded = []
-                if doc.getroot().tag == ENTITY_DESCRIPTOR_TN:
-                    entity_descriptors = [ doc.getroot() ]
-                else:
-                    entity_descriptors = doc.getroot().findall(ENTITY_DESCRIPTOR_TN)
-                for entity_descriptor in entity_descriptors:
-                    try:
-                        load_one_entity(entity_descriptor, options,
-                                sp_policy=sp_policy, idp_policy=idp_policy,
-                                afp=afp)
-                        loaded.append(entity_descriptor.get(ENTITY_ID))
-                    except Exception, e:
-                        if not options['ignore-errors']:
-                            raise
-                        if verbosity > 0:
-                            print >>sys.stderr, _('Failed to load entity descriptor for %s') % entity_descriptor.get(ENTITY_ID)
-                        raise CommandError()
-                if options['source']:
-                    if options['delete']:
-                        print 'Finally delete all providers for source: %s...' % source
-                        LibertyProvider.objects.filter(federation_source=source).delete()
-                    else:
-                        to_delete = []
-                        for provider in LibertyProvider.objects.filter(federation_source=source):
-                            if provider.entity_id not in loaded:
-                                to_delete.append(provider)
-                        for provider in to_delete:
-                            if verbosity > 1:
-                                print _('Deleted obsolete provider %s') % provider.entity_id
-                            provider.delete()
-            else:
-                raise CommandError('%s is not a SAMLv2 metadata file' % metadata_file)
+            if source is not None:
+                source.decode('ascii')
         except:
-            transaction.rollback()
-            raise
+            raise CommandError('--source MUST be an ASCII string value')
+        if args[0].startswith('http://') or args[0].startswith('https://'):
+            response = requests.get(args[0])
+            if not response.ok:
+                raise CommandError('Unable to open url %s' % args[0])
+            metadata_file = StringIO(response.content)
         else:
-            transaction.commit()
+            try:
+                metadata_file = file(args[0])
+            except:
+                raise CommandError('Unable to open file %s' % args[0])
+
+        try:
+            doc = etree.parse(metadata_file)
+        except Exception, e:
+            raise CommandError('XML parsing error: %s' % str(e))
+        if doc.getroot().tag == ENTITY_DESCRIPTOR_TN:
+            load_one_entity(doc.getroot(), options)
+        elif doc.getroot().tag == ENTITIES_DESCRIPTOR_TN:
+            afp = None
+            if 'attribute-filter-policy' in options and options['attribute-filter-policy']:
+                path = options['attribute-filter-policy']
+                if not os.path.isfile(path):
+                    raise CommandError(
+                        'No attribute filter policy file %s' % path)
+                afp = parse_attribute_filters_file(
+                    options['attribute-filter-policy'])
+            sp_policy = None
+            if 'sp_policy' in options and options['sp_policy']:
+                sp_policy_name = options['sp_policy']
+                try:
+                    sp_policy = SPOptionsIdPPolicy.objects.get(name=sp_policy_name)
+                    if verbosity > 1:
+                        print 'Service providers are set with the following SAML2 \
+                            options policy: %s' % sp_policy
+                except:
+                    if verbosity > 0:
+                        print >>sys.stderr, _('SAML2 service provider options policy with name %s not found') % sp_policy_name
+                        raise CommandError()
+            else:
+                if verbosity > 1:
+                    print 'No SAML2 service provider options policy provided'
+            idp_policy = None
+            if 'idp_policy' in options and options['idp_policy']:
+                idp_policy_name = options['idp_policy']
+                try:
+                    idp_policy = IdPOptionsSPPolicy.objects.get(name=idp_policy_name)
+                    if verbosity > 1:
+                        print 'Identity providers are set with the following SAML2 \
+                            options policy: %s' % idp_policy
+                except:
+                    if verbosity > 0:
+                        print >>sys.stderr, _('SAML2 identity provider options policy with name %s not found') % idp_policy_name
+                        raise CommandError()
+            else:
+                if verbosity > 1:
+                    print _('No SAML2 identity provider options policy provided')
+            loaded = []
+            if doc.getroot().tag == ENTITY_DESCRIPTOR_TN:
+                entity_descriptors = [ doc.getroot() ]
+            else:
+                entity_descriptors = doc.getroot().findall(ENTITY_DESCRIPTOR_TN)
+            for entity_descriptor in entity_descriptors:
+                try:
+                    load_one_entity(entity_descriptor, options,
+                            sp_policy=sp_policy, idp_policy=idp_policy,
+                            afp=afp)
+                    loaded.append(entity_descriptor.get(ENTITY_ID))
+                except Exception, e:
+                    if not options['ignore-errors']:
+                        raise
+                    if verbosity > 0:
+                        print >>sys.stderr, _('Failed to load entity descriptor for %s') % entity_descriptor.get(ENTITY_ID)
+                    raise CommandError()
+            if options['source']:
+                if options['delete']:
+                    print 'Finally delete all providers for source: %s...' % source
+                    LibertyProvider.objects.filter(federation_source=source).delete()
+                else:
+                    to_delete = []
+                    for provider in LibertyProvider.objects.filter(federation_source=source):
+                        if provider.entity_id not in loaded:
+                            to_delete.append(provider)
+                    for provider in to_delete:
+                        if verbosity > 1:
+                            print _('Deleted obsolete provider %s') % provider.entity_id
+                        provider.delete()
+        else:
+            raise CommandError('%s is not a SAMLv2 metadata file' % metadata_file)
         if not options.get('delete'):
             if verbosity > 1:
                 print 'Loaded', options.get('count', 0), 'providers'
