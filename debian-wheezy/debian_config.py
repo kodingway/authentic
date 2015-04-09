@@ -24,10 +24,13 @@ LOGGING = {
         'cleaning': {
             '()':  'authentic2.utils.CleanLogMessage',
         },
+        'request_context': {
+            '()':  'authentic2.log_filters.RequestContextFilter',
+        },
     },
     'formatters': {
         'syslog': {
-            'format': '%(levelname)s %(name)s.%(funcName)s: %(message)s',
+            'format': '%(ip)s %(user)s %(request_id)s %(levelname)s %(name)s.%(funcName)s: %(message)s',
         },
     },
     'handlers': {
@@ -35,35 +38,25 @@ LOGGING = {
             'level': 'DEBUG',
             'address': '/dev/log',
             'class': 'logging.handlers.SysLogHandler',
-            'filters': ['cleaning'],
+            'filters': ['cleaning', 'request_context'],
             'formatter': 'syslog',
         },
     },
     'loggers': {
-        'py.warnings': {
-                'handlers': ['syslog'],
-                'level': 'WARNING',
-                'propagate': False,
-        },
-        'django': {
-                'handlers': ['syslog'],
-                'level': 'WARNING',
-                'propagate': False,
-        },
-        'lasso': {
-                'handlers': ['syslog'],
-                'level': 'WARNING',
-                'propagate': False,
-        },
-        'authentic2': {
+        # even when debugging seeing SQL queries is too much, activate it
+        # explicitly using DEBUG_DB
+        'django.db': {
                 'handlers': ['syslog'],
                 'level': 'INFO',
-                'propagate': False,
         },
-        'authentic2_idp_openid': {
+        # django_select2 outputs debug message at level INFO
+        'django_select2': {
+                'handlers': ['syslog'],
+                'level': 'WARNING',
+        },
+        '': {
                 'handlers': ['syslog'],
                 'level': 'INFO',
-                'propagate': False,
         },
     },
 }

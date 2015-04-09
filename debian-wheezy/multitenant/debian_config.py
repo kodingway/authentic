@@ -66,5 +66,49 @@ DATABASE_ROUTERS = (
     'tenant_schemas.routers.TenantSyncRouter',
 )
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'filters': {
+        'cleaning': {
+            '()':  'authentic2.utils.CleanLogMessage',
+        },
+        'request_context': {
+            '()':  'authentic2.log_filters.RequestContextFilter',
+        },
+    },
+    'formatters': {
+        'syslog': {
+            'format': '%(ip)s %(user)s %(request_id)s %(levelname)s %(name)s.%(funcName)s: %(message)s',
+        },
+    },
+    'handlers': {
+        'syslog': {
+            'level': 'DEBUG',
+            'address': '/dev/log',
+            'class': 'logging.handlers.SysLogHandler',
+            'filters': ['cleaning', 'request_context'],
+            'formatter': 'syslog',
+        },
+    },
+    'loggers': {
+        # even when debugging seeing SQL queries is too much, activate it
+        # explicitly using DEBUG_DB
+        'django.db': {
+                'handlers': ['syslog'],
+                'level': 'INFO',
+        },
+        # django_select2 outputs debug message at level INFO
+        'django_select2': {
+                'handlers': ['syslog'],
+                'level': 'WARNING',
+        },
+        '': {
+                'handlers': ['syslog'],
+                'level': 'INFO',
+        },
+    },
+}
+
 if os.path.exists(os.path.join(ETC_DIR, 'config.py')):
     execfile(os.path.join(ETC_DIR, 'config.py'))
