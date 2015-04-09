@@ -1,3 +1,4 @@
+import logging.config
 # Load default from Django
 from django.conf.global_settings import *
 import os
@@ -16,6 +17,7 @@ SECRET_KEY = 'please-change-me-with-a-very-long-random-string'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+DEBUG_DB = False
 TEMPLATE_DEBUG = True
 MEDIA = 'media'
 
@@ -190,6 +192,7 @@ SERIALIZATION_MODULES = {
 if django.VERSION >= (1,7):
     TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
+LOGGING_CONFIG = None
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
@@ -197,10 +200,13 @@ LOGGING = {
         'cleaning': {
             '()':  'authentic2.utils.CleanLogMessage',
         },
+        'request_context': {
+            '()':  'authentic2.log_filters.RequestContextFilter',
+        },
     },
     'formatters': {
         'verbose': {
-            'format': '[%(asctime)s] %(levelname)s %(name)s.%(funcName)s: %(message)s',
+            'format': '[%(asctime)s] %(ip)s %(user)s %(request_id)s %(levelname)s %(name)s.%(funcName)s: %(message)s',
             'datefmt': '%Y-%m-%d %a %H:%M:%S'
         },
     },
@@ -209,28 +215,24 @@ LOGGING = {
             'level': 'DEBUG',
             'class':'logging.StreamHandler',
             'formatter': 'verbose',
+            'filters': ['cleaning', 'request_context'],
         },
     },
     'loggers': {
-        'django': {
-                'handlers': ['console'],
-                'level': 'WARNING',
-                'propagate': False,
-        },
-        'lasso': {
-                'handlers': ['console'],
-                'level': 'WARNING',
-                'propagate': False,
-        },
-        'authentic2': {
+        # even when debugging seeing SQL queries is too much, activate it
+        # explicitly using DEBUG_DB
+        'django.db': {
                 'handlers': ['console'],
                 'level': 'INFO',
-                'propagate': False,
         },
-        'authentic2_idp_openid': {
+        # django_select2 outputs debug message at level INFO
+        'django_select2': {
+                'handlers': ['console'],
+                'level': 'WARNING',
+        },
+        '': {
                 'handlers': ['console'],
                 'level': 'INFO',
-                'propagate': False,
         },
     },
 }
@@ -247,3 +249,10 @@ if 'AUTHENTIC2_SETTINGS_FILE' in os.environ:
 #
 
 from . import fix_user_model
+
+# Post local config setting
+if DEBUG:
+    LOGGING['loggers']['']['level'] = 'DEBUG'
+if DEBUG_DB:
+    LOGGING['loggers']['django.db']['level'] = 'DEBUG'
+logging.config.dictConfig(LOGGING)
