@@ -1,6 +1,10 @@
 import os
 import warnings
 
+
+# Add the XForwardedForMiddleware
+MIDDLEWARE_CLASSES = ('authentic2.middleware.XForwardedForMiddleware',) + MIDDLEWARE_CLASSES
+
 # Debian defaults
 DEBUG = False
 

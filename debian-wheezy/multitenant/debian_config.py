@@ -43,6 +43,7 @@ TEMPLATE_LOADERS = ('hobo.multitenant.template_loader.FilesystemLoader',) + TEMP
 TEMPLATE_CONTEXT_PROCESSORS = ('django.core.context_processors.request',) + TEMPLATE_CONTEXT_PROCESSORS
 
 MIDDLEWARE_CLASSES = (
+    'authentic2.middleware.XForwardedForMiddleware',
     'hobo.multitenant.middleware.TenantMiddleware',
     'hobo.multitenant.middleware.TenantSettingsMiddleware',
 ) + MIDDLEWARE_CLASSES

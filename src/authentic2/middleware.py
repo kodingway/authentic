@@ -149,3 +149,13 @@ class ViewRestrictionMiddleware(object):
         if view == 'auth_password_change':
             messages.warning(request, _('You must change your password to continue'))
         return utils.redirect_and_come_back(request, view)
+
+class XForwardedForMiddleware():
+    '''Copy the first address from X-Forwarded-For header to the REMOTE_ADDR meta.
+
+       This middleware should only be used if you are sure the header cannot be
+       forged (behind a reverse proxy for example).'''
+    def process_request(self, request):
+        if 'HTTP_X_FORWARDED_FOR' in request.META:
+            request.META['REMOTE_ADDR'] = request.META['HTTP_X_FORWARDED_FOR'].split(",")[0].strip()
+            return None
