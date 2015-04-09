@@ -411,6 +411,7 @@ def logout(request, next_url=None, default_next_url='auth_homepage',
        Logout endpoints of IdP module must re-user the view by setting
        check_referer and do_local to False.
     '''
+    logger = logging.getLogger(__name__)
     next_url = next_url or request.REQUEST.get(redirect_field_name,
             utils.make_url(default_next_url))
     ctx = {}
@@ -434,6 +435,7 @@ def logout(request, next_url=None, default_next_url='auth_homepage',
             ctx['message'] = _('Logging out from all your services')
             return render(request, template, ctx)
     # Local logout
+    logger.info('logged out')
     auth_logout(request)
     messages.info(request, _('You have been logged out'))
     if next_url.startswith('/'):
