@@ -14,10 +14,10 @@ from authentic2.decorators import to_list
 from authentic2.utils import Service
 
 
-logger = logging.getLogger(__name__)
-
-
 class SamlBackend(object):
+    def __init__(self):
+        self.logger = logging.getLogger(__name__)
+
     def service_list(self, request):
         q = models.LibertyServiceProvider.objects.filter(enabled = True) \
                 .select_related()
@@ -66,9 +66,9 @@ class SamlBackend(object):
     def logout_list(self, request):
         all_sessions = models.LibertySession.objects.filter(
                 django_session_key=request.session.session_key)
-        logger.debug("logout_list: all_sessions %r" % all_sessions)
+        self.logger.debug("all_sessions %r" % all_sessions)
         provider_ids = set([s.provider_id for s in all_sessions])
-        logger.debug("logout_list: provider_ids %r" % provider_ids)
+        self.logger.debug("provider_ids %r" % provider_ids)
         result = []
         for provider_id in provider_ids:
             name = provider_id
@@ -77,14 +77,14 @@ class SamlBackend(object):
                 provider = models.LibertyProvider.objects.get(entity_id=provider_id)
                 name = provider.name
             except models.LibertyProvider.DoesNotExist:
-                logger.error('logout_list: session found for unknown provider %s' \
+                self.logger.error('session found for unknown provider %s' \
                     % provider_id)
             else:
                 policy = common.get_sp_options_policy(provider)
                 if not policy:
-                    logger.error('logout_list: No policy found for %s' % provider_id)
+                    self.logger.error('No policy found for %s' % provider_id)
                 elif not policy.forward_slo:
-                    logger.info('logout_list: %s configured to not reveive slo' \
+                    self.logger.info('%s configured to not reveive slo' \
                         % provider_id)
                 else:
                     url = reverse(saml2_endpoints.idp_slo, args=[provider_id])
