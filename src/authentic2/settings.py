@@ -54,6 +54,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'authentic2.middleware.RequestIdMiddleware',
     'authentic2.middleware.LoggingCollectorMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.http.ConditionalGetMiddleware',

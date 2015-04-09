@@ -1,5 +1,7 @@
 import logging
 import datetime
+import random
+import struct
 try:
     import threading
 except ImportError:
@@ -107,6 +109,18 @@ class OpenedSessionCookieMiddleware(object):
                     app_settings.A2_OPENED_SESSION_COOKIE_NAME,
                     domain=app_settings.A2_OPENED_SESSION_COOKIE_DOMAIN)
         return response
+
+class RequestIdMiddleware(object):
+    def process_request(self, request):
+        if not hasattr(request, 'request_id'):
+            request_id_header = getattr(settings, 'REQUEST_ID_HEADER', None)
+            if request_id_header and request.META.get(request_id_header):
+                request.request_id = request.META[request_id_header]
+            else:
+                # Use Mersennes Twister rng, no need for a cryptographic grade
+                # rng in this case
+                random_id = random.getrandbits(32)
+                request.request_id = struct.pack('I', random_id).encode('hex')
 
 class StoreRequestMiddleware(object):
     collection = {}
