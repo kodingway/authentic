@@ -275,6 +275,7 @@ def record_authentication_event(request, how):
     '''Record an authentication event in the session and in the database, in
        later version the database persistence can be removed'''
     from . import models
+    logging.getLogger(__name__).info('logged in (%s)', how)
     authentication_events = request.session.setdefault(constants.AUTHENTICATION_EVENTS_SESSION_KEY, [])
     # As we update a persistent object and not a session key we must
     # explicitly state that the session has been modified
