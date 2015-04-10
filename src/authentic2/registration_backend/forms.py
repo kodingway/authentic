@@ -63,7 +63,7 @@ class RegistrationForm(Form):
                                             ctx_dict)
             send_mail(subject, message, settings.DEFAULT_FROM_EMAIL,
                       [data['email']], fail_silently=True,
-                      html_message=message)
+                      html_message=html_message)
         else:
             send_mail(subject, message, settings.DEFAULT_FROM_EMAIL,
                       [data['email']], fail_silently=True)
