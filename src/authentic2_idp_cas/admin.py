@@ -21,6 +21,7 @@ class ServiceForm(forms.ModelForm):
 
     class Meta:
         model = models.Service
+        fields = '__all__'
 
 class AttributeInlineForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
