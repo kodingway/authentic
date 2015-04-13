@@ -17,7 +17,7 @@ from django.forms import ModelForm, Select
 
 from .nonce.models import Nonce
 from . import (forms, models, admin_forms, compat, app_settings, decorators,
-        attribute_kinds)
+        attribute_kinds, utils)
 
 def cleanup_action(modeladmin, request, queryset):
     queryset.cleanup()
@@ -250,17 +250,13 @@ admin.site.register(Group, A2GroupAdmin)
 
 @never_cache
 def login(request, extra_context=None):
-    query = urlencode({REDIRECT_FIELD_NAME: request.get_full_path()})
-    url = '{0}?{1}'.format(settings.LOGIN_URL, query)
-    return HttpResponseRedirect(url)
+    return utils.redirect_to_login(request)
 
 admin.site.login = login
 
 @never_cache
 def logout(request, extra_context=None):
-    query = urlencode({REDIRECT_FIELD_NAME: request.get_full_path()})
-    url = '{0}?{1}'.format(settings.LOGOUT_URL, query)
-    return HttpResponseRedirect(url)
+    return utils.redirect_to_login(request, login_url='auth_logout')
 
 admin.site.logout = logout
 
