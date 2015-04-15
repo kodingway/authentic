@@ -8,7 +8,7 @@ from django.conf import settings
 class Migration(migrations.Migration):
 
     dependencies = [
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('auth', '0002_auto_20150323_1720'),
     ]
 
     operations = [
@@ -78,7 +78,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=200, verbose_name='Name')),
                 ('source', models.ForeignKey(verbose_name='attribute source', to='attribute_aggregator.AttributeSource')),
-                ('user', models.ForeignKey(related_name='user_alias_in_source', verbose_name='user', to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(related_name='user_alias_in_source', verbose_name='user', to='auth.User')),
             ],
             options={
                 'verbose_name': 'user alias from source',
@@ -91,7 +91,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('data', models.TextField(null=True, blank=True)),
-                ('user', models.OneToOneField(related_name='user_attribute_profile', null=True, blank=True, to=settings.AUTH_USER_MODEL)),
+                ('user', models.OneToOneField(related_name='user_attribute_profile', null=True, blank=True, to='auth.User')),
             ],
             options={
                 'verbose_name': 'user attribute profile',

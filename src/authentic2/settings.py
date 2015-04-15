@@ -115,6 +115,7 @@ INSTALLED_APPS = (
     'authentic2.attribute_aggregator',
     'authentic2.disco_service',
     'authentic2.manager',
+    'authentic2.custom_user',
     'authentic2',
     'gadjo',
     'sekizai',
@@ -145,7 +146,7 @@ ACCOUNT_ACTIVATION_DAYS = 2
 ###########################
 # Authentication settings
 ###########################
-
+AUTH_USER_MODEL = 'custom_user.User'
 AUTH_FRONTENDS = plugins.register_plugins_auth_frontends((
     'authentic2.auth_frontends.LoginPasswordBackend',))
 
@@ -228,7 +229,6 @@ LOGGING = {
     },
 }
 
-# Temporary fix for User.username field length
 MIGRATION_MODULES = {
         'auth': 'authentic2.auth_migrations',
 }
@@ -239,12 +239,6 @@ MIGRATION_MODULES = {
 
 if 'AUTHENTIC2_SETTINGS_FILE' in os.environ:
     execfile(os.environ['AUTHENTIC2_SETTINGS_FILE'])
-
-#
-# Apply monkey patches
-#
-
-from . import fix_user_model
 
 # Post local config setting
 if DEBUG:

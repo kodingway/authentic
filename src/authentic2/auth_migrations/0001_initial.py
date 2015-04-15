@@ -58,7 +58,6 @@ class Migration(migrations.Migration):
                 ('user_permissions', models.ManyToManyField(to='auth.Permission', verbose_name='user permissions', blank=True, help_text='Specific permissions for this user.', related_name='user_set', related_query_name='user')),
             ],
             options={
-                'swappable': 'AUTH_USER_MODEL',
                 'verbose_name': 'user',
                 'verbose_name_plural': 'users',
             },

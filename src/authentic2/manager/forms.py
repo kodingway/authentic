@@ -2,7 +2,6 @@ from django.utils.translation import ugettext_lazy as _
 from django import forms
 
 from authentic2.compat import get_user_model
-from authentic2.forms import UserAttributeFormMixin
 
 from . import utils, fields
 
@@ -18,10 +17,5 @@ class ChooseUserForm(forms.Form):
     ref = fields.ChooseUserField(label=_('user'))
 
 
-class UserEditForm(UserAttributeFormMixin, forms.ModelForm):
+class UserEditForm(forms.ModelForm):
     groups = fields.GroupsField(required=False)
-
-    class Meta:
-        model = get_user_model()
-        fields = [ 'username', 'first_name', 'last_name', 'email', 'groups']
-

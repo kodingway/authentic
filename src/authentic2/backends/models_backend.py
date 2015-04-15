@@ -32,7 +32,7 @@ class ModelBackend(ModelBackend):
 
     def get_query(self, username, realm):
         UserModel = get_proxy_user_model()
-        username_field = UserModel.USERNAME_FIELD
+        username_field = 'username'
         queries = []
         try:
             if app_settings.ACCEPT_EMAIL_AUTHENTICATION \

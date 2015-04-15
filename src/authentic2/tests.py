@@ -92,8 +92,9 @@ class SerializerTests(TestCase):
     def test_generic_foreign_key_natural_key(self):
         import json
         from authentic2.models import Attribute, AttributeValue
-        from django.contrib.auth.models import User
+        from django.contrib.auth import get_user_model
         from django.core import serializers
+        User = get_user_model()
         u = User.objects.create(username='john.doe')
         a = Attribute.objects.create(name='phone', label='phone', kind='string')
         av = AttributeValue.objects.create(owner=u, attribute=a, content='0101010101')
@@ -109,8 +110,9 @@ class SerializerTests(TestCase):
         self.assertEqual(Attribute.objects.count(), 0)
         self.assertEqual(AttributeValue.objects.count(), 0)
         expected = [ {
-                   'model': 'auth.user',
+                   'model': 'custom_user.user',
                    'fields': {
+                       'uuid': u.uuid,
                        'username': 'john.doe',
                        'email': '',
                        'first_name': '',
@@ -142,7 +144,7 @@ class SerializerTests(TestCase):
                  {
                   'model': 'authentic2.attributevalue',
                   'fields': {
-                      'owner': [['auth', 'user'], ['john.doe']],
+                      'owner': [['custom_user', 'user'], [u.uuid]],
                       'attribute': ['phone'],
                       'content': '0101010101',
                   }

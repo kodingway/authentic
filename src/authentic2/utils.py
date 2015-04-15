@@ -4,6 +4,7 @@ import logging
 import urllib
 import six
 import urlparse
+import uuid
 from functools import wraps
 
 from importlib import import_module
@@ -440,3 +441,6 @@ def csrf_token_check(request, form):
     if form.is_valid() and not getattr(request, 'csrf_processing_done', False):
         msg = _('The form was out of date, please try again.')
         form._errors[forms.forms.NON_FIELD_ERRORS] = ErrorList([msg])
+
+def get_hex_uuid():
+    return uuid.uuid4().get_hex()

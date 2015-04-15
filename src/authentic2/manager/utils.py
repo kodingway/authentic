@@ -1,5 +1,7 @@
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import Group
 from django.db.models.query import Q
+
+from django.contrib.auth import get_user_model
 
 
 class Role(object):
@@ -25,12 +27,14 @@ def filter_user(qs, search):
             | Q(email__icontains=search))
 
 def get_role_users(role, search=None):
+    User = get_user_model()
     qs = User.objects.filter(groups__id=role.ref)
     if search:
         qs = filter_user(qs, search)
     return qs
 
 def get_users(search=None):
+    User = get_user_model()
     qs = User.objects.order_by('username')
     if search:
         qs = filter_user(qs, search)
@@ -41,9 +45,11 @@ def role_add(name):
     return g.id
 
 def search_user(term):
+    User = get_user_model()
     return [RoleUser(u.get_full_name().strip() or u.username, u.id) for u in filter_user(User.objects.all(), term)[:10]]
 
 def add_user_to_role(role, user):
+    User = get_user_model()
     u = User.objects.get(id=user)
     if u.groups.filter(id=role.ref).exists():
         return False
@@ -52,6 +58,7 @@ def add_user_to_role(role, user):
         return True
 
 def remove_user_from_role(role, user):
+    User = get_user_model()
     User.objects.get(id=user).groups.remove(Group.objects.get(id=role.ref))
 
 def delete_role(role):

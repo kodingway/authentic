@@ -11,8 +11,6 @@ class Authentic2Config(AppConfig):
     label = 'authentic2'
 
     def ready(self):
-        from . import fix_user_model, compat, plugins
-        fix_user_model.patch_user_model(compat.get_user_model())
-        fix_user_model.patch_email()
+        from . import plugins
         plugins.init()
     default_app_config = 'authentic2.Authentic2Config'

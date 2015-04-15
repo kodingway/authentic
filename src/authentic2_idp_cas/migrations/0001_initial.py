@@ -2,14 +2,13 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-from django.conf import settings
 import authentic2_idp_cas.models
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('auth', '0002_auto_20150323_1720'),
     ]
 
     operations = [
@@ -59,7 +58,7 @@ class Migration(migrations.Migration):
                 ('session_key', models.CharField(default=b'', max_length=64, verbose_name='django session key', db_index=True, blank=True)),
                 ('proxies', models.TextField(default=b'', verbose_name='proxies', blank=True)),
                 ('service', models.ForeignKey(verbose_name='service', to='authentic2_idp_cas.Service')),
-                ('user', models.ForeignKey(blank=True, to=settings.AUTH_USER_MODEL, max_length=128, null=True, verbose_name='user')),
+                ('user', models.ForeignKey(blank=True, to='auth.User', max_length=128, null=True, verbose_name='user')),
             ],
             options={
             },

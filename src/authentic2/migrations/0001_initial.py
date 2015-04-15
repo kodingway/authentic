@@ -2,13 +2,12 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-from django.conf import settings
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('auth', '0002_auto_20150323_1720'),
         ('contenttypes', '0001_initial'),
     ]
 
@@ -68,7 +67,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('creation', models.DateTimeField(auto_now_add=True, verbose_name='creation date')),
-                ('user', models.ForeignKey(verbose_name='user', to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(verbose_name='user', to='auth.User')),
             ],
             options={
                 'verbose_name': 'user to delete',
@@ -112,7 +111,7 @@ class Migration(migrations.Migration):
             name='PasswordReset',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('user', models.ForeignKey(verbose_name='user', to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(verbose_name='user', to='auth.User')),
             ],
             options={
                 'verbose_name': 'password reset',
@@ -128,7 +127,7 @@ class Migration(migrations.Migration):
                 ('external_id', models.CharField(max_length=256, verbose_name='external id')),
                 ('created', models.DateTimeField(auto_now_add=True, verbose_name='creation date')),
                 ('updated', models.DateTimeField(auto_now=True, verbose_name='last update date')),
-                ('user', models.ForeignKey(verbose_name='user', to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(verbose_name='user', to='auth.User')),
             ],
             options={
                 'verbose_name': 'user external id',

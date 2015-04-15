@@ -252,3 +252,4 @@ def logout(request, extra_context=None):
 admin.site.logout = logout
 
 admin.site.register(models.PasswordReset)
+admin.site.register(User, AuthenticUserAdmin)
