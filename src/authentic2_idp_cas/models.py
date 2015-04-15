@@ -4,7 +4,7 @@ from django.utils.timezone import now
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 
-from authentic2.models import LogoutUrlAbstract
+from authentic2.models import LogoutUrlAbstract, Service
 from authentic2 import compat
 from authentic2.utils import check_session_key
 
@@ -12,11 +12,7 @@ from . import managers, utils, constants
 
 url_validator = URLValidator(schemes=['http', 'https'])
 
-class Service(LogoutUrlAbstract):
-    name = models.CharField(max_length=128, unique=True,
-            verbose_name=_('name'))
-    slug = models.SlugField(max_length=128, unique=True,
-            verbose_name=_('slug'))
+class Service(LogoutUrlAbstract, Service):
     urls = models.TextField(max_length=128,
             verbose_name=_('urls'))
     identifier_attribute = models.CharField(max_length=64,
