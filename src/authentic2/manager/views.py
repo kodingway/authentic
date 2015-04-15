@@ -40,7 +40,7 @@ class ManagerMixin(object):
 
 class RolesMixin(ManagerMixin):
     def get_context_data(self, **kwargs):
-        ctx = super(ManagerMixin, self).get_context_data(**kwargs)
+        ctx = super(RolesMixin, self).get_context_data(**kwargs)
         ctx['roles'] = utils.get_roles()
         ctx['role_add_form'] = forms.RoleAddForm()
         return ctx
