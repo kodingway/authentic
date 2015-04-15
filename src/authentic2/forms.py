@@ -108,46 +108,6 @@ class EmailChangeForm(forms.Form):
             )
         return password
 
-from django import forms
-from django.contrib.admin.widgets import FilteredSelectMultiple
-from django.contrib.auth.models import Group
-from . import compat
-
-class GroupAdminForm(forms.ModelForm):
-    users = forms.ModelMultipleChoiceField(
-            queryset=compat.get_user_model().objects.all(),
-            widget=FilteredSelectMultiple(
-                verbose_name=_('users'),
-                is_stacked=False),
-            required=False)
-
-    class Meta:
-        model = Group
-        fields = [
-                'name',
-                'users',
-        ]
-
-    def __init__(self, *args, **kwargs):
-        instance = kwargs.get('instance', None)
-        if instance is not None:
-            initial = kwargs.get('initial', {})
-            initial['users'] = instance.user_set.all()
-            kwargs['initial'] = initial
-        super(GroupAdminForm, self).__init__(*args, **kwargs)
-
-    def save(self, commit=True):
-        group = super(GroupAdminForm, self).save(commit=commit)
-        if commit:
-            group.user_set = self.cleaned_data['users']
-        else:
-            old_save_m2m = self.save_m2m
-            def new_save_m2m():
-                old_save_m2m()
-                group.user_set = self.cleaned_data['users']
-            self.save_m2m = new_save_m2m
-        return group
-
 class NextUrlFormMixin(forms.Form):
     next_url = forms.CharField(widget=forms.HiddenInput(), required=False)
 

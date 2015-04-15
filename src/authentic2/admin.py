@@ -8,8 +8,7 @@ from django.utils import timezone
 from django.utils.http import urlencode
 from django.http import HttpResponseRedirect
 from django.views.decorators.cache import never_cache
-from django.contrib.auth.admin import GroupAdmin, UserAdmin
-from django.contrib.auth.models import Group
+from django.contrib.auth.admin import UserAdmin
 from django.contrib.sessions.models import Session
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.admin.utils import flatten_fieldsets
@@ -238,14 +237,6 @@ class AttributeAdmin(admin.ModelAdmin):
             'user_visible')
 
 admin.site.register(models.Attribute, AttributeAdmin)
-
-
-class A2GroupAdmin(GroupAdmin):
-    form = forms.GroupAdminForm
-
-
-admin.site.unregister(Group)
-admin.site.register(Group, A2GroupAdmin)
 
 
 @never_cache
