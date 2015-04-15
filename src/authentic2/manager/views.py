@@ -24,6 +24,8 @@ from django.contrib import messages
 from django_tables2 import RequestConfig
 
 from authentic2.compat import get_user_model
+from authentic2.forms import modelform_factory
+from authentic2.models import Attribute
 
 from . import app_settings, utils, tables, forms, resources
 
@@ -244,6 +246,12 @@ class UserMixin(object):
     fields = ['username', 'first_name', 'last_name', 'email', 'is_active']
     form_class = forms.UserEditForm
 
+    def get_form_class(self):
+        fields = list(self.fields)
+        for attribute in Attribute.objects.all():
+            fields.append(attribute.name)
+        return modelform_factory(self.model, form=forms.UserEditForm,
+            fields=self.fields)
 
 class UserAddView(UserMixin, ActionMixin, TitleMixin,
         AjaxFormViewMixin, CreateView):

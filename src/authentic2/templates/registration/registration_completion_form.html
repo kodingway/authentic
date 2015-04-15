@@ -1,23 +1,58 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load breadcrumbs %}
 
 {% block title %}
-{% trans "Registration" %}
+    {% trans "Registration" %}
 {% endblock %}
 
-{% load breadcrumbs %}
 {% block breadcrumbs %}
-{{ block.super }}
-{% breadcrumb_url 'Register' %}
+    {{ block.super }}
+    {% breadcrumb_url 'Register' %}
 {% endblock %}
 
 {% block content %}
+    {%if users and not create %}
+        <h2>{% trans "Login" %}</h2>
+        <p>
+            {% blocktrans count accounts_number=accounts|length %}An account already exists for this email. Please click on the account name to log in with.{% plural %}More accounts are associated to this email.  Please choose the account you want to log in with:{% endblocktrans %}
+        </p>
 
-<h2>{% trans "Registration" %}</h2>
-<p>{% trans "Please fill the formm to complete your registration" %}</p>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <input type="submit" value="{% trans 'Submit' %}" />
-</form>
+        <ul>
+          {% for user in users %}
+              <li>
+                  <form method="post" name="user-{{ user.id }}">
+                      {% csrf_token %}
+                      <input type="hidden" name="uid" value="{{ user.id }}">
+                      <a href="#" onclick="document.forms['user-{{ user.id }}'].submit()">
+                      {% blocktrans with fullname=user.get_full_name c=forloop.counter %}Account #{{ c }}: {{ fullname }}{% endblocktrans %}
+                    </a>
+                    <div>
+                    {% blocktrans with creation_date=user.date_joined|date:'SHORT_DATETIME_FORMAT'%}created on {{ creation_date }}
+                    {% endblocktrans %}
+                    {% if user.last_login %}
+                        {% blocktrans with login_date=user.last_login|date:'SHORT_DATETIME_FORMAT' %}last login on {{ login_date }}{% endblocktrans %}
+                    {% endif %}
+                    </div>
+                  </form>
+              </li>
+          {% endfor %}
+        </ul>
+        {% if not email_is_unique %}
+          <p>
+            {% trans "or" %}
+            <a href="?create">
+              {% trans "create a new account" %}
+            </a>
+          </p>
+        {% endif %}
+    {% else %}
+      <h2>{% trans "Registration" %}</h2>
+      <p>{% trans "Please fill the form to complete your registration" %}</p>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="{% trans 'Submit' %}" />
+      </form>
+    {% endif %}
 {% endblock %}

@@ -30,6 +30,7 @@ from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.views.decorators.cache import never_cache
 from django.contrib.auth.decorators import login_required
 from django.db.models.fields import FieldDoesNotExist
+from django.db.models.query import Q
 
 
 # FIXME: this decorator has nothing to do with an idp, should be moved in the
@@ -65,9 +66,16 @@ def server_error(request, template_name='500.html'):
 
 class EditProfile(UpdateView):
     model = compat.get_user_model()
-    form_class = forms.UserProfileForm
     template_name = 'profiles/edit_profile.html'
     success_url = '../'
+
+    def get_form_class(self):
+        default_fields = list(models.Attribute.objects.filter(user_editable=True).values_list('name', flat=True))
+        fields, labels = utils.get_fields_and_labels(
+            app_settings.A2_PROFILE_FIELDS,
+            default_fields)
+        return forms.modelform_factory(compat.get_user_model(),
+                fields=fields, labels=labels)
 
     def get_object(self):
         return self.request.user
@@ -343,7 +351,7 @@ class ProfileView(TemplateView):
             for field_name in getattr(request.user, 'USER_PROFILE', []):
                 if field_name not in field_names:
                     field_names.append(field_name)
-            qs = models.Attribute.objects.filter(user_visible=True)
+            qs = models.Attribute.objects.filter(Q(user_editable=True)|Q(user_visible=True))
             qs = qs.values_list('name', flat=True)
             for field_name in qs:
                 if field_name not in field_names:

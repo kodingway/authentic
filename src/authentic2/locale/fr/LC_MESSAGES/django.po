@@ -154,19 +154,6 @@ msgstr "Projet Authentic2"
 msgid "Authentic Mailing List"
 msgstr "List de diffusion sur Authentic"
 
-#: fix_user_model.py:34
-#, python-format
-msgid ""
-"Required, %s characters or fewer. Only letters, numbers, and @, ., +, -, or "
-"_ characters."
-msgstr ""
-"Requis. %s caractères maximum. Uniquement des lettres, nombres et les "
-"caractères « @ », « . », « + », « - » et « _ »."
-
-#: fix_user_model.py:39 models.py:66
-msgid "username"
-msgstr "Identifiant"
-
 #: forms.py:96
 msgid "New email"
 msgstr "Nouveau courriel"

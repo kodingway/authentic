@@ -10,8 +10,16 @@ from django.test import TestCase
 from django.test.client import Client
 from django.contrib.auth.hashers import check_password
 from django.test.utils import override_settings
+from django.contrib.auth import REDIRECT_FIELD_NAME
 
-from . import hashers, utils
+from . import hashers, utils, models
+
+def get_response_form(response, form='form'):
+    contexts = list(response.context)
+    for c in contexts:
+        if not form in c:
+            continue
+        return c[form]
 
 class Authentic2TestCase(TestCase):
     def assertEqualsURL(self, url1, url2, **kwargs):
@@ -256,17 +264,42 @@ class RegistrationTests(TestCase):
         response = self.client.post(reverse('registration_register'),
                                     {'email': 'fred@0d..be'})
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, '<ul class="errorlist"><li>Enter a valid email address.</li></ul>', count=1, html=True)
+        self.assertFormError(response, 'form', 'email', ['Enter a valid email address.'])
         response = self.client.post(reverse('registration_register'),
                                     {'email': u'ééééé'})
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, '<ul class="errorlist"><li>Enter a valid email address.</li></ul>', count=1, html=True)
+        self.assertFormError(response, 'form', 'email', ['Enter a valid email address.'])
         response = self.client.post(reverse('registration_register'),
                                     {'email': u''})
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, '<ul class="errorlist"><li>This field is required.</li></ul>', count=1, html=True)
+        self.assertFormError(response, 'form', 'email', ['This field is required.'])
 
     def test_registration(self):
+        next_url = 'http://relying-party.org/'
+        url = utils.make_url('registration_register', params={REDIRECT_FIELD_NAME: next_url})
+        response = self.client.post(url, {'email': 'testbot@entrouvert.com'})
+        self.assertRedirects(response, reverse('registration_complete'))
+        self.assertEqual(len(mail.outbox), 1)
+        links = re.findall('https?://.*/', mail.outbox[0].body)
+        self.assertIsInstance(links, list) and self.assertIsNot(links, [])
+        link = links[0]
+        response = self.client.get(link)
+        self.assertEqual(response.status_code, 200)
+        response = self.client.post(link, { 'password1': 'toto',
+                                            'password2': 'toto'})
+        self.assertEqual(response.status_code, 200)
+        self.assertFormError(response, 'form', 'password1', ['password must contain at least 6 characters'])
+        
+        response = self.client.post(link, { 'password1': 'T0toto',
+                                            'password2': 'T0toto'})
+        self.assertRedirects(response, next_url)
+
+    @override_settings(A2_REGISTRATION_FORM_USERNAME_REGEX=r'^(ab)+$',
+            A2_REGISTRATION_FORM_USERNAME_LABEL='Identifiant',
+            A2_REGISTRATION_FORM_USERNAME_HELP_TEXT='Bien remplir',
+            A2_REGISTRATION_FIELDS=['username'],
+            A2_REQUIRED_FIELDS=['username'])
+    def test_username_settings(self):
         response = self.client.post(reverse('registration_register'),
                                     {'email': 'testbot@entrouvert.com'})
         self.assertRedirects(response, reverse('registration_complete'))
@@ -274,28 +307,139 @@ class RegistrationTests(TestCase):
         links = re.findall('https?://.*/', mail.outbox[0].body)
         self.assertIsInstance(links, list) and self.assertIsNot(links, [])
         link = links[0]
-        completion = self.client.get(link)
-        self.assertEqual(completion.status_code, 200)
-        self.bad_password_test(link)
-        self.good_password_test(link)
-        mail.outbox = []
+        response = self.client.get(link)
+        form = get_response_form(response)
+        self.assertEqual(set(form.fields), set(['username', 'password1', 'password2']))
+        self.assertEqual(set(field for field in form.fields if
+                    form.fields[field].required), set(['username',
+                        'password1', 'password2']))
+        self.assertEqual(form.fields['username'].label, 'Identifiant')
+        self.assertEqual(form.fields['username'].help_text, 'Bien remplir')
+        self.assertEqual(response.status_code, 200)
+        self.assertFormError(response, 'form', 'username', [])
+        response = self.client.post(link, {'username': 'abx',
+                'password1': 'Coucou1', 'password2': 'Coucou1'})
+        self.assertEqual(response.status_code, 200)
+        self.assertFormError(response, 'form', 'username', ['Enter a valid value.'])
+        response = self.client.post(link, {'username': 'abab',
+                'password1': 'Coucou1', 'password2': 'Coucou1'})
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('auth_homepage'))
 
-    def bad_password_test(self, url):
-        """
-        test short filled password
-        """
-        completion = self.client.post(url, {'first_name': 'Test',
-                                            'last_name': 'User',
-                                            'password1': 'toto',
-                                            'password2': 'toto'})
-        self.assertEqual(completion.status_code, 200)
+    @override_settings(A2_REGISTRATION_FIELDS=['username'],
+            A2_REQUIRED_FIELDS=['username'],
+            A2_USERNAME_IS_UNIQUE=True)
+    def test_username_is_unique(self):
+        client = Client()
+        response = client.post(reverse('registration_register'),
+                                    {'email': 'testbot@entrouvert.com'})
+        self.assertRedirects(response, reverse('registration_complete'))
+        self.assertEqual(len(mail.outbox), 1)
+        links = re.findall('https?://.*/', mail.outbox[0].body)
+        self.assertIsInstance(links, list) and self.assertIsNot(links, [])
+        link = links[0]
+        response = client.get(link)
+        form = get_response_form(response)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(set(form.fields), set(['username', 'password1', 'password2']))
+        self.assertEqual(set(field for field in form.fields if
+                    form.fields[field].required), set(['username',
+                        'password1', 'password2']))
+        response = client.post(link, {'username': 'john.doe',
+                'password1': 'Coucou1', 'password2': 'Coucou1'})
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('auth_homepage'))
+        # new session
+        client = Client()
+        response = client.post(link, {'username': 'john.doe',
+                'password1': 'Coucou1', 'password2': 'Coucou1'})
+        self.assertEqual(response.status_code, 200)
+        self.assertFormError(response, 'form', 'username', ['This username is already in use. Please supply a different username.'])
 
-    def good_password_test(self, url):
-        completion = self.client.post(url, {'first_name': 'Test',
-                                            'last_name': 'User',
-                                            'password1': 'T0toto',
-                                            'password2': 'T0toto'})
-        self.assertEqual(completion.status_code, 302)
+    @override_settings(A2_EMAIL_IS_UNIQUE=True)
+    def test_email_is_unique(self):
+        response = self.client.post(reverse('registration_register'),
+                                    {'email': 'testbot@entrouvert.com'})
+        self.assertRedirects(response, reverse('registration_complete'))
+        self.assertEqual(len(mail.outbox), 1)
+        links = re.findall('https?://.*/', mail.outbox[0].body)
+        self.assertIsInstance(links, list) and self.assertIsNot(links, [])
+        link = links[0]
+        response = self.client.get(link)
+        form = get_response_form(response)
+        self.assertEqual(set(form.fields), set(['password1', 'password2']))
+        self.assertEqual(set(field for field in form.fields if
+                    form.fields[field].required), set(['password1', 'password2']))
+        self.assertEqual(response.status_code, 200)
+        response = self.client.post(link, {'password1': 'Coucou1',
+                'password2': 'Coucou1'})
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('auth_homepage'))
+        response = self.client.get(link)
+        self.assertRedirects(response, reverse('auth_homepage'))
+        response = self.client.post(reverse('registration_register'),
+                                    {'email': 'testbot@entrouvert.com'})
+        self.assertFormError(response, 'form', 'email',
+            ['This email address is already in use. Please supply a different '
+             'email address.'])
+
+    def test_attribute_model(self):
+        models.Attribute.objects.create(
+                label=u'Prénom',
+                name='prenom',
+                required=True,
+                kind='string')
+        models.Attribute.objects.create(
+                label=u'Nom',
+                name='nom',
+                asked_on_registration=True,
+                user_visible=True,
+                kind='string')
+        models.Attribute.objects.create(
+                label='Profession',
+                name='profession',
+                user_editable=True,
+                kind='string')
+        response = self.client.post(reverse('registration_register'),
+                                    {'email': 'testbot@entrouvert.com'})
+        self.assertRedirects(response, reverse('registration_complete'))
+        self.assertEqual(len(mail.outbox), 1)
+        links = re.findall('https?://.*/', mail.outbox[0].body)
+        self.assertIsInstance(links, list) and self.assertIsNot(links, [])
+        link = links[0]
+        response = self.client.get(link)
+        form = get_response_form(response)
+        self.assertEqual(set(form.fields), set(['prenom', 'nom', 'password1', 'password2']))
+        self.assertEqual(set(field for field in form.fields if
+                    form.fields[field].required), set(['prenom', 'password1', 'password2']))
+        self.assertEqual(response.status_code, 200)
+        response = self.client.post(link, {'prenom': 'John',
+                'nom': 'Doe',
+                'password1': 'Coucou1',
+                'password2': 'Coucou1'
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('auth_homepage'))
+        response = self.client.get(reverse('account_management'))
+        self.assertContains(response, 'Nom')
+        self.assertNotContains(response, 'Prénom')
+        response = self.client.get(reverse('profile_edit'))
+        form = get_response_form(response)
+        self.assertEqual(set(form.fields), set(['profession']))
+        self.assertEqual(set(field for field in form.fields if
+                    form.fields[field].required), set())
+        response = self.client.post(reverse('profile_edit'), {'profession': 'pompier'})
+        self.assertRedirects(response, reverse('account_management'))
+        response = self.client.get(reverse('account_management'))
+        self.assertContains(response, 'Nom')
+        self.assertContains(response, 'Doe')
+        self.assertNotContains(response, 'Profession')
+        self.assertNotContains(response, 'pompier')
+        self.assertNotContains(response, 'Prénom')
+        self.assertNotContains(response, 'John')
+
+
+
 
 class CacheTests(TestCase):
     def test_cache_decorator_base(self):

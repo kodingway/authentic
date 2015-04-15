@@ -9,13 +9,14 @@ from django.utils.http import urlencode
 from django.http import HttpResponseRedirect
 from django.views.decorators.cache import never_cache
 from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.contrib.sessions.models import Session
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.admin.utils import flatten_fieldsets
 from django.forms import ModelForm, Select
 
 from .nonce.models import Nonce
-from . import (forms, models, admin_forms, compat, app_settings, decorators,
+from . import (forms, models, compat, app_settings, decorators,
         attribute_kinds, utils)
 
 def cleanup_action(modeladmin, request, queryset):
@@ -168,8 +169,6 @@ class AuthenticUserAdmin(UserAdmin):
                                        'groups')}),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
     )
-    form = admin_forms.UserChangeForm
-    add_form = admin_forms.UserCreationForm
     add_fieldsets = (
             (None, {
                 'classes': ('wide',),
@@ -196,6 +195,8 @@ class AuthenticUserAdmin(UserAdmin):
         return fieldsets
 
     def get_form(self, request, obj=None, **kwargs):
+        self.form = forms.modelform_factory(self.model, form=UserChangeForm)
+        self.add_form = forms.modelform_factory(self.model, form=UserCreationForm)
         if 'fields' in kwargs:
             fields = kwargs.pop('fields')
         else:

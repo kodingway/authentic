@@ -444,3 +444,19 @@ def csrf_token_check(request, form):
 
 def get_hex_uuid():
     return uuid.uuid4().get_hex()
+
+def get_fields_and_labels(*args):
+    '''Analyze fields settings and extracts ordered list of fields and
+       their overriden labels.
+    '''
+    labels = {}
+    fields = []
+    for arg in args:
+        for field in arg:
+            if isinstance(field, (list, tuple)):
+                field, label = field
+                labels[field] = label
+            if not field in fields:
+                fields.append(field)
+    return fields, labels
+

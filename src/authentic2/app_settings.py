@@ -106,8 +106,10 @@ default_settings = dict(
     A2_HOMEPAGE_URL = Setting(default=None, definition='IdP has no homepage, '
         'redirect to this one.'),
     A2_CAN_RESET_PASSWORD = Setting(default=True, definition='Allow online reset of passwords'),
+    A2_EMAIL_IS_UNIQUE = Setting(default=False,
+        definition='Email of users must be unique'),
     A2_REGISTRATION_EMAIL_IS_UNIQUE = Setting(default=False,
-        definition='Email of accounts must be unique'),
+        definition='Email of registererd accounts must be unique'),
     A2_REGISTRATION_FORM_USERNAME_REGEX=Setting(default=r'^[\w.@+-]+$', definition='Regex to validate usernames'),
     A2_REGISTRATION_FORM_USERNAME_HELP_TEXT=Setting(default=_('Required. At most '
         '30 characters. Letters, digits, and @/./+/-/_ only.')),
@@ -118,8 +120,11 @@ default_settings = dict(
     A2_REGISTRATION_FIELDS=Setting(default=[], definition='Fields from the user model that must appear on the registration form'),
     A2_REGISTRATION_REQUIRED_FIELDS=Setting(default=['first_name', 'last_name'], definition='Fields from the registration form that must be required'),
     A2_REALMS=Setting(default=[], definition='List of realms to search user accounts'),
+    A2_REQUIRED_FIELDS=Setting(default=(), definition='User fields that are required'),
     A2_USERNAME_REGEX=Setting(default=None, definition='Regex that username must validate'),
     A2_USERNAME_HELP_TEXT=Setting(default=None, definition='Help text to explain validation rules of usernames'),
+    A2_USERNAME_IS_UNIQUE=Setting(default=True, definition='Check username uniqueness'),
+    A2_REGISTRATION_USERNAME_IS_UNIQUE=Setting(default=True, definition='Check username uniqueness on registration'),
     IDP_BACKENDS=[],
     AUTH_FRONTENDS=[],
     AUTH_FRONTENDS_KWARGS={},

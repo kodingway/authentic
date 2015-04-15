@@ -7,6 +7,7 @@ import smtplib
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import force_text
 from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 
 import socket
 import dns.resolver
@@ -105,3 +106,8 @@ def validate_password(password):
             msg = app_settings.A2_PASSWORD_POLICY_REGEX_ERROR_MSG
             msg = msg or _('your password dit not match the regular expession %s') % app_settings.A2_PASSWORD_POLICY_REGEX
             raise ValidationError(msg)
+
+class UsernameValidator(RegexValidator):
+    def __init__(self, *args, **kwargs):
+        self.regex = app_settings.A2_REGISTRATION_FORM_USERNAME_REGEX
+        super(UsernameValidator, self).__init__(*args, **kwargs)

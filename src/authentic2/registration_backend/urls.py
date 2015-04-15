@@ -4,7 +4,7 @@ from django.conf.urls import url
 from django.views.generic.base import TemplateView
 from django.contrib.auth.decorators import login_required
 
-from .views import RegistrationView, RegistrationCompletionView, DeleteView
+from .views import RegistrationView, registration_completion, DeleteView
 
 urlpatterns = patterns('',
     url(r'^activate/expired/$',
@@ -14,8 +14,7 @@ urlpatterns = patterns('',
         TemplateView.as_view(template_name='registration/activation_failed.html'),
         name='registration_activation_failed'),
     url(r'^activate/(?P<registration_token>[\w:-]+)/$',
-        RegistrationCompletionView.as_view(),
-        name='registration_activate'),
+	registration_completion, name='registration_activate'),
     url(r'^register/$',
         RegistrationView.as_view(),
         name='registration_register'),
