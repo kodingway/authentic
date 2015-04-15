@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-13 16:57+0100\n"
+"POT-Creation-Date: 2015-04-15 16:59+0200\n"
 "PO-Revision-Date: 2014-11-13 16:57+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -17,64 +17,64 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n>1;\n"
 
-#: models.py:18
+#: src/authentic2/idp/models.py:18
 msgid "Enabled"
 msgstr "Activé"
 
-#: models.py:20
+#: src/authentic2/idp/models.py:21
 msgid "Ask the user consent before forwarding attributes"
 msgstr ""
 "Demander le consentement de l'utilisateur avant d'envoyer des attributs"
 
-#: models.py:23
+#: src/authentic2/idp/models.py:24
 msgid "Allow the user to select the forwarding attributes"
 msgstr "Permettre à l'utilisateur de séléctioner les attributs à envoyer"
 
-#: models.py:30
+#: src/authentic2/idp/models.py:31
 msgid "Pull attributes list"
 msgstr "Liste des attributs des sources locales"
 
-#: models.py:39
+#: src/authentic2/idp/models.py:40
 msgid "Forward pushed attributes"
 msgstr "Faire suivre les attributs poussés"
 
-#: models.py:49
+#: src/authentic2/idp/models.py:50
 msgid "Map forwarded pushed attributes"
 msgstr "Mapper les attributs poussés à faire suivre"
 
-#: models.py:55
+#: src/authentic2/idp/models.py:56
 msgid "Output name format"
 msgstr "Format du nom de l'attribut en sortie"
 
-#: models.py:62
+#: src/authentic2/idp/models.py:63
 msgid "Output namespace"
 msgstr "Espace de nom de sortie"
 
-#: models.py:70
+#: src/authentic2/idp/models.py:71
 msgid "Filter by source the forwarded pushed attributes"
 msgstr "Filtrer par source les attributs poussés à faire suivre"
 
-#: models.py:78
+#: src/authentic2/idp/models.py:79
 msgid "Filter by attribute names the forwarded pushed attributes"
 msgstr "Filtrer par attribut les attributs poussés à faire suivre"
 
-#: models.py:86
+#: src/authentic2/idp/models.py:87
 msgid "Filter by source and per attribute the forwarded pushed attributes"
 msgstr ""
 "Filtrer par source et par attribut les attributs poussés à faire suivre"
 
-#: models.py:94
+#: src/authentic2/idp/models.py:95
 msgid "Map filtered attributes"
 msgstr "Mapper les attributs filtrés"
 
-#: models.py:101
+#: src/authentic2/idp/models.py:102
 msgid "Send an error when a required attribute is missing"
 msgstr "envoyer une erreur lorsqu'un attribut requis est manquant"
 
-#: models.py:108
+#: src/authentic2/idp/models.py:109
 msgid "attribute policy"
 msgstr "règlement sur les attributs"
 
-#: models.py:109
+#: src/authentic2/idp/models.py:110
 msgid "attribute policies"
 msgstr "règlements sur les attributs"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: authentic2_idp_cas 1.0 \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-27 15:53+0100\n"
+"POT-Creation-Date: 2015-04-15 17:00+0200\n"
 "PO-Revision-Date: 2015-02-27 15:54+0100\n"
 "Last-Translator: Benjamin Dauvergne <bdauvergne@entrouvert.com>\n"
 "Language: fr\n"
@@ -17,104 +17,105 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: __init__.py:41
+#: src/authentic2_idp_cas/__init__.py:39
 msgid "CAS"
 msgstr ""
 
-#: admin.py:20 admin.py:34
+#: src/authentic2_idp_cas/admin.py:20 src/authentic2_idp_cas/admin.py:35
 msgid "None"
 msgstr "Aucun"
 
-#: admin.py:61
+#: src/authentic2_idp_cas/admin.py:62
 msgid "Logout"
 msgstr ""
 
-#: models.py:22
+#: src/authentic2_idp_cas/models.py:17
 msgid "name"
 msgstr "nom"
 
-#: models.py:24 models.py:73
+#: src/authentic2_idp_cas/models.py:19 src/authentic2_idp_cas/models.py:68
 msgid "slug"
 msgstr ""
 
-#: models.py:26
+#: src/authentic2_idp_cas/models.py:21
 msgid "urls"
 msgstr "URLs"
 
-#: models.py:28 models.py:75
+#: src/authentic2_idp_cas/models.py:23 src/authentic2_idp_cas/models.py:70
 msgid "attribute name"
 msgstr "nom de l'attribut"
 
-#: models.py:30
+#: src/authentic2_idp_cas/models.py:25
 msgid "proxy"
 msgstr ""
 
-#: models.py:31
+#: src/authentic2_idp_cas/models.py:26
 msgid "services who can request proxy tickets for this service"
 msgstr "services qui peuvent demander un ticket proxy vers ce service"
 
-#: models.py:42
+#: src/authentic2_idp_cas/models.py:37
 #, python-format
 msgid "%s is an invalid URL"
 msgstr "%s n'est pas une URL valide"
 
-#: models.py:67 models.py:72 models.py:100
+#: src/authentic2_idp_cas/models.py:62 src/authentic2_idp_cas/models.py:67
+#: src/authentic2_idp_cas/models.py:97
 msgid "service"
 msgstr ""
 
-#: models.py:68
+#: src/authentic2_idp_cas/models.py:63
 msgid "services"
 msgstr ""
 
-#: models.py:77
+#: src/authentic2_idp_cas/models.py:72
 msgid "enabled"
 msgstr ""
 
-#: models.py:84
+#: src/authentic2_idp_cas/models.py:79
 msgid "CAS attribute"
 msgstr "attribut pour les tickets"
 
-#: models.py:85
+#: src/authentic2_idp_cas/models.py:80
 msgid "CAS attributes"
 msgstr "attributs pour les tickets"
 
-#: models.py:93
+#: src/authentic2_idp_cas/models.py:90
 msgid "ticket id"
 msgstr "identifiant du ticket"
 
-#: models.py:97
+#: src/authentic2_idp_cas/models.py:94
 msgid "fresh authentication"
 msgstr "nécessite une ré-authentification"
 
-#: models.py:99
+#: src/authentic2_idp_cas/models.py:96
 msgid "valid"
 msgstr "valide"
 
-#: models.py:102
+#: src/authentic2_idp_cas/models.py:99
 msgid "service URL"
 msgstr "URL du service"
 
-#: models.py:105
+#: src/authentic2_idp_cas/models.py:102
 msgid "user"
 msgstr "utilisateur"
 
-#: models.py:107
+#: src/authentic2_idp_cas/models.py:104
 msgid "creation"
 msgstr "date de création"
 
-#: models.py:109
+#: src/authentic2_idp_cas/models.py:106
 msgid "expire"
 msgstr "date d'expiration"
 
-#: models.py:111
+#: src/authentic2_idp_cas/models.py:108
 msgid "django session key"
 msgstr "clé de session django"
 
-#: models.py:113
+#: src/authentic2_idp_cas/models.py:110
 msgid "proxies"
 msgstr "proxys"
 
-#: templates/authentic2_idp_cas/logout_fragment.html:2
+#: src/authentic2_idp_cas/templates/authentic2_idp_cas/logout_fragment.html:2
 #, python-format
 msgid "Sending logout to %(name)s...."
 msgstr "Déconnexion de %(name)s...."

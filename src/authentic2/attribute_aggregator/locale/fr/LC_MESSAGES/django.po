@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-24 11:07+0200\n"
+"POT-Creation-Date: 2015-04-15 16:59+0200\n"
 "PO-Revision-Date: 2013-05-07 23:27+0200\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -17,1257 +17,271 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n>1;\n"
 
-#: mapping.py:872
+#: src/authentic2/attribute_aggregator/mapping.py:873
 msgid "Last name"
 msgstr "Nom de famille"
 
-#: mapping.py:969
+#: src/authentic2/attribute_aggregator/mapping.py:970
 msgid "Organization"
 msgstr "Organisation"
 
-#: mapping.py:1009
+#: src/authentic2/attribute_aggregator/mapping.py:1010
 msgid "Postal address"
 msgstr "Adresse postale"
 
-#: mapping.py:1054
+#: src/authentic2/attribute_aggregator/mapping.py:1055
 msgid "Phone"
 msgstr "Téléphone"
 
-#: mapping.py:1216
+#: src/authentic2/attribute_aggregator/mapping.py:1217
 msgid "First name"
 msgstr "Prénom"
 
-#: mapping.py:1353
+#: src/authentic2/attribute_aggregator/mapping.py:1355
 msgid "Email Address"
 msgstr "Adresse email"
 
-#: models.py:53 models.py:125
+#: src/authentic2/attribute_aggregator/models.py:58
+msgid "Attribute name"
+msgstr ""
+
+#: src/authentic2/attribute_aggregator/models.py:64
+msgid "Output name format"
+msgstr ""
+
+#: src/authentic2/attribute_aggregator/models.py:70
+msgid "Output namespace"
+msgstr ""
+
+#: src/authentic2/attribute_aggregator/models.py:74
+msgid "Required"
+msgstr ""
+
+#: src/authentic2/attribute_aggregator/models.py:77
+msgid "Attribute source"
+msgstr ""
+
+#: src/authentic2/attribute_aggregator/models.py:81
+msgid "attribute list item"
+msgstr ""
+
+#: src/authentic2/attribute_aggregator/models.py:82
+msgid "attribute list items"
+msgstr ""
+
+#: src/authentic2/attribute_aggregator/models.py:103
+#: src/authentic2/attribute_aggregator/models.py:125
+#: src/authentic2/attribute_aggregator/models.py:205
 msgid "Name"
 msgstr "Nom"
 
-#: models.py:56
+#: src/authentic2/attribute_aggregator/models.py:106
+msgid "Attributes"
+msgstr "Attributs"
+
+#: src/authentic2/attribute_aggregator/models.py:111
+msgid "attribute list"
+msgstr ""
+
+#: src/authentic2/attribute_aggregator/models.py:112
+msgid "attribute lists"
+msgstr ""
+
+#: src/authentic2/attribute_aggregator/models.py:128
 msgid "Namespace"
 msgstr "Espace de nom"
 
-#: models.py:71 models.py:128
+#: src/authentic2/attribute_aggregator/models.py:143
+#: src/authentic2/attribute_aggregator/models.py:208
 msgid "attribute source"
 msgstr "source des attributs"
 
-#: models.py:72
+#: src/authentic2/attribute_aggregator/models.py:144
 msgid "attribute sources"
 msgstr "sources des attributs"
 
-#: models.py:91
+#: src/authentic2/attribute_aggregator/models.py:163
 msgid "Server"
 msgstr "Serveur"
 
-#: models.py:94
+#: src/authentic2/attribute_aggregator/models.py:166
 msgid "User"
 msgstr "Utilisateur"
 
-#: models.py:97
+#: src/authentic2/attribute_aggregator/models.py:169
 msgid "Password"
 msgstr "Mot de passe"
 
-#: models.py:100
+#: src/authentic2/attribute_aggregator/models.py:172
 msgid "Base"
 msgstr "Base"
 
-#: models.py:103
+#: src/authentic2/attribute_aggregator/models.py:175
 msgid "Port"
 msgstr "Port"
 
-#: models.py:106
+#: src/authentic2/attribute_aggregator/models.py:178
 msgid "LDAPS"
 msgstr "LDAPS"
 
-#: models.py:109
+#: src/authentic2/attribute_aggregator/models.py:181
 msgid "Certificate"
 msgstr "Certificat"
 
-#: models.py:112
+#: src/authentic2/attribute_aggregator/models.py:184
 msgid "Is it used for authentication?"
 msgstr "Est-elle utilisée pour l'authentification ?"
 
-#: models.py:120
+#: src/authentic2/attribute_aggregator/models.py:199
 msgid "ldap attribute source"
 msgstr "source d'attributs de type LDAP"
 
-#: models.py:121
+#: src/authentic2/attribute_aggregator/models.py:200
 msgid "ldap attribute sources"
 msgstr "sources d'attributs de type LDAP"
 
-#: models.py:130
+#: src/authentic2/attribute_aggregator/models.py:210
 msgid "user"
 msgstr "utilisateur"
 
-#: models.py:134
+#: src/authentic2/attribute_aggregator/models.py:214
 msgid "user alias from source"
 msgstr "alias utilisateur par source"
 
-#: models.py:135
+#: src/authentic2/attribute_aggregator/models.py:215
 msgid "user aliases from source"
 msgstr "alias utilisateur par source"
 
-#: models.py:570
+#: src/authentic2/attribute_aggregator/models.py:705
 msgid "user attribute profile"
 msgstr "profil utilisateur issu des sources"
 
-#: models.py:571
+#: src/authentic2/attribute_aggregator/models.py:706
 msgid "user attribute profiles"
 msgstr "profils utilisateurs issus des sources"
 
-#: xacml_constants.py:96
+#: src/authentic2/attribute_aggregator/xacml_constants.py:96
 msgid "String"
 msgstr ""
 
-#: xacml_constants.py:97
+#: src/authentic2/attribute_aggregator/xacml_constants.py:97
 msgid "Boolean"
 msgstr ""
 
-#: xacml_constants.py:98
+#: src/authentic2/attribute_aggregator/xacml_constants.py:98
 msgid "Integer"
 msgstr ""
 
-#: xacml_constants.py:99
+#: src/authentic2/attribute_aggregator/xacml_constants.py:99
 msgid "Double"
 msgstr ""
 
-#: xacml_constants.py:100
+#: src/authentic2/attribute_aggregator/xacml_constants.py:100
 msgid "Time"
 msgstr ""
 
-#: xacml_constants.py:101
+#: src/authentic2/attribute_aggregator/xacml_constants.py:101
 msgid "Date"
 msgstr ""
 
-#: xacml_constants.py:102
+#: src/authentic2/attribute_aggregator/xacml_constants.py:102
 msgid "Date and Time"
 msgstr ""
 
-#: xacml_constants.py:109
+#: src/authentic2/attribute_aggregator/xacml_constants.py:109
 msgid "email address"
 msgstr "Adresse email"
 
-#: xacml_constants.py:110
+#: src/authentic2/attribute_aggregator/xacml_constants.py:110
 msgid "IP address"
 msgstr "adresse IP"
 
-#: xacml_constants.py:168 xacml_constants.py:187
+#: src/authentic2/attribute_aggregator/xacml_constants.py:168
+#: src/authentic2/attribute_aggregator/xacml_constants.py:187
 msgid "String equality"
 msgstr ""
 
-#: xacml_constants.py:169 xacml_constants.py:188
+#: src/authentic2/attribute_aggregator/xacml_constants.py:169
+#: src/authentic2/attribute_aggregator/xacml_constants.py:188
 msgid "String equality ignoring case"
 msgstr ""
 
-#: xacml_constants.py:170 xacml_constants.py:189
+#: src/authentic2/attribute_aggregator/xacml_constants.py:170
+#: src/authentic2/attribute_aggregator/xacml_constants.py:189
 msgid "Boolean equality"
 msgstr ""
 
-#: xacml_constants.py:171 xacml_constants.py:190
+#: src/authentic2/attribute_aggregator/xacml_constants.py:171
+#: src/authentic2/attribute_aggregator/xacml_constants.py:190
 msgid "Integer equality"
 msgstr ""
 
-#: xacml_constants.py:172 xacml_constants.py:191
+#: src/authentic2/attribute_aggregator/xacml_constants.py:172
+#: src/authentic2/attribute_aggregator/xacml_constants.py:191
 msgid "Double equality"
 msgstr ""
 
-#: xacml_constants.py:173 xacml_constants.py:192
+#: src/authentic2/attribute_aggregator/xacml_constants.py:173
+#: src/authentic2/attribute_aggregator/xacml_constants.py:192
 msgid "Date equality"
 msgstr ""
 
-#: xacml_constants.py:174 xacml_constants.py:193
+#: src/authentic2/attribute_aggregator/xacml_constants.py:174
+#: src/authentic2/attribute_aggregator/xacml_constants.py:193
 msgid "Time equality"
 msgstr ""
 
-#: xacml_constants.py:175 xacml_constants.py:194
+#: src/authentic2/attribute_aggregator/xacml_constants.py:175
+#: src/authentic2/attribute_aggregator/xacml_constants.py:194
 msgid "DateTime equality"
 msgstr ""
 
-#: xacml_constants.py:180 xacml_constants.py:199
+#: src/authentic2/attribute_aggregator/xacml_constants.py:180
+#: src/authentic2/attribute_aggregator/xacml_constants.py:199
 msgid "email equality"
 msgstr ""
 
-#: xacml_constants.py:181 xacml_constants.py:200
+#: src/authentic2/attribute_aggregator/xacml_constants.py:181
+#: src/authentic2/attribute_aggregator/xacml_constants.py:200
 msgid "IP address equality"
 msgstr ""
 
-#: xacml_constants.py:245 xacml_constants.py:256
+#: src/authentic2/attribute_aggregator/xacml_constants.py:245
+#: src/authentic2/attribute_aggregator/xacml_constants.py:256
 msgid "Integer 1 greater than integer 2"
 msgstr ""
 
-#: xacml_constants.py:246 xacml_constants.py:257
+#: src/authentic2/attribute_aggregator/xacml_constants.py:246
+#: src/authentic2/attribute_aggregator/xacml_constants.py:257
 msgid "Integer 1 greater than or equal integer 2"
 msgstr ""
 
-#: xacml_constants.py:247 xacml_constants.py:258
+#: src/authentic2/attribute_aggregator/xacml_constants.py:247
+#: src/authentic2/attribute_aggregator/xacml_constants.py:258
 msgid "Integer 1 less than integer 2"
 msgstr ""
 
-#: xacml_constants.py:248 xacml_constants.py:259
+#: src/authentic2/attribute_aggregator/xacml_constants.py:248
+#: src/authentic2/attribute_aggregator/xacml_constants.py:259
 msgid "Integer 1 less than or equal integer 2"
 msgstr ""
 
-#: xacml_constants.py:249 xacml_constants.py:260
+#: src/authentic2/attribute_aggregator/xacml_constants.py:249
+#: src/authentic2/attribute_aggregator/xacml_constants.py:260
 msgid "Double 1 greater than double 2"
 msgstr ""
 
-#: xacml_constants.py:250 xacml_constants.py:261
+#: src/authentic2/attribute_aggregator/xacml_constants.py:250
+#: src/authentic2/attribute_aggregator/xacml_constants.py:261
 msgid "Double 1 greater than or equal double 2"
 msgstr ""
 
-#: xacml_constants.py:251 xacml_constants.py:262
+#: src/authentic2/attribute_aggregator/xacml_constants.py:251
+#: src/authentic2/attribute_aggregator/xacml_constants.py:262
 msgid "Double 1 less than double 2"
 msgstr ""
 
-#: xacml_constants.py:252 xacml_constants.py:263
+#: src/authentic2/attribute_aggregator/xacml_constants.py:252
+#: src/authentic2/attribute_aggregator/xacml_constants.py:263
 msgid "Double 1 less than or equal double 2"
-msgstr ""
-
-#: ldifs/eduOrg.py:5
-msgid "eduOrgHomePageURI"
-msgstr ""
-
-#: ldifs/eduOrg.py:14
-msgid "eduOrgIdentityAuthNPolicyURI"
-msgstr ""
-
-#: ldifs/eduOrg.py:23
-msgid "eduOrgLegalName"
-msgstr ""
-
-#: ldifs/eduOrg.py:32
-msgid "eduOrgSuperiorURI"
-msgstr ""
-
-#: ldifs/eduOrg.py:41
-msgid "eduOrgWhitePagesURI"
-msgstr ""
-
-#: ldifs/eduPerson.py:5
-msgid "eduPersonAffiliation"
-msgstr ""
-
-#: ldifs/eduPerson.py:14
-msgid "eduPersonNickname"
-msgstr "Surnom"
-
-#: ldifs/eduPerson.py:23
-msgid "eduPersonOrgDN"
-msgstr ""
-
-#: ldifs/eduPerson.py:32
-msgid "eduPersonOrgUnitDN"
-msgstr ""
-
-#: ldifs/eduPerson.py:41
-msgid "eduPersonPrimaryAffiliation"
-msgstr ""
-
-#: ldifs/eduPerson.py:50
-msgid "eduPersonPrincipalName"
-msgstr ""
-
-#: ldifs/eduPerson.py:59
-msgid "eduPersonEntitlement"
-msgstr ""
-
-#: ldifs/eduPerson.py:68
-msgid "eduPersonPrimaryOrgUnitDN"
-msgstr ""
-
-#: ldifs/eduPerson.py:77
-msgid "eduPersonScopedAffiliation"
-msgstr ""
-
-#: ldifs/eduPerson.py:86
-msgid "eduPersonTargetedID"
-msgstr ""
-
-#: ldifs/eduPerson.py:95
-msgid "eduPersonAssurance"
-msgstr ""
-
-#: ldifs/ldap.py:4
-msgid "carLicense"
-msgstr ""
-
-#: ldifs/ldap.py:12
-msgid "departmentNumber"
-msgstr ""
-
-#: ldifs/ldap.py:20
-msgid "displayName"
-msgstr ""
-
-#: ldifs/ldap.py:28
-msgid "employeeNumber"
-msgstr ""
-
-#: ldifs/ldap.py:36
-msgid "employeeType"
-msgstr ""
-
-#: ldifs/ldap.py:44
-msgid "jpegPhoto"
-msgstr ""
-
-#: ldifs/ldap.py:52
-msgid "preferredLanguage"
-msgstr ""
-
-#: ldifs/ldap.py:60
-#, fuzzy
-msgid "userSMIMECertificate"
-msgstr "Certificat"
-
-#: ldifs/ldap.py:68
-msgid "userPKCS12"
-msgstr ""
-
-#: ldifs/ldap.py:77
-msgid "gecos"
-msgstr ""
-
-#: ldifs/ldap.py:85
-msgid "homeDirectory"
-msgstr ""
-
-#: ldifs/ldap.py:93
-msgid "loginShell"
-msgstr ""
-
-#: ldifs/ldap.py:101
-msgid "shadowLastChange"
-msgstr ""
-
-#: ldifs/ldap.py:109
-msgid "shadowMin"
-msgstr ""
-
-#: ldifs/ldap.py:117
-msgid "shadowMax"
-msgstr ""
-
-#: ldifs/ldap.py:125
-msgid "shadowWarning"
-msgstr ""
-
-#: ldifs/ldap.py:133
-msgid "shadowInactive"
-msgstr ""
-
-#: ldifs/ldap.py:141
-msgid "shadowExpire"
-msgstr ""
-
-#: ldifs/ldap.py:149
-msgid "shadowFlag"
-msgstr ""
-
-#: ldifs/ldap.py:157
-msgid "memberUid"
-msgstr ""
-
-#: ldifs/ldap.py:165
-msgid "memberNisNetgroup"
-msgstr ""
-
-#: ldifs/ldap.py:173
-msgid "nisNetgroupTriple"
-msgstr ""
-
-#: ldifs/ldap.py:181
-#, fuzzy
-msgid "ipServicePort"
-msgstr "Services"
-
-#: ldifs/ldap.py:189
-msgid "ipServiceProtocolSUPname"
-msgstr ""
-
-#: ldifs/ldap.py:196
-msgid "ipProtocolNumber"
-msgstr ""
-
-#: ldifs/ldap.py:204
-msgid "oncRpcNumber"
-msgstr ""
-
-#: ldifs/ldap.py:212
-msgid "ipHostNumber"
-msgstr ""
-
-#: ldifs/ldap.py:220
-msgid "ipNetworkNumber"
-msgstr ""
-
-#: ldifs/ldap.py:228
-msgid "ipNetmaskNumber"
-msgstr ""
-
-#: ldifs/ldap.py:236
-#, fuzzy
-msgid "macAddress"
-msgstr "Adresse email"
-
-#: ldifs/ldap.py:244
-msgid "bootParameter"
-msgstr ""
-
-#: ldifs/ldap.py:252
-msgid "bootFile"
-msgstr ""
-
-#: ldifs/ldap.py:260
-msgid "nisMapNameSUPname"
-msgstr ""
-
-#: ldifs/ldap.py:267
-msgid "nisMapEntry"
-msgstr ""
-
-#: ldifs/ldap.py:276
-msgid "knowledgeInformation"
-msgstr ""
-
-#: ldifs/ldap.py:284
-#, fuzzy
-msgid "sn surname"
-msgstr "Identifiant"
-
-#: ldifs/ldap.py:292
-msgid "serialNumber"
-msgstr ""
-
-#: ldifs/ldap.py:300
-msgid "c countryName"
-msgstr ""
-
-#: ldifs/ldap.py:308
-msgid "l localityName"
-msgstr ""
-
-#: ldifs/ldap.py:316
-msgid "st stateOrProvinceName"
-msgstr ""
-
-#: ldifs/ldap.py:324
-msgid "street streetAddress"
-msgstr ""
-
-#: ldifs/ldap.py:332
-#, fuzzy
-msgid "o organizationName"
-msgstr "Organisation"
-
-#: ldifs/ldap.py:340
-msgid "ou organizationalUnitName"
-msgstr ""
-
-#: ldifs/ldap.py:348
-msgid "title"
-msgstr ""
-
-#: ldifs/ldap.py:355
-msgid "searchGuide"
-msgstr ""
-
-#: ldifs/ldap.py:363
-msgid "businessCategory"
-msgstr ""
-
-#: ldifs/ldap.py:371
-#, fuzzy
-msgid "postalAddress"
-msgstr "Adresse postale"
-
-#: ldifs/ldap.py:379
-msgid "postalCode"
-msgstr ""
-
-#: ldifs/ldap.py:387
-msgid "postOfficeBox"
-msgstr ""
-
-#: ldifs/ldap.py:395
-msgid "physicalDeliveryOfficeName"
-msgstr ""
-
-#: ldifs/ldap.py:403
-msgid "telephoneNumber"
-msgstr ""
-
-#: ldifs/ldap.py:411
-msgid "telexNumber"
-msgstr ""
-
-#: ldifs/ldap.py:419
-msgid "teletexTerminalIdentifier"
-msgstr ""
-
-#: ldifs/ldap.py:427
-msgid "fax facsimileTelephoneNumber"
-msgstr ""
-
-#: ldifs/ldap.py:435
-msgid "x121Address"
-msgstr ""
-
-#: ldifs/ldap.py:443
-msgid "internationaliSDNNumber"
-msgstr ""
-
-#: ldifs/ldap.py:451
-msgid "registeredAddress"
-msgstr ""
-
-#: ldifs/ldap.py:459
-msgid "destinationIndicator"
-msgstr ""
-
-#: ldifs/ldap.py:467
-msgid "preferredDeliveryMethod"
-msgstr ""
-
-#: ldifs/ldap.py:475
-#, fuzzy
-msgid "presentationAddress"
-msgstr "profiles d'inscription"
-
-#: ldifs/ldap.py:483
-msgid "supportedApplicationContext"
-msgstr ""
-
-#: ldifs/ldap.py:491
-#, fuzzy
-msgid "member"
-msgstr "Pas un membre ?"
-
-#: ldifs/ldap.py:498
-msgid "owner"
-msgstr ""
-
-#: ldifs/ldap.py:505
-msgid "roleOccupant"
-msgstr ""
-
-#: ldifs/ldap.py:512
-#, fuzzy
-msgid "userCertificate"
-msgstr "Certificat"
-
-#: ldifs/ldap.py:520
-#, fuzzy
-msgid "cACertificate"
-msgstr "Certificat"
-
-#: ldifs/ldap.py:528
-msgid "authorityRevocationList"
-msgstr ""
-
-#: ldifs/ldap.py:536
-#, fuzzy
-msgid "certificateRevocationList"
-msgstr "Échec de suppression du certificat"
-
-#: ldifs/ldap.py:544
-#, fuzzy
-msgid "crossCertificatePair"
-msgstr "Certificat"
-
-#: ldifs/ldap.py:552
-msgid "gn givenName"
-msgstr ""
-
-#: ldifs/ldap.py:560
-#, fuzzy
-msgid "initials"
-msgstr "Moyens d'authentification"
-
-#: ldifs/ldap.py:567
-#, fuzzy
-msgid "generationQualifier"
-msgstr "Qualifiant"
-
-#: ldifs/ldap.py:574
-msgid "x500UniqueIdentifier"
-msgstr ""
-
-#: ldifs/ldap.py:582
-#, fuzzy
-msgid "dnQualifier"
-msgstr "Qualifiant"
-
-#: ldifs/ldap.py:590
-msgid "enhancedSearchGuide"
-msgstr ""
-
-#: ldifs/ldap.py:598
-msgid "protocolInformation"
-msgstr ""
-
-#: ldifs/ldap.py:606
-msgid "uniqueMember"
-msgstr ""
-
-#: ldifs/ldap.py:614
-msgid "houseIdentifier"
-msgstr ""
-
-#: ldifs/ldap.py:622
-msgid "supportedAlgorithms"
-msgstr ""
-
-#: ldifs/ldap.py:630
-msgid "deltaRevocationList"
-msgstr ""
-
-#: ldifs/ldap.py:638
-#, fuzzy
-msgid "dmdName"
-msgstr "Nom"
-
-#: ldifs/ldap.py:645
-msgid "pseudonym"
-msgstr ""
-
-#: ldifs/ldap.py:652
-msgid "mail rfc822Mailbox"
-msgstr ""
-
-#: ldifs/ldap.py:660
-msgid "dc domainComponent"
-msgstr ""
-
-#: ldifs/ldap.py:668
-msgid "associatedDomain"
-msgstr ""
-
-#: ldifs/ldap.py:676
-#, fuzzy
-msgid "email pkcs9email emailAddress"
-msgstr "Adresse email"
-
-#: ldifs/ldap.py:685
-msgid "textEncodedORAddress"
-msgstr ""
-
-#: ldifs/ldap.py:693
-msgid "info"
-msgstr ""
-
-#: ldifs/ldap.py:701
-msgid "drink favouriteDrink"
-msgstr ""
-
-#: ldifs/ldap.py:709
-msgid "roomNumber"
-msgstr ""
-
-#: ldifs/ldap.py:717
-msgid "photo"
-msgstr ""
-
-#: ldifs/ldap.py:725
-#, fuzzy
-msgid "userClass"
-msgstr "utilisateur"
-
-#: ldifs/ldap.py:733
-msgid "host"
-msgstr ""
-
-#: ldifs/ldap.py:741
-msgid "manager"
-msgstr ""
-
-#: ldifs/ldap.py:749
-msgid "documentIdentifier"
-msgstr ""
-
-#: ldifs/ldap.py:757
-msgid "documentTitle"
-msgstr ""
-
-#: ldifs/ldap.py:765
-msgid "documentVersion"
-msgstr ""
-
-#: ldifs/ldap.py:773
-msgid "documentAuthor"
-msgstr ""
-
-#: ldifs/ldap.py:781
-#, fuzzy
-msgid "documentLocation"
-msgstr "Forcer l'authentification"
-
-#: ldifs/ldap.py:789
-msgid "homePhone homeTelephoneNumber"
-msgstr ""
-
-#: ldifs/ldap.py:797
-#, fuzzy
-msgid "secretary"
-msgstr "Secret"
-
-#: ldifs/ldap.py:805
-msgid "otherMailbox"
-msgstr ""
-
-#: ldifs/ldap.py:812
-msgid "aRecord"
-msgstr ""
-
-#: ldifs/ldap.py:820
-msgid "mDRecord"
-msgstr ""
-
-#: ldifs/ldap.py:828
-msgid "mXRecord"
-msgstr ""
-
-#: ldifs/ldap.py:836
-msgid "nSRecord"
-msgstr ""
-
-#: ldifs/ldap.py:844
-msgid "sOARecord"
-msgstr ""
-
-#: ldifs/ldap.py:852
-msgid "cNAMERecord"
-msgstr ""
-
-#: ldifs/ldap.py:860
-#, fuzzy
-msgid "associatedName"
-msgstr "Lier un identifiant OpenID"
-
-#: ldifs/ldap.py:868
-#, fuzzy
-msgid "homePostalAddress"
-msgstr "Adresse postale"
-
-#: ldifs/ldap.py:876
-msgid "personalTitle"
-msgstr ""
-
-#: ldifs/ldap.py:884
-msgid "mobile mobileTelephoneNumber"
-msgstr ""
-
-#: ldifs/ldap.py:892
-msgid "pager pagerTelephoneNumber"
-msgstr ""
-
-#: ldifs/ldap.py:900
-msgid "co friendlyCountryName"
-msgstr ""
-
-#: ldifs/ldap.py:908
-msgid "uniqueIdentifier"
-msgstr ""
-
-#: ldifs/ldap.py:916
-#, fuzzy
-msgid "organizationalStatus"
-msgstr "Organisation"
-
-#: ldifs/ldap.py:924
-msgid "janetMailbox"
-msgstr ""
-
-#: ldifs/ldap.py:932
-msgid "mailPreferenceOption"
-msgstr ""
-
-#: ldifs/ldap.py:940
-msgid "buildingName"
-msgstr ""
-
-#: ldifs/ldap.py:948
-msgid "dSAQuality"
-msgstr ""
-
-#: ldifs/ldap.py:956
-msgid "singleLevelQuality"
-msgstr ""
-
-#: ldifs/ldap.py:964
-msgid "subtreeMinimumQuality"
-msgstr ""
-
-#: ldifs/ldap.py:972
-msgid "subtreeMaximumQuality"
-msgstr ""
-
-#: ldifs/ldap.py:980
-msgid "personalSignature"
-msgstr ""
-
-#: ldifs/ldap.py:988
-msgid "dITRedirect"
-msgstr ""
-
-#: ldifs/ldap.py:996
-msgid "audio"
-msgstr ""
-
-#: ldifs/ldap.py:1004
-msgid "documentPublisher"
-msgstr ""
-
-#: ldifs/ldap.py:1013
-#, fuzzy
-msgid "mailLocalAddress"
-msgstr "Adresse email"
-
-#: ldifs/ldap.py:1021
-#, fuzzy
-msgid "mailHost"
-msgstr "Courriel"
-
-#: ldifs/ldap.py:1029
-#, fuzzy
-msgid "mailRoutingAddress"
-msgstr "Adresse email"
-
-#: ldifs/ldap.py:1037
-msgid "rfc822MailMember"
-msgstr ""
-
-#: ldifs/ldap_system.py:5
-msgid "top"
-msgstr ""
-
-#: ldifs/ldap_system.py:12
-msgid "extensibleObject"
-msgstr ""
-
-#: ldifs/ldap_system.py:19
-msgid "alias"
-msgstr ""
-
-#: ldifs/ldap_system.py:26
-msgid "referral"
-msgstr ""
-
-#: ldifs/ldap_system.py:33
-msgid "OpenLDAProotDSE LDAProotDSE"
-msgstr ""
-
-#: ldifs/ldap_system.py:41
-msgid "subentry"
-msgstr ""
-
-#: ldifs/ldap_system.py:48
-msgid "subschema"
-msgstr ""
-
-#: ldifs/ldap_system.py:55
-msgid "collectiveAttributeSubentry"
-msgstr ""
-
-#: ldifs/ldap_system.py:62
-msgid "dynamicObject"
-msgstr ""
-
-#: ldifs/ldap_system.py:69
-msgid "glue"
-msgstr ""
-
-#: ldifs/ldap_system.py:76
-msgid "syncConsumerSubentry"
-msgstr ""
-
-#: ldifs/ldap_system.py:83
-msgid "syncProviderSubentry"
-msgstr ""
-
-#: ldifs/ldap_system.py:90
-msgid "objectClass"
-msgstr ""
-
-#: ldifs/ldap_system.py:98
-msgid "structuralObjectClass"
-msgstr ""
-
-#: ldifs/ldap_system.py:106
-msgid "createTimestamp"
-msgstr ""
-
-#: ldifs/ldap_system.py:114
-msgid "modifyTimestamp"
-msgstr ""
-
-#: ldifs/ldap_system.py:122
-msgid "creatorsName"
-msgstr ""
-
-#: ldifs/ldap_system.py:130
-msgid "modifiersName"
-msgstr ""
-
-#: ldifs/ldap_system.py:138
-msgid "hasSubordinates"
-msgstr ""
-
-#: ldifs/ldap_system.py:146
-msgid "subschemaSubentry"
-msgstr ""
-
-#: ldifs/ldap_system.py:154
-msgid "collectiveAttributeSubentries"
-msgstr ""
-
-#: ldifs/ldap_system.py:162
-msgid "collectiveExclusions"
-msgstr ""
-
-#: ldifs/ldap_system.py:170
-msgid "entryDN"
-msgstr ""
-
-#: ldifs/ldap_system.py:178
-msgid "entryUUID"
-msgstr ""
-
-#: ldifs/ldap_system.py:186
-msgid "entryCSN"
-msgstr ""
-
-#: ldifs/ldap_system.py:194
-msgid "namingCSN"
-msgstr ""
-
-#: ldifs/ldap_system.py:202
-msgid "superiorUUID"
-msgstr ""
-
-#: ldifs/ldap_system.py:210
-msgid "syncreplCookie"
-msgstr ""
-
-#: ldifs/ldap_system.py:218
-msgid "contextCSN"
-msgstr ""
-
-#: ldifs/ldap_system.py:226
-msgid "syncTimestamp"
-msgstr ""
-
-#: ldifs/ldap_system.py:234
-#, fuzzy
-msgid "altServer"
-msgstr "Serveur"
-
-#: ldifs/ldap_system.py:242
-msgid "namingContexts"
-msgstr ""
-
-#: ldifs/ldap_system.py:250
-msgid "supportedControl"
-msgstr ""
-
-#: ldifs/ldap_system.py:258
-msgid "supportedExtension"
-msgstr ""
-
-#: ldifs/ldap_system.py:266
-msgid "supportedLDAPVersion"
-msgstr ""
-
-#: ldifs/ldap_system.py:274
-msgid "supportedSASLMechanisms"
-msgstr ""
-
-#: ldifs/ldap_system.py:282
-msgid "supportedFeatures"
-msgstr ""
-
-#: ldifs/ldap_system.py:290
-msgid "monitorContext"
-msgstr ""
-
-#: ldifs/ldap_system.py:298
-msgid "configContext"
-msgstr ""
-
-#: ldifs/ldap_system.py:306
-msgid "vendorName"
-msgstr ""
-
-#: ldifs/ldap_system.py:314
-msgid "vendorVersion"
-msgstr ""
-
-#: ldifs/ldap_system.py:322
-#, fuzzy
-msgid "administrativeRole"
-msgstr "Administration"
-
-#: ldifs/ldap_system.py:330
-msgid "subtreeSpecification"
-msgstr ""
-
-#: ldifs/ldap_system.py:338
-msgid "dITStructureRules"
-msgstr ""
-
-#: ldifs/ldap_system.py:346
-msgid "dITContentRules"
-msgstr ""
-
-#: ldifs/ldap_system.py:354
-msgid "matchingRules"
-msgstr ""
-
-#: ldifs/ldap_system.py:362
-#, fuzzy
-msgid "attributeTypes"
-msgstr "Attributs"
-
-#: ldifs/ldap_system.py:370
-msgid "objectClasses"
-msgstr ""
-
-#: ldifs/ldap_system.py:378
-#, fuzzy
-msgid "nameForms"
-msgstr "Format pour le NameID"
-
-#: ldifs/ldap_system.py:386
-msgid "matchingRuleUse"
-msgstr ""
-
-#: ldifs/ldap_system.py:394
-msgid "ldapSyntaxes"
-msgstr ""
-
-#: ldifs/ldap_system.py:402
-msgid "aliasedObjectName aliasedEntryName"
-msgstr ""
-
-#: ldifs/ldap_system.py:411
-msgid "ref"
-msgstr ""
-
-#: ldifs/ldap_system.py:419
-msgid "entry"
-msgstr ""
-
-#: ldifs/ldap_system.py:427
-msgid "children"
-msgstr ""
-
-#: ldifs/ldap_system.py:435
-msgid "authzTo saslAuthzTo"
-msgstr ""
-
-#: ldifs/ldap_system.py:444
-msgid "authzFrom saslAuthzFrom"
-msgstr ""
-
-#: ldifs/ldap_system.py:453
-msgid "entryTtl"
-msgstr ""
-
-#: ldifs/ldap_system.py:461
-msgid "dynamicSubtrees"
-msgstr ""
-
-#: ldifs/ldap_system.py:469
-msgid "distinguishedName"
-msgstr ""
-
-#: ldifs/ldap_system.py:477
-msgid "name"
-msgstr "nom"
-
-#: ldifs/ldap_system.py:485
-msgid "cn commonName"
-msgstr ""
-
-#: ldifs/ldap_system.py:493
-msgid "uid userid"
-msgstr ""
-
-#: ldifs/ldap_system.py:502
-msgid "uidNumber"
-msgstr ""
-
-#: ldifs/ldap_system.py:510
-msgid "gidNumber"
-msgstr ""
-
-#: ldifs/ldap_system.py:518
-#, fuzzy
-msgid "userPassword"
-msgstr "Mot de passe"
-
-#: ldifs/ldap_system.py:526
-msgid "labeledURI"
-msgstr ""
-
-#: ldifs/ldap_system.py:534
-msgid "authPassword"
-msgstr "Mot de passe"
-
-#: ldifs/ldap_system.py:542
-msgid "supportedAuthPasswordSchemes"
-msgstr ""
-
-#: ldifs/ldap_system.py:550
-msgid "description"
-msgstr "Inscription"
-
-#: ldifs/ldap_system.py:558
-msgid "seeAlso"
-msgstr ""
-
-#: ldifs/supann.py:6
-msgid "supannListeRouge"
-msgstr ""
-
-#: ldifs/supann.py:16
-msgid "supannActivite"
-msgstr ""
-
-#: ldifs/supann.py:26
-msgid "supannOrganisme"
-msgstr ""
-
-#: ldifs/supann.py:36
-msgid "supannCivilite"
-msgstr ""
-
-#: ldifs/supann.py:46
-msgid "supannAffectation"
-msgstr ""
-
-#: ldifs/supann.py:56
-msgid "supannCodeEntite"
-msgstr ""
-
-#: ldifs/supann.py:66
-msgid "supannCodeEntiteParent"
-msgstr ""
-
-#: ldifs/supann.py:76
-msgid "supannEntiteAffectation"
-msgstr ""
-
-#: ldifs/supann.py:86
-msgid "supannCodeINE"
-msgstr ""
-
-#: ldifs/supann.py:96
-msgid "supannEtuId"
-msgstr ""
-
-#: ldifs/supann.py:106
-msgid "supannEmpId"
-msgstr ""
-
-#: ldifs/supann.py:116
-msgid "supannAutreTelephone"
-msgstr ""
-
-#: ldifs/supann.py:126
-msgid "supannEntiteAffectationPrincipale"
-msgstr ""
-
-#: ldifs/supann.py:136
-msgid "supannEtablissement"
-msgstr ""
-
-#: ldifs/supann.py:146
-msgid "supannMailPerso"
-msgstr ""
-
-#: ldifs/supann.py:156
-msgid "supannTypeEntite"
-msgstr ""
-
-#: ldifs/supann.py:166
-msgid "supannParrainDN"
-msgstr ""
-
-#: ldifs/supann.py:176
-msgid "supannGroupeDateFin"
-msgstr ""
-
-#: ldifs/supann.py:186
-msgid "supannGroupeAdminDN"
-msgstr ""
-
-#: ldifs/supann.py:196
-msgid "supannAliasLogin"
-msgstr ""
-
-#: ldifs/supann.py:206
-msgid "supannRole"
-msgstr ""
-
-#: ldifs/supann.py:216
-msgid "supannGroupeLecteurDN"
-msgstr ""
-
-#: ldifs/supann.py:226
-msgid "supannRoleGenerique"
-msgstr ""
-
-#: ldifs/supann.py:236
-msgid "supannRoleEntite"
-msgstr ""
-
-#: ldifs/supann.py:246
-msgid "supannEtuAnneeInscription"
-msgstr ""
-
-#: ldifs/supann.py:256
-msgid "supannEtuCursusAnnee"
-msgstr ""
-
-#: ldifs/supann.py:266
-msgid "supannEtuDiplome"
-msgstr ""
-
-#: ldifs/supann.py:276
-msgid "supannEtuElementPedagogique"
-msgstr ""
-
-#: ldifs/supann.py:286
-msgid "supannEtuEtape"
-msgstr ""
-
-#: ldifs/supann.py:306
-msgid "supannEtuRegimeInscription"
-msgstr ""
-
-#: ldifs/supann.py:316
-msgid "supannEtuSecteurDisciplinaire"
-msgstr ""
-
-#: ldifs/supann.py:326
-msgid "supannEtuTypeDiplome"
-msgstr ""
-
-#: ldifs/supann.py:336
-msgid "supannAutreMail"
-msgstr ""
-
-#: ldifs/supann.py:346
-msgid "supannEmpCorps"
-msgstr ""
-
-#: ldifs/supann.py:356
-msgid "supannTypeEntiteAffectation"
-msgstr ""
-
-#: ldifs/supann.py:366
-msgid "supannRefId"
 msgstr ""
