@@ -231,6 +231,8 @@ LOGGING = {
 
 MIGRATION_MODULES = {
         'auth': 'authentic2.auth_migrations',
+        'menu': 'authentic2.menu_migrations',
+        'dashboard': 'authentic2.dashboard_migrations',
 }
 
 #
