@@ -25,7 +25,7 @@ import sys, re
 #                print '#last edited by Etan E. Weintraub on May 27, 2009'
 #                print '"' + name + '": {'
 #                print '    "oid": "' + oid + '",'
-#                print '    "display_name": _("' + name + '"),'
+#                print '    "display_name": "' + name + '",'
 #                print '    "type": "http://www.w3.org/2001/XMLSchema#string",'
 #                print '    "syntax": "' + syntax + '",'
 #    #            print '    "namespaces": {'
@@ -61,7 +61,7 @@ import sys, re
 #                print '#eduOrg Objectclass version 1.1 (2002-10-23)'
 #                print '"' + name + '": {'
 #                print '    "oid": "' + oid + '",'
-#                print '    "display_name": _("' + name + '"),'
+#                print '    "display_name": "' + name + '",'
 #                print '    "type": "http://www.w3.org/2001/XMLSchema#string",'
 #                print '    "syntax": "' + syntax + '",'
 #    #            print '    "namespaces": {'
@@ -98,7 +98,7 @@ import sys, re
 #                print '#http://www.cru.fr/_media/documentation/supann/supann_2009.schema.txt'
 #                print '"' + name + '": {'
 #                print '    "oid": "' + oid + '",'
-#                print '    "display_name": _("' + name + '"),'
+#                print '    "display_name": "' + name + '",'
 #                print '    "type": "http://www.w3.org/2001/XMLSchema#string",'
 #                print '    "syntax": "' + syntax + '",'
 #    #            print '    "namespaces": {'
@@ -166,7 +166,7 @@ import sys, re
 #                        display_name = ' '.join(names)
 #                        names.pop(0)
 #                        print '    "oid": "' + oid + '",'
-#                        print '    "display_name": _("' + display_name + '"),'
+#                        print '    "display_name": "' + display_name + '",'
 #                        print '    "alias": ' + str(names) + ','
 #                        print '    "type": "http://www.w3.org/2001/XMLSchema#string",'
 #                        if syntax:
@@ -178,7 +178,7 @@ import sys, re
 #                        print '#Extracted from openldap schema ' +PATH + f_n
 #                        print '"' + name + '": {'
 #                        print '    "oid": "' + oid + '",'
-#                        print '    "display_name": _("' + name + '"),'
+#                        print '    "display_name": "' + name + '",'
 #                        print '    "type": "http://www.w3.org/2001/XMLSchema#string",'
 #                        if syntax:
 #                            print '    "syntax": "' + syntax + '",'
@@ -248,7 +248,7 @@ try:
 #                    display_name = ' '.join(names)
 #                    names.pop(0)
 #                    print '    "oid": "' + oid + '",'
-#                    print '    "display_name": _("' + display_name + '"),'
+#                    print '    "display_name": "' + display_name + '",'
 #                    print '    "alias": ' + str(names) + ','
 #                    print '    "type": "http://www.w3.org/2001/XMLSchema#string",'
 #                    if syntax:
@@ -260,7 +260,7 @@ try:
 #                    print '#Extracted from openldap schema ' +PATH + f_n
 #                    print '"' + name + '": {'
 #                    print '    "oid": "' + oid + '",'
-#                    print '    "display_name": _("' + name + '"),'
+#                    print '    "display_name": "' + name + '",'
 #                    print '    "type": "http://www.w3.org/2001/XMLSchema#string",'
 #                    if syntax:
 #                        print '    "syntax": "' + syntax + '",'
@@ -305,7 +305,7 @@ for attr in dic:
         display_name = ' '.join(names)
         names.pop(0)
         print '    "oid": "' + oid + '",'
-        print '    "display_name": _("' + display_name + '"),'
+        print '    "display_name": "' + display_name + '",'
         print '    "alias": ' + str(names) + ','
         print '    "type": "http://www.w3.org/2001/XMLSchema#string",'
         if syntax:
@@ -317,7 +317,7 @@ for attr in dic:
         print '#Extracted from openldap system schema'
         print '"' + name + '": {'
         print '    "oid": "' + oid + '",'
-        print '    "display_name": _("' + name + '"),'
+        print '    "display_name": "' + name + '",'
         print '    "type": "http://www.w3.org/2001/XMLSchema#string",'
         if syntax:
             print '    "syntax": "' + syntax + '",'
@@ -325,7 +325,7 @@ for attr in dic:
 
 #"commonName": {
 #    "oid": "2.5.4.3",
-#    "friendly_name": _("Common Name"),
+#    "friendly_name": "Common Name",
 #    "type": "http://www.w3.org/2001/XMLSchema#string",
 #    "namespaces": {
 #        "LDAP": {

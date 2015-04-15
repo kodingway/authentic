@@ -2,7 +2,7 @@
 #eduOrg Objectclass version 1.1 (2002-10-23)
 "eduOrgHomePageURI": {
     "oid": ":1.3.6.1.4.1.5923.1.2.1.2",
-    "display_name": _("eduOrgHomePageURI"),
+    "display_name": "eduOrgHomePageURI",
     "type": "http://www.w3.org/2001/XMLSchema#string",
     "syntax": "1.3.6.1.4.1.1466.115.121.1.15",
 },
@@ -11,7 +11,7 @@
 #eduOrg Objectclass version 1.1 (2002-10-23)
 "eduOrgIdentityAuthNPolicyURI": {
     "oid": ":1.3.6.1.4.1.5923.1.2.1.3",
-    "display_name": _("eduOrgIdentityAuthNPolicyURI"),
+    "display_name": "eduOrgIdentityAuthNPolicyURI",
     "type": "http://www.w3.org/2001/XMLSchema#string",
     "syntax": "1.3.6.1.4.1.1466.115.121.1.15",
 },
@@ -20,7 +20,7 @@
 #eduOrg Objectclass version 1.1 (2002-10-23)
 "eduOrgLegalName": {
     "oid": ":1.3.6.1.4.1.5923.1.2.1.4",
-    "display_name": _("eduOrgLegalName"),
+    "display_name": "eduOrgLegalName",
     "type": "http://www.w3.org/2001/XMLSchema#string",
     "syntax": "1.3.6.1.4.1.1466.115.121.1.15",
 },
@@ -29,7 +29,7 @@
 #eduOrg Objectclass version 1.1 (2002-10-23)
 "eduOrgSuperiorURI": {
     "oid": ":1.3.6.1.4.1.5923.1.2.1.5",
-    "display_name": _("eduOrgSuperiorURI"),
+    "display_name": "eduOrgSuperiorURI",
     "type": "http://www.w3.org/2001/XMLSchema#string",
     "syntax": "1.3.6.1.4.1.1466.115.121.1.15",
 },
@@ -38,7 +38,7 @@
 #eduOrg Objectclass version 1.1 (2002-10-23)
 "eduOrgWhitePagesURI": {
     "oid": ":1.3.6.1.4.1.5923.1.2.1.6",
-    "display_name": _("eduOrgWhitePagesURI"),
+    "display_name": "eduOrgWhitePagesURI",
     "type": "http://www.w3.org/2001/XMLSchema#string",
     "syntax": "1.3.6.1.4.1.1466.115.121.1.15",
 },
