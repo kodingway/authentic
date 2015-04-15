@@ -232,3 +232,18 @@ class PasswordReset(models.Model):
 
     def __unicode__(self):
         return unicode(self.user)
+
+class Service(models.Model):
+    name = models.CharField(
+        verbose_name=_('name'),
+        max_length=128)
+    slug = models.SlugField(
+        verbose_name=_('slug'),
+        max_length=128)
+
+    class Meta:
+        verbose_name = _('base service model')
+        verbose_name_plural = _('base service models')
+
+    def __unicode__(self):
+        return self.name
