@@ -19,6 +19,7 @@ from django import forms
 from django.forms.util import ErrorList
 from django.utils import html, http
 from django.utils.translation import ugettext as _
+from django.shortcuts import resolve_url
 
 from authentic2.saml.saml2utils import filter_attribute_private_key, \
     filter_element_private_key
@@ -173,35 +174,6 @@ def field_names(list_of_field_name_and_titles):
             yield t
         else:
             yield t[0]
-
-# mostly copied from Django 1.7
-
-def resolve_url(to, args=(), kwargs={}):
-    '''Resolve a string to an URL, string can be a view callable, a view name
-       or an absolute or relative URL.
-    '''
-    # If it's a model, use get_absolute_url()
-    if hasattr(to, 'get_absolute_url'):
-        return to.get_absolute_url()
-
-    if isinstance(to, six.string_types):
-        # Handle relative and absolute URLs
-        if any(to.startswith(path) for path in ('./', '../')):
-            return to
-
-    # Next try a reverse URL resolution.
-    try:
-        return urlresolvers.reverse(to, args=args, kwargs=kwargs)
-    except urlresolvers.NoReverseMatch:
-        # If this is a callable, re-raise.
-        if callable(to):
-            raise
-        # If this doesn't "feel" like a URL, re-raise.
-        if '/' not in to and '.' not in to:
-            raise
-
-    # Finally, fall back and assume it's a URL
-    return to
 
 def make_url(to, args=(), kwargs={}, keep_params=False, params=None,
         append=None, request=None, include=None, exclude=None, fragment=None):
