@@ -15,7 +15,7 @@ It has support for SAMLv2 thanks to `Lasso <http://lasso.entrouvert.org>`_,
 a free (GNU GPL) implementation of the Liberty Alliance and OASIS
 specifications of SAML2.
 
-Authentic 2 requires Python 2.7 et Django 1.5.
+Authentic 2 requires Python 2.7 and Django 1.7.
 
 Full documentation available on http://authentic2.readthedocs.org/en/stable/.
 
