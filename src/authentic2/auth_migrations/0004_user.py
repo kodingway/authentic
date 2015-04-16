@@ -10,6 +10,10 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('auth', '0003_auto_20150410_1657'),
+        ('authentic2', '__first__'),
+        ('auth2_ssl', '__first__'),
+        ('authentic2_idp_cas', '__first__'),
+        ('saml', '__first__'),
     ]
 
     operations = [
