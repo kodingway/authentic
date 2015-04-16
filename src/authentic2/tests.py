@@ -373,8 +373,11 @@ class RegistrationTests(TestCase):
         self.assertEqual(response.status_code, 200)
         response = self.client.post(link, {'password1': 'Coucou1',
                 'password2': 'Coucou1'})
-        self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('auth_homepage'))
+        client = Client()
+        response = client.post(link, {'password1': 'Coucou1',
+                'password2': 'Coucou1'})
+        self.assertRedirects(response, link, fetch_redirect_response=False)
         response = self.client.get(link)
         self.assertRedirects(response, reverse('auth_homepage'))
         response = self.client.post(reverse('registration_register'),
@@ -382,6 +385,7 @@ class RegistrationTests(TestCase):
         self.assertFormError(response, 'form', 'email',
             ['This email address is already in use. Please supply a different '
              'email address.'])
+
 
     def test_attribute_model(self):
         models.Attribute.objects.create(

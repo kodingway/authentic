@@ -117,7 +117,8 @@ class RegistrationCompletionView(CreateView):
 
     def post(self, request, *args, **kwargs):
         if self.users and self.email_is_unique:
-            return redirect(request)
+            return redirect(request, request.resolver_match.view_name,
+                    args=self.args, kwargs=self.kwargs)
         if 'uid' in request.POST:
             uid = request.POST['uid']
             for user in self.users:
