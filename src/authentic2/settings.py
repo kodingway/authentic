@@ -214,12 +214,10 @@ LOGGING = {
         # even when debugging seeing SQL queries is too much, activate it
         # explicitly using DEBUG_DB
         'django.db': {
-                'handlers': ['console'],
                 'level': 'INFO',
         },
         # django_select2 outputs debug message at level INFO
         'django_select2': {
-                'handlers': ['console'],
                 'level': 'WARNING',
         },
         '': {
