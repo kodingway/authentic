@@ -27,6 +27,7 @@ from fields import PickledObjectField, MultiSelectField
 
 from . import app_settings, managers
 from .. import managers as a2_managers
+from ..models import Service
 
 def metadata_validator(meta):
     provider=lasso.Provider.newFromBuffer(lasso.PROVIDER_ROLE_ANY, meta.encode('utf8'))
@@ -451,11 +452,7 @@ class AuthorizationSPPolicy(models.Model):
         return self.name
 
 
-class LibertyProvider(models.Model):
-    name = models.CharField(max_length = 140,
-            help_text = _("Internal nickname for the service provider"),
-            blank = True)
-    slug = models.SlugField(max_length=140, unique=True)
+class LibertyProvider(Service):
     entity_id = models.URLField(unique = True)
     entity_id_sha1 = models.CharField(max_length = 40, blank=True)
     metadata_url = models.URLField(max_length=256, blank=True)
@@ -509,7 +506,7 @@ class LibertyProvider(models.Model):
             self.save()
 
     class Meta:
-        ordering = ('name',)
+        ordering = ('service_ptr__name',)
         verbose_name = _('SAML provider')
         verbose_name_plural = _('SAML providers')
 
