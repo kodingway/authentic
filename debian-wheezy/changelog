@@ -1,0 +1,2800 @@
+authentic2 (2.1.13-2~eob70+1) eobuilder; urgency=low
+
+  * Fix handling of SENTRY_DSN in debian_config.py
+
+ -- Benjamin Dauvergne <bdauvergne@entrouvert.com>  Wed, 25 Mar 2015 09:00:56 +0100
+
+authentic2 (2.1.13-1~eob70+1) eobuilder; urgency=low
+
+  * (dc3e09) Prepare release 2.1.13
+  * (2d8fbd) ldap: update block saved in LDAP users objects with default values
+    (#6784)
+  * (22d382) Optimize queries in SamlBackend.service_list()
+  * (96ab51) In get_sp_options_policy() and get_idp_options_policy() cache query for
+    default and all queries
+  * (d69eec) Add decorator to cache function results in request
+
+ -- eobuilder <eobuilder@entrouvert.com>  Mon, 23 Mar 2015 17:25:46 +0100
+
+authentic2 (2.1.12-1~eob70+1) eobuilder; urgency=low
+
+  * (9b2361) Fix missing distribution of locales and tempaltes for
+    authentic2_idp_cas
+  * (e878ad) Prepare release 2.1.12
+  * (dba9e5) Generate version only from git tags
+  * (e30917) Reorder migrations of the saml application
+  * (dc70e9) ldap: fix logging call
+  * (7a9423) Do not pass homepage url through settings, use variables set in the
+    template context by a template context processor (refs #6690)
+  * (f41a12) login label updated when email authentication enabled (6669)
+  * (6b9606) Support variable MANAGER_HOMEPAGE_URL and MANAGER_HOMEPAGE_TILE for the
+    first element of the manager breadcrumb (fixes #6690)
+  * (c38ee5) Add created filed to SamlKeyValue to permit expiration of stored values
+    (fixes #5639)
+  * (d5675f) Add an ExpireManager to share common code around expiration of models
+    (refs #5639)
+  * (1d6a4d) Remove LibertyFederation model (refs #5639)
+  * (4df0d0) Add missing newline in translations that broke msgfmt
+  * (6f4c04) Deactivate custom csrf view for tests
+  * (5907b8) update French translation
+  * (f25737) Use new CSRF cookie validation on login view (refs #5617)
+  * (8fd544) Update french translation (fixes #5617)
+  * (0baa91) Use new mixin on registration view to show a form error on CSRF token
+    validation error instead of a redirect (refs #5617)
+  * (31c743) Allow validation of CSRF cookie to be done in view using a CBV mixin or
+    an helper function (refs #5617)
+  * (25ef99) Use setting CSRF_FAILURE_VIEW to prevent user seeing 403 on CSRF
+    failure, instead redirect them to the same page and display a warning (refs
+    #5617)
+  * (28a158) registration tests updated to new settings (#6661)
+  * (7de4f8) email authentication enabled by default
+  * (4b7466) locale: french translation for registration backend
+  * (8a97dd) typo fix on login choices page (#6634)
+  * (a02541) first and last names mandatory on registration (#6653)
+  * (433737) user fullname prefixed by account number on login choices page (#6634)
+  * (105162) auth model backend path fix (#6635)
+  * (e9d673) limit username to 30 chars (#6636)
+  * (a838d0) Only remove the opened session cookie when the feature is activated
+    (#6265)
+  * (ab50dc) Use a valid python identifier for lable of SAML 2.0 IdP AppConfig
+    (#6518)
+  * (6b48ab) Fix OpenID 2.0 IdP migrations since the application was renamed
+  * (5f018c) Fix use of the logout view by SAML 2.0 IdP
+  * (976ab8) Remove Ticket.identifier from the admin, the field has been removed
+  * (9b958d) Add a CAS IdP module
+  * (b8716b) Makes make_url() accepts a fragment in the base url
+  * (e927fa) Makes registration tests pass without network
+  * (69df37) Add helper methods to normalize attributes values
+  * (a73ada) Move to_list() and to_iter() in utils.py
+  * (ab3dd5) Add a helper method to retrieve the user from a session given the
+    session key
+  * (8dd988) Make compile_translations target of setup.py compatible with Django 1.7
+  * (4d1550) Add helper method check_session_key() to verify that session is still
+    valid
+  * (e0db63) Refactor SAML 2.0 SP initiated slo to use the refactored logout view
+  * (15d87d) Rename idp/logout.html template to authentic2/logout.html
+  * (ef5935) Refactor the logout view
+  * (581f34) Add check_referer() helper method to check that referer match the
+    current domain
+  * (0bee14) Create a ModelAdmin mixin for adding a default cleanup action to any
+    model admin
+  * (9f796c) Add test method to check XML contents for some properties
+  * (09e8a6) Create a base class for tests providing 2 new helper methods
+  * (e2d3f0) With Django >= 1.7 activate ATOMIC_REQUESTS on the default db
+  * (cfac91) Add new helper method redirect_to_logout
+  * (15d4dd) Adapt SAML 2.0 IdP to new authentication events recording
+  * (45da54) Refactor testing for fresh authentication by storing the nonce in the
+    session
+  * (3d8102) password change view restored
+  * (783977) misc: add a settings option to disable https ssl checks (#6539)
+  * (f8543c) misc: raise an urllib2.HTTPError if get_url returns a non 200 response
+    (#6539)
+  * (c0c070) style: add non-prefixed css properties (#6510)
+  * (d6156b) At least install tox and pylnt
+  * (358a8e) Just use tox
+  * (4d6237) jenkins.sh: just install authentic2 using pip
+  * (c687a8) [django-1.7] SortedDict.insert() method was removed
+  * (fe4f44) Rename README.rst to README to supress a warning
+  * (4a3c9b) Fix typo in setup.py
+  * (5ac3c8) [django-1.7] Rename all migrations/ directories to south_migrations/
+  * (40850e) [django-1.7] tox: adapt settings and commands
+  * (f328f6) [django-1.7] Monkey patch default Django user model for Django 1.7
+  * (db95cc) [django-1.7] Prevent Django 1.7 showing a warning about test suites
+    initialized before Django 1.6
+  * (252476) [django-1.7] Natural primary key support have been added to Django 1.7,
+    we only need natural generic foreign key support now
+  * (cbdcf5) [django-1.6] Not settings Meta.fields or Meta.exclude has been
+    deprecated
+  * (0a4acf) [django-1.6] Add missing default value to AttributePolicy.enabled field
+  * (db8dc5) [django-1.7] Use allow lazy to apply string tranformation to
+    translatable string in models definitions
+  * (af4ea6) [django-1.7] Use application configuration to rename the SAML 2.0 idp
+    application and prevent name collision
+  * (6000fe) [django-1.7] Use new application config ready() method to fix user
+    models
+  * (3d24f7) [django-1.7] User profiles were deprecated in django 1.5, partially
+    remove the functionnality from our copy of AbstractUser
+  * (32d1c6) [django-1.7] Declare authentic2 compatible with django 1.7
+  * (f7bdd5) Simplify default logging settings
+  * (fcae7f) OpenID IdP: raise ImproperlyConfigured if it is enabled but python-
+    openid is not installed
+  * (883701) Update local_settings.py.example
+  * (c43721) Rename environment variable DJANGO_CONFIG_FILE to AUTHENTIC2_CONFIG
+  * (31927d) Move test_settings in the tests/ subdirectory
+  * (4be3b6) Make a plugin from the OpenID 2.0 IdP
+  * (4fbcbe) tests: Add templates
+  * (72c324) Remove include of gadjo files
+  * (2949cf) Move authentic2 into src/
+  * (e2f03e) Remove init scripts not used anymore
+  * (4e01ad) test fix
+  * (809f8b) registration: custom save method added
+  * (ec69ab) removed modules import fixed
+  * (a8fd23) Merge branch 'wip/registration'
+  * (3a83a6) remove cache on metadata view (#6487)
+  * (262a8a) boolean attributes convertered to unicode and lower-cased and the other
+    converted to unicode
+  * (6a168d) middleware: allow other view restrictions from plugins
+  * (6ba68b) ldap_backend: add a new backend LDAPBAckendPasswordLost for use by lost
+    passwords views
+  * (98ddc4) ldap_backend: move all initialization of the password in
+    LDAPUser.ldap_init()
+  * (8aebe1) ldap_backend: ignore `user_basedn` if it's empty or None
+  * (7c3ef4) ldap_backend: remove the uri parameter to the return*user class of
+    functions
+  * (6359ac) ldap_password: if no password is stored, LDAPUser.get_connection()
+    should return the default connection
+  * (70aaa6) ldap_backend: do not raise if LDAPUser.get_password() fails, returns
+    None
+  * (5c07c3) ldap_backend: reimplement password change
+  * (954de2) models_backend: abandon if username if empty or None
+  * (dd0334) manager: add missing template user_edit.html
+  * (6adba0) auth_frontends: add an exponential retry timeout after authentication
+  * (39a9d4) implement an object to compute exponential retry timeout
+  * (9a6224) utils: add form_add_error an helper method to set a global error on a
+    form
+  * (984f98) backends: signal if login with an account failed more than n times
+  * (901487) middleware: permit logout event a view restriction is applied
+  * (d98d55) locale: update french translation
+  * (c516ca) manager: add buttons to force user to reset its password on next login
+  * (6cf91d) middleware: implement restriction to the password change view when
+    password reset is requested
+  * (d8ffea) registration: add a next URL parameter to the password change view
+  * (a6d7e9) forms: new form mixin to store next URL parameter in forms
+  * (3dd310) utils: new helper method redirect_and_come_back to redirect to a view
+    passing it the current URL as the next parameter
+  * (597d76) admin: register PasswordReset in the admin application
+  * (91a1f0) models: add __unicode__ method to PasswordReset
+  * (59f3e1) fix_user_model: dispatch monkey patching of user related models and
+    forms in their respective files
+  * (3c61e0) tests: add tests on the password validator
+  * (62de75) validators: make possible to validate password using a regular
+    expression
+  * (43d9d4) validators: add digits as a character class when validating passwords
+  * (b0b5bc) ctl: do not consider --help as an invalid option
+  * (5d74ae) Fix error in call to parent implementation
+  * (81ca01) handling metadata from the web
+  * (a89df5) In the admin allow filtering provider by their policy, remove protocol
+    conformance column from the listing
+  * (1823cb) Set on_delete attribute on foreign keys of the saml application's
+    models
+  * (7b066c) Fix missing import
+  * (ba4d5e) ldap: remove reference to undefined variable
+  * (d2a356) ldap: do not retrieve attributes in the base search for users
+  * (c7ab42) LDAP attribute can be multivalued, any reference to a mono-valued
+    attribute must be suffixed with [0]
+  * (eafe34) Fix app_settings of SAML and OpenID IdP, they forced their prefix on
+    all access to the settings module
+  * (ed4be3) Come back to explicit path for LOGIN_URL and LOGOUT_URL and it break
+    compatibility with Django 1.5
+  * (f30c35) Replace use of authentic2.idp.saml.common.redirect_to_login by
+    authentic2.utils.login_require
+  * (53c23d) Add a next_url parameter to login_require to come back to another URL
+    than the current one
+  * (7ee6f4) Do not change the type of INSTALLED_APPS keep it as a tuple
+  * (1a3440) Remove unused imported symbols
+  * (6b96d6) Change default external_id_tuple to use uid as the primary key with the
+    LDAP server
+  * (2e939d) user's account history information display updated
+  * (461c3e) username is uuid, not viewable or editable by user
+  * (33e7c8) user full name and account creation, last login date displayed on login
+    choices
+  * (14ca8a) login page text fix
+  * (302712) account creation and login urls refactored
+  * (c6a996) on user multiple accounts propose to log in with one of them or create
+    a new
+  * (efa430) Registration refactored: email validation done first and registration
+    process
+  * (717c7e) ldap to database users synchronization command.
+  * (c98443) ldap_backend: username computed from uid by default
+  * (0ab673) Set DJANGO_CONFIG_FILE only if local_settings.py exists
+  * (e3082f) Adapt tox tests to cleaned settings
+  * (50c473) Make authentic2-ctl default to load the local_settings.py file in the
+    current directory
+  * (e4c936) Improve test on the login_require helper function
+  * (1f979f) Fix assertEqualsURL, query string is index 3 in a splitted URL
+  * (7ae6ff) Add new --config flag to authentic2-ctl (fixes #5960)
+  * (b47b15) Simplify settings, remove all extraction from environment (refs #5960)
+  * (3addec) Remove caching of server object in SAML 2.0 IdP, it's incompatible with
+    multi-tenant (refs #5960)
+  * (97d4e1) Remove the PUSH_PROFILE_UPDATES feature (refs #5960)
+  * (155f89) Use app_settings to set default value for TEMPLATE_VARS settings (refs
+    #5960)
+  * (1892fe) Remove loading of debug toolbar in urls.py (refs #5960)
+  * (655677) Refactor default settings for the SAML 2.0 IdP (refs #5960)
+  * (e7535f) Do not cache settings in disco_responder use late binding (refs #5960)
+  * (f3481b) Remove IDP_OPENID setting, rename it A2_IDP_OPENID_ENABLE and store
+    default in an app_settings.py file (refs #5960)
+  * (54d03a) Convert urls.py in OpenID IdP for direct import of views (refs #5960)
+  * (f3e884) Add a feature to force users to change before using the IdP
+  * (7f8aef) Add helper function to compare URLs in tests
+  * (8d8cb9) In utils.make_url if the target URL contains a query string, extract it
+    and use it as a base for building the new query string (fixes #6314)
+  * (7766d6) Add a default value for the user_basedn setting
+  * (383093) Do not traceback when request is too old during SAML login or logout
+    request handling (fixes #6306)
+  * (76dff5) Add missing start_tls_s() in the LDAP authentication code
+  * (6ffa1a) Try to not overflow the limit on SQL statement length by doing
+    filtering client side instead of using a NOT IN clause
+  * (f1a41e) Remove SSL registration view as it's not working anymore, must be
+    redone using new registration views
+  * (62e351) Update idp_openid with new redirect helpers
+  * (841240) Remove legacy redirect_to_login helper method
+  * (d58ddf) Use new helper methods in decorators
+  * (822ab9) Use new helper methods in default login/password authentication
+    frontend
+  * (e86916) Use new helper method in auth2_ssl
+  * (6c72ed) Add helper method to require a login
+  * (67e2c2) Add helper method for logging in an user doing all needed bookkeeping
+  * (b9f5b1) Add helper method to record an authentication event
+  * (072df7) Add helper method to redirect user to next URL
+  * (c1dd77) Add helper method to request a login, copying nonce and next parameters
+  * (2676e6) Add new utilities to help building URLs with parameters
+  * (e57015) Make the logout set a cookie to let other views know that a logout
+    occured recently
+  * (65058b) Distribute locale for SAML 2.0 IdP
+  * (3ea847) Default to use starttls on ldap:// connections, also allow to set
+    python-ldap options locally or globally (fixes #6097)
+  * (0b2e5c) Fix error logging when an exception occur during admin bind in LDAP
+    backend (fixes #6036)
+  * (7a7870) Use a second field for confirmation of emails, not a special widget
+  * (542c80) idp/saml: use get_sp_options_policy() to get the policy in
+    get_attribute_definitions
+  * (7ba960) trivial: fix typo in error message (#6203)
+  * (b564e1) Always show the login page
+  * (72f643) Validate email domain containing non ASCII characters
+  * (58d827) Add Django 1.7 environment to tox configuration
+  * (bf4754) Run tox as part of the continuous integration script, stop the script
+    on any error
+  * (0c3644) Add default value to test_setting to accomodate needs of Django tests
+  * (c498ab) Add setting A2_VALIDATE_EMAIL_DOMAIN to completely disable email domain
+    checking
+  * (956a52) Create a base_no_sekizai.html base template for 404 and 500 templates
+    as they are used by Django tests which do not install django-sekizai
+  * (a17812) changed mimetype to content_type as per django1.5 deprecation rules.
+  * (8cb6fa) changed .raw_post_data to .body as per django1.4 deprecation rules.
+  * (e2213b) Added tox as a test-runner.
+  * (242815) [django-1.6] add default value to all BooleanField missing it
+  * (266e6e) [django-1.6] LDAPUser application cannot be deduced without a
+    Meta.app_label
+  * (f72155) [django-1.6] authentication backends import path must match the
+    canonical __module__.__class__
+  * (010b92) [django-1.6] use ATOMIC_REQUESTS setting instead of
+    TransactionMiddleware
+  * (b3def6) [django-1.6] middleware: do not store set() object in sessions only
+    lists
+  * (e031ca) [django-1.6] adapt to API change on EmailValidator
+  * (c2e98e) [django-1.6] fix import path of FieldDoesNotExist exception
+  * (9f3773) documentation: fix block of code displays in quick ldap backend file.
+  * (92edfa) misc: minor change to French translation (#6124)
+  * (95d9e4) Fix bug introduced in commit 52f380d
+  * (6e3622) documentation: update mapping subject of attribute management.
+  * (92af1f) Prevent circular imports of settings
+  * (ed8bab) NEw experimental attribute source computed_targeted_id to create
+    eduPersonTargetedId like values from existing attributes
+  * (7467d3) Do not block on failure of the topological sort of attribute sources by
+    their dependencies
+  * (52f380) Refactor SAML 2.0 IdP and attributes engine interface
+
+ -- eobuilder <eobuilder@entrouvert.com>  Fri, 13 Mar 2015 16:10:11 +0100
+
+authentic2 (2.1.11-1~eob70+1) eobuilder; urgency=low
+
+  * (7b43fa) bump release to 2.1.11
+  * (d69777) Override User.check_password() in LDAPUser
+  * (398e3a) Override has_usable_password() in LDAPuser to let the LDAP
+    configuration decide if an user can change its password
+  * (2a3874) Log search for users when authenticating against LDAP, fix log of error
+    during search, fix building DN from template and fix logs of errors during bind
+  * (e97bca) Fix bad use of set_password() and set_unusable_password() in commits
+    8546afda7 and f3e8a5db
+  * (8546af) In LDAP backend save user object after setting or reseting the password
+  * (f3e8a5) Do not set default to keep LDAP password in Django user, only
+    synchronize password on first login and on request by the user
+  * (dd00cf) Fix grammar in french translations
+  * (dd540f) Use SPOptionsIdPPolicy.authn_request_signed to remove signature check
+    on logout requests (bis)
+  * (df4dbb) Use SPOptionsIdPPolicy.authn_request_signed to remove signature check
+    on logout requests
+  * (860c46) Fix saml migration 0046, use get_sp_options_policy to get the default
+    policy
+  * (ea63f7) Fix documentation URL in README
+  * (8f8192) Enlarge AuthenticationEvent.how attribute as it cannot hold the value
+    password-on-https
+  * (e5a1a9) Remove the LibertyProviderPolicy model and copy its defaults to
+    existing SPOptionsIdPPolicy
+  * (af6ddf) Migrate LibertyProviderPolicy.authn_request_signature_check_hint to
+    SPOptionsIdPPolicy.authn_request_signed
+  * (f19b30) Fix UnboundLocalError when logging-in a ldap user belonging to no group
+  * (4f5203) In refactored login view share cancel, can_reset_password and
+    registration_authorized variable between templates
+
+ -- eobuilder <eobuilder@entrouvert.com>  Fri, 05 Dec 2014 14:27:10 +0100
+
+authentic2 (2.1.10-1~eob70+1) eobuilder; urgency=low
+
+  * (d46a4c) bump release to 2.1.10
+  * (a66816) Make LDAP backend default to synchronize LDAP users with Django users
+  * (7f5a89) Refactor login view by using new authentication frontend API, sekizai
+    and gadjo
+  * (54f036) Use python-six when testing string types, start aiming for Python 3
+    compat
+  * (c3f8d5) documentation: remove old documentation files (refs #5455)
+  * (cea799) documentation: update README (#5455).
+  * (e5ebc6) documentation: refactor documentation (refs #5455).
+  * (19d812) Remove the default cache setting based on the FileBasedCache
+    implementation
+  * (cbbedc) Set default level for root logger to WARNING and only activate DEBUG
+    logging on authentic2 loggers when DEBUG is True
+  * (c41c09) Add a lasso_required() view decorator and use it on SAML 2.0 IdP views
+  * (7d295e) Add an unless() view decorator and rewrite the settings_enabled()
+    decorator with it
+  * (18d355) Load lasso through the authentic2.compat module and provide an mock
+    object to allow authentic2 to launch
+  * (c14ec4) Set default for DEBUG to True
+  * (9fc8c3) Revert "Rename saml migration with an existing serial number"
+  * (7e3517) Rewrite some migrations to support custom user models (fixes #5640)
+  * (e3686c) bugfix : do not longer fail silently on importerror in
+    local_settings.py
+  * (c8ec7f) Update NEWS
+  * (1a4eff) Share the same context instance when rendering frontends blocks on the
+    profile page
+  * (2e8798) Do not show login block if frontend is disabled (with new login() API)
+  * (044bef) Update french translations for SAML and SAML IdP
+  * (49cfc5) Remove input field in name column of LibertyProvider listing page
+  * (0219bc) Save metadata URL when creating a new SAML provider
+  * (55e1f8) Fix lenthening of the username field in User model related forms
+  * (f3faa4) Implement updating SAML metadata by URL on the LibertyProvider model
+  * (ad9c97) Add data migration to copy entity_id of liberty provider to the new
+    metadata_url field
+  * (65b7cd) Add field metadata_url to the LibertyProvider object
+  * (aff886) Share the same context during rendering of the login page
+  * (a7a34b) Install django-sekizai
+  * (e336b7) Make saml migration 0043 compatible with custom user model
+  * (edebb8) Add a nonce parameter to ok.png URL to make logout URLs uncacheable
+  * (e0b49b) Allow frontends to handle completely their content
+  * (54d26d) Rename saml migration with an existing serial number
+  * (136ad8) Remove debugging statements
+  * (f13379) variable name typo fix
+
+ -- eobuilder <eobuilder@entrouvert.com>  Wed, 03 Dec 2014 18:17:00 +0100
+
+authentic2 (2.1.9-1~eob70+1) eobuilder; urgency=low
+
+  * (fce611) bump release to 2.1.9
+  * (2f41db) Update french translations (refs #5925)
+  * (de22b9) Add federation management to profile page (fixes #5925)
+  * (b606fe) Move all idp templates to authentic2 templates (refs #5925)
+  * (c5aa50) Add field LibertyServiceProvider.users_can_manage_federations (refs
+    #5925)
+  * (359816) Add settings key A2_PROFILE_CAN_MANAGE_FEDERATION (refs #5925)
+  * (5c65b6) Load the LDAP backend before the model backend
+  * (c429cd) Remove useless check on references in attribute templates
+  * (3a5d5e) Enlarge SAMLAttribute.name from 64 chars to 128
+  * (f29518) Support 'unspecified' attribute name format in SAMLAttribute
+  * (37a2e5) In LDAP_AUTH_SETTINGS convert keys to str before lowercasing them
+  * (f4047b) Add option --create-disabled to sync-metadata so that new service
+    providers are disabled by default
+  * (692d29) Make attribute_mappings contribute to the list of LDAP attribtues
+  * (70093c) Add a generic relation from LibertyProvider to SAMLAttribute
+  * (0841de) Control verbosity in sync-metadata and add more messages
+  * (226a6a) Add LDAP attribute definitions schacHomeOrganization and
+    schacHomeOrganizationType
+  * (85c5a2) Normalize attribute names to the short name
+  * (55681a) Add 2 new options to sync-metadata for loading Shibboleth attribute
+    filter policies
+  * (f4ec5e) Add missing SUPANN attribute mailForwardingAddress
+  * (ccf6c5) Contrary to expectation givenName is the short name and gn is the long
+    one
+  * (581b55) Add parser for simple Shibboleth attribute filter policies
+  * (896e4e) Only send values for enabled SAMLAttribute to service providers
+  * (636e3d) Add an enabled field to SAMLAttribute
+  * (b4c4c4) Add migration 0040 on SAMLAttribute missing from commit 5a42a0a447d
+  * (daaee9) Remove upper limit on south version
+  * (6bc887) Accept multiple %s in LDAP user_filter setting
+  * (b86bf9) Lowercase LDAP settings external_id_tuples and attribute_mappings as
+    they also contain attribute names
+  * (00ffa6) Do not set limit_to_realm by default to True as it blocks login using
+    email
+  * (952e3a) Fix typo in SAMLAttribute.name_format_uri()
+  * (afac8d) Fix typo in LDAPBackend.get_blocks()
+
+ -- eobuilder <eobuilder@entrouvert.com>  Fri, 14 Nov 2014 15:12:47 +0100
+
+authentic2 (2.1.8-1~eob70+1) eobuilder; urgency=low
+
+  * (db5014) bump release to 2.1.8
+  * (e80c8a) Distribute the plugin example
+  * (b9c43d) Revert "Remove AbstractUser from models as we do not distribute a
+    custom user model anymore (fixes #5753)"
+  * (c0a169) Lowercase all LDAP attribute names extracted from settings
+  * (5a42a0) Add natural key support to SAMLAttribute model
+  * (711fc1) Add natural key support to SAML SPOptionsIdPPolicy
+  * (e2e30a) Add natural key support to model SAML IdPOptionsSPPolicy
+  * (70f5db) Add natural key support to saml.LibertyProviderPolicy
+  * (1815d3) Gitignore egg-info and compiled i18n
+  * (73650c) Allows to disable the password changing feature via setting
+  * (36cfab) Add set_mandatory_groups to _DEFAULTS in ldap backend so that we do not
+    raise ImproperlyConfigured when it's used
+  * (364157) Remove AbstractUser from models as we do not distribute a custom user
+    model anymore (fixes #5753)
+  * (b2dc3d) Do not crash when UserAttributeProfile.data is empty
+  * (8d28bf) Revert "Registration process refactored, django-registration removed."
+  * (381f10) Revert "urls not involved in registration process removed from
+    registration backend"
+  * (bed731) Revert "automatically authenticating user on account activation"
+  * (37fe38) Revert "user data passed directly to activate email templates"
+  * (b23711) Revert "django.contrib.sites removed from registration backend"
+  * (746050) Revert "next_url param propagated from service provider to registration
+    form."
+  * (eb9388) LibertyProvider's natural key retrieving improved
+  * (af9557) next_url param propagated from service provider to registration form.
+  * (fd89af) django.contrib.sites removed from registration backend
+  * (9b8fd4) user data passed directly to activate email templates
+  * (e49d5c) automatically authenticating user on account activation
+  * (0fd781) urls not involved in registration process removed from registration
+    backend
+  * (bf8eec) Registration process refactored, django-registration removed.
+  * (cb264b) Use absolute positionning for other actions block in manager popups
+  * (a53e60) In JSON serializer resolve natural primary keys inside a generator so
+    that previous objects are already loaded
+  * (396755) make use of setting_enabled decorator to disable edit profile and
+    change email views refs
+  * (38da5e) Validate the LDAP config attributes keys
+  * (590131) Use reverse to redirect to login
+  * (0083ff) Honor A2_REGISTRATION_CAN_DELETE_ACCOUNT in ui as well
+  * (1e0406) do not display "password" title in profile if the password cannot be
+    changed
+  * (e4e9e2) Add app settings to disable profile editing and email changing
+  * (78e421) Update french translation
+  * (e586a6) Replace default email field in registration form by an email field with
+    validation
+  * (1300eb) Add widget and fields to implement fields with validation
+  * (288262) Do not reuse Django EmailValidator in our own validator
+  * (aacab8) Plug custom EmailValidator in model's EmailField and form's EmailField
+  * (5ca50f) Remove auth2_openid as django-authopenid is not supported anymore
+  * (68bd3f) In SAML IdP continue_sso(), do not traceback when nonce has expired or
+    has been already used, instead log and display a warning (fixes #5493)
+  * (298aa2) In SAML IdP handle isPassive flag by returning NoPassive status code
+    when no user is logged
+  * (109072) In SAML IdP, fix log assert not passing request to the wrapped function
+  * (84050d) In SAML IdP idp_sso(), fix wrong reference to user_id
+  * (5f3c36) Hide disabled frontends in profile view (fixes #5665)
+  * (893db1) In SAML IdP remove the possibility to pass user_id or name_id_format in
+    the URL path (fixes #5652)
+  * (9f110f) In SAML IdP idp_sso(), use error_redirect() (fixes #5652)
+  * (79ce83) In SAML IdP idp_sso(), check for the service provider policy early
+    (refs #5652)
+  * (d0a4e9) In SAML IdP idp_sso(), move information log later (refs #5652)
+  * (b960a1) In SAML IdP check_destination(), simplify call to logger.warning()
+    (refs
+  * (08294e) In SAML IdP return_logout_error(), log errors as warnings (refs #5652)
+  * (fd2941) In SAML IdP, improve warning logged when request is denied (refs #5652)
+  * (8311f6) In SAML IdP SLO, error_redirect() to log warningsi (refs #5652)
+  * (25f826) In SAML IdP, log most errors with level WARNING (refs #5652)
+  * (ff990b) In SAML IdP method remove double logging with error_page() (refs #5652)
+  * (a32777) In SAML IdP log most errors with from WARNING
+  * (f14f33) In SAML IdP, log AssertionError as warnings (refs #5652)
+  * (d8ece8) Add decorator to convert AssertionError to warnings (refs #5652)
+  * (13e3ab) Add error_redirect() to log then display translated warnings
+  * (a25fab) Log function name after module name (refs #5652)
+  * (da78e6) Prevent lasso errors from being propagated to sentry
+  * (427eac) Adapt AttributeAggregator ldap source to new ldap backend
+  * (c4db40) Improve exception handling in attribute_aggregator
+  * (fcf691) Rename ldap_backends.unicode_dict_of_list() to normalize_ldap_results
+    amd make it return a fresh dictionnary with lowercase keys and base64 encode
+    attributes which are not UTF-8 decodable
+  * (3b4351) Use local login and logout page for login and logout in the admin
+    (fixes #5557)
+  * (186b68) Fix default LOGOUT_URL
+  * (0578a8) Add handling of natural keys for generic foreign keys (fixes #5599)
+  * (e31e90) Add natural key support to AttributeValue model (refs #5599)
+  * (3e67ce) Add user export feature based on django-import-export (fixes #5624)
+  * (2f9904) Add PUSH_PROFILE_UPDATES to app_settings and use it from there in views
+    (fixes #5611)
+  * (25eb9f) Fix AddLibertyProviderFromUrlForm bad initialization of foreign key
+  * (ea520c) Initialize sp or idp provider object when creating a new SAML provider
+    from an URL (fixes #5438)
+  * (2737e2) Add missing app_settings file for the SAML idp plugin
+  * (e95a73) Store LDAP users passwords in request.session instead of using the
+    Django cache (fixes #5399)
+  * (dbbd1a) Add middleware to keep request in thread local storage (refs #5281,
+    refs #5399)
+  * (015cae) Filter STATICFILES_DIRS for absent directories (fixes #5439)
+  * (d98f16) Make SAML 2.0 a plugin
+  * (8679ac) Load login/password authentication frontend unconditionnaly and use the
+    enabled() hook instead to desactive it
+  * (bb207b) Load LDAP authentication backend unconditionnaly
+  * (508991) Use new setting_enabled and required decorators in plugin sample
+  * (b471fb) Make auth2_ssl an authentic2 plugin
+  * (3ef2a9) Add decorator to wrap all views in url patterns with a decorator or a
+    list of
+  * (16e5b4) Add decorator to enable a view based on settings
+  * (a4195a) Remove requirement on django-debug-toolbar because it's optional
+  * (97574c) Upgrade needed django-debug-toolbar to >= 1.2, < 1.3 (fixes #5388)
+  * (7b8c65) Export authentic2 version in the context processor (fixes #5407)
+  * (cd7cfb) auth_ssl: replace all use of next by next_url, next is a keyword (fixes
+    #5278)
+  * (4a965f) Use a custom setting for activating console logging (fixes #5400)
+  * (915718) Remove emmbedded gadjo project
+  * (0283a7) Fix typo in cleanupauthentic command (fixes #3458)
+  * (432f79) Log tracebacks in cleaning commands (fixes #3458)
+  * (2976ab) Replace existing example for creating authentic2 plugins (fixes #5275)
+  * (ce1e7b) Add margin around paginator link boxes
+  * (baa51f) Improve sizing of search input in manager
+  * (9f9583) Block some redirections when dialog is done in manager (fixes #5307)
+  * (d75096) Create SAML AttributeValue node inside the values iterating loop
+  * (39bc7a) Do not allow to deactivate your own user using the manager
+  * (215b7f) Fix gadjo inclusion
+  * (7c47c4) Print warnings to stderr using the warnings module (fixes #5324)
+  * (c8416c) saml: continue to next server when SLO fails to find provider
+  * (ddea93) Comply with gadjo update (fix #5311)
+  * (26d510) Initiate SAML IDP SSO using GET requests (fixes #5302)
+
+ -- eobuilder <eobuilder@entrouvert.com>  Thu, 06 Nov 2014 10:59:16 +0100
+
+authentic2 (2.1.7-1~eob70+1) eobuilder; urgency=low
+
+  * (d0915c) bump release to 2.1.7
+  * (2cf8fc) update l10n (fixes #5280)
+  * (e637c1) Remove raise blocking clean logging of an LDAP exception
+  * (0305ce) Change base url for manager to manage/
+  * (b0d313) MANIFEST.in: add authentic2/manager files
+  * (bb3cbc) update l10n (refs #5103)
+  * (96da0c) registration_backend: simple password policy validation (fixes #5103)
+  * (777712) backends/models_backend: match simple username before username with
+    domains
+  * (bc5e4c) saml/forms: when adding provider from url, only validate when all
+    fields are present
+  * (5f08fd) manager: l10n (refs #5180)
+  * (e9aeb2) manager: implement all views (refs #5180)
+  * (13a500) manager: add gadjo as a submodule (refs #5180)
+  * (cecc9f) js: add purl.js (refs #5180)
+  * (92f831) js: add jquery.form (refs #5180)
+  * (3191a2) saml: modify inline form for SAMLAttribute to persistent caching of
+    attribute names (fixes #5260)
+  * (674c73) saml: fix copy error in breackcrumb of add_from_url.html template
+  * (9f5fc2) saml: update french l10n
+  * (56c296) saml: replace all occurrence of liberty by SAML in verbose names
+  * (eeda05) saml: set notOnOrAfter on the Conditions tag (required by Dropbox)
+    (fixes #5249)
+  * (f3b459) make it possible to disable password authentication (fixes #5250)
+  * (601fdb) validators: only check email using DNS, make SMTP check optional
+
+ -- eobuilder <eobuilder@entrouvert.com>  Thu, 21 Aug 2014 11:17:25 +0200
+
+authentic2 (2.1.6-1~eob70+1) eobuilder; urgency=low
+
+  * (4826a6) bump release to 2.1.6
+  * (69b4da) settings: do not produce duplicate log when using DEBUG_LOG setting
+  * (599073) settings: uniformize use of to_boolean for boolean settings
+  * (bcc592) settings: add support for y, yes, n, no values to the to_boolean()
+    parser
+  * (8fcbcd) backends/ldap_backend: do not fail when LDAP_AUTH_SETTINGS is not
+    defined
+  * (fed533) backends/ldap_backend: convert attributes name to str
+  * (7aa533) attributes_ng/sources: add an ldap source
+  * (6f2fc9) models: fix AttributeError in UserExternalId.__repr__
+  * (493022) compat: add work-around for Django < 1.8 and commit_on_success
+  * (e8a1f0) auth2_auth/migrations: protect data modifying code with "if not
+    db.dry_run"
+  * (bdcf55) backends/ldap_backend: add legacy field mapping to attributes to import
+  * (6cb560) settings: don't print "Debugging mode is active"
+  * (adda44) settings: allow to override field names in A2_PROFILE_FIELDS and
+    A2_REGISTRATION_FIELDS
+  * (e3135d) settings: set LOCALE_PATHS
+  * (b056b2) views: if A2_PROFILE_FIELDS is empty, use A2_REGISTRATION_FIELDS
+    completed with extra attributes
+  * (c48796) views: in profile view filter out empty attribute values
+  * (9ae759) backends/models_backend: filter user email case-insensitively
+  * (d2ccb7) views: refactor profile view, use CBV, and honor A2_PROFILE_FIELDS
+  * (e8c49e) views: return to profile page after validating an email change
+  * (c3fa0a) views: return to profile after requesting an email change
+  * (867326) saml: SAMLAttribute.attribute_name must not be constrained at the model
+    level
+  * (3a25eb) saml/models: add natural key to LibertyFederation
+  * (eeec70) saml/models: add natural keys to LibertyServiceProvider and
+    LibertyIdentityProvider
+  * (1c3c92) settings: import A2_ACCEPT_EMAIL_AUTHENTICATION from environment
+  * (45135f) settings: load all custom password hashers
+  * (8f0db6) hashers: always convert OpenLDAP hash algo to uppercase
+  * (ce67ec) commands: add new command load-ldif
+  * (34778e) saml/admin: fix missing blank value for SAMLAttribute.attribute_name
+  * (e025d5) l10n: change translation of "Account activation failed" (#5144)
+  * (93ab27) views: do not use django.contrib.sites in the email change view
+
+ -- eobuilder <eobuilder@entrouvert.com>  Tue, 05 Aug 2014 14:02:43 +0200
+
+authentic2 (2.1.4-1~eob70+1) eobuilder; urgency=low
+
+  * (0b1e9b) bump release to 2.1.4
+  * (d30a8f) hashers: add hashers compatible with OpenLDAP
+
+ -- eobuilder <eobuilder@entrouvert.com>  Tue, 15 Jul 2014 16:20:27 +0200
+
+authentic2 (2.1.3-1~eob70+1) eobuilder; urgency=low
+
+  * (9ee8a2) bump release to 2.1.3
+  * (a2c2ad) registration_backend/views: fix registration of new users
+  * (aedcb8) management: add missing __init__.py files
+  * (720e2d) middleware: fixes OpenedSessionCookieMiddleware middleware
+  * (df8075) saml: do not configure choice for attribute names at the model level as
+    it breaks model validation before running migrations
+  * (ed7684) management: add new command clean-unused-accounts
+  * (02f3a2) forms: allow ordering of fields on profile page
+  * (56592e) middleware: do not reset root logger to level 0
+  * (69514f) run.sh: do not make DEBUG=1 a default
+  * (ad4d83) settings: do not disable existing loggers, it's clear now that it is
+    wrong
+  * (6c20a1) ldap_backend: replace dn lookup by an external_id lookup
+  * (2383d8) ldap_backend: fail cleanly when attribute retrieval fails and log an
+    error
+  * (a5172a) ldap_backend: add dn to the attribute dict
+  * (7dcd2a) ldap_backend: remove redefinition of LDAPBackendError
+  * (a53515) models: add string cast to UserExternalId
+  * (79e6f3) registration_backend/forms: use A2_REGISTRATION_FIELDS to reorder
+    fields in the registration form
+  * (383b77) idp/locale: update french translations
+  * (d65501) locale: grammar correction
+  * (c1a4f9) admin: show attribute name in listing of attribute definitions
+  * (33f533) attribute_kinds: remove siret attribute which is too specific
+  * (d870b2) attribute_kinds: pick attribute kinds from settings
+  * (c86342) compat: add settings to add user model fields to the registration form
+  * (4c2ca1) settings: load /etc/authentic2/config.py if available
+  * (95e407) context_processors: add settings.TEMPLATE_VARS in template context
+  * (83a0d4) fix_user_model: fix username length check also in overriden forms
+  * (fcd225) fix_user_model: fix widget maxlength attribute
+  * (b50e22) fix_user_model: fix also username length in user change and creation
+    forms
+  * (85c24a) middleware: add a middleware to install a cookie when the user has an
+    open session
+  * (9b878e) templates: fix back link closing tag
+  * (f4fdc4) saml: use GET binding when the HTTP method is HEAD
+  * (5d3b80) fix_user_model: patch directly the user model
+  * (fa5372) fix_user_model: importing django.contrib.auth.forms inside a function
+    does not work
+  * (a26d3a) fix_user_model: also fix admin forms when changing validation regex for
+    username
+  * (1fcee4) views: add a logged-in jsonp web service
+  * (b0af1b) idp/saml/saml2_endpoints: fix typo
+  * (74765b) idp/saml/saml2_endpoints: in add_attributes add debug log of attribute
+    values
+  * (080f5b) idp/saml/saml2_endpoints: in add_attributes() fix query for
+    SAML2Attribute objects
+  * (0ecad2) attributes_ng/source/django_user: add missing attribute
+    django_user_identifier
+  * (a4dbd4) saml/admin: explicitely list fields to show on change form
+  * (df00c9) idp/saml: add attribute to assertions based on new attribute
+    definitions
+  * (20362c) saml/admin: add inline admin forms for SAML attribute definitions
+  * (0fb368) saml: add attribute definition model
+  * (0965fb) start new attributes-ng subproject
+  * (97b819) attribute_aggregator/user_profile: only set attributes from user model
+    fields if get_attributes() did not return an equivalent value
+  * (203e7a) fix_user_model: allow overriding django User model username regex
+    validator and help text
+  * (e48714) makes sure msg is defined before asserting on it
+  * (5008e2) registration/views: fix n-th misuse by me of get_or_create()
+  * (e23a70) add setting A2_REGISTRATION_GROUPS to affect default groups to self-
+    registered users
+  * (f18931) models: change UserExternalId definition
+  * (1b7148) decorators: add to_iter() decorator to transform any generator into an
+    iterable object
+  * (eba089) models: make LogoutUrlAbstract.get_logout_url() take a request object
+  * (d84a21) models: fix typo in LogoutUrlAbstract.get_logout_url()
+  * (1a822a) settings: set special formatter for syslog
+  * (64b53f) attribute_aggregator/user_profile: fix initialization of a variable
+  * (c8a75a) attribute_aggregator/user_profile: if user has a get_attributes()
+    method, ignore legacy mapping
+  * (a0f481) settings: fix typo
+  * (6cd91c) settings: extract PASSWORD_HASHERS setting from environment
+  * (cd883f) settings: fix typo
+  * (3a6f01) settings: add A2_HOMEPAGE_URL
+  * (0d83d6) ldap_backend: do not convert to string before testing for nullity
+  * (2be7bd) jenkins.sh: restrict pylint to version 1.1.0 which raised less warnings
+  * (a60505) validators: accept email when greylisting is used
+  * (74507b) ldap_backend: escape the user DN before interpolating it into the group
+    filter
+  * (706342) ldap_backend: force the username template to be unicode as the result
+    must be
+  * (391e59) ldap_backend: escape string used to build the user DN when using a DN
+    template
+  * (bd68fe) setup.py: remove dependency link to fork of django-registration
+  * (00a896) models_backend: use a dynamic proxy user model
+  * (2a3a16) idp/saml: improve handling of lasso errors on processing of
+    AuthnRequest
+  * (f54291) saml,idp/saml: if NameQualifier or SPNameQualifier is missing, use
+    implicit knowledge of the IdP or SP identities
+  * (a9aa56) attribute_aggregator/user_profile: add support for relations use it to
+    fix the role attribute
+  * (562aee) idp/saml: when a provider is missing, propose to add it directly
+  * (5c5222) ldap_backend: if LDAP is configured but the ldap module is missing,
+    raise ImproperlyConfigured
+  * (89feb7) ldap_backend: if no LDAP config exists, returns None
+  * (233fd6) ldap_backend: do not break if an attribute is not UTF-8 (jpegPhoto ?)
+  * (6dbfbd) templates: add a default registration/registration_closed.html template
+  * (49c13f) fix_user_model: add validation of email domains to user model
+  * (e8ae07) rename fix_username_length module to fix_user_model
+  * (da6405) add validators module with a first email validator
+  * (1c9f0a) backends/ldap: when mapping attribute names, convert original name to
+    string first
+  * (4845d6) backends/ldap: convert attributes to unicode on input
+  * (15479b) settings: user ldap backend before model backend
+  * (8c860e) backends/ldap: add option to pass all realms to an LDAP backend (bis)
+  * (1ba9df) backends/ldap: add option to pass all realms to an LDAP backend
+  * (a92e80) admin: add email to user editable fields
+  * (635735) backends/ldap: when creating the UserExternalId, verify that the user
+    exists in the database
+  * (6bfbaf) backends/ldap: remove dead import
+  * (e78854) idp/saml/saml2_endpoints: request failure because the requested NameID
+    format is not supported are not an error but a warning
+  * (bc95b3) update french translation
+  * (500ef9) admin: add a clear expired sessions action
+  * (4765b6) admin: fix SessionAdmin.user method, does not assume there is always a
+    user set in a session
+  * (aefccd) settings: use Django specific raven/sentry configuration
+  * (dc360f) backends/ldap: fix missing definition of the User model
+  * (830529) admin,dashboard: show see technical models admin pages even if DEBUG is
+    False
+  * (361c13) dashboard: show session admin in debug panel
+  * (e4790a) admin: in the Session admin, show user and ips
+  * (da52fe) add a new middleware to collect ips in the session
+  * (510c39) backends/ldap: add lookup by username, make password change work with
+    Django models
+  * (e8ec5a) backends/ldap: add an option to update username on all login
+  * (83cc9f) backends/ldap: improve log
+  * (ef9fe7) backends/ldap: improve logs
+  * (e1ae3b) backends: in LDAPBackend allow the user query to return multiple
+    records
+  * (890717) settings: add loading from YAML files
+  * (995aac) update french translation
+  * (d0497f) settings: if LOG_DEBUG is present, do not set level to DEBUG on root
+    logger
+  * (4ddd6c) admin: customize admin for technical models
+  * (370e72) admin: activate Session model admin also when the engine is cached_db
+  * (c143ff) admin: add filter on whether an use has an external identifier or not
+  * (dbfafc) dashboard: expose DeletedUser model
+  * (372b45) models: complete verbose_name attributes
+  * (9f41f0) remove dead application auth2_user
+  * (6202e4) backends/ldap: fix lookup of UserExternalId missing in commit
+    6fde3843bdfa
+  * (6b1761) idp: fix renamed authentication backend reference (bis)
+  * (45b450) idp: fix renamed authentication backend reference
+  * (8437ad) update french translation
+  * (d627a4) forms: fix user edition on group admin form
+  * (692a19) authentic2-ctl: do not set DEBUG=1 in the environment
+  * (8f9ae8) settings: set syslog log level to DEBUG, and reset handlers on
+    django.db logger
+  * (b6cd5d) settings: display a message when DEBUG is on
+  * (5685b3) settings: add a DEBUG_LOG setting to limit debugging log to certain
+    domains
+  * (e71728) settings: remove useless LANGUAGES setting
+  * (4531ce) settings: improve naming of path related settings
+  * (08ca44) run.sh: run with debugging on
+  * (8a4fd0) settings: remove redefinition of VAR_DIR
+  * (7a7318) templates: fix typo in password_reset_email.html
+  * (fb9b1d) style.css: make help text display under form fields
+  * (9e1518) admin: register the Session model if the db session engine is used
+  * (e1657c) backends/ldap: populate the user.attributes dictionary for transient
+    users
+  * (640b6a) backends/ldap: remove remaining catchall except blocks
+  * (8cc48f) admin: in user list view add filter on realms
+  * (a3cde8) app_settings,backends/model: add REALMS setting to aggregate realm from
+    all sources
+  * (b352b0) backends/ldap: move configuration check in get_config()
+  * (f5a9d7) backends: rename module models to models_backend to prevent collision
+    in imports
+  * (ab20be) backends/models: if the login form pass a realm use it
+  * (6fde38) backends/ldap: add setting username_template for building usernames
+  * (dfd51e) backend/ldap: add a realm attribute defaulting to ldap
+  * (f10650) backends: in the model backend try to lookup user also by appending
+    known realms
+  * (1eb2e1) registration_backend: allow a default realm for self-registrated
+    accounts
+  * (db1b76) settings: unique email for accounts should not be the default
+  * (a7d4b9) settings: django.contrib.sites is not necessary
+  * (d4df5f) idp/saml: remove wrong backend class
+  * (b68320) idp/saml2: add decorator never_cache to all views
+  * (c7771d) idp/saml/saml2_endpoints: add new model backend to supported backends
+  * (cefa5d) backends: add new ModelBackend handling multiple matching users and
+    email as username
+  * (0159f7) backends/ldap_backend: fix import path
+  * (250941) backends: rename ldap backend module to fix collision with global
+    namespace
+  * (b2783e) serializers: fix missing import and not handled case of new models
+  * (c17927) add a backends directory, mv LDAP backend into backends/ldap.py
+  * (31a7b0) add serializer supporting natural primary keys
+  * (64c1bc) move User.username length fix outside of __init__.py as it breaks
+    loading of wsgi application
+  * (edb77e) managers: extract GetBySlugQuerySet/Manager from saml.managers
+  * (6cb51c) app_settings: fix typo
+  * (f6ebdc) models,managers: add a custom manager to AttributeValue model
+  * (12ce6c) admin: only use authentic user admin if the classic user model is used
+  * (846fac) migrations: add migration to add Attribute and AttributeValue
+  * (982395) admin: unregister the user model only if it's already registered
+  * (0e1801) admin,dashboard: add support for custom user model
+  * (5750fe) models: add natural key support to model Attribute
+  * (e2086b) commit missing file from the custom attribute support commit
+  * (06a9e3) authentic2: only patch User.username if this field exists
+  * (d4fd5b) dashboard: show internal models when DEBUG is True
+  * (7c4b9b) update french locale
+  * (b9c0f7) add custom attributes support to Django user model
+  * (7de5f1) decorators: add decorator to_list() to make a list returning function
+    from a generator
+  * (a09abf) managers: fix filter in with_federation() and without_federation()
+  * (6ef54c) idp/saml2: fix path for the redirect_to_logout view
+  * (98f7d2) authentic2/idp/static was move into authentic2/static
+  * (bb413c) models: patch Django user-model username max_length to be 255
+    characters
+  * (856bb9) move static files at root of python packages
+  * (471034) ignore ./static not all static directories
+  * (cdd695) settings: apply new standard layout for system static and template
+    directories
+  * (31059e) app_settings: add key AUTH_FRONTENDS
+  * (37c761) use getattr for getting AUHT_OPENID, DISCO_SERVICE and AUTH_SSL
+    settings
+  * (b72dc3) app_settings,utils: move IDP_BACENDS default value into app_settings
+  * (559493) app_settings: fix capitalisation of username field on registration page
+  * (75422c) settings.py: add option USE_MEMCACHE
+  * (c1fd14) models: initialize plugins there
+  * (4c21a7) saml/managers: add method to convert LibertySession queryset to
+    LassoSession dump
+  * (d40889) saml/models: LibertySession.federation and assertion can be blank
+    (=NULL)
+  * (4a31b1) settings: load authentication backends, auth frontends and idp backends
+    from plugins
+  * (fb669c) plugins: define a DEFAULT_GROUP_NAME and use it in as default group
+    name in functions
+  * (41f02e) remove AUTH_OATH setting description
+  * (386bb6) auth2_ssl/backend: do not clutter saml2_endpoints with authncontext
+    declaration, use authentication backend hook
+  * (478939) settings.py: add a default configuration for a file based cache
+  * (466d1b) saml/common.py: use assertion for checking if a message is a SOAP one
+  * (d38dc8) saml/models: set LibertyProvider manager to LibertyProviderManager
+  * (21dc8c) saml/managers.py: remove dead import
+  * (3529ec) saml/managers.py: add helper method to LibertyProviderQuerySet
+  * (dc346d) remove the CAS idp, as it is now out of tree
+  * (94d52b) models: FederationId, a generic model to store federation identifiers
+  * (8653ed) models: LogoutUrl, new generic model to store logout urls of providers
+  * (0fa832) utils: in accumulate_from_backends, ask also to plugins
+  * (9cc17b) middleware: add a new LogCollector middleware
+  * (8781eb) saml/models: move all managers to their own module
+  * (e90a4a) saml/common: in soap_call return the original exception through
+    SOAPException
+  * (770ef7) saml/common: SOAPException does not need any specialization
+  * (8c8445) saml/common: add assertion on presence of a name_id in parameters of
+    add_federation
+  * (0f980e) saml/common: add more debugging log
+  * (9564cc) saml/common: change provider_id to entity_id in load_provider to
+    uniformize vocabulary
+  * (0214e2) saml/common: add assertion and debug logging in SAML2 message
+    extraction functions
+  * (c38112) saml/saml2utils: simplify log messages in authnresponse_checking
+  * (662356) saml/common: simplify debug log in soap_call
+  * (f049de) saml/common: add debug log to return_saml2
+  * (974515) saml/common: add a logger
+  * (ecc560) views: simplify server_error view
+  * (2e0e3e) remove authsaml2, it's reborn as plugin authentic2-auth-saml2
+  * (833191) auth2_ssl: simplify and adapt for nginx
+  * (dc16ce) frontends: remove the next parameter to the profile view,
+  * (f29db4) urls: if DEBUG is True, serve static files
+  * (5ae30c) auth2_ssl: refactoring [module reorg]
+  * (dbab28) move all content of the auth2_auth module into authentic2 module
+    [module reorg]~
+  * (9dd8a6) remove dead import
+  * (2f7eeb) auth2_auth: remove dead admin module
+  * (92e53b) fix import error on NONCE_FIELD_NAME
+  * (21b4e1) auth2_ssl: refactoring [module reorg]
+  * (e0e065) auth2_ssl: consolidat urls in an urls module [module reorg]
+  * (c651f6) move constant NONCE_FIELD_NAME in module authentic.constants [module
+    reorg]
+  * (2aa09a) idp/urls: do not assume IDP_CAS or IDP_SAML are defined
+  * (82544a) idp: refactoring [module reorg]
+  * (9ee9d1) remove dead view error_ssl
+  * (c79b2a) move login view from auth2_auth to idp [module reorg]
+  * (9fa353) auth2_auth/views: remove unused view password_change
+  * (1ee99e) idp/urls: refer to interaction views by name, attribute global name
+    [module reorg]
+  * (1a68a6) registration_backend/forms.py: validate that username is not already
+    taken
+  * (9c6e23) registration_backend/views.py: call the user model clean() method when
+    creating temporary user on registration
+  * (34ad76) registration_backend/forms.py: validate that passwords match on
+    registration
+  * (d02d90) registration_backend/forms.py: copy validators from user model to form
+  * (4a950f) settings: extract any environment var named SETTING_
+  * (ed5ba7) settings: load middleware from plugins
+  * (0f8942) dashboard: load admin modules from plugins
+  * (fdf03e) utils: add IterableFactory to make fresh iterable from generators
+  * (8f9df5) settings: add environment setting SECURE_PROXY_SSL_HEADER
+  * (dde300) plugins: set a default group_name for plugins
+  * (51cf99) admin: allow editing group's users from the group change form
+  * (835759) urls: import django.contrib.admin directly
+  * (43d6ce) settings: restore normal order of applications in INSTALLED_APPS
+  * (44e958) backends: in LDAPBackend fix missing variable reference in string
+    template
+  * (a31e6d) backends: remove referral results from results before counting found
+    user records
+  * (2e1738) backends: remove 1s default timeout for LDAP requests
+  * (7c8bbb) backends: in LDAPBackend do not follow LDAP referrals by default
+  * (9cddce) add a plugin system
+  * (3c1ce8) auth2_auth: fix bug in auth_ssl urls
+  * (20ebab) backends: do not force flags on LDAP users
+  * (478dad) attribute_aggregator/core: simplify load_or_create_user_profile() using
+    Model.get_or_create() to remove a race condition
+  * (f25626) setup.py: adapt to change in Django compilemessages
+  * (560518) auth2_auth/views: allow staff to see the login page even when logged
+  * (dfbbe0) auth2_auth/urls: use the auth_login name for the login view
+  * (e5567b) setup.py: force version of django-admin-tools to >= 0.5
+  * (dd7794) fix wrong commit count in NEWS
+  * (c552e9) idp/saml/saml2_endpoints: use the new
+    SPOptionsIdPPolicy.http_method_for_slo_request field when initializing a new SLO
+    request
+  * (7883fa) saml/models: add field SPOptionsIdPPolicy.http_method_for_slo_request
+
+ -- eobuilder <eobuilder@entrouvert.com>  Tue, 15 Jul 2014 13:06:31 +0200
+
+authentic2 (2.1.2-1~eob70+1) eobuilder; urgency=low
+
+  * (8c4225) release 2.1.2
+  * (ba4675) registration_backend: do not mark all fields as required on
+    registration form
+  * (67a296) update NEWS file for release 2.1.2
+  * (521e43) registration_backend: implement a complete RegistrationView to support
+    custom user models
+  * (2dc6ee) jenkins.sh: install optional dependency django-authopenid
+  * (c79874) jenkins.sh: upgrade setuptools first, allow external and unverified
+    sources for django-admin-tools
+  * (b1c56e) setup.py: bump django-registration requirement to release 1.0
+  * (8f7bf2) registration_backend: pass set_password_form to password_reset_confirm
+  * (6e47e5) requirements.txt: allow fetching django-admin-tools from unverified
+    sources
+  * (e1e574) migrate code to use django-registration 1.0
+  * (14418f) forms: removed unused argument user form UserProfileForm
+  * (e5caca) saml/sync-metadata: Add support for mdui:DisplayName (fix #4181)
+  * (e7c9d2) saml/sync-metadata: forge unique slug (fix #4192)
+  * (837558) fix french l10n for email_change_body.txt
+  * (ec775c) add idp saml templates
+  * (209e26) idp/saml: send logout using iframe or img tags depending upong the sp
+    option policy
+  * (4a6789) saml: add field to sp option policys to control the way logout is sent,
+    using iframe or img tags
+  * (16b1ce) idp/saml: use a templat to render logout fragments
+  * (b0d727) saml/common: in load_federation, pass missing template variable
+  * (21dfe1) saml/common: only initialize qualifier if they are present
+  * (7a5781) raise dependency on south to version 0.8.4
+
+ -- eobuilder <eobuilder@entrouvert.com>  Wed, 08 Jan 2014 17:37:29 +0100
+
+authentic2 (2.1.1-1~eob70+1) eobuilder; urgency=low
+
+  * (37d117) update NEWS file
+  * (01fcba) secure email_change view
+  * (f6651b) bump release to 2.1.1
+  * (c0b9a6) setup.py: add missing dependency django-admin-tools
+
+ -- eobuilder <eobuilder@entrouvert.com>  Thu, 19 Dec 2013 15:30:23 +0100
+
+authentic2 (2.1.0-1~eob70+1) eobuilder; urgency=low
+
+  * (c7230c) release 2.1.0
+  * (59bba9) distribute locale files of disco_service application
+  * (09294b) saml: fix verbose name of defederation field of options policy models.
+  * (988831) authsaml2: reply valid slo error message, provider to load is idp.
+  * (7c1cae) templates: in logout.html block loading indefinitely to allow iframe to
+    finish loading
+  * (34e328) fix typo in last commit
+  * (bb9bcf) log page url in logout console log of iframe_count
+  * (08f61f) Revert "templates: define default console object in base.html"
+  * (333692) log all modifications to the iframe_count
+  * (406be1) templates: define default console object in base.html
+  * (d928c5) authsaml2: use redirect_next helper function (bis).
+  * (451350) idp/saml: change misleading log, process_logout_response used by soap
+    and redirect.
+  * (abe7dd) authsaml2: add missing back url from idp logout treatment.
+  * (4577a2) authsaml2: factorize common treatment when receiving a slo and use idp
+    logout treatment with redirect.
+  * (7e7760) authsaml2: really handle the SLO return by redirect.
+  * (06ef13) authsaml2: we do not need a view for local logout.
+  * (39d8c3) authsaml2: merge processing functions for SLO return by redirect.
+  * (ae6180) authsaml2: add missing relay state initialisation.
+  * (7b2173) authsaml2: use redirect_next helper function.
+  * (c7b760) authsaml2: remove logout view made to be called directly from the UI.
+  * (f0bcff) idp/saml: use redirect_next helper function.
+  * (f0d849) idp/saml: better manage sp options in service list generation.
+  * (981389) saml/common: better federation creation and session key param added in
+    session deletion functions.
+  * (f4c775) saml: restore LibertyFederation.name_id_qualifier and
+    LibertyFederation.name_id_sp_name_qualifier
+  * (52e20c) app_settings: do not cache value from settings, access it directly
+  * (6daa25) add settings to hide the password reset link on login page
+  * (6a69f7) allow hiding the registration link in login page
+  * (eba88a) saml: add function nameid2kwargs_federation only for use with
+    LibertyFederation
+  * (072fb9) saml/models: restore extraction of name_id_qualifier and
+    name_id_sp_name_qualifier in nameid2kwargs
+  * (d5cca1) idp/saml: in build_session_dump() add missing closing &gt; in XML dump
+  * (9fe711) idp/saml: build_session_dump() do not add name_id_qualifier and
+    name_id_sp_name_qualifier if they are empty
+  * (9c8f8d) idp/saml: add missing property AssertionID when building session dump
+  * (f5da02) saml/common: fix typos in session dump building.
+  * (ea222c) authsaml2,idp/saml: rewrite build_session_dump to use thin sessions
+    (session dumps without assertions)
+  * (46a66e) authsaml2: use utils function to flush a django session in
+    singleLogoutSOAP.
+  * (3538b0) utils: helper function to get session store and flush a django session.
+  * (d78a85) idp/saml: remove unused link from session to federation and storage of
+    assertions
+  * (4bb618) settings: do not force cached_db session engine, it can only used with
+    a shared cache
+  * (e44754) idp: wait for all iframe onload event before doing local logout
+  * (f87568) Revert "idp/saml: add a utils module, start with session saving/loading
+    functions"
+  * (17d233) Revert "idp/saml: replace old session loading an saving by new
+    functions local to the idp application"
+  * (45d94d) idp/saml: only load/save federations if the nid_format used needs it
+  * (b33196) idp/saml: replace old session loading an saving by new functions local
+    to the idp application
+  * (25ad16) idp/saml: add a utils module, start with session saving/loading
+    functions
+  * (cc0914) saml: clean unused import
+  * (5c1587) settings: set default session engine to cached_db
+  * (443c4f) settings: use cached template loader unless DEBUG is True
+  * (c537e2) idp/saml, authsaml2: fix lasso method name to process logout response.
+  * (0d6b05) idp: local logout only need to set a correct next page parameter (fixes
+    #3859).
+  * (b83da0) idp: reuse parametrable redirection timeout in logout template.
+  * (a9bb69) idp/saml2_endpoints: load attributes once in sso_after_process_request
+    (fixes #3377).
+  * (7db38b) idp/saml2_endpoints: load attributes sooner and send them in decision
+    signal.
+  * (1f0845) idp/saml2_endpoints: don't use the same variable name for the two kinds
+    of policies.
+  * (03a74d) authsaml2: restore use of
+    LibertyIdpOptionsPolicy.want_force_authn_request in setAuthnrequestOptions
+  * (f08dfc) authsaml2: do not force the assertionConsumerServiceIndex in
+    setAuthnrequestOptions
+  * (d50616) settings: set logging level to DEBUG in the syslog handler when DEBUG
+    is True
+  * (c02b89) attribute_aggregator: fix bug where a dictionary is reused in
+    user_profile module
+  * (c094b7) attribute_aggregator: fix loop error in user_profile module
+  * (e3d075) backends: convert ldap attribute names to str
+  * (600ebf) backends: store password and ldap attribute for one full day
+  * (61eac6) backends: ldap search function only accepts str not unicode
+  * (69d60e) attribute_aggregator: if user object has a get_attributes method, try
+    to import those attributes
+  * (8ae900) backends: add new settings for LDAP servers: attributes,
+    attribute_mappings and attributes_mandatory_values
+  * (9a6345) attribute_aggregator: add accessors to retrieve all aliases of a
+    definition and to test if a name is defined
+  * (889eb9) attribute_aggreator: insert a hack in the attribute signal so that
+    request.user can be accessed from the user profile attribute loader
+  * (3737ea) attribute_aggregator: try/except block to prevent UserProfile linked
+    exceptions has become useless
+  * (42f008) idp/saml: only save federation when nid_format is persistent, prevent
+    double federation creation when using eduPersonTargetedId
+  * (fcdca8) update fr translation
+  * (186139) templates: add templates for the email change view
+  * (f72807) update fr translation
+  * (d4c0cf) views: improve and fix messages around email change
+  * (7903fa) update fr translations
+  * (ec9a55) idp: add a link to the email change page on the account management page
+  * (c2177b) update french translations
+  * (20062b) add email change forms and views with email validation
+  * (517574) views: refer to get_object_or_404 throught its module
+  * (d3aadb) saml/common: in load_federation() remove useless debug logs
+  * (881e02) saml/common: in load_federation() user is mandatory, so add an
+    assertion
+  * (fa14d4) forms: in UserProfileForm() do not allow editing the email field, it's
+    sensitive
+  * (d67b7f) forms: in UserProfileForm only mark present field as required
+  * (8e2f18) setup.py: do not refuser to run when workdir is dirty
+  * (434e82) backends: handle ldap server connection errors and log them
+  * (93b477) saml: remove obsolete todo
+  * (011dc5) saml: add the edupersontargetedid NameID format
+  * (3a910c) saml: add the username NameID format
+  * (73f215) idp/saml2/saml2_endpoints: simplify fill_assertion
+  * (08b549) idp/utils: add a get_username method to adapt to new custom user models
+  * (6ed15a) idp: restrict cleanup to authentic2 models, rename cleanup to
+    cleanupauthentic
+  * (666a3b) cleanup for 'empty' federations emitting a signal 'federation_delete'
+  * (79804d) idp_openid/models: fix name collision in NonceManager.cleanup()
+  * (a9e23b) saml: in SessionLinkedManager.cleanup() never clean django sessions
+  * (e8d23c) idp_openid: allow to add actions in service list directly with a
+    template.
+  * (53cbb3) auth2_openid: fix last commit.
+  * (389cfa) auth2_openid: message passed to on_failure is a list.
+  * (fca344) auth2_openid: fix dissociation page, deprecated message_set and
+    undeclared redirect_to shortcut.
+  * (f082e7) auth2_openid: minor changes in few templates and bits of translation.
+  * (7f59a5) auth_openid: Add a backlink on association management page.
+  * (99b7a3) idp_openid: manage openid services with backend, do not use federation
+    processor anymore.
+  * (0e38d2) idp_openid: add links with RPs in context, allow to unlink from profile
+    page.
+  * (9367c0) attribute_aggregator/user_profile: link displayName ldap attribute to
+    the get_full_name() accessor of user models
+  * (2b0ef8) idp/saml/saml2_endpoints: compute attributes nearer to their point of
+    use
+  * (33fb91) idp/openid: normalize urls.py regexp
+  * (4ec03e) idp/saml: do not log unkown provider message at the error level, it's
+    just a warning
+  * (274e76) saml: pass missing context variable redir_timeout to the error template
+  * (fca162) saml: raise a validation error if lasso cannot parse the metadatas
+  * (5cca9a) attribute_aggregator/user_profile: use operator.attrgetter to allows
+    lookup for user profile sub-fields
+  * (aa1bc9) attribute_aggregator: do not limit profile fields lookup look for all
+    which have a definition declared
+  * (9a31a9) attribute_aggregator/user_profile: remove method name from log messages
+  * (1c4f73) attribute_aggregator/user_profile: profile fields can match many
+    definitions now
+  * (8d7d8e) attribute_aggregator: create an index of definitions by profile field
+  * (eee4ac) attribute_aggregator: last migration depend on the last migration in
+    idp
+  * (647f1e) idp: fix migration 0011, it should send signal to new create new
+    content types for the attribute aggregator application
+  * (b0677b) Add OpenID IdP urls in not_hompage_patterns.
+  * (7c439d) saml: fix deprecated import.
+  * (499004) settings: set SENTRY_DSN default value to None
+  * (db9a5e) idp_openid, auth2_openid: the syntax of 'url' changed in Django 1.5.
+  * (6e2799) attribute_aggregator/mapping: mail is the standard LDAP attribute for
+    mail not email
+  * (3f21c2) settings: configure loggers after loading the local_settings file
+  * (0feff3) saml/forms: remove debugging statements
+  * (93e548) dashboard: fix paths to AttributeList and AttributeItem models
+  * (f1fd43) backends: if ldap credentials are absent, just continue
+  * (e4e6ee) attribute_aggregator: only load the LDAP source if activated
+  * (6b5fae) dashboard: show all django.contrib.auth models im the "Users and
+    groups" block
+  * (2ade14) idp/saml/saml2_endpoints: fix call to backend.get_saml2_authn_context
+  * (cb2b82) idp/idp_openid: Allow restriction of openid RPs.
+  * (4fc119) idp/idp_openid: fix bad function parameter.
+  * (090a01) idp/idp_openid: add missing import of settings.
+  * (70f00c) idp/saml/saml2_endpoints: fix undefined orm query in
+    sso_after_process_request
+  * (f3cf5f) idp/saml: catch precise exceptions
+  * (7811dc) attribute_aggregator: add empty migration to inform south that
+    AttributeList and AttributeItem are now part of attribute_aggregator
+  * (f08d8d) idp: add migratoin to migrate table for AttributeList and AttributeItem
+    to the attribute aggregator
+  * (0df455) idp/saml: only catch DoesNotExist exception in
+    need_consent_for_federation
+  * (3165fa) idp/saml: reduce log level for destination error to warning
+  * (083975) idp/saml: removed unimplemented and unused functions
+  * (b777ab) auth2_auth: remove unused signals
+  * (e5ee53) idp/saml: remove catchall except
+  * (0b9198) idp/saml: does not log user.username as the field could not be present
+  * (d0b026) saml: do not directly access user.username as the field could not be
+    there
+  * (37700f) auth2_auth/backends: truncate username before saving it in the
+    AuthenticationEvent
+  * (f62137) auth2_auth/views: remove unused form WithNonceAuthenticationForm
+  * (462a8b) auth2_auth/backend: adapt default login form to custom user models
+  * (26e7fa) backends: add an USERNAME_FIELD to LDAPUser
+  * (556da3) idp: fix migrations 0004
+  * (c0cf59) dashboard: remove feed block from dashboard, as it forces an HTTP get
+    to an Entr'ouvert server
+  * (0cf207) backends: fix undefined variable errors
+  * (c1cb0e) attribute_aggregator: add a simple source, which just call a method on
+    the user model if it can
+  * (e0bbc3) idp/saml/saml2_endpoints: remove method name from log messages
+  * (9fd07b) AUTHORS: update
+  * (f3ce35) idp/saml: add an urls.py file to conform to standard practices
+  * (fe571d) idp,attribute_aggregator: move AttributeItem and AttributeList into
+    attribute_aggregator
+  * (dba00e) attribute_aggregator/models: simplify imports
+  * (029610) idp: remove unused import
+  * (2ba554) idp: remove unused UserConsentAttributes model
+  * (01b760) compat: add variable use_attribute_aggregator to see if
+    attribute_aggregator is being used
+  * (f1775c) adapt recent migration scripts for support of custom user models
+  * (955239) idp,saml: remove explicite import betwen models modules
+  * (7d48e7) idp,attribute_aggregator: move a2.idp.attributes into the
+    attribute_aggregator package
+  * (de0e91) app_settings: add A2_HOMEPAGE_URL to add a no-homepage mode to
+    authentic2 (like shibboleth)
+  * (b42587) settings: use /dev/log as address of the syslog daemon, as not every
+    syslog daemon is listening on the UDP port (rsyslog for example)
+  * (becee1) settings: extract CACHE setting from environment
+  * (294b8b) backends: after parsing json content, convert unicode string to byte
+    strings
+  * (c57042) settings: set log level to DEBUG when DEBUG is True
+  * (121f7e) settings: set a default value for LDAP_AUTH_SETTINGS
+  * (effae6) settings: add missing import for json
+  * (009b5c) models: add source and updated field to UserExternalId
+  * (b9902d) saml: add a new sp policy option, federation_mode
+  * (9d5909) saml: add an app_settings module
+  * (1707f4) idp/saml/saml2_endpoints: automatically convert password authentication
+    context to password protected transport autn context when https is used
+  * (b558d3) backends: support Active Directory, had mode where ldap users are not
+    backed by a Django model user
+  * (c139ce) update french translation
+  * (8bb2e8) template: change welcome string for authenticated users in base
+    template
+  * (837208) cache: new module for utility methods with cache
+  * (842cd9) settings: activate sentry logger based on the environment
+  * (7070e2) settings: get LDAP settings from environment, activate LDAP backend
+    when there are LDAP settings
+  * (18895d) backends: add a bind_to_username option for LDAPBackend
+  * (b99382) models: add UserExternalId to store external id linked to users
+  * (4f1731) settings: remove local file handler, add mail_admins and syslog as
+    default
+  * (316506) fix default change password form (fix #3955)
+  * (599b55) settings: allow more DATABASES keys to be set from environment
+  * (3288d9) idp/saml/saml2_endpoints: log request content when receiving an invalid
+    HTTP-Redirect request
+  * (b4bac3) saml: update translation
+  * (282c50) saml/admin: add a create from URL action for liberty providers
+  * (f03e4c) authsaml2/backends,saml2_endpoints: use the system random generator for
+    more security
+  * (c46735) auth2_ssl: reorganize url conf
+  * (f798e1) auth2_auth: fix wrong regexp in url conf
+  * (6261a7) translation fix
+  * (493c89) auth2_oath: comletely remove this module, as it does not depend
+    entirely on Entr'ouvert copyright
+  * (b67842) Fix erroneous title and copyright in file headers.
+  * (12a513) saml/templates: in post-form.html wrap the send button with the
+    <noscript/> tag
+  * (5f2082) authsaml2: return from locallogout
+  * (098f57) authsaml2: all errors does not have an url attribute
+  * (a7d3ec) authsaml2: when using transient as persistent, also set nameQualifier
+  * (43caea) authsaml2: fix undefined identifier
+  * (429ad8) saml/sync-metadata: handle file with only one EntityDescriptor
+  * (f3a4bd) saml/sync-metadata: setup the slug and name fields of newly created
+    providers
+  * (635758) saml/models: LibertyFederation.{sp,idp} fields can be blank
+  * (98a1b5) saml2_endpoints: as Lasso 2.4.0 is still not release do not used
+    ProfileRequestDeniedError
+  * (b36c53) templates: on the logout page waits 300ms before redirecting to login
+    page
+  * (a0a935) idp/views: do not forget ending slash
+  * (780f49) idp/saml: fix use of unicode characters in non utf-8 source code
+  * (05700a) saml2_endpoints: change titles of redirection page
+  * (4dea1f) idp/views: do not compute the logout list when doing local logout
+  * (ef0748) idp: fix UnicodeDecodeError for attributes
+  * (304a5b) saml2_endpoints: only raise a warning when continue_sso() view does not
+    find a nonce paramter in its query string
+  * (03926f) forms: define default USER_PROFILE list of field for the default user
+    model
+  * (0e60b6) saml: start indexing endpoints at 0 to work around bug in lasso in
+    artifact constructions (the artifact endpoint index is always 0)
+  * (50d63c) saml: start indexing endpoints at 0 to work around bug in lasso in
+    artifact constructions (the artifact endpoint index is always 0)
+  * (5d8250) forms: do not add related fields to the user profile form, only proper
+    fields
+  * (772825) start.sh: apply migration as they work now, fix django version
+    requirement string
+  * (fda942) nonce: really fix cleanup in NonceManager
+  * (8b23e8) nonce: fix cleanup in NonceManager
+  * (2a3568) MANIFEST.in: include MANIFEST.in
+  * (a03bae) setup.py sdist: store version into the archive
+  * (625399) setup.py: remove use_setuptools which install stuff inside current
+  * (7f2a92) setup.py: don't depend on django during the setup
+  * (51cfb0) saml: in migration 33 do not use the ORM when db.dry_run is True
+  * (a6ad42) saml: fix migration from commit bb9ef6278
+  * (2b09e1) idp_cas/views: fix indentation error introduced in commit 7ab2405a
+  * (e9bb9d) idp/saml: simplify links() method
+  * (ce06ae) authsaml2: implement persistent federation management with identifier
+    in attributes.
+  * (2bf62c) authsaml2/utils: register nameID in session at account linking.
+  * (0a852e) saml: add identifier attribute field of idp options policy to admin.
+  * (bb9ef6) saml: add south migration script for previous commit.
+  * (5d7ad6) saml: add identifier attribute field to idp options policy.
+  * (d01145) fix all misuses of naive datetime
+  * (4b281d) registration_backend: allow overriding of set and change password forms
+  * (035db3) saml: show slug field in admin
+  * (00edd6) saml: fix typo in admin.py
+  * (e752b7) saml: add slug field to LibertyProvider, use it as a natural key
+  * (2f18b5) locale: modify some french translations
+  * (849b21) models: fix typo in __unicode__ method
+  * (8fbe4f) views: add a prefix to the edit profile form (refs #3249)
+  * (ff113d) authsaml2: fix missing pk of transient model fixes #3353.
+  * (b858c1) idp/models: use mapping variables now defined in loader file.
+  * (390e9d) idp/attributes: use attribute aggregator evolutions for attrs provided
+    at sso
+  * (adaa17) attribute aggregator: Many changes, ldap, attribute processing begins
+  * (4f9b96) attribute_aggregator: choose the core attribute mapping file.
+  * (2f3c90) utils: add helper function to import from a module giving a string.
+  * (77bf5b) saml: update fr translation
+  * (3bfa24) README.rst: add paragraph on compilation of translations
+  * (91c9e0) setup.py: update compile_translations command for new organization of
+    translations files
+  * (9c5bcf) locale,templates: dispatch templates and locale files to sub
+    applications
+  * (b8ff8b) remove dead application admin_log_view
+  * (2305df) forms: get fields from model if no USER_PROFILE.
+  * (0d1749) backends: check if ldap settings key exists is necessary at saving.
+  * (a3fead) backends: add one mising default value in the ldap settings dict.
+  * (090e80) saml: when no custom certificat chain is given for validating SOAP
+    endpoints, prefer using urllib instead of the custom code written around httplib
+  * (f32deb) views: ALLOW_ACCOUNT_DELETION setting was renamed
+    A2_REGISTRATION_CAN_DELETE_ACCOUNT
+  * (193ffe) idp_cas: legacy cas clients only accept cas: as a prefix for XML cas
+    tickets
+  * (7ab240) idp_cas: when the service url already contains a ? character, use a &
+    instead of ? to add new parameters
+  * (667245) authsaml2: fix url pointing to the delete federation view in templates
+  * (5e73d2) authsaml2: fix bad use of load_federation_temsp() after its signature
+    changed
+  * (757985) saml,authsaml2: fix source code not adapted to new shema for liberty
+    federations models
+  * (4d29f9) templates: add missing csrf tokens in the totp_profile.html template
+  * (3768b8) templates: comment out use of the autopenid special change password
+    view
+  * (abd977) saml/common: adapt lookup_federation_by_name_id_and_provider_id() to
+    new LibertyFederation model
+  * (fde1c9) saml: adapt common.get_provider_of_active_session() to new
+    LibertyFederation model
+  * (b4cb1b) saml: adapt common.add_federation to new LibertyFederation model
+  * (fbc8f9) idp: remove unused model UserProfile
+  * (a1f05a) idp/migrations: restore complete description of the schema, it blocks
+    the automatic creation of new migrations
+  * (2d932d) locale: update french translation
+  * (e92033) saml.admin: add variable names in a translated format string
+  * (24d89f) disco_server: add variable names in translated format message
+  * (030f10) attribute_aggregator: remove translation of the empty string
+  * (fc5333) idp/saml2: use %r to report dump of logout message in logs
+  * (34d6ce) saml: remove unicity constraints on liberty federation models
+  * (bd93ce) make scripts cwd blind
+  * (f3ff3a) change project mailing list email
+  * (e4fe77) migrations: adapt all migrations to Django 1.5 custom user models
+  * (ab0c47) auth2_oath: adapt migrations to Django 1.5 custom user models
+  * (a19448) auth2_auth: clean migrations
+  * (dec409) migrations: undo rename as it breaks logs of already executed
+    transactions
+  * (3d83ac) migrations: remove dependency upon a now empty migration
+  * (3ffc05) stay compatible with Django 1.4, remove all direct uses of
+    get_user_model
+  * (46166c) models: create new app around model authentic2.User
+  * (4b0155) README.rst: fix installation instructions from pypi
+  * (37e960) registration_backend: overload register() method to copy all user
+    fields from the registration form
+  * (1675b4) add developper scripts
+  * (32e7d7) add a real registration backend
+  * (3ac51e) jenkins.sh: chmod +x
+  * (d34ed3) add jenkins script
+  * (d69bca) saml remove LibertyIdentityDump and related dead code
+  * (b5c6ae) saml: fix reference to authentic2.User in migrations
+  * (0932f7) saml: fix migrations, site field was never added
+  * (b50f12) saml: remove LibertyArtifact.django_session_key whic is clearly useless
+  * (b1c8a1) saml: fix wrong schema declaration in migration
+  * (e68d8e) saml: remove idff12 code, it was never finished anyway
+  * (be2f28) saml: remove debugging print
+  * (cde538) setup: bump minimal south version required
+  * (430c1b) add documentation on how to write migration working with a custom user
+    model
+  * (3edfac) add missing file from commit 67ce861
+  * (16c930) settings: move ALLOW_ACCOUNT_DELETION to app_settings.py
+  * (67ce86) views: add a delete_account view on /accounts/delete
+  * (892502) settings: set a reasonable log format
+  * (4e64a8) saml: fix SamlBackend.links
+  * (321a01) settings: add more settings take from environment
+  * (41b7e0) Removing debian directory (will be add in debian branch)
+  * (106d34) manage: remove dead sys.path manipulations
+  * (452fd0) settings: take main settings from environment
+  * (fd54b9) setup: complete MANIFEST.in with missing binary translation files
+  * (8e4fdf) saml: improve admin panel for libertyfederation objects
+  * (1c1c56) saml: really implement LibertyFederation.__unicode__
+  * (83206a) remove dead imports
+  * (9f6080) authsaml2: replace federation deletion by setting the user attribute to
+    NULL
+  * (a3360e) saml: add a LibertyFederation.termination_notified field
+  * (88816c) saml: allow LibertyFederation.user to be null
+  * (0fadbd) saml: add fields LibertyFederation .creation and .last_modification
+  * (500702) saml: simplify LibertyFederation model, only store foreign to
+    providers, not their entity ids
+  * (57708a) debian: fixes add local_settings and fix install
+  * (5ddda2) setup.py: cancel commit 3d6e0b61
+  * (d1e4ef) debian: begin new version for squeeze
+  * (3d6e0b) setup.py: fix new get_version
+  * (840988) wsgi: add a wsgi file into authentic2
+  * (182ebb) settings: to converge with other project, move default db path at the
+    root of the project
+  * (fa9e17) dashboard: fix broken model paths
+  * (7bdff4) saml: set verbose_name and ordering of LibertyProvider model
+  * (e3d7fd) add missing module authentic2.menu
+  * (e4de2c) views: add a view to impersonate any user, use it for debugging
+  * (d702af) admin: add custom menu
+  * (1ab114) admin: customize admin forms for user models
+  * (d946bf) admin: use django-admin-tool for authentic2 administration
+  * (8098de) forms: fix wrong attribute name
+  * (7e2475) ctl: add dev settings and use them for the control script
+  * (01c55f) setup.py: add django to setup_requires
+  * (0d3d14) forms: remove debugging statements
+  * (0318df) attribute_aggregator: don't call loading function if nothing to load.
+  * (cf7028) settings: fix project root path
+  * (3dbff0) settings: fix prod settings
+  * (f5cc27) settings: remove production settings from the common setting module
+  * (91aa51) urls: django.conf.urls.defaults is deprecated since Django 1.5
+  * (46802f) idp_saml: does not log an exception for a logout response with status
+    RequestDenied
+  * (f4050c) forms: forbid editing username in the profile form
+  * (e62203) urls: fix bad import of settings
+  * (353709) settings: integrate auth and idp backend configuration to prod setting
+    file
+  * (47e026) settings: remove obsolete STATIC_SERVE setting
+  * (57e148) settings: add missing __init__.py
+  * (f3f3e8) settings: reorganize them (bis)
+  * (ac1ecc) settings: reorganize them
+  * (cad465) models: add missing migration
+  * (d8206b) fix wrongly removed import of regexp module
+  * (706953) forms: mark required fields as such in registration form, change css
+    class for required fields and fields with errors
+  * (c63ef7) adapt all applications to Django 1.5 custom user model
+  * (1b74b8) saml: fix __unicode__ method of LibertyProviderPolicy
+  * (9844b2) forms: add css class for required or erronous fields on user profile
+    form
+  * (d95fec) forms: use user model REQUIRED_FIELDS list to set required field on the
+    user profile form
+  * (1f7c58) settings: do not run migration when running tests
+  * (9fd720) hashers: add tests
+  * (9bb9dc) hashers: allow password digest without salt in the generic hashlib
+    hasher
+  * (e21574) saml: change length of SPOptionsIdPPolicy.accepted_name_id_format and
+    default_name_id_format
+  * (c07065) replace ugettext by ugettext_lazy in all models.py
+  * (05a5e3) idp_cas: add attribute provisionning through CAS tickets
+  * (5d3bbf) hashers: add SHA256PasswordHasher
+  * (98a4fa) setup.py: update get_version
+  * (46338e) change needed version of django-registration
+  * (f1300e) urls: fix url patterns
+  * (9f72f1) attribute_aggregator: handle tuple in USER_PROFILE field list
+  * (2b081e) setup.py: use get_version() to generate the version string
+  * (0e212c) remove check-sdist.sh, comparable functionnality is in the python-
+    entrouvert package
+  * (586675) distribute local_settings.py.example
+  * (3a14d0) distribute test files
+  * (6ed525) translation: spelling fix
+  * (ea7f64) fix a french translation
+  * (6351f2) saml: move iso8901 function to saml2utils to be called without
+    dependency on Django.
+  * (7dbcd1) authsaml2: move to saml utils authnresponse checking and attribute
+    extraction.
+  * (b53474) settings: fix root logger setting
+  * (913373) admin: only expose the user model if it is used
+  * (5d362e) attribute_aggregator: fix user profile fields discovery without caption
+    (removed in 293256).
+  * (3ae50b) views: in EditProfile view, do not use get_success_url() to launch the
+    synchronization thread
+  * (78c9e9) fix indentation errors spotted by pylint
+  * (2f06f7) add a local_settings.py.example
+  * (293256) models: improve profile form and profile display
+  * (98c853) Revert "models: use our own PermissionMixin to set the related name on
+    Permission and Group objects"
+  * (4e39fb) settings: add CsrfView middleware
+  * (e78552) remove unused imports (test)
+  * (c305e9) add scripts declaration to setup.py
+  * (65283e) rename manage.py to authentic2-ctl
+  * (effee8) models: use our own PermissionMixin to set the related name on
+    Permission and Group objects
+  * (1ec7c6) fix dependent version on django-registration (last try)
+  * (b1ea83) fix dependent version on django-registration (bis)
+  * (120307) fix dependent version on django-registration (bis)
+  * (5fdb70) fix dependent version on django-registration
+  * (b57096) setup.py: update dependencies and dependecy_links
+  * (be6a04) fix LOCALE_PATHS setting
+  * (1f2e03) context_processors: change signature of the UserFederations object
+  * (9721e8) saml: enlarge SPOptionsIdPPolicy.default_name_id_format and
+    accepted_name_id_format
+  * (095982) forms: remove useless meta declaration in profile form
+  * (a0f273) templates: logout only when all endpoints have responded
+  * (54239c) saml: log as debug loaded identity dump
+  * (ca4643) models: enlarge email field to user model
+  * (6a8e74) forms: add check for duplicate username to registration form
+  * (9a3e5c) registration_backend: adapt simple registration backend for custom user
+    model with required fields
+  * (0733ed) saml: build identity dump from federation objects, no more from
+    identity dumps
+  * (e44350) Adapt translation.
+  * (369ab1) saml: simplify user message when redirected with a post.
+  * (4767f6) hashers: transform passwords into bytes
+  * (81631d) hashers: fix Drupal7PasswordHasher
+  * (ea88a0) idp: Enhance consent
+  * (d0949b) forms: adapt profile edit form to custom user model
+  * (261476) README: update instructions on first install
+  * (2d3c1f) context_processors: convert defaultdict to dict before return
+  * (540ac1) context_processors: add a new context processor exporting a federations
+    variable for fetching federations of users
+  * (e82eb5) logout: do not log unicode value as simple strings (bis)
+  * (07ea91) logout: do not log unicode value as simple strings
+  * (df78f1) logout: fix sp initiated logout with more thant one sp logged
+  * (b6ad46) views: only push to service providers having a federation
+  * (17d844) views: when faking sso exchange for pushing attributes, do not save
+    session
+  * (c43549) fix typo in last commit
+  * (1d109b) saml: use name to refer to SAML post form, as its order in the template
+    cannot be garanteed
+  * (62705f) interactions: add missing {% csrf_token %} tags
+  * (e32a4a) idp/saml: add missing csrf_exempt decorators
+  * (dc4ecc) urls: separate homepage from other views in main url file
+  * (2bf0b7) update copyright year in base template
+  * (10f7c8) saml: enlarge more fields
+  * (86f9cd) idp/saml: set signature verify hint when verifying logout responses
+  * (7a7165) idp/saml: simplify
+  * (35ad1b) idp: fix wrong class reference
+  * (c8c86d) saml: add accessor for liberty provider policy
+  * (abf6ea) saml: add generic method to get policies
+  * (cb8720) backends: improve error recovery
+  * (ce583f) registration: use the simple backend (bis)
+  * (0855e3) remove old way to include registration urls
+  * (9a61db) registration: use the simple backend
+  * (8a6e13) fix last commit
+  * (57d1c8) saml2: use authn_request_signature_verify_hint as setting for logout
+    request signature verify hint
+  * (1d6c79) backends: use filter and not templates to find users
+  * (ab1aaf) saml2: log unknown slo errors
+  * (eb31d4) views: use a background thread to push attributes
+  * (a984f8) Revert "[idp] Add method that returns a dict from a user profile."
+  * (6a8526) Revert "[idp] Connect attribute filling signal to profile to dic
+    function."
+  * (b5c06a) idp: fix formatting of roles in account management view
+  * (2665d5) views: switch to python-requests for pushing attributes
+  * (3e1b41) add requests to requirements.txt
+  * (a51ef2) hashers: add hasher class for Drupal 7
+  * (bce318) [idp] SSO idp initiated with all SP at profile updating.
+  * (f62f89) [idp] Connect attribute filling signal to profile to dic function.
+  * (3e799f) [settings] Add a switch to activate push attributes at profile
+    updating.
+  * (258bef) [idp] Add method that returns a dict from a user profile.
+  * (9c73f5) [idp/saml2] idp_sso may return lasso login and fix protocol binding
+    setting.
+  * (9ff5cd) Deactivate OpenID IdP feature by default.
+  * (aa8060) [authsaml2] Use our User model in backend.
+  * (5d45ed) migrations: fix migrations applied after the custom user migration
+  * (e07538) saml: enlarge provid id field in LibertyFederation model
+  * (24a204) backends: add mandatory group setting for LDAP directories
+  * (0f5052) remove debugging statements
+  * (887b8e) saml2_endpoints: in idp initiated endpoint, set allowCreate to True on
+    faked AuthnRequest
+  * (71cdab) profiles: add caption to profiles, improve handling of multi-values
+    attributes
+  * (ccb8d2) urls: add missing ending slash to profile/ url
+  * (fc1748) attribute_aggregator: allow the user model to specify its exported
+    fields
+  * (9c299e) authentic2: expose User model in admin
+  * (008226) backends: fix import of groups
+  * (d91942) attribute_aggregator: create a role attribute to map groups
+  * (64e9e3) backends: add mapping of LDAP group to Django groups
+  * (cd7d80) attribute_aggregator: simplify user profile source
+  * (3125ba) attribute_aggregator: change mapping of uid to username
+  * (732f94) fix typo in last commit
+  * (e505bd) idp/saml: if not request.id exists generate a nonce
+  * (90f8a8) saml: enlarge KeyValue key field
+  * (bb8010) saml: add adapter code for postgresql
+  * (6b9c5c) saml: enlarge EntityID field in the LibertySession model
+  * (35afb5) backends: add method to find the SAML2 AuthnContext from the backend
+  * (440637) attribute_aggregator: replace user.get_profile() by user in the user
+    profile source
+  * (16617e) models: remove UserProfile, directly use the User model
+  * (9fa1a5) backends: convert ldap_data before trying to compare it against unicode
+    values
+  * (429cf9) backends: decode value extracted from LDAP before passing them to User
+    model
+  * (0e48dc) settings: add TransactionMiddleware
+  * (7efb28) backends: use group of names to set the superuser group
+  * (23d25f) backends: in LDAPBackend only save user when returning it
+  * (d71c72) profiles: improve edit profile form
+  * (81c049) store backend in user model, update attributes in LDAP
+  * (27ffa3) auth2_auth: do not overload /accounts/password/change/
+  * (a22bed) fix error in last commit
+  * (08b91f) adapt ldap backend to custom user model
+  * (7ac1e3) adapt manage.py to django 1.4
+  * (459727) attribute_aggregator: map classic "uid" attribute to the get_short_name
+    method of the custom user model
+  * (2122c1) models: in the custom user model build shortname using the username
+  * (d38814) attribute_aggreator: in user_profile source allow field to be callable
+  * (78cec0) attribute_aggregator: in user_profile also extract attributes from user
+    object
+  * (475800) backends: add multi-ldap authentication backend
+  * (49971e) use custom user model from Django 1.5
+  * (99a092) auth2_ssl: fix error_ssl view name
+  * (17fee0) views: replace password_change_done by a redirect to the profile page
+  * (f69f32) fix userprofile edition/creation forms
+  * (b57cef) style.css: add style for the messages block
+  * (7c1e23) templates: move messages block into the base template
+  * (96d002) settings: set default to only use the login/password backend
+  * (58bb5d) fix correct dependencies versions in setupt.py and requirements.txt
+  * (6d9ab5) remove the included django-registration
+  * (1fe993) do some cleaning
+  * (ee61e6) adapt to django 1.5 removal of function based generic views
+  * (47349d) templates: use new syntax for the {% url %} tag
+  * (e137f7) idp,saml: add missing dependencies toward other migrations
+  * (318667) idp_openid: add missing migration
+  * (987932) fix typo in COPYING file
+  * (710137) coin
+  * (ea2004) requirements.txt: start a requirements file
+  * (b9656d) manage.py: move it to root of the project
+  * (93a4c1) settings: do not load the auth2_openid and auth2_ssl applications if
+    not needed
+  * (3529f1) settings: do not block on missing debug toolbar when DEBUG is True
+  * (5f0f35) saml2_endpoints: default to transient if no default name id format has
+    been set
+  * (12c9e8) Only check the AuthnRequest destination if the request is signed
+  * (9b785a) Fix typo.
+  * (8fe235) [disco_service] Capture all exceptions at service provider lookup.
+  * (f2f09e) [disco_service] Responder part of the discovery service.
+  * (797074) [authsaml2/saml] Add requester discovery service support to authsaml2.
+  * (e819eb) element tree node can be equivalent to False, add explicit None test
+  * (20ee37) [idp] Prevent access of transient users to profile views.
+  * (73f599) Update README.
+  * (f7f681) Update release version in documentation header.
+
+ -- eobuilder <eobuilder@entrouvert.com>  Thu, 12 Dec 2013 18:50:07 +0100
+
+authentic2 (2.0.2-1~eob70+1) eobuilder; urgency=low
+
+  * (8b6ae3) Release 2.0.2
+  * (94d342) Update release version
+  * (5446cc) [doc] Update installation part of the documentation.
+  * (b31952) Distributable package of Authentic2 manage with Setuptools.
+  * (03bc20) [http_utils] prefer using pycurl instead of M2Crypto to retrieve HTTPs
+    URLS as it supports server name indication
+  * (4b23a2) [idp/saml] Remove unecessary line.
+  * (b7b715) [doc] Fix typo.
+  * (bbf67a) Update in README a remaining reference to GPL to AGPL.
+
+ -- eobuilder <eobuilder@entrouvert.com>  Fri, 11 May 2012 17:53:13 +0200
+
+authentic2 (2.0.1-1~eob70+1) eobuilder; urgency=low
+
+  * (865bd1) Release 2.0.1
+  * (afaaa8) Update release version.
+  * (adbd86) Update package files for distribution.
+  * (26652c) Update documentation version.
+  * (35b524) Filter private key of Lasso Dumps before logging.
+  * (8a8776) Remind that collectstatic is not necessary in debug mode.
+  * (8515e6) get_and_delete_messages() was deprecated in Django 1.2 and removed in
+    Django 1.4, fix that
+  * (d87322) [idp/idp_openid] Don't display secret of associations in admin.
+  * (d8c751) [idp/idp_openid] Remove vim instruction in prologue.
+  * (f38ddc) [idp/idp_openid] Remove auto_now_add.
+  * (c43e5c) [idp_openid] Disable HTML encoding of openid metadata.
+  * (2a3765) [doc] Add a word about the SAML SP protocol policy.
+  * (c2132a) Use csrf token in each form.
+  * (172f31) CsrfMiddleware removed and CsrfViewMiddleware by default.
+  * (dfaecf) Update settings with LOCALE_PATHS.
+  * (7ff08a) README and doc updated, dependency on Django 1.4.
+  * (a3ee9c) ADMIN_MEDIA_PREFIX in settings deprecated with Django 1.4.
+  * (e9c367) [doc] Update part on the debug-toolbar-dependency.
+  * (0ca26b) [doc] Update download page.
+  * (2cf3fb) [doc] Authentic 2 SAML2 SP, how a transient nameID can be handled.
+  * (49f03a) [doc] Fix inconsistency on the SAML2 SP and IdP configuration.
+  * (ccc0d0) [utils] fix bug in cache_and_validate
+  * (d6929f) Remove dependency on openid in the base template (bis)
+  * (cc70ed) Remove dependency on openid in the base template
+  * (e77b33) [idp][saml] pep review on saml2_endpoints.
+  * (5ba8ab) [authsaml2] pep8 review on saml2_endpoints.
+  * (7b3607) [authsaml2] Remove uncessary if statement.
+  * (52d311) [authsaml2] Allow to reask for authentication when a transient nameID
+    is received.
+  * (2edb7a) [idp][saml] Don't ask user consent for federation when a transient
+    nameID is served.
+  * (cb002e) [doc] Aword on debug mode by default, statics and the debug toolbar.
+  * (bd9698) The debug-toolbar dependency in DEBUG mode.
+  * (156eb5) [idp] Don't try to add data to profile when not found.
+  * (643a99) [idp] Remove useless OrderedDict.
+  * (e4f164) Fix authentic2.idp.saml.backend.SamlBackend.service_list()
+  * (7434bd) [setup.py] remove requires
+  * (516df8) Enable debug mode by default.
+  * (9a39d2) Fix typo.
+  * (577249) [attribute_aggregator] Fix error at profile creation with transient
+    users.
+  * (d8ec3b) Remove endline space in settings.
+  * (609b9c) Disable debug by default
+  * (461e39) Reference deb.entrouvert.org for installing Lasso
+  * (7b34bd) Remove instruction about installing django-registration as it is
+    included in authentic2
+  * (070b42) Add instructions about python-ldap when install django_auth_ldap
+  * (601151) [idp&attribute_aggrator] limit dependency on python-ldap
+  * (f5e9e5) Update translations.
+  * (a4097d) [attribute_aggregator] Enhance display name in mapping.
+  * (2570a6) [attribute_aggregator] Remove unnecessary extensive use of ugettext.
+  * (39c940) [attribute_aggregator] Remove unnecessary parenthesis in syntax values.
+  * (92e7c3) [doc] Missing installation instruction.
+
+ -- eobuilder <eobuilder@entrouvert.com>  Fri, 27 Apr 2012 14:03:10 +0200
+
+authentic2 (2.0.0-1~eob70+1) eobuilder; urgency=low
+
+  * (95b0ef) Release 2.0.0
+  * (098681) Add missing static files.
+  * (a40c0c) Preparation for release 2.0.0
+  * (c3e33c) Fix typo
+  * (150158) add an AUTHORS.txt file
+  * (c15f4b) [doc] Use Lasso 2.3.6.
+  * (d5421f) [doc] remove link to PDF file.
+  * (5535a3) Use the latest Lasso release 2.3.6.
+  * (01830e) [doc] Prepare documentation for the release.
+  * (0e596f) [doc] Fix title underline too short.
+  * (4cacd2) [doc] Fix title underline too short.
+  * (f346bd) Use name Authentic 2
+  * (c08956) Use name Authentic 2
+  * (947d38) Use name Authentic 2
+  * (492aff) [doc] Use name Authentic 2
+  * (8ef4fd) [doc] Add a page about settings.py.
+  * (bd7f68) Ignore compiled FR language file.
+  * (b187a3) Bits of traduction.
+  * (43e915) [templates] Change content in header.
+  * (ec0525) [templates] Missing traduction tags in oath login form.
+  * (9d9844) [saml] Don't show unused model in admin.
+  * (13ca80) [saml] Add missing verbose names of model fields.
+  * (99df51) [idp] Add missing verbose names of model fields.
+  * (d8b6e7) [authsaml2] Remove typo in error message.
+  * (21704a) [attribute_aggregator] Add missing verbose names of model fields.
+  * (1361e2) [idp] change service_list() interface
+  * (fd894d) [saml2] in idp_slo, send all known session indexes for the current
+    session and the given provider
+  * (013da0) [saml2] make transient NameID persistent for a session duration
+  * (fe81ab) [saml2] fix typo in idp_slo
+  * (046595) [saml2] add if case for OATHOTP backend when creating
+    authncontextlclassref from backends
+  * (9629f7) remove debugging print statements
+  * (cb527b) [saml] do not filter on an absent field of LibertyProvider
+  * (46c3d6) remove useless line of code
+  * (57fc07) Bits of traduction.
+  * (9de7dc) Fix static images path in the openid js library
+  * (a533d0) [saml2] forward oath-totp authentication as TimeSyncToken
+    AuthenticationContextClassRef
+  * (6fa51b) [auth2_oath] rename security level from oath-otp to oath-totp
+  * (1e4ba4) remove debugging print statements
+  * (ed247a) [auth2_ssl] Fix lost next parameter
+  * (09ca6e) [authsaml2] Give provider in GET parameter to sp_slo
+  * (b22def) [idp] Always return next or icon in idp_slo
+  * (65e379) [authsaml2] Encode in utf-8 the session dump
+  * (24f8de) Ignore static directory.
+  * (2e5bf6) [doc] Consent management doc page.
+  * (80b468) [idp] Always send prior if there is an existing federation.
+  * (b2f8bb) [idp] Enhance consent management on the IdP side.
+  * (70a32a) [authsaml2] Accept prior consent for account linking.
+  * (0d1037) [authsaml2] Enhance consent management on the SP side.
+  * (c2e58e) [idp] Consent page with attribute selection or all-or-nothing.
+  * (da3942) [idp]  Add an attribute selection page.
+  * (008592) Merge branch 'master' of repos.entrouvert.org:authentic
+  * (65f782) [doc] Update index, center images, add logo.
+  * (3081e0) [doc] Single logout management.
+  * (b8faf5) [auth2_oath] add a google-authenticator like QRcode display
+  * (55394c) Move to Django 1.3 way of handling static files
+  * (f8f34e) [doc] Link for the documentation in PDF on the project website.
+  * (efb9a9) Revert "[doc] Add a repository with a readable documentation."
+  * (7c4cab) [idp] Add policy option to not forward SLO to a SP.
+  * (50e8e5) [idp] Policy option to accept slo requests coming from an SP (really
+    concluded).
+  * (1f0699) [idp] Policy option to accept slo requests coming from an SP
+    (concluded).
+  * (db4237) [idp] Policy option to accept slo requests coming from an SP.
+  * (5344da) [idp] Add policy option to not forward SLO to an IdP.
+  * (e1f808) [authsaml2] Policy option to accept slo requests coming from an IdP.
+  * (0f6a87) Remove deprecated has_key() statement.
+  * (5f7df1) [saml] Unicode method for LibertyFederation model.
+  * (97fc51) [saml] Remove unnecessary for statements.
+  * (ced0fe) [idp] Remove unnecessary import.
+  * (da311d) [authsaml2] Remove unnecessary for statements.
+  * (f220c9) [idp] Call local logout with an iframe
+  * (fdbf33) [doc] Link in the html doc on the pdf version.
+  * (d730d7) [doc] Add a repository with a readable documentation.
+  * (64f904) [doc] remove documentation building files from the repository.
+  * (68fd23) [git] ignore documentation building files.
+  * (f63cb2) [saml] Bugfix in session deletion.
+  * (035e5c) [saml] Accept SOAP message with the charset in the content type.
+  * (535555) [idp] Improve Single Logout management.
+  * (c575c3) [authsaml2] Handle the Single Logout proxying.
+  * (45333a) [authsaml2] Consider that all kinds of nameId not transient are
+    persistent.
+  * (95335c) [authsaml2] Better manage attribute extraction from assertion.
+  * (36fd58) [saml2] add a check_id_and_issue_instant method to prevent replay
+    attacks
+  * (baecdc) [nonce] add a new Django app for nonce storage and management
+  * (f079c8) [auth] add needed class variable to authentication backends
+  * (d3e643) [idp saml2] when failing AuthnRequest validation for a missing public,
+    show a message
+  * (5c3464) [attribute_aggregator] Remove expensive unicode method
+  * (308778) [attribute_aggregator] Fix absolute path
+  * (9aa547) [idp] Update SSL backend path at assertion filling
+  * (eea9e2) [attribute_aggregator] Fix missing absolute path
+  * (f21137) Fix missing absolute path
+  * (d23bb1) [idp] Attribute policies can now be managed with global policies.
+  * (42a602) [idp] Hide namespace field of LdapSource model, always Default.
+  * (12efb6) [idp] Extract oid from urn of names of attribute with URI name format.
+  * (f2ab22) [idp] With the URI name format, the attribute name is an oid formatted
+    as a urn.
+  * (01d47b) [idp] Default attribute name format is now URI, not BASIC.
+  * (7febf7) [idp] Better display of attribute policy name.
+  * (937e6b) [doc] New bits of documentation
+  * (960ae6) [idp] Handle new dictionnary of saml assertions provided by authsaml2
+  * (cb6d66) [authsaml2] Load more data about assertion in session
+  * (5f69bc) [doc] Update documentation built
+  * (0c6ebc) [doc] New bits of documentation.
+  * (717828) [saml][authsaml2] Modify SP configuration and add SP SAML2 options
+    policies
+  * (eae644) [authsaml2] Remove obsolete file.
+  * (ee3656) First bits of documentation using Sphinx.
+  * (d28263) Merge remote-tracking branch 'remotes/origin/attribute-mgmt'
+  * (532299) [idp][saml] Handle unicode in artifacts
+  * (213fc5) Merge branch 'master' into attribute-mgmt
+  * (e4db38)   [idp] Conctenate values of differente sources
+  * (a48e58) [authsaml2] set session expiry time in sso_after_response if assertion
+    has a SessionNotOnOrAfter attribute (fixes #737)
+  * (4a834d) [saml] add get_session_not_on_or_after method (refs #737)
+  * (4bd1b3) [authsaml2] cleanup admin and urls module
+  * (dd3a5b) [authsaml2] cleanup utils module
+  * (64a7e5) [authsaml2] cleanup saml2_endpoints module
+  * (3b1bb6) [readme] add reference to pam module author, document setting variable
+    to define the PAM service name
+  * (579815) compute backend path from local informations
+  * (08b464) clean authsaml2.models
+  * (09fb62)   [authsaml2] Load attributes in session once again.
+  * (be2023) [idp] No signal name modifications but profile management removed
+  * (873dd7)   [idp] Support profile loading and extraction according to sp policy
+  * (185fbf) [idp] Add new models to model administration interface
+  * (0d76e1)   [saml] Add a field to SAML SP class for an attribute policy
+  * (a87c43)   [idp] New model for attribute policy for pushing attributes to SP
+  * (d81131)   [idp] Add attribute aggregator application
+  * (19154f) add the license from the django-pam code (MIT like)
+
+ -- eobuilder <eobuilder@entrouvert.com>  Thu, 22 Dec 2011 22:03:26 +0100
+
+authentic2 (univnautes.2-1~eob70+1) eobuilder; urgency=low
+
+  * (b1fe60) add the forgotten external module for PAM backend
+  * (5b3fa8) [saml2 idp] handle ElementTree attribute value as XML inline content to
+    embed in a saml:AttributeValue tag
+  * (75c7c0) add pam authentication backend
+
+ -- eobuilder <eobuilder@entrouvert.com>  Mon, 03 Oct 2011 16:36:04 +0200
+
+authentic2 (univnautes.1-1~eob70+1) eobuilder; urgency=low
+
+  * (83206e) add decorator to cache dynamically generated data inside a view
+    function
+  * (f7fe8d) [idp saml2] use smart_unicode to encode attribute values
+  * (6057e8) [saml] change format initial data fixture from YAML to JSON
+  * (6fc3be) fix typo in sync-metadata
+  * (dea777) [saml] initialize default and accepted NameID formats when loading
+    metadata in bulk
+  * (c373be) [idp] Handle adding of attributes with a friendly name
+  * (3a2c6b) in add_user_profile_attributes handle SiteProfileNotAvailable as
+    advised by django documentation
+  * (a9eb81) Add a module to perform HTTP GET with proper certificate checks
+  * (eff4ca) [authsaml2] show the service provider display name in the logout page
+  * (401bd0) [idp saml2] only set signature_verify_hint when a service provider is
+    found
+  * (5c97ab) [saml common] add logging to metadata WKL handling
+  * (13e40d) [settings] do not filter ImportError not related to finding the
+    local_settings module
+  * (48dc38) Fix symbols imported from the wrong module
+  * (625a17) Add external dependency django-registration
+  * (1fd5a0) Update COPYING for external modules or derived from external module
+    distributed with authentic2
+  * (63f5b6) [idp] remove unused imports, remove * imports, remove long lines
+  * (431456) [saml] remove unused imports, remove * imports
+  * (35d500) [idp] remove unused imports, remove * imports, remove long lines
+  * (77ffa4) [idp views] remove unused imports
+  * (5b76c4) [README] add django dependency, add dependencies needed versions
+  * (31aab9) [saml admin] add an updata_metadata command on LibertyProvider object
+  * (9367e3) [settings] use Django 1.3 way to setup loggers
+  * (53757c) Adapt to 1.3 signature for fields methods
+  * (207a9b) [setup] fix setup.py after running pylint
+  * (2f7a44) [idp.saml2] handle the 'cancel' return from login pages by return
+    RequestDenied
+  * (bb89ac) Switch to AGPL3.
+  * (c95c3d) [settings] add SIGNATURE to the key name for SAML public and private
+    key settings
+  * (2a68b7) [authsaml2] Add a debug log
+  * (839e98) [authsaml2] Missing debug log
+  * (07f46a) [authsaml2] Add setting option to display message
+  * (231931) [idp] remove initial_data fixture
+  * (35d5bd) [idp saml2] set signature verify hint from the service provider policy
+    setting
+  * (f1b0ad) [saml] add a policy model for liberty service providers
+  * (c9aa26) [Registration] Display success page after registration
+  * (5aa992) [idp] Backend not recognized by registration app when upgrading to
+    django1.2.5
+  * (5b58e7) [saml] move redirect_next into saml.common
+  * (3a5b66) [authsaml2] use iso8601_to_datetime to parse notBefore value
+  * (faff81) [authsaml2] fix NameError in errorpage call
+
+ -- eobuilder <eobuilder@entrouvert.com>  Mon, 12 Sep 2011 16:15:53 +0200
+
+authentic2 (1.9.1-1~eob70+1) eobuilder; urgency=low
+
+  * (e2e773) Release 1.9.1
+  * (f8c049) [idp] add a default attribute provider using the user profile
+  * (7c8fd1) [saml] remove authorization and attribute callback test implementations
+  * (ee76fa) [saml] fix retrieve_metedata_and_create, implement missing
+    IdentityProvider initialization
+  * (00fd22) [authsaml2] allow autoloading of identity providers in the POST
+    assertion consumer
+  * (6b044a) [authsaml2] import missing symbol redirect_next()
+  * (cbf4a0) [saml] in load_provider() call full_clean() no just clean()
+  * (13ece9) [saml] LibertyProvider: metadata validity is already checked in
+    clean_fields()
+  * (05d8a6) [saml] do not import datetime.datetime
+  * (1a4326) [idp saml] fix log statement
+  * (54bbb2) [idp saml2] work around bug in lasso dump/load code for the LassoLogin
+    object
+  * (3da0f4) [saml] do not allow autoloading of saml providers from anywhere
+  * (b48fb8) [saml] separate session dump from the sp and the idp side
+  * (680157) [idp saml] clean comments in the backend module
+  * (7c4593) Remove useless Makefile since we use south
+  * (2f21a5) [authsaml2] hide profile section when federations and identity
+    providers are absent
+  * (a87a27) [idp cas] fix typo in cleanup() method of the NonceManager
+  * (5b38b7) [idp] remove the AdminBackend, add an explicit link into the homepage
+    instead
+  * (66c3a3) [README] add a feature section
+  * (beb911) [idp saml2] remove ID-FF 1.2 urls
+  * (6ebcec) [core] add templates for the profile pages
+  * (b8c006) [idp] overload django cleanup management command to clean all cleanable
+    models
+  * (0b8bc5) [settings] reorder settings keys, make all idp and authentication
+    backends optional
+  * (6af7a2) [settings] remove obsolete IFRAME setting
+  * (f89a61) Merge branch 'profile'
+  * (1d8b8a) [authsaml2] Slo idp init and logging
+  * (f01ba6) [idp][saml] Slo idp init and logging
+  * (ec3fff) [idp] Do not show services to transient users
+  * (942b65) [authsaml2] redirect on root when sso is IdP initiated
+  * (408b90) [idp][saml] Idp initiated by post
+  * (6c38c9) [idp][saml] Modify parameters given by service_list
+  * (8ff124) [saml] Add a bit of logging
+  * (51f5b1) Complete the LDAP section of the README file
+  * (5d10d7) [idp] extend the account management page with a profile section
+  * (05abd3) [core] plug profile editing page in the url dispatcher
+  * (d5de1b) [settings] configure the profile class
+  * (1df382) [core] add execute mod bit to manage.py
+  * (18807a) [idp] new user profile model
+  * (46968f) [idp][saml] add logger to error page
+  * (50c713) [authsaml2] Modify logging message when an error page is returned
+  * (a8dd18) [saml] Remove unecessary lines
+  * (a71e5a) [settings] Modify logging formatter
+  * (4ecfe5) [idp][saml] Add logging messages
+  * (cc29bf) [authsaml2] Moodify logging messages
+  * (425bb3) [saml] display federation_source in the liberty provider editing page
+  * (880ac9) [saml] remove unicity constraint on the LibertyProvider.name field
+  * (b01e83) [idp] Missing files for the consent
+  * (9a998a) [authsaml2] Remove cancle link from login form
+  * (905d69) [idp][saml][idff] interaction modifications
+  * (87e9d8) [idp] add back link to account management page
+  * (0c8d1c) [idp] Consent mangement for federation
+  * (d5bb4d) [authsaml2] SAML2TransientUser object more conform
+  * (a7f1a2) [authsaml2] Push attributes in assertion in session
+  * (912a55) [idp][saml] Display attributes to the consent form
+  * (0424bd) [idp][saml] Signals and consent in progress.
+  * (a53558) [idp] Define new signals
+  * (8d5310) [saml] add RelayState hidden field in the post_form template
+  * (90789a) [idp] fix typo in template
+  * (22dec7) [authsaml2] Better handle provider loading
+  * (8ac746) [auth2_ssl] Translation in template
+  * (4ad87d) [idp] Begin to deal with the user consent for federation
+  * (3552ba) Enclose redirect by post in a <div>
+  * (f280a8) [idp] Remove debug print
+  * (82accc) [saml] soap_call function does not handle a not accepted client
+    certificate
+  * (68b279) [idp] Fix redirect function
+  * (3d9653) [authsaml2] Manage logout from the backend
+  * (ed5c5a) [authsaml2][saml] cleaning
+  * (b4f1f0) [idp] Don't display account management link with transient users
+  * (500c0b) [idp] Post forms to frontends for the profile mangement.
+  * (9d1afd) [authsaml2] Account management
+  * (120bea) [common] Handle idp_id parameter of LibertyFederation objects
+  * (7898c0) [auth2_ssl] cleaning and pep
+  * (e25c1a) [auth2_ssl] Account management
+  * (ff7de7) [Feature #271] : Make SSLAuth a good citizen of Authentic2 - cleaning
+  * (f14b59) [auth2_auth] Bugfix
+  * (e85361) [authentic2] Configure settings for the auth2_ssl application
+  * (3c83b4) [Feature #271]: Make SSLAuth a good citizen of Authentic2
+  * (3fefcc) [README.rst] add a Roadmap section
+  * (1fdc20) Merge branch 'idp-cas'
+  * (fdd839) [idp] add a CAS 1.0 and 2.0 IdP implementation
+  * (09af3a) [sslauth] pass the nonce parameter to the sslauth view
+  * (1e60b4) [auth2_auth] enlarge the nonce field in the AuthenticationEvent model
+  * (3bf5db) [auth2_auth] in normal login and OAth login, log the username not the
+    user id
+  * (2a59ac) Improve python packaging for release 1.9.1
+  * (0d1579) Remove README from idp_openid, append it to root README.rst file
+  * (864d14) Fix login forms div's id for OAth and SSL
+  * (725e23) Remove symlinks in media/ks
+  * (13b701) Remove symlinks in media/img
+  * (a91e17) Fix syntax error
+  * (389c78) [settings] remove django-debug-toolbar requirement, make south a
+    requirement
+  * (89fcc4) Add a script which tell version of library dependencies
+  * (5c0817) Move templates and manage.py into authentic2 module directory
+  * (303c5a) Move admin file into auth2_auth module directory
+  * (f85c9e) [README] add easy_install command lines, fix django-south module name
+  * (d06753) Change projet URL in setup.py
+  * (251a52) [README] add command line to install all python modules using pip
+  * (08ce13) [README] simplify the syncdb/migrate command lines
+  * (6ed8cc) [README] django south is required
+  * (011d45) [saml] in the POST form, check the relaystate fragment is not None
+  * (93c6fb) [authsaml][common] Manage authorization based on attributes with
+    signals
+  * (709bb4) [templates] Allow timed redirection on error page
+  * (a72727) [saml] authorization and policy management enhancements
+  * (8c321c) [authsaml2] Authorization enhancement and better policy management
+  * (126f9a) [idp openid] no more manage your openid identities page
+  * (b96f6b) [saml] track provider sources 3/3: change load-metadata into sync-
+    metadata
+  * (309a0d) [saml track provider sources 2/3: add a --source option to the load-
+    metadata management command
+  * (43d7eb) [saml] track provider sources 1/3 : add new federation_source field to
+    LibertyProvider
+  * (f07bd7) [core] integrate the South db migration library
+  * (5a52f7) Add auth2 prefix to all authentication applications
+  * (ea22d9) Add auth2 prefix to all authentication applications
+  * (1ab5db) Remove django_openid_provider module
+  * (5fa2d5) [authsaml2] fix bad path for symbol get_idp_list_sorted
+  * (6ce403) [media] add the openid logo
+  * (2d6274) [templates] explain in the ssl template that authentic2 support sel-
+    asserted certificates
+  * (a3142c) [auth] prefers relative URLs for redirects
+  * (66083d) [auth] allows to delegate context building to the frontend class
+  * (e77d4b) [idp openid views] add more logging
+  * (689dbf) [saml] improve PickledObjectField to be dumped to JSON
+  * (a29460) [settings] configure loggers
+  * (6ce276) [auth] add templatetags for fully urlencoding a string (even slashes)
+  * (a276ab) [idp openid] add template for the discovery page
+  * (98a5fb) [auth openid] in the user consent page separate required and optional
+    attributes
+  * (353d9f) [idp] remove logging framework initialization
+  * (f84b1d) [authsaml2] add a get_context method to the frontend class
+  * (f0e395) [auth] plug the oath login template in the frontend class
+  * (a4b314) [auth] add an OATH specific login template
+  * (b3a4a1) [idp openid] improve interoperability with http://test-id.org
+  * (a9eaed) [idp openid] cleaned_data is not a dict
+  * (c31f2c) [idp openid] fix decide template, fix template path
+  * (141d4b) [idp openid] fix the decide page
+  * (800196) [idp openid] add missing models import
+  * (9b490f) [auth views] if already logged but a POST is being sent, keep going
+  * (10d3ba) [idp openid] add OpenIDStore implementation based on Django models
+  * (79f1f4) [idp openid] add middlewre which announce our XRDS file
+  * (10ccd3) [settings] remove the IDPOI_PATH setting, replace
+    authentic2.django_openid_provider by authentic2.idp.openid
+  * (c5e07a) [urls] include urls patterns from the idp.openid module
+  * (4d0b6b) [idp openid] simplify openid provider, only support directed identity,
+    add attribute selection to consent page
+  * (09ec76) [idp openid] remove the server template
+  * (540e87) [idp openid] add method to convert openid response to django response
+    to utils
+  * (798322) [idp openid] remove OpenID model, anchor TrustedRoot to user id, not
+    user object
+  * (2ae8f4) [idp openid] update models registration in admin site
+  * (9d364d) [auth views] in login() if nonce is not None, show the login forms
+  * (25fb60) [auth views] add a custom redirect to login page
+  * (926b18) [authsaml2] add a cancel button
+  * (b9f9f3) [templates] add openid meta declaration to the base template
+  * (6b634d) [idp views] remove unused imports
+  * (f79c48) [idp openid] add template tag to display html meta header to link to
+    the xrds file
+  * (fcf5ab) [idp openid] improve PEP8-ness
+  * (baaf24) [idp openid] add an OpenIDStore using the Django ORM
+  * (8a0ee5) [idp openid] import of the django_openid_provider projet code
+  * (89c98d) [auth totp] only show totp profile options for real users
+  * (387a42) [authsaml2] Do not display to users the error details
+  * (8bfc87) [authsaml2] Record in the django session - remove extra code
+  * (caae62) [authsaml2] Better register the request id in the extended session
+  * (445ac3) [authsaml2] Better manage django session extension
+  * (198df9) [authsaml2] Fix null model attributes
+  * (4d9789) [authsaml2] Remove endlines
+  * (6f340f) [authsaml2] More logs
+  * (6ad49b) [authsaml2] Breaking lines...
+  * (07394e) [authsaml2] Breaking lines continue...
+  * (0198c3) [authsaml2] Clean the code
+  * (04548c) [authsaml2] Generic next parameter.
+  * (ba301a) [saml] Logger in parameter to error page function
+  * (a0757a) [authsaml2] Manage federation
+  * (23b79e) [authsaml2] Bugfixes
+  * (328393) [authsaml2] Add option for account management with transient nameID.
+  * (f8ec45) [templates] Missing jquery script
+  * (6821ce) [authsaml2] Check attribute values before log in.
+  * (efb4b5) [idp saml2] fix typo
+  * (e49f86) [django_openid_provider] fix typo
+  * (9cddca) [django_openid_provider] simplify format checking of new openid
+    identifiers
+  * (811ebc) [django_openid_provider] for HTTPS checking just lookup the variable
+    name in the environment
+  * (42f9bd) [django_openid_provider views] fix undefined variable in match
+  * (7cf7bb) [django_openid_provider] remove useless code
+  * (641095) [django_openid_provider] copy get_base_uri implementation from old
+    version of django_openid_provider
+  * (74de7f) [django_openid_provider] copy django_response implementation from old
+    version of django_openid_provider
+  * (372fc1) [authsaml2] remove user logged case in the assertion consumer
+  * (1805d8) [saml] improve load-metadata command, shows whether we are creating a
+    provider record or updating it
+
+ -- eobuilder <eobuilder@entrouvert.com>  Thu, 03 Mar 2011 18:14:14 +0100
+
+authentic2 (1.9.0-1~eob70+1) eobuilder; urgency=low
+
+  * (047028) Add file from included external dependencies to MANIFEST.in
+  * (8d0ee2) Remove reference to ID-FF 1.2 from the README
+  * (7665fc) [vendor totp_js] update from upstream
+  * (f170cf) Add a script to control content of the built distribution tarballs
+  * (606899) Distribute authentic2/locale not locale
+  * (cbe9c7) Add MANIGEST to .gitignore
+  * (bea866) Add javascript files from the totp_js package
+  * (0254cc) Move LDAP use instructions to the main README file
+  * (64cac4) [idp saml2] add support for the LDAP backend as a login/password
+    authentication
+  * (8e8c8f) [authsaml2] fix typo
+  * (756c3d) Fix badly placed end of list marker
+  * (d17dcf) Add README explaining how to use LDAP with authentic
+  * (5d39f2) [authsaml2] keep the issuer and nameid inside a specially named
+    attribute
+  * (9a0b00) [saml] do not check sys.argv but the args processed by django
+  * (526144) [homepage] remove unused template parameters
+  * (ec44a0) [django_openid_provider] fix bad module path
+  * (297b5f) [saml] make default NameID format be None
+  * (f0e4a8) [authsaml2] make authentication the django way
+  * (384e69) [saml management] move commit() to top level to commit also when
+    loading an unique provider
+  * (609b27) [authsaml2] add model to represent user authenticated through a
+    transient NameID
+  * (feee61) [saml] make add_federation accept a simple NameID object
+  * (4f91e5) [authsaml2] remove the need for the SAML2_BACKEND setting
+  * (b6a9f1) [auth] remove ULX modifications from main template
+  * (097206) [saml] accelerate metadata bulk loading by only committing when
+    finished
+  * (f2cbb6) [saml management] remove debugging statement
+  * (caac70) [authsaml2] make federation termination take an URL parameter
+  * (840ff1) [authsaml2] rectify url dispatch file
+  * (a63e6d) [auth openid] remove useless auth openid middleware
+  * (f95230) [saml] improve retrieving of the IdP to use only one SQL query
+  * (71bafc) [authsaml2] cache the idp_list inside the frontend object to limit SQL
+    requests
+  * (97cbdf) [authsaml2] directly use the sso endpoint, remove selectProvider, use
+    URL parameters and true forms
+  * (8960bb) [auth] does not pass list of idp to basic login template
+  * (b58086) [auth] Handle authsaml2 changes on templates and urls.
+  * (71e90f) [authsaml2] Clean templates and remove unecessary selectProvider
+    function.
+  * (7cd7e7) [authsaml2] fix wrong field and variable names in commit 4265999a88ce
+  * (426599) [authsaml2] extract attributes from assertions, compact values as
+    string containing XML content
+  * (eee275) [authsaml2] add missing argument sp_or_idp to all call to load_provider
+  * (7f7b4e) [authsaml2] change header of log messages in POST AssertionConsumer
+  * (e5e9e6) Updated setup.py.
+  * (0ff414) [authsaml2] Unchanged logout signals.
+  * (03add8) [authsaml2] Modify login and logout signals.
+  * (b084e3) [saml common] bugfix syntax error
+  * (43145b) [saml common] make get_http_binding more resilient
+  * (0172ef) [authsaml2] fix typo
+  * (775d36) [authsaml2] Activate signals on login.
+  * (be4109) [authsaml2] load remote provider as an idp in singleSignOnArtifact
+  * (0155a2) [idp saml2] authorize POST binding for SingleSignOnService
+  * (8ee471) [authsaml2] obey ordering of service endpoint when choosing the SSO
+    service binding
+  * (5cd0c6) [authsaml2] in singleSignOnArtifact add support GET and POST HTTP verbs
+  * (08e812) [authsaml2] Bugfix: syntax error.
+  * (b89c97) [authsaml2] A bit of comments about how the SSO is handled.
+  * (0c873e) Merge branch 'master' of repos.entrouvert.org:authentic
+  * (1d9d36) [idp selection] Modify integration of the ULX mockup.
+  * (8d8492) [saml] updated get_idp_list to always return a list
+  * (5a7a77) [authsaml2] fix name of the field for the SAML artifact
+  * (337414) [authsaml2] in singleSignOnArtifact find the provider to load using the
+    SAMLArtifact
+  * (7e6720) Update the makefile target to upgrade db schemas
+  * (cad09f) [saml] add entity_id_sha1 to displayed fields
+  * (945856) [saml] add method to query providers by artifact
+  * (a4ddfa) [authsaml2] add support for POSTed AuthnRequest in the main SSO code
+    path
+  * (d9c10f) [authsaml2] remove debugging statement
+  * (1e2891) [authsaml2] does not load all providers, catch ProviderNotFound
+    exception then use load_provider
+  * (d4f4bb) [authsaml2] restore reseting of the spNameQualifier to work-around bug
+    in lasso
+  * (8c6f56) [authsaml2] fix querying of the db in setAuthnrequestOptions
+  * (955c23) [utils] a memoize with timeout decorator
+  * (16b85f) [saml] simplify signature of saml.common.retrieve_metadata_and_create
+  * (a717f0) [settings] remove authsaml2 context processor
+  * (3858e6) [saml] fix missing RequestContext in return_(saml2/idff12) family of
+    methods
+  * (0cc292) [authsaml2] remove the context processor
+  * (08d76c) Merge branch 'master' of git@dev.entrouvert.org:authentic
+  * (4db696) [saml] in load-metadata command only load services supporting SAMLv2
+  * (43148a) Merge branch 'master' of repos.entrouvert.org:authentic
+  * (36a9ea) [authsaml2] Sort list of IdP.
+  * (7d99ca) [saml] lookup display name and name when loading service in bulk
+  * (ecf608) [load-metadata] Correct organization node parsing.
+  * (c1e8be) [ULX mockup] Active zone better centered
+  * (4c1bd2) [load-metadata] Make it more verbose.
+  * (bc0318) [load-metadata] Make it more verbose.
+  * (0d62b0) [Authsaml2] IdP selection enhanced
+  * (c75294) [authsaml2] Add ULX mockup for SAML2 IdP selection.
+  * (71bc66) Modify function to set authn request options
+  * (77ebf9) [authsaml2] Function to set authn request configuration.
+  * (2a3316) [authsaml2] Add support of identity provider configuration policies.
+  * (8f548d) [saml] for load-metadata command set the name from the OrganizationName
+  * (050605) [saml] add a load-metadata command
+  * (ac40df) Do not return None when multiple service providers objects are existing
+  * (a0ac9a) [saml common] fix iso8601_to_datetime
+  * (06500c) [authsaml2] improve check of time limits on received assertions
+  * (226c64) [saml common] add function iso8601_to_datetime
+  * (561a1f) [authsaml2] remove debugging statements
+  * (a23063) [authsaml2] use constants from lasso instead of magic constants
+  * (d39b42) [authsaml2] complete use of saml.common.load_provider
+  * (29e89a) [saml common] encode metadata to utf8 before giving them to lasso
+  * (d5bcd6) [authsaml2] use a specific logger, log error when calling an artifact
+    resolver
+  * (6eb318) [authsaml2] use load_provider in sso
+  * (3cac91) [authsaml2] add docstring to sso
+  * (192404) [saml] change the signature of load_provider
+  * (941ae2) [oath] log exceptions from the oath library
+  * (95cad3) [saml common] use settings.SAML_PRIVATE_KEY in when building the
+    lasso.Server
+  * (6fdd83) [authsaml2] in saml2_endpoints use get_saml2_post_response
+  * (daac11) [authsaml2] make is_passive and force_authn parameters of the sso view
+  * (a6e02f) [saml] add get_saml2_post_response
+  * (a6897d) [saml2utils] fix generic KeyDescriptor
+  * (994e73) [saml2] change signing_key for key which does signing and encryption
+  * (c06dee) [saml2] add a default certificate and aSAML_SIGNING_KEY setting
+  * (af61d9) [authsaml2] Add the support to the default service provider policy.
+  * (b347b2) [authsaml2] Better options management for the IdP configuration of the
+    service provider.
+  * (906400) [saml] Add options on nameId Policy to the Liberty identity providers
+  * (075190) [authsaml2] Shibboleth testings
+  * (1db353) [authsaml2] Shibboleth tests.
+  * (5fca86) Merge branch 'master' of repos.entrouvert.org:authentic
+  * (5fd319) [authsaml2] Shibboleth testing
+  * (589dc9) Merge branch 'oath'
+  * (7bd184) [authsaml2] move template to auth/saml2 subdirectory
+  * (039a69) [authsaml2] remove unused import
+  * (242303) [locale] update translations
+  * (73dced) [auth] add new authentication method based on OTP scheme by the OATH
+    project
+  * (da0d8e) [vendor] add copy of totp-js and oath modules
+  * (cc24b5) [auth] in login/password auth frontend user get_user_id() instead of
+    get_user() from Login form
+  * (23e85d) [auth] add profile view to login/password auth frontend
+  * (27ddf9) [settings] add openid auth as a django application
+  * (16ee1c) [auth openid] add account management page for OpenID auth mechanism
+  * (35d184) [idp logout] Remove redundant message from logout page template
+  * (99ad31) [idp] move logout link to right of currently logged user status
+  * (224c16) [idp] add an account management page
+  * (e6225e) [auth] change backend for frontend
+  * (8310f5) utf8 encode unicode strings passed to lasso
+  * (2192bf) [authsaml2] Deal with empty public key field, lasso accept None, not
+    empty string.
+  * (5f8d91) [idp] Remove remaining calls to signals.
+  * (d6c60c) Fix wrong import of settings
+  * (648f3e) Move openid identities to the /o8 subpath
+  * (e83b42) [auth] remove flash when activating jquery tabs
+  * (38266c) [auth] fix memorization of the last selected tab
+  * (23576f) Initialize new sub-module for vendor modules
+  * (d3812b) [auth] remember the selected tabs in a cookie
+  * (877576) [idp saml2] do not quote the argument to idp_sso and idp_slo
+  * (2cd77d) [authsaml2] add missing import
+  * (90f646) [authsaml2] add missing import
+  * (ee0536) [authsaml2] fix typo
+  * (37b5e4) [auth] do not switch tabs when mouse is over
+  * (dc8262) [auth] add new method to authentication frontend protocol
+  * (f7f810) [auth] fix empty list bug, generator cannot be iterated two times
+  * (a10b6f) [auth] add code to only enabled SAML 2 authentication frontend when an
+    idp is available
+  * (b1d9bb) [auth views] remove debugging print
+  * (a20191) [auth] add frontend class for SAML 2.0
+  * (974beb) [auth] add frontend for SSL authentication
+  * (5e804a) [auth] make authentication forms modular, use jquery tabs
+  * (1366c0) Change error message for invalidity in registration form's username
+    field
+  * (f1e4f2) Adjust redirect view to handle local redirect
+  * (32979b) replace error 500 view to support context processors
+  * (8abe36) remove debugging print
+  * (f8fb9d) [auth&sslauth] add support of nonce field to sslauth
+  * (7395c5) [theme] add styling for error user messages
+  * (bfe487) [templates] remove double output of errors on login page
+  * (190861) [sslauth] improve login_ssl view
+  * (e34914) [sslauth models] allows blank subject in ClientCertificate
+  * (d57ace) [sslauth] prefer logging to exception in the SSLAuthBackend
+  * (4b0b5a) [templates] add missing activation_comnplete.html
+  * (06cbd7) [auth openid] quit the popup when showing a registration page
+  * (70a21b) Make the popup mode for OpenID optional
+  * (70fd5f) [django_openid_provider] fix syntax error
+  * (a000b4) OpenID popup
+  * (123d6a) add a redirect view able to escape from iframe popup
+  * (6036ee) [idp] Remove link from homepage for defederation (not yet implemented).
+  * (3f7998) [authsaml2] Bad correction intoduced in the last commit.
+  * (ef8799) [idp] [auth_ssl] Update of notes on SSL deployment.
+  * (542e95) [idp] [auth_ssl] Add messages on failed login.
+  * (a6f3ba) [authsaml2] Return instruction forgotten.
+  * (d39920) [saml] add a back link to the generic error page
+  * (eab029) [idp] [auth_ssl] Notes waiting for a documentation.
+  * (624a00) [idp] [auth_ssl]
+  * (15872c) [idp] [auth_ssl] Redirect on SP after SSL successful authentication.
+  * (1e392c) [idp] [auth_ssl] Add support of the X509 authn context.
+  * (f831fb) [authsaml2] Handle error with a failed SOAP call which does not raise
+    an exception.
+  * (b2a21f) [authsaml2]
+  * (9318fc) [auth_ssl] Return error page with correct parameters.
+  * (62dfb4) [auth_ssl]
+  * (6d0471) [wsgi] Set path in settings to db and log file to make Authentic run
+    with wsgi.
+  * (620c4a) [idp] Update to the last commit.
+  * (30764f) Remove unused authentic2.core package
+  * (fb138f) Creat auth application, move openid consumer inside
+  * (1a4952) [authsaml2] move authsaml2_login_page context processor in authsaml2
+    package
+  * (b14b7e) [idp saml2] fix removal of sessions during SP intiated logout for the
+    requesting provider
+  * (8341b4) [idp] in logout views, extract next argument in all cases
+  * (185585) [authSAML2] Add signals module support.
+  * (6c667f) [authsaml2]
+  * (94c045) [idp] [saml]
+  * (06f886) [idp] [common] Remove bad update for session dump deletion.
+  * (9e8fa9) [saml] add metadata autoloading for service providers
+  * (f20c35) [templates] fix error.html template
+  * (9d9d90) Add commands through a makefile to facilitate model modification
+  * (30e227) [saml admin] limit metadata files textarea width
+  * (6f4def) Extract organization name from metadata, use it to initialize provider
+    name
+  * (68de74) [saml] fix syntax error introduced in last commit
+  * (0deba8) Adapt to new column type for LibertyProvider.metadata field
+  * (30c008) [saml] modify file fields to store data inside the db
+  * (051997) [idp][common]
+  * (9ec6e3) [idp][saml] Catch exception of buildResponseMsg() in SLO Redirect SP
+    initiated.
+  * (4d322e) [authsaml2] Handle of new precise notBefore, notOnOrAfter parameters.
+  * (a18032) [idp][saml]
+  * (2d61f7) [idp] Correct bug raised with empty login form fields.
+  * (2135e7) [AuthSAML2] A bit of forgotten readme.
+  * (fdd110) Complete MANIFEST.in with database files for test and packages datas
+  * (541d65) Simplify setup.py by using only distutils
+  * (67231c) [idp saml2] restore normal behaviour when idp_slo fails
+  * (802d73) Remove ez_setup.py since I do not know what it is for
+  * (1f830a) Restore DEBUG = True in settings.py
+  * (360fdd) [idp] create an admin user when initializing the database
+  * (35a32e) Change global package name for authentic2
+  * (f81d56) [media] add icon from silk theme, they are un CC Attribution 2.5
+    Licence
+  * (0c6e3a) [idp saml2] add logout endpoints
+  * (ccad27) [idp views] make redirection timeout on logout page customizable
+  * (edf700) [idp templates] logout fragment are safe HTML strings
+  * (dab481) [urls] use full module path, without it reverse() does not work
+  * (6cc16a) [idp saml] add temporary single SP logout links
+  * (731447) [idp saml] add logout page generation code for SAML backend
+  * (379458) [saml common] add a soap fault view
+  * (ff66c9) [saml common] add status code for missing Destination node and internal
+    server error
+  * (9b536d) [idp] add midleware to print exception to the console when DEBUG is
+    true
+  * (90f10a) [idp saml2] logout first part
+  * (e5c74f) [saml common] fix set_saml2_response_responder_status_code
+  * (dd5f33) [saml common] move error_page to saml.common from authsaml2.utils
+  * (6f22ff) [idp saml2] move log_authn_request in the helper section
+  * (8725ef) [idp saml2] factorize liberty session creation and assertion logging
+    into new method
+  * (273da7) [idp saml2] add support for ssl backend with authentication events in
+    build_assertion
+  * (62acd3) [idp saml2] make authncontext generation customizable (by session, or
+    by authentication event)
+  * (9b73b8) [idp saml2] make delta for notOnOrAfter and notBefore customizable
+  * (e66e2a) [idp saml2] assert unreachable code path in fill_assertion
+  * (7cc1b9) [idp saml] declare the idp backend as supporting synchronous logout
+    (SOAP)
+  * (8f11ac) [saml common] add a method to send SOAP request from profiles
+  * (6deba8) [saml common] add authentic specific SAMLv2 status codes
+  * (dc3396) [saml common] add method to only get message for asynchronous bindings
+  * (02d54b) [saml common] use get_soap_message in get_saml2_soap_request
+  * (2e9a9a) [idp samlv2] when building assertion, persist session, federation and
+    assertion into persistent storage
+  * (1a85e6) [saml models] complete session models for supporting SAMLv2 logout
+  * (0bfdf9) [saml models] use unused argument in metadata_field
+  * (e1d418) [idp saml2] fix create_server
+  * (50fdb5) [idp saml2] remove print 'coin'
+  * (3d7825) [saml common] make get_saml2_metadata takes a map arguement instead of
+    hardcoding it
+  * (f54e0d) [idp views] add method to redirect to logout page
+  * (f3d864) [idp] install a minimal log handler to log to output if no handler is
+    present
+  * (4424b1) [authsaml2] PEP8 reordering of imports
+  * (5a69c1) [idp saml] conserver also the nidformat when redirecting to the logging
+    page
+  * (dc2676) [idp saml] add method to kill django sessions
+  * (22a1a3) [nosetests] Fix password in test_00 file.
+  * (d6dd78) [nosetests] Fix import error.
+  * (bbf5ca) [nosetests] Avoid duplication of settings by overridding DATABASES.
+  * (80786d) [nosetests] Add some basics for integration testing.
+  * (2e7c3d) [idp] add a logout framework
+  * (52a7c5) Remove service list registry, instead use an IDP_BACKENDS list in
+    settings
+  * (9e5bbc) [idp saml2] mark slo as unimplemented using an exception
+  * (47ade0) [idp saml2] add idp initiated sso
+  * (4ac8d8) [idp saml2] log details about POST or redirect to the sp
+    assertionConsumer
+  * (96b25f) [idp saml] quote the slash characters when passing provider id to idp
+    sso
+  * (b1f74e) [idp saml2] support policies on name id format for service providers
+  * (09e0a8) [saml common] add simple function to SAMLv2 error status
+  * (1f174d) [saml models] add accepted_name_id_format for LibertyServiceProvider
+  * (c8567e) [saml models] reduce length of default_name_id_format column in
+    LibertyServiceProvider
+  * (a9e8b6) [saml models] add choice to user default from metadata, in
+    default_name_id_format field for service providers
+  * (f48b48) [saml fields] add multiple choice field type
+  * (8a088c) [saml models] move name id formats into a constant
+  * (bc2e77) [saml] add a fields module, move PickleField there
+  * (dbe0b3) [authsaml2] Restrict user interface to manage a unique SSO session.
+  * (24e863) [idp] Fix some typos
+  * (5839cb) [idp] return an (empty) list when adding "admin" as a service, if not
+    staff
+  * (1bee55) [authsaml2] Better error and log management.
+  * (e8f8f3) [idp saml] add working artifact and post sso for samlv2
+  * (4f54dd) [saml common] rewrite session/identity dump loading and saving
+  * (b2377f) [saml admin] add KeyValue to admin panel
+  * (92c1e3) [saml models] make key the representable value for KeyValue object
+  * (f52858) [saml models] add a pickled object field
+  * (cb5cbc) [saml] remove duplicate get_soap_message
+  * (11e152) [saml saml2utils] improve support for indexed endpoints
+  * (693c3b) [saml] add artifact resolver to idp metadata file
+  * (fe66b6) [saml] fix support for the POST binding
+  * (6a75f6) [saml models] add a creation date to LibertyArtifact objects
+  * (5c87ed) [templates] adapt login template to id -> class transition
+  * (6afb1b) [locale] updated translation talking about "your" account
+  * (e9d8ac) [templates] remove extraneous line breaks
+  * (1b9e11) [templates] simplifying markup
+  * (9bb275) [media] position the "you are logged as foobar" at right, just after
+    the header
+  * (a122cc) [templates] make the header clickable, and remove the breadcrumbs
+  * (caaad3) [templates] Improve OpenId text
+  * (07a6f9) [templates] replaced fieldset legend by proper titles in openid
+    templates
+  * (67f860) [media] style main titles
+  * (bb65bf) [templates] uniformed usage of h2 for titles in main content
+  * (bd66af) [templates] use a span instead of h2 in header subtitle
+  * (90ddbb) [media] extra image for CSS decorations
+  * (8d7ba8) [templates] move javascript snippets to the blocks where they are used
+  * (409cfb) [template] do not include "Services" section if there are none
+  * (0e6c9e) [locale] Fixed a translated string to also begin with a newline
+  * (9f168e) [saml] Add on identity provider model options on authnrequests.
+  * (524ad2) [idp] add admin page link to service list for staff users
+  * (606f46) [idp] Debugging saml 2.0 sso and beginning of the slo
+  * (0f54eb) [idp] add __unicode__ method to AuthenticationEvent, add date browsing
+    in Admin view
+  * (27d983) [idp] make nonce field optional in login form
+  * (3a3737) [idp] overload default AuthenticationForm to add a nonce field
+  * (05cdab) [idp] add an AuthenticationEvent model
+  * (8f728b) [locale] Do not construct sentences
+  * (2e73ad) [locale] More of French translation, ignoring 3rdparty/ and .git/
+  * (a6c0aa) [locale] a little bit of French translation
+  * (e80707) Do not pass logged messages through gettext
+  * (e03930) [idp] add consent page to idp urls.py
+  * (a1627d) [idp saml] add common file
+  * (df333a) [idp saml] advance on saml2 sso support
+  * (03d142) [authsaml2] fixed a few gettext calls
+  * (e901d2) [template] translate "You are authenticated as..."
+  * (61199e) [media] insure some margin after the breadcrumb
+  * (de5423) [authsaml2] Add support of Redirect federation termination IdP
+    initiated.
+  * (b33412) [authsaml2]
+  * (db30f2) [media] slightly smaller breadcrumb, and a bit closer to the top header
+  * (dac81e) [media] indent css using tabs
+  * (0ec80f) Remove unnecessary forced line breaks after breadcrumb
+  * (7c1f3e) Fixed capitalisation of Home breadcrumb link
+  * (ad5006) Don't add extraneous non breaking spaces in breadcrumbs
+  * (b8fc54) [saml] add user_consent field to model LibertyServiceProvider
+  * (ff77bb) [idp saml] factorize consent ui page
+  * (48dbb1) [saml] Fix saml2 IdP metadata creation
+  * (5c33e0) [authsaml2] Add support of SOAP and Redirect federation termination SP
+    initiated.
+  * (ce602d) [authsaml2] Adding support of SLO IdP initiated SOAP and Redirect
+  * (ccb0aa) Import LibertyServiceProvider only as needed
+  * (7b2c8c) Allow LOG_FILENAME to be empty
+  * (3a9bf5) [authsaml2] Fix mistakes
+  * (e1b6ac) [authsaml2] Cleaning
+  * (344c01) [authsaml2] Add SSO IdP initiated support
+  * (16cec4) [authsaml2] Add support for service provider binding requirements.
+  * (708609) [saml] Add support for service provider binding and http method
+    requirements
+  * (248495) Remove registration signals, enable OpenID authentification and add
+    dependencies in setup.py
+  * (fd9d15) [SAML tools] Fix comment in model for LibertyServiceProvider
+  * (cf7401) converting line endings to UNIX format
+  * (8cf264) Add details about origin of breadcrumbs.py
+  * (3e62d9) Revert "[idp] Improve template by adding a button to go back to the
+    home"
+  * (900849) [authsaml2] Clean admin - Comments
+  * (0a77b5) [auth-openid] Fix when OpenID is not supported.
+  * (51b9cb) [authsaml2] Bug fix
+  * (9744e1) [authopenid] Fix a template bug in the footer
+  * (d27da6) [openid_provider] Exclude some word word from the openid identifier
+  * (2c97d6) [idp] Adding a breadcrumb
+  * (cb1858) [idp] Improve template by adding a button to go back to the home
+  * (e81f9c) [openid_provider] Fix the OpenID resolution
+  * (d98600) [authopenid] Put a proper title
+  * (281883) [authopenid] Fix template for associate an OpenID account
+  * (5b69ee) [openid_provider] Correct the regex for serving xrds file
+  * (5ce1e8) [openid_provider] Improve template to manage openid account
+  * (cfd524) [openid_provider] Adding the login_required decorator
+  * (d51da3) [openid_provider] Improving template for the OpenID account creation
+  * (80d7af) [openid_provider] Improving the page in the end point location
+    (/openid)
+  * (d9a136) [authopenid] Dissociate an openid account from the authentic account
+  * (c8ff94) [authopenid] Improving the feature to associate an openid
+  * (e45395) [openid_provider] Improving templating to manage openid account
+  * (952be1) [authopenid] Correct change password to properly set password
+  * (6849f4) [openid_provider] Changing the path for the openid account
+  * (470266) [openid_provider] Correcting the signal to create an openid account
+    when registered
+  * (b710a7) [idp] Session expire at browser close or after 10h
+  * (12aaf1) [openid_provider] Fix the addopendid bug and improve template for
+    manageid page
+  * (3f2460) Merge branch 'master' of
+    git+ssh://dev.entrouvert.org:10322/var/git/authentic
+  * (e5ffb2) [authopenid] Fixes issue 179 "No error message when register with
+    OpenID"
+  * (39a1e5) [authopenid] Fixes issue 179 "No error message when register with
+    OpenID"
+  * (8ce82c) Merge branch 'master' of
+    git+ssh://dev.entrouvert.org:10322/var/git/authentic
+  * (71a359) Fixes bug #178 "Log out don't redirect to the homepage"
+  * (085854) Fixes bug #178 "Log out don't redirect to the homepage"
+  * (2422bf) Fix Bug #172 "Remove "change password" for openid account"
+  * (dac407) [authopenid] Remove Technorati from the openid list
+  * (02cf96) [authopenid] Fix the js to login with an Flickr openid
+  * (710aea) Add title for these different templates
+  * (5a45b4) [authopenid] Increase the size of the inputbox on the OpenID signin
+    page
+  * (b74f8b) [authopenid] Fix the js to login with an AOL openid
+  * (fcf2a0) [authopenid] Fix the js to login with an yahoo openid
+  * (bbbc9a) [openid_provider] Support the PAPE extension max_auth_age
+  * (b23fc5) [authopenid] Add the required js/css/images for OpenID support
+  * (fef263) [openid_provider] Fix the creation of an openid
+  * (4b98f2) Merge branch 'master' of
+    git+ssh://dev.entrouvert.org:10322/var/git/authentic
+  * (f96300) [openid_provider] Fix error message return to relying party
+  * (cf4d64) [openid_provider] Fix the OpenID Provider validation of the return to
+  * (fbcdd9) [openid_provider] Fix the OpenID Provider validation of the return to
+  * (eb6072) [openid-provider] Reject no-encryption association sessions over http
+  * (78f548) [authopenid] Fix a KeyError which can appear during a openid log in
+  * (caa851) [authopenid] Fix CSRF error
+  * (b3aeef) [openid-provider] Use the css with the templates
+  * (fa5003) [openid-provider] Fix a template error and improve some template
+  * (8986f2) [openid-provider] Adding a page to manage trustroot
+  * (f43738) [openid-provider] Adding a page to manage identities
+  * (0ff4af) [openid-provider] Create an openid url for the new user register
+  * (08d20b) [openid-provider] Adding the application to provider an openid provider
+  * (8966a8) [Authentic] Import an exception that can be throw during the discover
+    phase
+  * (e4b989) [Logger] Improve the sentence for the log
+  * (35cfbc) [Authentic] Loggin for signin with OpenID
+  * (478198) [Authentic] Add a signal for login with OpenID
+  * (29a6c7) [saml] Remove prints on stderr
+  * (ae1f2a) [Authentic] Add service provider part relying on AuthSAML2
+  * (dcd4a9) [saml] Add of common saml functions
+  * (c02268) [AuthSAML2] Add AuthSAML2 Application to project
+  * (6783e6) Correct the Error: "No module named admin_log_view.models" by adding
+    the
+  * (243947) Add a link in the default page to associate the account with an OpenID
+  * (861e6b) Review the view of the loggin to reverse logs and put in bold error
+  * (0de634) Add middleware to log request
+  * (076c78) move connections to signals in the idp module
+  * (69b0c5) Add auth_backend in idp, to add the possibility to log the logging
+  * (2fcccb) Add the module admin_log_view in the installed_apps
+  * (bdc6ae) Add the view for admin_log_view in the admin
+  * (469801) Add the model for the admin_log_view module, with function to
+  * (171c92) template for the admin_log_view module
+  * (f10dc0) Add the url and the settings for the loggin module
+  * (87b4b9) Handle of the session index for the service provider.
+  * (f190c9) Federation management functions
+  * (ef2432) Restore django.contrib.sites application
+  * (44b387) ID-FFv1.2 idp: add idp.saml.idff12_endpoints.idp_sso to initiate idp
+    sso
+  * (2d3cbf) SAML common: add possibility to load federation from another user
+  * (f67700) SAML common: change the way endpoints base path is computed
+  * (20333b) SAML common: fix return_idff12_{response,request}
+  * (09fe86) SAML common: make load_provider return the provider object, and load
+    provider for a specific role
+  * (3ac02d) SAML common: only show dump tables when debugging
+  * (07f764) SAML common: add a prefered protocol profile configuration to services
+    providers
+  * (1e2fd4) SAML idp: implement SAML listing of services on homepage
+  * (892e77) IDP: change homepage view
+  * (4b4b0c) IDP: add a simple service registry for showing on user homepage
+  * (5d857c) SAML common: add TODO and doc strings in models.py
+  * (82b9bd) SAML common: add enabled field to service and identity provider models
+  * (410469) ID-FFv1.2 idp: remove debugging print
+  * (3679c5) SAML common: add translation markers for UI strings
+  * (25e90c) ID-FFv1.2: start view function for idp initiated sso
+  * (9869bd) ID-FFv1.2: fix doc string for build_assertion
+  * (fd7f44) SAML common: change inline view for Identity and Service providers to
+    stacked
+  * (795f95) SAML common: move storage of metadata files into their own directory
+  * (88dc43) [saml] Remove references to constants only available in an unrelased
+    Lasso
+  * (54e5d6) [saml] don't fail on missing metadata file
+  * (ec584d) SAML common: in admin.py add inline views for Service and Identity
+    Provider to the main provider view
+  * (ad1ff4) SAML common: move {load/save}_{federation/session} to common module
+  * (1603bf) SAML common: make attribute maps optional for providers
+  * (e864c7) SAML common: add choices for attribute map format
+  * (e672e4) ID-FFv1.2 idp: use relative urls for redirects
+  * (8367b1) SAML common: re-add LibertySession, LibertyIdentityDump and
+    LibertyService Provider to admin
+  * (9769df) SAML common: make LibertyServiceProvider and LibertyIdentityProvider
+    one-to-one mapping of LibertyProvider
+  * (6a3c3d) SAML common: in models.py remove all editable = False constraints
+  * (4a4288) SAML common: add customization to LibertyProvider admin view
+  * (f25d10) SAML common: move models to saml standalone application
+  * (f0827b) [css] border on submit buttons
+  * (b18bce) [css] Do not alter location of all buttons, just the login one
+  * (057cf0) ID-FFv1.2 idp: prepare finish_artifact_resolve for the case of an
+    unfound artifact
+  * (ce7583) ID-FFv1.2 idp: fix bad target for call to processRequestMsg in
+    artifact_resolve
+  * (6c3af4) ID-FFv1.2 idp: QuerySet.get takes the same arguments as filter
+  * (9a8111) ID-FFv1.2 idp: add informational logging to artifact resolver
+  * (82138d) ID-FFv1.2 idp: load the provider referred by the artifact in the
+    artifact resolver
+  * (bd270d) SAML common: raise an exception if server construction fails
+  * (6bd1f9) SAML common: add missing import of HttpResponse
+  * (df8941) ID-FFv1.2 idp: implement artifact resolver for login requests
+  * (0ffa5e) ID-FFv1.2 idp: exemplt sso and soap from csrf protection
+  * (87224f) ID-FFv1.2 idp: in idff12_endpoints.sso for invalid message, return
+    explicit message with HTTP error
+  * (25a290) ID-FFv1.2 idp: replace HttpResponseForbidden by an AuthnResponse for
+    signature errors
+  * (d1eb40) ID-FFv1.2 idp: factorize idff12_endpoints.sso response returning in
+    finish_sso
+  * (58dc14) ID-FFv1.2 idp : add debug tracing of received message to
+    idff12_endpoints.sso
+  * (4bea66) ID-FFv1.2 idp: fix load_session
+  * (44150d) SAML common: factorize soap response returning
+  * (d8f644) User get instead of filter in idff12_endpoints.load_provider
+  * (a7dbc1) Add unique constraint to LibertyProvider.entity_id
+  * (2776b6) ID-FFv1.2 idp: allow to load and save another session than the current
+  * (50691d) Redirect some parent but non existing pages to the top
+  * (f666b2) Update OpenID templates to match the CSS classes used in other places
+  * (853eb4) Move OpenID stuff under /accounts/openid/
+  * (2ab085) Force a sans serif font
+  * (348cb5) Restore display of login errors on login page
+  * (ab77ab) Add an appropriate title to the OpenID signin page
+  * (18082a) Light arrangements to the OpenID signin layout
+  * (260b76) ID-FFv1.2 idp: start of soap endpoint and artifact resolver
+    implementation
+  * (5f1a3a) SAML common: add a get_soap_message method
+  * (ad1da2) ID-FFv1.2: remove explicit loading in sso and use load_provider instead
+  * (e4b0ce) ID-FFv1.2 idp: add a load_provider method
+  * (cb4617) Add wsgi script and apache configuration snippet to .deb
+  * (27b9b5) ID-FFv1.2 idp: remove debugging print
+  * (ee501a) First complete implementation of singleSignOn endpoint for ID-FFv1.2
+  * (c0b90e) Add SAMLv2 and ID-FFv1.2 helper methods, fix base url getter
+  * (1fee40) Make entity_id visible in model LibertyProvider
+  * (c873b8) SAML models: complete LibertyArtifact model for ID-FFv1.2
+  * (528b9b) SAML models: add lasso and identity dump records
+  * (529ae3) Add source attribution to theme
+  * (2d32cf) New theme, with a little more colour
+  * (13bfb8) Ignore vim swap files
+  * (5668b7) Remove vim swap file
+  * (d759ee) Moved openid icon files in a subdirectory
+  * (b3be06) Ship media gif and ico files
+  * (a9faef) SSL Support: Add comments.
+  * (661fb8) Merge branch 'master' of
+    ssh://dev.entrouvert.org:10322/var/git/authentic
+  * (a67b5d) SSL Support: Admin interface for models
+  * (305ed8) Add the required js/css/images for OpenID support
+  * (6638dd) Add a placeholder for additional javascripts
+  * (ce1131) Do not duplicate / in URL
+  * (bae8e6) Correct urls.py indentation
+  * (b8e981) Merge branch 'master' of
+    ssh://dev.entrouvert.org:10322/var/git/authentic
+  * (277e23) SSL Support: Better session and login management
+  * (7f72c0) A little bit of i18n love for the OpenID part
+  * (c19ac6) Newline at end of file
+  * (9008de) SSL Support: Display on login page if activated.
+  * (43f622) Update idp.saml urlpatterns to be more specific
+  * (5d056e) Start of the ID-FFv1.2 IdP endpoints
+  * (b7d967) Add ID-FFv1.2 methods for creating metadata files and Server objects
+  * (b58e59) Fix rename get_metadata -> get_saml2_metadata
+  * (312438) SAML Common: add ID-FF 1.2 bindings helper methods
+  * (1853b8) Add module to generate SAML 1.1 compatible metadata files
+  * (d74013) SAML2 Utils: improve NamespacedTreeBuilder, factorize KeyInfo
+    generation and int_to_b64
+  * (940315) Add a generic post form for liberty
+  * (ec67e9) SSL Support: Error page not reachable.
+  * (d9c57e) Don't overwrite accounts/ url scheme with OpenID
+  * (25c4b9) Remove trailing spaces
+  * (b97de9) Only add openid middleware/app if openid support is enabled
+  * (3ce99d) Remove reference to admin_log_view app
+  * (2a649a) Reput authentic.idp.saml instead of idp.liberty
+  * (d7e54a) SSL Support: Title of error page corrected.
+  * (a7878d) SSL Support: Error page when authentication has failed.
+  * (9920fb) SSL Support
+  * (eab472) Add template for django_authopenid
+  * (c6f663) Correct the url for openid and the installed_apps
+  * (5d90e2) Fixed the possibility to run without OpenID enabled
+  * (d244f3) Handle invalid msg in idp.saml.saml2_endpoints.sso
+  * (145a3d) Move saml2utils and x509utils to saml common module
+  * (baf5aa) Put OpenID and SAML configuration option before the local_settings
+    import
+  * (5a2269) Add settings for disabled OpenID auth and SAML idps
+  * (201136) Change import name for SAML IdP in urls.py
+  * (ce9678) Fix import SAML idp
+  * (d2ecc3) Add dependencies in the README
+  * (a5013a) Stop blocking redirection when the debug toolbar is enable
+  * (8daaa0) Change name of SAML idp directory
+  * (5f4a5f) SAMLv2: in utils fix long lines, remove trailing blanks
+  * (09fc66) Add SAMLv2 endpoints
+  * (78be2f) Add SAML common module
+  * (0ba4e4) SAMLv2: remove endpoints.py
+  * (e48742) IdP: add an urls.py file for the idp application
+  * (0d587b) SAMLv2: add liberty models to the admin pages
+  * (83283f) Add idp to mapped urls
+  * (c06845) SAMLv2: in saml2utils fix generation of IDP role descriptor
+  * (f22101) SAMLv2: validate metadata when adding a provider, extract the entityID
+  * (eb8966) Add util module to manipulate SAMLv2 metadata files
+  * (85983a) Add util module to manipulate keys
+  * (24cc22) Add endpoints for ID-FF 1.2
+  * (f82566) Revert "Add the module django-authopenid and his template"
+  * (5b4912) Add the url for use openid, and a link to login with openid
+  * (942fc3) Add the module django-authopenid and his template
+  * (2fe929) Merge input and textarea styles, force bg/fg colours
+  * (d8c643) Remove bullets from items in error lists
+  * (7b9a43) Autofocus the login form on the username field
+  * (51a837) Changed to light headers
+  * (ee89c0) Fixed i18n of texts on login page
+  * (b439d0) Include titles in some registration templates
+  * (0d8740) Ignore local_settings.py file
+  * (d7fbfe) Add error pages
+  * (b2d072) Some minimalistic design
+  * (a71c76) Remove always-on auth header; links moved to the homepage
+  * (6496f1) Require the user to be logged in to get to the index page
+  * (64d7fb) Move pages from registration to accounts/
+  * (79908f) Ignore authentic.egg-info, created by setup.py
+  * (4aef24) Initial debian packaging
+  * (7b5f02) Liberty: add a LibertyArtifact model
+  * (270075) Liberty: add __unicode__ methods to some models
+  * (4d9840) Liberty: change LibertyProvider.metadata_url to entity_id
+  * (f094dc) Add a setup.py installation/packaging script
+  * (8d7923) Add default name id format option to service provider model
+  * (e0f76d) Complete liberty model
+  * (d9353e) Change INSTALL to more like a general README file
+  * (3ac27f) Use reStructuredText syntax for "code" blocks
+  * (e41b94) Start a model for the liberty application
+  * (8b79f9) Specify character set
+  * (1d2019) Localisation and internationalisation framework
+  * (6365b3) Include, and style, a footer
+  * (928f07) Let registration pages set an appropriate <title>
+  * (77c6a4) A little bit of form styling
+  * (51f987) Some minimalistic styling
+  * (8ed0ca) Indent base.html template, and remove link to admin
+  * (9b72bb) Layout for media files, with an empty stylesheet at the moment
+  * (9add66) Remove instructional comments
+  * (9a564e) Remove unused database parameters from settings.py
+  * (b424fd) Get database from project directory, not current working directory
+  * (191c83) Basic implementation of the registration
+  * (bad962) Look for local_settings.py, for local settings changes
+  * (395863) Add support for the django debug toolbar
+  * (1408cc) Add .pyo and .db files in gitignore
+  * (f6e3cc) Customize administration base template to mention Authentic
+  * (ecd08f) Remove the sites application
+  * (142ae8) createsuperuser is not required, syncdb will ask for it
+  * (8e7b97) ignore .pyc files
+  * (bdb1fc) Add an INSTALL file
+  * (2f5e89) Add idp application and enable admin module
+  * (a32fcc) Set Sqlite3 database by default
+  * (8f846a) Add a COPYING file
+  * (d5899c) Initial import
+
+ -- eobuilder <eobuilder@entrouvert.com>  Thu, 06 Jan 2011 09:03:04 +0100
+

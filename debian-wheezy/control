@@ -1,0 +1,67 @@
+Source: authentic2
+Section: python
+Priority: optional
+Maintainer: Jerome Schneider <jschneider@entrouvert.com>
+Build-Depends-Indep: python-all-dev (>= 2.7)
+Build-Depends: debhelper (>= 8.0), python-setuptools, python-django (>= 1.5)
+Standards-Version: 3.8.3
+Homepage: http://authentic.labs.libre-entreprise.org
+X-Python-Version: >= 2.7
+
+Package: python-authentic2
+Architecture: all
+Pre-Depends: python-django (>= 1.5), python-django (<< 1.8), openssl
+Depends: ${misc:Depends}, ${python:Depends},
+    python-requests,
+    python-django-south (>= 1.0),
+    python-django-admin-tools(>=0.5.2),
+    python-lasso, python-dnspython,
+    python-gadjo, python-django-tables2, python-django-import-export
+Provides: ${python:Provides}
+Recommends: python-openid, python-ldap
+Suggests: python-raven
+Description: Versatile identity server
+ Authentic is a versatile identity provider aiming to address a broad
+ range of needs, from simple to complex setups; it has support for many
+ protocols and can bridge between them.
+ .
+ It has support for ID-FF and SAMLv2 thanks to Lasso, a free (GNU GPL)
+ implementation of the Liberty Alliance specifications.
+
+Package: authentic2
+Architecture: all
+Pre-Depends: python-django (>= 1.5), postgresql
+Depends: ${misc:Depends}, adduser,
+    python-authentic2 (= ${binary:Version}), python-psycopg2,
+    gunicorn, dbconfig-common,
+    debconf | debconf-2.0, ucf
+Recommends: postgresql-client
+Suggests: nginx
+Conflicts: authentic2-multitenant
+Description: Versatile identity server Python module
+ Authentic is a versatile identity provider aiming to address a broad
+ range of needs, from simple to complex setups; it has support for many
+ protocols and can bridge between them.
+ .
+ It has support for ID-FF and SAMLv2 thanks to Lasso, a free (GNU GPL)
+ implementation of the Liberty Alliance specifications.
+
+Package: authentic2-multitenant
+Architecture: all
+Pre-Depends: python-django (>= 1.7), postgresql
+Depends: ${misc:Depends}, adduser,
+    python-authentic2 (= ${binary:Version}), python-psycopg2,
+    python-django-tenant-schemas,
+    python-hobo,
+    gunicorn, dbconfig-common,
+    debconf | debconf-2.0, ucf
+Recommends: postgresql-client
+Suggests: nginx
+Conflicts: authentic2
+Description: Multitenant versatile identity server Python module
+ Authentic is a versatile identity provider aiming to address a broad
+ range of needs, from simple to complex setups; it has support for many
+ protocols and can bridge between them.
+ .
+ It has support for ID-FF and SAMLv2 thanks to Lasso, a free (GNU GPL)
+ implementation of the Liberty Alliance specifications.

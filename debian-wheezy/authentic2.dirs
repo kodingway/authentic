@@ -1,0 +1,9 @@
+etc/authentic2
+etc/authentic2/config.d
+usr/share/dbconfig-common/scripts/authentic2/install
+var/lib/authentic2/media
+var/lib/authentic2/static
+var/lib/authentic2/collectstatic
+var/lib/authentic2/templates
+var/run/authentic2
+var/log/authentic2
