@@ -12,7 +12,7 @@ from django.contrib.auth.hashers import check_password
 from django.test.utils import override_settings
 from django.contrib.auth import REDIRECT_FIELD_NAME
 
-from . import hashers, utils, models
+from . import hashers, utils, models, decorators
 
 def get_response_form(response, form='form'):
     contexts = list(response.context)
@@ -443,9 +443,9 @@ class RegistrationTests(TestCase):
         self.assertNotContains(response, 'John')
 
 
-
-
 class CacheTests(TestCase):
+    urls = 'authentic2.cache_tests_urls'
+
     def test_cache_decorator_base(self):
         import random
         from authentic2.decorators import CacheDecoratorBase
@@ -480,4 +480,10 @@ class CacheTests(TestCase):
         h = GlobalCache(timeout=0)(f)
         self.assertNotEquals(h(), h())
 
-
+    def test_django_cache(self):
+        client = Client()
+        response1 = client.get('/cache/', HTTP_HOST='cache1.example.com')
+        response2 = client.get('/cache/', HTTP_HOST='cache2.example.com')
+        response3 = client.get('/cache/', HTTP_HOST='cache1.example.com')
+        self.assertNotEqual(response1.content, response2.content)
+        self.assertEqual(response1.content, response3.content)

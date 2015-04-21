@@ -4,6 +4,7 @@ from functools import wraps
 from django.contrib.auth.decorators import login_required
 from django.views.debug import technical_404_response
 from django.http import Http404
+from django.core.cache import cache as django_cache
 
 from . import utils, app_settings, middleware
 from .utils import to_list, to_iter
@@ -170,9 +171,6 @@ class SimpleDictionnaryCacheMixin(object):
             del self.cache[key]
 
 class RequestCache(SimpleDictionnaryCacheMixin, CacheDecoratorBase):
-    def __init__(self, **kwargs):
-        super(RequestCache, self).__init__(**kwargs)
-
     @property
     def cache(self):
         request = middleware.StoreRequestMiddleware.get_request()
@@ -180,3 +178,15 @@ class RequestCache(SimpleDictionnaryCacheMixin, CacheDecoratorBase):
             return {}
         # create a cache dictionary on the request
         return request.__dict__.setdefault(self.__class__.__name__, {})
+
+class DjangoCache(SimpleDictionnaryCacheMixin, CacheDecoratorBase):
+    @property
+    def cache(self):
+        return django_cache
+
+    def set(self, key, value):
+        self.cache.set(key, value, timeout=self.timeout)
+
+    def delete(self, key, value):
+        if self.get(key) == value:
+            self.delete(key)
