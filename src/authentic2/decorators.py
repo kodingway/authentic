@@ -114,8 +114,9 @@ class CacheDecoratorBase(object):
             return cls(**kwargs)(args[0])
         return super(CacheDecoratorBase, cls).__new__(cls, *args, **kwargs)
 
-    def __init__(self, timeout=None):
+    def __init__(self, timeout=None, hostname_vary=True):
         self.timeout = timeout
+        self.hostname_vary = hostname_vary
 
     def set(self, key, value):
         raise NotImplementedError
@@ -143,6 +144,10 @@ class CacheDecoratorBase(object):
     def key(self, *args, **kwargs):
         '''Transform arguments to string and build a key from it'''
         parts = [str(id(self))] # add cache instance to the key
+        if self.hostname_vary:
+            request = middleware.StoreRequestMiddleware.get_request()
+            if request:
+                parts.append(request.get_host())
         for arg in args:
             parts.append(unicode(arg))
         for kw, arg in sorted(kwargs.iteritems(), key=lambda x: x[0]):
