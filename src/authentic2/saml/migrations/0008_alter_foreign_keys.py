@@ -14,12 +14,12 @@ def alter_foreign_keys(apps, schema_editor):
         lp = LibertyProvider.objects.get(old_id=sp.liberty_provider)
         LibertyServiceProvider.objects \
             .filter(liberty_provider=sp.liberty_provider) \
-            .update(liberty_provider=lp.service_ptr_id)
+            .update(new_liberty_provider=lp.service_ptr_id)
     for idp in LibertyIdentityProvider.objects.all():
         lp = LibertyProvider.objects.get(old_id=idp.liberty_provider)
         LibertyIdentityProvider.objects \
             .filter(liberty_provider=idp.liberty_provider) \
-            .update(liberty_provider=lp.service_ptr_id)
+            .update(new_liberty_provider=lp.service_ptr_id)
     try:
         lp_ct = ContentType.objects.get(app_label='saml', model='libertyprovider')
     except ContentType.DoesNotExist:
@@ -48,6 +48,11 @@ def copy_service_ptr_id_to_old_id(apps, schema_editor):
         lp.old_id = lp.service_ptr_id
         lp.save()
 
+def restore_pk(apps, schema_editor):
+    LibertyServiceProvider = apps.get_model('saml', 'LibertyServiceProvider')
+    LibertyIdentityProvider = apps.get_model('saml', 'LibertyIdentityProvider')
+    LibertyServiceProvider.objects.update(liberty_provider=models.F('new_liberty_provider_id'))
+    LibertyIdentityProvider.objects.update(liberty_provider=models.F('new_liberty_provider_id'))
 
 class Migration(migrations.Migration):
 
@@ -57,20 +62,59 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.AddField(
+            model_name='libertyidentityprovider',
+            name='new_liberty_provider',
+            field=models.IntegerField(null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='libertyserviceprovider',
+            name='new_liberty_provider',
+            field=models.IntegerField(null=True),
+            preserve_default=True,
+        ),
         migrations.RunPython(alter_foreign_keys, noop),
         migrations.RunPython(noop, copy_service_ptr_id_to_old_id),
         migrations.AlterField(
             model_name='libertyidentityprovider',
             name='liberty_provider',
-            field=models.OneToOneField(related_name='identity_provider', primary_key=True, serialize=False, to='saml.LibertyProvider'),
+            field=models.IntegerField(null=True),
             preserve_default=True,
         ),
         migrations.AlterField(
             model_name='libertyserviceprovider',
             name='liberty_provider',
+            field=models.IntegerField(null=True),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='libertyidentityprovider',
+            name='new_liberty_provider',
+            field=models.OneToOneField(related_name='identity_provider', primary_key=True, serialize=False, to='saml.LibertyProvider'),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='libertyserviceprovider',
+            name='new_liberty_provider',
             field=models.OneToOneField(related_name='service_provider', primary_key=True, serialize=False, to='saml.LibertyProvider'),
             preserve_default=True,
         ),
+        migrations.RunPython(noop, restore_pk),
+        migrations.RemoveField(
+            'libertyidentityprovider',
+            'liberty_provider'),
+        migrations.RemoveField(
+            'libertyserviceprovider',
+            'liberty_provider'),
+        migrations.RenameField(
+            'libertyidentityprovider',
+            'new_liberty_provider',
+            'liberty_provider'),
+        migrations.RenameField(
+            'libertyserviceprovider',
+            'new_liberty_provider',
+            'liberty_provider'),
         migrations.AlterField(
             model_name='libertyfederation',
             name='idp',
