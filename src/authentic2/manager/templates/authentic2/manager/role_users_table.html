@@ -6,5 +6,5 @@
 <th></th>
 {% endblock %}
 {% block table.tbody.last.column %}
-<td><a class="icon-remove-sign js-remove-user" data-confirm="{% blocktrans with username=row.record.username %}Do you really want to delete user &quot;{{ username }}&quot; ?{% endblocktrans %}" href="#"></a></td>
+<td><a class="icon-remove-sign js-remove-user" data-confirm="{% blocktrans with username=row.record.username role=active_role.name %}Do you really want to remove user &quot;{{ username }}&quot; from role {{ role }}&nbsp;?{% endblocktrans %}" href="#"></a></td>
 {% endblock %}
