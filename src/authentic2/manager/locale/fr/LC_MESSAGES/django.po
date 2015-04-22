@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: entrouvert 2.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-15 17:02+0200\n"
+"POT-Creation-Date: 2015-04-22 15:22+0200\n"
 "PO-Revision-Date: 2015-01-29 18:18+0100\n"
 "Last-Translator: Benjamin Dauvergne <bdauvergne@entrouvert.com>\n"
 "Language-Team: French <fr@li.org>\n"
@@ -38,9 +38,13 @@ msgid "None"
 msgstr "Aucun(e)"
 
 #: src/authentic2/manager/templates/authentic2/manager/base.html:4
-#: src/authentic2/manager/templates/authentic2/manager/base.html:26
 msgid "Management"
 msgstr "Gestion"
+
+#: src/authentic2/manager/templates/authentic2/manager/base.html:27
+#: src/authentic2/manager/templates/authentic2/manager/base.html:32
+msgid "Identity and access management"
+msgstr "Gestion des identités et des accès"
 
 #: src/authentic2/manager/templates/authentic2/manager/delete.html:15
 #, python-format
@@ -48,7 +52,7 @@ msgid "Do you want to delete role %(object)s ?"
 msgstr "Souhaitez-vous vraiment supprimer le rôle %(object)s ?"
 
 #: src/authentic2/manager/templates/authentic2/manager/delete.html:18
-#: src/authentic2/manager/templates/authentic2/manager/roles.html:13
+#: src/authentic2/manager/templates/authentic2/manager/roles.html:18
 #: src/authentic2/manager/views.py:278
 msgid "Delete"
 msgstr "Supprimer"
@@ -75,10 +79,12 @@ msgid "Password change"
 msgstr "Changer le mot de passe"
 
 #: src/authentic2/manager/templates/authentic2/manager/homepage.html:19
+#: src/authentic2/manager/templates/authentic2/manager/users.html:15
 msgid "User management"
 msgstr "Gestion des utilisateurs"
 
 #: src/authentic2/manager/templates/authentic2/manager/homepage.html:20
+#: src/authentic2/manager/templates/authentic2/manager/roles.html:12
 msgid "Role management"
 msgstr "Gestion des rôles"
 
@@ -87,7 +93,7 @@ msgid "Users with role"
 msgstr "Utilisateurs ayant le rôle"
 
 #: src/authentic2/manager/templates/authentic2/manager/role.html:16
-#: src/authentic2/manager/templates/authentic2/manager/users.html:26
+#: src/authentic2/manager/templates/authentic2/manager/users.html:31
 msgid "Export"
 msgstr ""
 
@@ -110,28 +116,28 @@ msgstr ""
 msgid "Roles management"
 msgstr "Liste des rôles"
 
-#: src/authentic2/manager/templates/authentic2/manager/roles.html:14
+#: src/authentic2/manager/templates/authentic2/manager/roles.html:19
 msgid "Edit"
 msgstr "Éditer"
 
-#: src/authentic2/manager/templates/authentic2/manager/roles.html:16
+#: src/authentic2/manager/templates/authentic2/manager/roles.html:21
 msgid "Add role"
 msgstr "Ajouter un rôle"
 
-#: src/authentic2/manager/templates/authentic2/manager/roles.html:36
-#: src/authentic2/manager/templates/authentic2/manager/roles.html:38
-#: src/authentic2/manager/templates/authentic2/manager/users.html:15
-#: src/authentic2/manager/templates/authentic2/manager/users.html:18
+#: src/authentic2/manager/templates/authentic2/manager/roles.html:41
+#: src/authentic2/manager/templates/authentic2/manager/roles.html:43
+#: src/authentic2/manager/templates/authentic2/manager/users.html:20
+#: src/authentic2/manager/templates/authentic2/manager/users.html:23
 msgid "Search"
 msgstr "Rechercher"
 
-#: src/authentic2/manager/templates/authentic2/manager/roles.html:45
+#: src/authentic2/manager/templates/authentic2/manager/roles.html:50
 msgid "Use filters on the left of the screen to display role's members."
 msgstr ""
 "Utilisez les filtres sur sur la gauche de l'écran pour afficher les membres "
 "du rôle correspondant."
 
-#: src/authentic2/manager/templates/authentic2/manager/roles.html:52
+#: src/authentic2/manager/templates/authentic2/manager/roles.html:57
 msgid "Name:"
 msgstr "Nom :"
 
@@ -154,7 +160,7 @@ msgstr "Liste des utilisateurs enregistrés"
 msgid "Add user"
 msgstr "Ajouter un utilisateur"
 
-#: src/authentic2/manager/templates/authentic2/manager/users.html:21
+#: src/authentic2/manager/templates/authentic2/manager/users.html:26
 #, python-format
 msgid "%(count)s users"
 msgstr "%(count)s utilisateurs"
