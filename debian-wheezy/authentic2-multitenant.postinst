@@ -9,6 +9,7 @@ NAME=authentic2-multitenant
 AUTHENTIC_USER=authentic-multitenant
 AUTHENTIC_GROUP=authentic-multitenant
 AUTHENTIC_HOME=/var/lib/$NAME
+AUTHENTIC_SECRET_KEY="/etc/$NAME/secret"
 
 case "$1" in
     configure)
@@ -23,6 +24,12 @@ case "$1" in
                     --ingroup $AUTHENTIC_GROUP \
                     --no-create-home --home $AUTHENTIC_HOME \
                     $AUTHENTIC_USER
+            echo "..done" >&2
+        fi
+        if [ ! -f $AUTHENTIC_SECRET_KEY ]; then
+            echo -n "Generating a secret key.." >&2
+            echo -n "`</dev/urandom tr -dc [:alnum:]-_\!\%\^:\; | head -c70`" > "$AUTHENTIC_SECRET_KEY"
+            chmod 0600 $AUTHENTIC_SECRET_KEY
             echo "..done" >&2
         fi
 
