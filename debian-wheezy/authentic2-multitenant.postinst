@@ -29,10 +29,10 @@ case "$1" in
         if [ ! -f $AUTHENTIC_SECRET_KEY ]; then
             echo -n "Generating a secret key.." >&2
             echo -n "`</dev/urandom tr -dc [:alnum:]-_\!\%\^:\; | head -c70`" > "$AUTHENTIC_SECRET_KEY"
-            chmod 0600 $AUTHENTIC_SECRET_KEY
+            chmod 0640 $AUTHENTIC_SECRET_KEY
+            chown root:$AUTHENTIC_USER $AUTHENTIC_SECRET_KEY
             echo "..done" >&2
         fi
-
         chown $AUTHENTIC_USER:$AUTHENTIC_GROUP $AUTHENTIC_HOME/tenants \
             /var/lib/$NAME/collected-static \
             /var/run/$NAME \
