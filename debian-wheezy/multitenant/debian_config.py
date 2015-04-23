@@ -19,6 +19,8 @@ TENANT_SETTINGS_LOADERS = ('hobo.multitenant.settings_loaders.Authentic',) + TEN
 # Add authentic2 hobo agent
 INSTALLED_APPS = ('hobo.agent.authentic2',) + INSTALLED_APPS
 
+SHARED_APPS = ('authentic2.custom_user',) + SHARED_APPS
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
