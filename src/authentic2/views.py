@@ -420,8 +420,9 @@ def logout(request, next_url=None, default_next_url='auth_homepage',
        check_referer and do_local to False.
     '''
     logger = logging.getLogger(__name__)
+    default_next_url = utils.make_url(default_next_url)
     next_url = next_url or request.REQUEST.get(redirect_field_name,
-            utils.make_url(default_next_url))
+            default_next_url)
     ctx = {}
     ctx['next_url'] = next_url
     ctx['redir_timeout'] = 60
@@ -446,7 +447,7 @@ def logout(request, next_url=None, default_next_url='auth_homepage',
     logger.info('logged out')
     auth_logout(request)
     messages.info(request, _('You have been logged out'))
-    if next_url.startswith('/'):
+    if next_url == default_next_url:
         return utils.redirect(request, next_url)
     else:
         # Show intermediate page

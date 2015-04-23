@@ -217,12 +217,12 @@ class RoleUsersExportView(UserExportMixin, View):
         return utils.get_role_users(active_role, **kwargs)
 
 
-roles = permission_required('group.add')(RolesView.as_view())
-role_add = permission_required('group.add')(RoleAddView.as_view())
-role_edit = permission_required('group.change')(RoleEditView.as_view())
-role_delete = permission_required('group.delete')(RoleDeleteView.as_view())
-role = permission_required('group.delete')(RoleView.as_view())
-role_users_export = permission_required('group.change')(RoleUsersExportView.as_view())
+roles = permission_required('auth.add_group')(RolesView.as_view())
+role_add = permission_required('auth.add_group')(RoleAddView.as_view())
+role_edit = permission_required('auth.change_group')(RoleEditView.as_view())
+role_delete = permission_required('auth.delete_group')(RoleDeleteView.as_view())
+role = permission_required('auth.delete_group')(RoleView.as_view())
+role_users_export = permission_required('auth.change_group')(RoleUsersExportView.as_view())
 
 
 class UsersView(RolesMixin, TemplateView):
@@ -346,11 +346,11 @@ class UsersExportView(UserExportMixin, View):
             kwargs = {'search': self.request.GET['search']}
         return utils.get_users(**kwargs)
 
-users_export = permission_required('user.delete')(UsersExportView.as_view())
+users_export = permission_required('auth.delete_user')(UsersExportView.as_view())
 
-users = permission_required('user.delete')(UsersView.as_view())
-user_add = permission_required('user.add')(UserAddView.as_view())
-user_edit = permission_required('user.change')(UserEditView.as_view())
+users = permission_required('auth.delete_user')(UsersView.as_view())
+user_add = permission_required('auth.add_user')(UserAddView.as_view())
+user_edit = permission_required('auth.change_user')(UserEditView.as_view())
 
 class HomepageView(ManagerMixin, TemplateView):
     template_name = 'authentic2/manager/homepage.html'
