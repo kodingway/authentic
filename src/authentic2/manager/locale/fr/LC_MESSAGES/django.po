@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: entrouvert 2.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-22 15:22+0200\n"
+"POT-Creation-Date: 2015-04-23 17:44+0200\n"
 "PO-Revision-Date: 2015-01-29 18:18+0100\n"
 "Last-Translator: Benjamin Dauvergne <bdauvergne@entrouvert.com>\n"
 "Language-Team: French <fr@li.org>\n"
@@ -41,8 +41,8 @@ msgstr "Aucun(e)"
 msgid "Management"
 msgstr "Gestion"
 
-#: src/authentic2/manager/templates/authentic2/manager/base.html:27
-#: src/authentic2/manager/templates/authentic2/manager/base.html:32
+#: src/authentic2/manager/templates/authentic2/manager/base.html:29
+#: src/authentic2/manager/templates/authentic2/manager/base.html:34
 msgid "Identity and access management"
 msgstr "Gestion des identités et des accès"
 
@@ -107,9 +107,12 @@ msgstr "Ajouter"
 
 #: src/authentic2/manager/templates/authentic2/manager/role_users_table.html:9
 #, python-format
-msgid "Do you really want to delete user &quot;%(username)s&quot; ?"
+msgid ""
+"Do you really want to remove user &quot;%(username)s&quot; from role "
+"%(role)s&nbsp;?"
 msgstr ""
-"Souhaitez-vous vraiment supprimer l'utilisateur &quot;%(username)s&quot; ?"
+"Souhaitez-vous vraiment retirer le rôle «&nbsp;%(role)s&nbsp;» à "
+"l'utilisateur «&nbsp;%(username)s&nbsp;»&nbsp;?"
 
 #: src/authentic2/manager/templates/authentic2/manager/roles.html:4
 #: src/authentic2/manager/templates/authentic2/manager/roles.html:6
