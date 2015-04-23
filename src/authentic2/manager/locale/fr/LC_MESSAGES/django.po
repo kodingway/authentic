@@ -145,9 +145,12 @@ msgstr "Ajouter"
 
 #: templates/authentic2/manager/role_users_table.html:9
 #, python-format
-msgid "Do you really want to delete user &quot;%(username)s&quot; ?"
+msgid ""
+"Do you really want to remove user &quot;%(username)s&quot; from role "
+"%(role)s&nbsp;?"
 msgstr ""
-"Souhaitez-vous vraiment supprimer l'utilisateur &quot;%(username)s&quot; ?"
+"Souhaitez-vous vraiment retirer le rôle «&nbsp;%(role)s&nbsp;» à "
+"l'utilisateur «&nbsp;%(username)s&nbsp;»&nbsp;?"
 
 #: templates/authentic2/manager/roles.html:4
 #: templates/authentic2/manager/roles.html:6
