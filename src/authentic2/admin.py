@@ -9,15 +9,17 @@ from django.utils.http import urlencode
 from django.http import HttpResponseRedirect
 from django.views.decorators.cache import never_cache
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.contrib.sessions.models import Session
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.admin.utils import flatten_fieldsets
-from django.forms import ModelForm, Select
+from django import forms
+from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
 from .nonce.models import Nonce
-from . import (forms, models, compat, app_settings, decorators,
+from . import (models, compat, app_settings, decorators,
         attribute_kinds, utils)
+from .forms import modelform_factory
+from .custom_user.models import User
 
 def cleanup_action(modeladmin, request, queryset):
     queryset.cleanup()
@@ -161,10 +163,87 @@ class UserRealmListFilter(admin.SimpleListFilter):
             return queryset.filter(username__endswith=u'@' + self.value())
         return queryset
 
+
+class UserChangeForm(forms.ModelForm):
+    error_messages = {
+        'missing_credential': _("You must at least give a username or an email to your user"),
+    }
+
+    password = ReadOnlyPasswordHashField(label=_("Password"),
+        help_text=_("Raw passwords are not stored, so there is no way to see "
+                    "this user's password, but you can change the password "
+                    "using <a href=\"../password/\">this form</a>."))
+
+    class Meta:
+        model = User
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(UserChangeForm, self).__init__(*args, **kwargs)
+        f = self.fields.get('user_permissions', None)
+        if f is not None:
+            f.queryset = f.queryset.select_related('content_type')
+
+    def clean_password(self):
+        # Regardless of what the user provides, return the initial value.
+        # This is done here, rather than on the field, because the
+        # field does not have access to the initial value
+        return self.initial["password"]
+
+    def clean(self):
+        if not self.cleaned_data.get('username') and not self.cleaned_data.get('email'):
+            raise forms.ValidationError(
+                self.error_messages['missing_credential'],
+                code='missing_credential',
+            )
+
+class UserCreationForm(forms.ModelForm):
+    """
+    A form that creates a user, with no privileges, from the given username and
+    password.
+    """
+    error_messages = {
+        'password_mismatch': _("The two password fields didn't match."),
+        'missing_credential': _("You must at least give a username or an email to your user"),
+    }
+    password1 = forms.CharField(label=_("Password"),
+        widget=forms.PasswordInput)
+    password2 = forms.CharField(label=_("Password confirmation"),
+        widget=forms.PasswordInput,
+        help_text=_("Enter the same password as above, for verification."))
+
+    class Meta:
+        model = User
+        fields = ("username",)
+
+    def clean_password2(self):
+        password1 = self.cleaned_data.get("password1")
+        password2 = self.cleaned_data.get("password2")
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError(
+                self.error_messages['password_mismatch'],
+                code='password_mismatch',
+            )
+        return password2
+
+    def clean(self):
+        if not self.cleaned_data.get('username') and not self.cleaned_data.get('email'):
+            raise forms.ValidationError(
+                self.error_messages['missing_credential'],
+                code='missing_credential',
+            )
+
+    def save(self, commit=True):
+        user = super(UserCreationForm, self).save(commit=False)
+        user.set_password(self.cleaned_data["password1"])
+        if commit:
+            user.save()
+        return user
+
 class AuthenticUserAdmin(UserAdmin):
     fieldsets = (
-        (None, {'fields': ('username', 'password')}),
-        (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
+        (None, {'fields': ('uuid', 'password')}),
+        (_('Personal info'), {'fields': ('username', 'first_name', 'last_name', 'email')}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
                                        'groups')}),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
@@ -175,6 +254,7 @@ class AuthenticUserAdmin(UserAdmin):
                 'fields': ('username', 'first_name', 'last_name', 'email', 'password1', 'password2')}
             ),
         )
+    readonly_fields = ('uuid',)
     list_filter = UserAdmin.list_filter + (UserRealmListFilter,ExternalUserListFilter)
 
     def get_fieldsets(self, request, obj=None):
@@ -195,8 +275,8 @@ class AuthenticUserAdmin(UserAdmin):
         return fieldsets
 
     def get_form(self, request, obj=None, **kwargs):
-        self.form = forms.modelform_factory(self.model, form=UserChangeForm)
-        self.add_form = forms.modelform_factory(self.model, form=UserCreationForm)
+        self.form = modelform_factory(self.model, form=UserChangeForm)
+        self.add_form = modelform_factory(self.model, form=UserCreationForm)
         if 'fields' in kwargs:
             fields = kwargs.pop('fields')
         else:
@@ -210,18 +290,12 @@ class AuthenticUserAdmin(UserAdmin):
         kwargs['fields'] = fields
         return super(AuthenticUserAdmin, self).get_form(request, obj=obj, **kwargs)
 
-User = compat.get_user_model()
-if User.__module__ == 'django.contrib.auth.models':
-    if User in admin.site._registry:
-        admin.site.unregister(User)
-    admin.site.register(User, AuthenticUserAdmin)
-
-class AttributeForm(ModelForm):
+class AttributeForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(AttributeForm, self).__init__(*args, **kwargs)
         choices = self.kind_choices()
         self.fields['kind'].choices = choices
-        self.fields['kind'].widget = Select(choices=choices)
+        self.fields['kind'].widget = forms.Select(choices=choices)
 
     @decorators.to_iter
     def kind_choices(self):
