@@ -18,4 +18,4 @@ class ChooseUserForm(forms.Form):
 
 
 class UserEditForm(forms.ModelForm):
-    groups = fields.GroupsField(required=False)
+    groups = fields.GroupsField(required=False, label=_('Roles'))
