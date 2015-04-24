@@ -52,7 +52,7 @@ privileges  like this:
 
 # Install Authentic::
 
-    pip install authentic2
+    pip install --process-dependency-links authentic2
 
 # Initialize the database migrations::
 
