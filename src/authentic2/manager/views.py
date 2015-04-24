@@ -243,7 +243,6 @@ class UsersView(RolesMixin, TemplateView):
 class UserMixin(object):
     model = get_user_model()
     template_name = 'authentic2/manager/form.html'
-    fields = ['username', 'first_name', 'last_name', 'email', 'is_active']
     form_class = forms.UserEditForm
 
     def get_form_class(self):
@@ -257,12 +256,13 @@ class UserAddView(UserMixin, ActionMixin, TitleMixin,
         AjaxFormViewMixin, CreateView):
     title = _('Create user')
     action = _('Create')
+    fields = ['username', 'first_name', 'last_name', 'email', 'is_active', 'groups']
 
 class UserEditView(UserMixin, OtherActionsMixin, ActionMixin, TitleMixin,
         AjaxFormViewMixin, UpdateView):
     title = _('Edit user')
-    fields = ['username', 'first_name', 'last_name', 'email']
     template_name = 'authentic2/manager/user_edit.html'
+    fields = ['username', 'first_name', 'last_name', 'email', 'groups']
 
     def get_other_actions(self):
         yield Action('password_reset', _('Reset password'))
