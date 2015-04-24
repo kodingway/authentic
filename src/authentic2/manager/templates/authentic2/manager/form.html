@@ -30,6 +30,8 @@
             {% endfor %}
           </div>
         {% endif %}
+        {% block beforeform %}
+        {% endblock %}
         {% csrf_token %}
         {{ form.as_p }}
         {% block afterform %}

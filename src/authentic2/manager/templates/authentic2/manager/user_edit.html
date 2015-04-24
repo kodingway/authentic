@@ -1,6 +1,13 @@
 {% extends "authentic2/manager/form.html" %}
 {% load i18n %}
 
+{% block beforeform %}
+    <p>
+     <label for="id_uuid">{% trans "UUID" %}&nbsp;:</label>
+     <input readonly type="text" id="id_uuid" value="{{ form.instance.uuid }}" disabled/>
+    </p>
+{% endblock %}
+
 {% block afterform %}
   {% if object.passwordreset_set.exists %}
     <div class="warning-box">{% trans "User must change its password on next access to authentic" %}
