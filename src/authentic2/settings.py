@@ -199,6 +199,10 @@ LOGGING = {
             'format': '[%(asctime)s] %(ip)s %(user)s %(request_id)s %(levelname)s %(name)s.%(funcName)s: %(message)s',
             'datefmt': '%Y-%m-%d %a %H:%M:%S'
         },
+        'verbose_db': {
+            'format': '[%(asctime)s] - - - %(levelname)s %(name)s.%(funcName)s: %(message)s',
+            'datefmt': '%Y-%m-%d %a %H:%M:%S'
+        },
     },
     'handlers': {
         'console': {
@@ -207,12 +211,22 @@ LOGGING = {
             'formatter': 'verbose',
             'filters': ['cleaning', 'request_context'],
         },
+	# remove request_context filter for db log to prevent infinite loop
+	# when logging sql query to retrieve the session user
+        'console_db': {
+            'level': 'DEBUG',
+            'class':'logging.StreamHandler',
+            'formatter': 'verbose_db',
+            'filters': ['cleaning'],
+        },
     },
     'loggers': {
         # even when debugging seeing SQL queries is too much, activate it
         # explicitly using DEBUG_DB
         'django.db': {
                 'level': 'INFO',
+                'handlers': ['console_db'],
+                'propagate': False,
         },
         # django_select2 outputs debug message at level INFO
         'django_select2': {
