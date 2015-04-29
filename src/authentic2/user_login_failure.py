@@ -2,11 +2,12 @@ import logging
 import hashlib
 
 from django.core.cache import cache
+from django.utils.encoding import smart_bytes
 
 from . import app_settings
 
 def key(identifier):
-    return 'user-login-failure-%s' % hashlib.md5(identifier).hexdigest()
+    return 'user-login-failure-%s' % hashlib.md5(smart_bytes(identifier)).hexdigest()
 
 def user_login_success(identifier):
     cache.delete(key(identifier))
