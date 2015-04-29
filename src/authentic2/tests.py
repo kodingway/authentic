@@ -293,6 +293,13 @@ class RegistrationTests(TestCase):
         response = self.client.post(link, { 'password1': 'T0toto',
                                             'password2': 'T0toto'})
         self.assertRedirects(response, next_url)
+        client = Client()
+        response = client.post('/login/', {
+                'username': 'testbot@entrouvert.com',
+                'password': 'T0toto',
+                'login-password-submit': '1'
+        })
+        self.assertRedirects(response, '/')
 
     @override_settings(A2_REGISTRATION_FORM_USERNAME_REGEX=r'^(ab)+$',
             A2_REGISTRATION_FORM_USERNAME_LABEL='Identifiant',

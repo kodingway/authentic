@@ -83,6 +83,7 @@ class RegistrationCompletionForm(ModelForm):
         if 'password1' in self.cleaned_data and 'password2' in self.cleaned_data:
             if self.cleaned_data['password1'] != self.cleaned_data['password2']:
                 raise ValidationError(_("The two password fields didn't match."))
+	    self.instance.set_password(self.cleaned_data['password1'])
         return self.cleaned_data
 
     def clean_username(self):
@@ -115,7 +116,6 @@ class RegistrationCompletionForm(ModelForm):
 
     def save(self, commit=True):
         user = super(RegistrationCompletionForm, self).save(commit=commit)
-        user.set_password(self.cleaned_data['password1'])
         if commit and app_settings.A2_REGISTRATION_GROUPS:
             groups = []
             for name in app_settings.A2_REGISTRATION_GROUPS:
