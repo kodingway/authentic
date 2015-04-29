@@ -458,7 +458,7 @@ def logout(request, next_url=None, default_next_url='auth_homepage',
 def login_password_profile(request, *args, **kwargs):
     context_instance = kwargs.pop('context_instance', None) or RequestContext(request)
     can_change_password = (app_settings.A2_REGISTRATION_CAN_CHANGE_PASSWORD
-                           and request.user.has_usable_password)
+                           and request.user.has_usable_password())
     return render_to_string('auth/login_password_profile.html',
                             {'can_change_password' : can_change_password},
                             context_instance=context_instance)
