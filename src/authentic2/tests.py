@@ -275,6 +275,9 @@ class RegistrationTests(TestCase):
         self.assertFormError(response, 'form', 'email', ['This field is required.'])
 
     def test_registration(self):
+        from django.contrib.auth import get_user_model
+
+        User = get_user_model()
         next_url = 'http://relying-party.org/'
         url = utils.make_url('registration_register', params={REDIRECT_FIELD_NAME: next_url})
         response = self.client.post(url, {'email': 'testbot@entrouvert.com'})
@@ -292,7 +295,15 @@ class RegistrationTests(TestCase):
         
         response = self.client.post(link, { 'password1': 'T0toto',
                                             'password2': 'T0toto'})
+        new_user = User.objects.get()
         self.assertRedirects(response, next_url)
+        self.assertEqual(new_user.email, 'testbot@entrouvert.com')
+        self.assertIsNone(new_user.username)
+        self.assertTrue(new_user.check_password('T0toto'))
+        self.assertTrue(new_user.is_active)
+        self.assertFalse(new_user.is_staff)
+        self.assertFalse(new_user.is_superuser)
+        self.assertEqual(self.client.session['_auth_user_id'], new_user.pk)
         client = Client()
         response = client.post('/login/', {
                 'username': 'testbot@entrouvert.com',
