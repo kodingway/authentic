@@ -24,6 +24,11 @@ def get_response_form(response, form='form'):
 
 class Authentic2TestCase(TestCase):
     def assertEqualsURL(self, url1, url2, **kwargs):
+        '''Check that url1 is equals to url2 augmented with parameters kwargs in its query string.
+
+           The string '*' is a special value, when used it just check that the
+           given parameter exist in the first url, it does not check the exact value.
+        '''
         splitted1 = urlparse.urlsplit(url1)
         url2 = utils.make_url(url2, params=kwargs)
         splitted2 = urlparse.urlsplit(url2)
@@ -34,7 +39,10 @@ class Authentic2TestCase(TestCase):
                 for k, v in elt1.items():
                     elt1[k] = set(v)
                 for k, v in elt2.items():
-                    elt2[k] = set(v)
+                    if v == ['*']:
+                        elt2[k] = elt1.get(k, v)
+                    else:
+                        elt2[k] = set(v)
             self.assertTrue(elt1 == elt2,
                     "URLs are not equal: %s != %s" % (splitted1, splitted2))
 
