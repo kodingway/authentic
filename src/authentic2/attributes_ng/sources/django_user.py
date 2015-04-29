@@ -37,11 +37,15 @@ def get_attributes(instance, ctx):
     if not user or not isinstance(user, User):
         return ctx
     for field in User._meta.fields:
+        value = getattr(user, field.name)
+        if value is None:
+           continue
         ctx['django_user_' + str(field.name)] = getattr(user, field.name)
     for av in AttributeValue.objects.with_owner(user):
         ctx['django_user_' + str(av.attribute.name)] = av.to_python()
     ctx['django_user_groups'] = [group for group in user.groups.all()]
     ctx['django_user_group_names'] = [unicode(group) for group in user.groups.all()]
-    ctx['django_user_domain'] = user.username.rsplit('@', 1)[1] if '@' in user.username else ''
-    ctx['django_user_identifier'] = user.username.rsplit('@', 1)[0] if '@' in user.username else ''
+    if user.username:
+        ctx['django_user_domain'] = user.username.rsplit('@', 1)[1] if '@' in user.username else ''
+        ctx['django_user_identifier'] = user.username.rsplit('@', 1)[0] if '@' in user.username else ''
     return ctx
