@@ -1,70 +1,23 @@
 import os
 
-from django.core.exceptions import ImproperlyConfigured
+# Debian defaults
+DEBUG = False
 
 PROJECT_NAME = 'authentic2-multitenant'
 
-try:
-    import hobo
-except ImportError:
-    raise ImproperlyConfigured('hobo MUST be installed for the multitenant mode to work')
+#
+# hobotization (multitenant)
+#
+execfile('/usr/lib/hobo/debian_config_common.py')
 
-VAR_DIR = os.path.join('/var/lib', PROJECT_NAME)
-ETC_DIR = os.path.join('/etc', PROJECT_NAME)
+# Add the XForwardedForMiddleware
+MIDDLEWARE_CLASSES = ('authentic2.middleware.XForwardedForMiddleware',) + MIDDLEWARE_CLASSES
 
-STATIC_ROOT = os.path.join(VAR_DIR, 'collected-static')
-STATICFILES_DIRS = (os.path.join(VAR_DIR, 'static'),) + STATICFILES_DIRS
-TEMPLATE_DIRS = (os.path.join(VAR_DIR, 'templates'),) + TEMPLATE_DIRS
-LOCALE_PATHS = (os.path.join(VAR_DIR, 'locale'),) + LOCALE_PATHS
+# Add authentic settings loader
+TENANT_SETTINGS_LOADERS = ('hobo.multitenant.settings_loaders.Authentic',) + TENANT_SETTINGS_LOADERS
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-TEMPLATE_DEBUG = False
-
-TENANT_MODEL = 'multitenant.Tenant'
-TENANT_BASE = os.path.join(VAR_DIR, 'tenants')
-TENANT_TEMPLATE_DIRS = (TENANT_BASE,)
-
-SHARED_APPS = (
-    'hobo.multitenant',
-    'django.contrib.staticfiles',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-)
-
-TENANT_APPS = INSTALLED_APPS
-
-INSTALLED_APPS = ('hobo.multitenant', 'hobo.agent.authentic2') + INSTALLED_APPS
-
-TEMPLATE_LOADERS = ('hobo.multitenant.template_loader.FilesystemLoader',) + TEMPLATE_LOADERS
-
-TEMPLATE_CONTEXT_PROCESSORS = ('django.core.context_processors.request',) + TEMPLATE_CONTEXT_PROCESSORS
-
-MIDDLEWARE_CLASSES = (
-    'authentic2.middleware.XForwardedForMiddleware',
-    'hobo.multitenant.middleware.TenantMiddleware',
-    'hobo.multitenant.middleware.TenantSettingsMiddleware',
-) + MIDDLEWARE_CLASSES
-
-TENANT_SETTINGS_LOADERS = (
-    'hobo.multitenant.settings_loaders.TemplateVars',
-    'hobo.multitenant.settings_loaders.Authentic',
-)
-
-DEFAULT_FILE_STORAGE = 'hobo.multitenant.storage.TenantFileSystemStorage'
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'tenant_schemas.postgresql_backend',
-        'NAME': PROJECT_NAME.replace('-', '_')
-    }
-}
-
-DATABASE_ROUTERS = (
-    'tenant_schemas.routers.TenantSyncRouter',
-)
+# Add authentic2 hobo agent
+INSTALLED_APPS = ('hobo.agent.authentic2',) + INSTALLED_APPS
 
 LOGGING = {
     'version': 1,
@@ -110,5 +63,6 @@ LOGGING = {
     },
 }
 
-if os.path.exists(os.path.join(ETC_DIR, 'config.py')):
-    execfile(os.path.join(ETC_DIR, 'config.py'))
+CONFIG_FILE='/etc/%s/config.py' % PROJECT_NAME
+if os.path.exists(CONFIG_FILE):
+    execfile(CONFIG_FILE)
