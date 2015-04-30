@@ -34,7 +34,7 @@ case "$1" in
         fi
 
         chown $AUTHENTIC_USER:$AUTHENTIC_GROUP $AUTHENTIC_HOME/tenants \
-            /var/lib/$NAME/collected-static \
+            /var/lib/$NAME/collectstatic \
             /var/run/$NAME \
             /var/log/$NAME
         ;;
