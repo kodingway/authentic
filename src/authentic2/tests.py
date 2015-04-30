@@ -34,8 +34,8 @@ class Authentic2TestCase(TestCase):
         splitted2 = urlparse.urlsplit(url2)
         for i, (elt1, elt2) in enumerate(zip(splitted1, splitted2)):
             if i == 3:
-                elt1 = urlparse.parse_qs(elt1)
-                elt2 = urlparse.parse_qs(elt2)
+                elt1 = urlparse.parse_qs(elt1, True)
+                elt2 = urlparse.parse_qs(elt2, True)
                 for k, v in elt1.items():
                     elt1[k] = set(v)
                 for k, v in elt2.items():
