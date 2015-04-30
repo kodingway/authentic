@@ -218,10 +218,8 @@ def login(request, template_name='authentic2/login.html',
     blocks = []
 
     # Cancel button
-    if request.method == "POST" and 'cancel' in request.POST:
-        redirect_to = utils.add_arg(redirect_to, 'cancel')
-        return HttpResponseRedirect(redirect_to)
-
+    if request.method == "POST" and constants.CANCEL_FIELD_NAME in request.POST:
+        return utils.continue_to_next_url(request, params={'cancel': 1})
     for frontend in frontends:
         if hasattr(frontend, 'login'):
             continue

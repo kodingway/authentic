@@ -1,3 +1,4 @@
 
 NONCE_FIELD_NAME = 'nonce'
+CANCEL_FIELD_NAME = 'cancel'
 AUTHENTICATION_EVENTS_SESSION_KEY = 'authentication-events'
