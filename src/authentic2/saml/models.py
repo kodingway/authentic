@@ -116,8 +116,10 @@ ACCEPTED_NAME_ID_FORMAT_LENGTH = \
         sum([len(x) for x, y in NAME_ID_FORMATS.iteritems()]) + \
         len(NAME_ID_FORMATS) - 1
 
-def saml2_urn_to_nidformat(urn):
+def saml2_urn_to_nidformat(urn, accepted=()):
     for x, y in NAME_ID_FORMATS.iteritems():
+        if accepted and not x in accepted:
+            continue
         if y['samlv2'] == urn:
             return x
     return None

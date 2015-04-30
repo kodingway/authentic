@@ -499,7 +499,8 @@ def sso(request):
     if name_id_policy.format and \
             name_id_policy.format != \
                 lasso.SAML2_NAME_IDENTIFIER_FORMAT_UNSPECIFIED:
-        nid_format = saml2_urn_to_nidformat(name_id_policy.format)
+        nid_format = saml2_urn_to_nidformat(name_id_policy.format,
+            accepted=policy.accepted_name_id_format)
         logger.debug('nameID format %s' % nid_format)
         default_nid_format = policy.default_name_id_format
         logger.debug('default nameID format %s' % default_nid_format)
