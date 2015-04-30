@@ -157,7 +157,7 @@ class RegistrationCompletionForm(forms.UserAttributeFormMixin, Form):
                 continue
             if field.startswith('password'):
                 continue
-            if field == 'username':
+            if field == 'username' and not self.cleaned_data.get('username'):
                 kwargs[field] = uuid4().get_hex()[:30]
             user_fields[field] = kwargs[field]
             if field == 'email':
