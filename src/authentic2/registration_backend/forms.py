@@ -69,6 +69,10 @@ class RegistrationForm(Form):
                       [data['email']], fail_silently=True)
 
 class RegistrationCompletionForm(forms.UserAttributeFormMixin, Form):
+    error_messages = {
+        'duplicate_username': _("A user with that username already exists."),
+    }
+
     error_css_class = 'form-field-error'
     required_css_class = 'form-field-required'
 
@@ -127,6 +131,18 @@ class RegistrationCompletionForm(forms.UserAttributeFormMixin, Form):
                     self.fields[field[0]].label = field[1]
 
         self.fields = new_fields
+
+    def clean_username(self):
+        username = self.cleaned_data['username']
+        User = compat.get_user_model()
+        try:
+            User._default_manager.get(username=username)
+        except User.DoesNoExist:
+            return username
+        raise ValidationError(
+                self.error_messages['duplicate_username'],
+                code='duplicate_username',
+        )
 
     def clean(self):
         """
