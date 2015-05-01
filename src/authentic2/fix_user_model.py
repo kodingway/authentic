@@ -1,7 +1,11 @@
 import re
 
 from django.utils.translation import ugettext_lazy as _
+from django.utils.functional import allow_lazy
 from django.core.validators import MaxLengthValidator, RegexValidator
+
+# Allow delaying formatting
+uinterpolate= allow_lazy(lambda self, arg: self % arg, unicode)
 
 #from django.db.models.signals import class_prepared
 #def longer_username_signal(sender, *args, **kwargs):
@@ -31,9 +35,9 @@ def patch_username(model):
         return
 
     field.max_length = MAX_USERNAME_LENGTH
-    field.help_text = _("Required, %s characters or fewer. Only letters, "
+    field.help_text = uinterpolate(_("Required, %s characters or fewer. Only letters, "
                         "numbers, and @, ., +, -, or _ "
-                        "characters." % MAX_USERNAME_LENGTH)
+                        "characters."), 255)
     if app_settings.A2_USERNAME_HELP_TEXT:
         field.help_text = app_settings.A2_USERNAME_HELP_TEXT
     field.label = _('username')
