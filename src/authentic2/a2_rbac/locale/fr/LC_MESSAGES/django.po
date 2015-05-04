@@ -1,14 +1,14 @@
 # Authentic2 RBAC french translation
 # Copyright (C) 2015 Entr'ouert
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the authentic2 package.
 # Benjamin Dauvergne <bdauvergne@entrouvert.com, 2015.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: django-rbac\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-05 18:15+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"POT-Creation-Date: 2015-05-13 17:14+0200\n"
+"PO-Revision-Date: 2015-05-13 15:21+0200\n"
 "Last-Translator: Benjamin Dauvergner <bdauvergne@entrouvert.com>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -16,53 +16,93 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: authentic2/a2_rbac/management.py:61
-#, python-brace-format
-msgid "Management of {target}"
-msgstr "Gestion de {target}"
+#: authentic2/a2_rbac/admin.py:50 authentic2/a2_rbac/models.py:104
+msgid "name"
+msgstr "nom"
 
-#: authentic2/a2_rbac/management.py:62
+#: authentic2/a2_rbac/management.py:29
 #, python-brace-format
-msgid "Management of {target} in {ou}"
-msgstr "Gestion de {target} dans {ou}"
+msgid "Managers of \"{ou}\""
+msgstr "Gestionnaires « {ou} »"
 
-#: authentic2/a2_rbac/management.py:79
+#: authentic2/a2_rbac/management.py:78 authentic2/a2_rbac/management.py:95
 #, python-brace-format
-msgid "Management of role {target}"
-msgstr "Gestion du rôle {target}"
+msgid "Managers of content type \"{ct}\""
+msgstr "Gestionnaires des objets « {ct} »"
 
-#: authentic2/a2_rbac/models.py:12
+#: authentic2/a2_rbac/models.py:22
 msgid "organizational unit"
 msgstr "unité d'organisation"
 
-#: authentic2/a2_rbac/models.py:13
+#: authentic2/a2_rbac/models.py:23
 msgid "organizational units"
 msgstr "unités d'organisation"
 
-#: authentic2/a2_rbac/models.py:17
+#: authentic2/a2_rbac/models.py:28
 msgid "permission"
-msgstr ""
+msgstr "permission"
 
-#: authentic2/a2_rbac/models.py:18
+#: authentic2/a2_rbac/models.py:29
 msgid "permissions"
-msgstr ""
+msgstr "permissions"
 
-#: authentic2/a2_rbac/models.py:22
-msgid "permission mirror"
-msgstr "mirroir d'une permission"
+#: authentic2/a2_rbac/models.py:37
+msgid "administrative scope content type"
+msgstr "type d'objet administré"
 
-#: authentic2/a2_rbac/models.py:31
+#: authentic2/a2_rbac/models.py:39
+msgid "administrative scope id"
+msgstr "identifiant de l'objet administré"
+
+#: authentic2/a2_rbac/models.py:48
+msgid "service"
+msgstr "service"
+
+#: authentic2/a2_rbac/models.py:55
+#, python-brace-format
+msgid "Managers of role \"{role}\""
+msgstr "Gestionnaires du rôle « {role} »"
+
+#: authentic2/a2_rbac/models.py:62
+msgid "This slug is not unique over this organizational unit."
+msgstr "Ce code n'est pas unique pour cette unité d'organisation."
+
+#: authentic2/a2_rbac/models.py:66
+msgid "This name is not unique over this organizational unit."
+msgstr "Ce nom n'est pas unique pour cette unité d'orgnisation."
+
+#: authentic2/a2_rbac/models.py:78 authentic2/a2_rbac/models.py:100
 msgid "role"
 msgstr "rôle"
 
-#: authentic2/a2_rbac/models.py:32
+#: authentic2/a2_rbac/models.py:79
 msgid "roles"
 msgstr "rôles"
 
-#: authentic2/a2_rbac/models.py:36
+#: authentic2/a2_rbac/models.py:90
 msgid "role parenting relation"
 msgstr "relation de parenté entre rôles"
 
-#: authentic2/a2_rbac/models.py:37
+#: authentic2/a2_rbac/models.py:91
 msgid "role parenting relations"
 msgstr "relations de parenté entre rôles"
+
+#: authentic2/a2_rbac/models.py:96
+msgid "string"
+msgstr "chaîne"
+
+#: authentic2/a2_rbac/models.py:108
+msgid "kind"
+msgstr "type"
+
+#: authentic2/a2_rbac/models.py:110
+msgid "value"
+msgstr "valeur"
+
+#: authentic2/a2_rbac/models.py:114
+msgid "role attributes"
+msgstr "attributs de rôle"
+
+#: authentic2/a2_rbac/signal_handlers.py:26
+msgid "Default organizational unit"
+msgstr "Unité d'organisation par défaut"

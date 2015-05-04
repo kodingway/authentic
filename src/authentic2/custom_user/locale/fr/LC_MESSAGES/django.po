@@ -1,0 +1,84 @@
+# Copyright (C) 2015 Entr'ouvert
+# This file is distributed under the same license as the PACKAGE package.
+# Benjamin Dauvergne <bdauvergne@entrouvert.com>, 2015.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: authentic2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-05-15 17:16+0200\n"
+"PO-Revision-Date: 2015-05-04 15:36+0200\n"
+"Last-Translator: Benjamin Dauvergn <bdauvergne@entrouvert.com>\n"
+"Language-Team: French <fr@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: authentic2/custom_user/models.py:23
+msgid "uuid"
+msgstr "identifiant unique"
+
+#: authentic2/custom_user/models.py:25
+msgid "username"
+msgstr "identifiant"
+
+#: authentic2/custom_user/models.py:26
+msgid "first name"
+msgstr "prénom"
+
+#: authentic2/custom_user/models.py:27
+msgid "last name"
+msgstr "nom"
+
+#: authentic2/custom_user/models.py:28
+msgid "email address"
+msgstr "courriel"
+
+#: authentic2/custom_user/models.py:30
+msgid "staff status"
+msgstr "statut équipe"
+
+#: authentic2/custom_user/models.py:31
+msgid "Designates whether the user can log into this admin site."
+msgstr "Précise si l'utilisateur peut se connecter à ce site d'administration."
+
+#: authentic2/custom_user/models.py:33
+msgid "active"
+msgstr "actif"
+
+#: authentic2/custom_user/models.py:34
+msgid ""
+"Designates whether this user should be treated as active. Unselect this "
+"instead of deleting accounts."
+msgstr ""
+"Précise si l'utilisateur doit être considéré comme actif. Décochez ceci "
+"plutôt que de supprimer le compte."
+
+#: authentic2/custom_user/models.py:36
+msgid "date joined"
+msgstr "date d'inscription"
+
+#: authentic2/custom_user/models.py:51
+msgid "user"
+msgstr "utilisateur"
+
+#: authentic2/custom_user/models.py:52
+msgid "users"
+msgstr "utilisateurs"
+
+#: authentic2/custom_user/models.py:92
+msgid "This username is already in use. Please supply a different username."
+msgstr "Cet identifiant est déjà utilisé. Veuillez en choisir un autre."
+
+#: authentic2/custom_user/models.py:100
+msgid ""
+"This email address is already in use. Please supply a different email "
+"address."
+msgstr ""
+"Cette adresse de courriel est déjà utilisée. Veuillez en choisir une autre."
+
+#: authentic2/custom_user/models.py:103
+msgid "An organizational unit is mandatory"
+msgstr "L'unité d'organisation est obligatoire."

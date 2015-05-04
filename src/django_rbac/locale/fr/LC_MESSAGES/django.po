@@ -1,14 +1,14 @@
 # Django RBAC french translation
 # Copyright (C) 2015 Entr'ouert
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the authentic2 package.
 # Benjamin Dauvergne <bdauvergne@entrouvert.com, 2015.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: django-rbac\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-28 00:33+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"POT-Creation-Date: 2015-05-13 15:21+0200\n"
+"PO-Revision-Date: 2015-05-13 15:21+0200\n"
 "Last-Translator: Benjamin Dauvergner <bdauvergne@entrouvert.com>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -16,54 +16,74 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: django_rbac/models.py:21
+#: django_rbac/models.py:33
 msgid "uuid"
 msgstr "Identifiant unique"
 
-#: django_rbac/models.py:25 django_rbac/models.py:71 django_rbac/models.py:87
+#: django_rbac/models.py:37 django_rbac/models.py:105
 msgid "name"
 msgstr "nom"
 
-#: django_rbac/models.py:28 django_rbac/models.py:74
+#: django_rbac/models.py:40 django_rbac/models.py:108
 msgid "slug"
 msgstr "code"
 
-#: django_rbac/models.py:30
+#: django_rbac/models.py:42
 msgid "description"
 msgstr ""
 
-#: django_rbac/models.py:64 django_rbac/models.py:93
+#: django_rbac/models.py:71 django_rbac/models.py:98 django_rbac/models.py:125
 msgid "organizational unit"
 msgstr "unité d'organisation"
 
-#: django_rbac/models.py:65
+#: django_rbac/models.py:99
 msgid "organizational units"
 msgstr "unités d'organisation"
 
-#: django_rbac/models.py:90
+#: django_rbac/models.py:122
 msgid "operation"
 msgstr "opération"
 
-#: django_rbac/models.py:129
+#: django_rbac/models.py:172
 msgid "permission"
 msgstr ""
 
-#: django_rbac/models.py:130
+#: django_rbac/models.py:173
 msgid "permissions"
 msgstr ""
 
-#: django_rbac/models.py:162
+#: django_rbac/models.py:238
 msgid "role"
 msgstr "rôle"
 
-#: django_rbac/models.py:163
+#: django_rbac/models.py:239
 msgid "roles"
 msgstr "rôles"
 
-#: django_rbac/models.py:193
+#: django_rbac/models.py:268
 msgid "role parenting relation"
 msgstr "relation de parenté entre rôles"
 
-#: django_rbac/models.py:194
+#: django_rbac/models.py:269
 msgid "role parenting relations"
 msgstr "relations de parenté entre rôles"
+
+#: django_rbac/models.py:293
+msgid "Management"
+msgstr "Administration"
+
+#: django_rbac/models.py:294
+msgid "Change"
+msgstr "Modification"
+
+#: django_rbac/models.py:295
+msgid "Delete"
+msgstr "Suppression"
+
+#: django_rbac/models.py:296
+msgid "Add"
+msgstr "Ajout"
+
+#: django_rbac/models.py:297
+msgid "View"
+msgstr "Visualisation"
