@@ -61,7 +61,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_username(self):
         "Return the identifying username for this User"
-        return self.username or self.get_full_name() or self.uuid
+        return self.username or self.email or self.get_full_name() or self.uuid
 
     def __unicode__(self):
         human_name = self.username or self.get_full_name() or self.email
