@@ -95,6 +95,7 @@ LOCALE_PATHS = ( os.path.join(BASE_DIR, 'locale'), )
 
 INSTALLED_APPS = (
     'django.contrib.staticfiles',
+    'authentic2.custom_user',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -114,7 +115,6 @@ INSTALLED_APPS = (
     'authentic2.attribute_aggregator',
     'authentic2.disco_service',
     'authentic2.manager',
-    'authentic2.custom_user',
     'authentic2',
     'gadjo',
 )
