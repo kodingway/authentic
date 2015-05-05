@@ -20,6 +20,8 @@ from django.forms.util import ErrorList
 from django.utils import html, http
 from django.utils.translation import ugettext as _
 from django.shortcuts import resolve_url
+from django.template.loader import render_to_string, TemplateDoesNotExist
+from django.core.mail import send_mail
 
 from authentic2.saml.saml2utils import filter_attribute_private_key, \
     filter_element_private_key
@@ -432,3 +434,24 @@ def get_fields_and_labels(*args):
                 fields.append(field)
     return fields, labels
 
+def send_templated_mail(user_or_email, template_name, ctx, with_html=True,
+        from_email=None, **kwargs):
+    '''Send mail to an user by using templates:
+       - <template_name>_subject.txt for the subject
+       - <template_name>_body.txt for the plain text body
+       - <template_name>_body.html for the HTML body
+    '''
+    if hasattr(user_or_email, 'email'):
+        user_or_email = user_or_email.email
+    subject = render_to_string(template_name + '_subject.txt', ctx).strip()
+    body = render_to_string(template_name + '_body.txt', ctx)
+    html_body = None
+    if with_html:
+        try:
+            html_body = render_to_string(template_name + '_body.html', ctx)
+        except TemplateDoesNotExist:
+            html_body = None
+    send_mail(subject, body,
+            from_email or settings.DEFAULT_FROM_EMAIL,
+            [user_or_email],
+            html_message=html_body, **kwargs)
