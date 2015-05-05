@@ -9,6 +9,11 @@ def create_permissions(sender, app_config, **kwargs):
         defaults={
           'name': 'Can view groups'
         })
+    Permission.objects.get_or_create(codename='change_permissions_group',
+        content_type=group_ct,
+        defaults={
+          'name': 'Can change permissions of groups'
+        })
 
 class CustomUserConfig(AppConfig):
     name = 'authentic2.custom_user'
