@@ -81,12 +81,14 @@ def modelform_factory(model, **kwargs):
 
        For the user model also add attribute based fields.
     '''
-    form = kwargs.pop('form', None)
+    form = kwargs.pop('form', forms.ModelForm)
     fields = kwargs.get('fields', [])
     required = list(kwargs.pop('required', []))
-    d = {'model': model, 'fields': '__all__'}
-    meta = type('Meta', (), d)
-    d = {'Meta': meta}
+    d = {}
+    if not form or not hasattr(form, 'Meta'):
+        meta_d = {'model': model, 'fields': '__all__'}
+        meta = type('Meta', (), meta_d)
+        d['Meta'] = meta
     bases = (form,)
     # KV attributes are only supported for the user model currently
     modelform = None
