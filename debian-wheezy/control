@@ -51,7 +51,7 @@ Architecture: all
 Pre-Depends: python-django (>= 1.7), postgresql
 Depends: ${misc:Depends}, adduser,
     python-authentic2 (= ${binary:Version}), python-psycopg2,
-    python-django-tenant-schemas,
+    python-django-tenant-schemas (>= 1.5.2.1),
     python-hobo,
     gunicorn, dbconfig-common,
     debconf | debconf-2.0, ucf
