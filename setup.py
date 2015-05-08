@@ -28,7 +28,8 @@ class compile_translations(Command):
     def run(self):
         try:
             from django.core.management import call_command
-            for dir in ('src/authentic2', 'src/authentic2_idp_openid', 'src/authentic2_idp_cas'):
+            for dir in ('src/authentic2', 'src/authentic2_idp_openid',
+                    'src/authentic2_idp_cas', 'src/django_rbac'):
                 for path, dirs, files in os.walk(dir):
                     if 'locale' not in dirs:
                         continue

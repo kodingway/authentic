@@ -1,0 +1,69 @@
+# Django RBAC french translation
+# Copyright (C) 2015 Entr'ouert
+# This file is distributed under the same license as the PACKAGE package.
+# Benjamin Dauvergne <bdauvergne@entrouvert.com, 2015.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: django-rbac\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-04-28 00:33+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Benjamin Dauvergner <bdauvergne@entrouvert.com>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: django_rbac/models.py:21
+msgid "uuid"
+msgstr "Identifiant unique"
+
+#: django_rbac/models.py:25 django_rbac/models.py:71 django_rbac/models.py:87
+msgid "name"
+msgstr "nom"
+
+#: django_rbac/models.py:28 django_rbac/models.py:74
+msgid "slug"
+msgstr "code"
+
+#: django_rbac/models.py:30
+msgid "description"
+msgstr ""
+
+#: django_rbac/models.py:64 django_rbac/models.py:93
+msgid "organizational unit"
+msgstr "unité d'organisation"
+
+#: django_rbac/models.py:65
+msgid "organizational units"
+msgstr "unités d'organisation"
+
+#: django_rbac/models.py:90
+msgid "operation"
+msgstr "opération"
+
+#: django_rbac/models.py:129
+msgid "permission"
+msgstr ""
+
+#: django_rbac/models.py:130
+msgid "permissions"
+msgstr ""
+
+#: django_rbac/models.py:162
+msgid "role"
+msgstr "rôle"
+
+#: django_rbac/models.py:163
+msgid "roles"
+msgstr "rôles"
+
+#: django_rbac/models.py:193
+msgid "role parenting relation"
+msgstr "relation de parenté entre rôles"
+
+#: django_rbac/models.py:194
+msgid "role parenting relations"
+msgstr "relations de parenté entre rôles"
