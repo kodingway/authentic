@@ -12,7 +12,7 @@ from django.contrib.auth.hashers import check_password
 from django.test.utils import override_settings
 from django.contrib.auth import REDIRECT_FIELD_NAME
 
-from . import hashers, utils, models, decorators
+from . import hashers, utils, models, decorators, attribute_kinds
 
 def get_response_form(response, form='form'):
     contexts = list(response.context)
@@ -505,3 +505,31 @@ class CacheTests(TestCase):
         response3 = client.get('/cache/', HTTP_HOST='cache1.example.com')
         self.assertNotEqual(response1.content, response2.content)
         self.assertEqual(response1.content, response3.content)
+
+class AttributeKindsTest(TestCase):
+    def test_simple(self):
+        from django.core.exceptions import ValidationError
+        from django import forms
+
+        with self.settings(A2_ATTRIBUTE_KINDS=[
+                {
+                    'label': 'integer',
+                    'name': 'integer',
+                    'field_class': forms.IntegerField,
+                }]):
+            self.assertTrue(isinstance(attribute_kinds.get_form_field('string'),
+                    forms.CharField))
+            self.assertEqual(attribute_kinds.get_kind('string')['name'],
+                    'string')
+            self.assertTrue(isinstance(attribute_kinds.get_form_field('integer'),
+                    forms.IntegerField))
+            self.assertEqual(attribute_kinds.get_kind('integer')['name'],
+                    'integer')
+            attribute_kinds.validate_siret('49108189900024')
+            with self.assertRaises(ValidationError):
+                attribute_kinds.validate_siret('49108189900044')
+        with self.assertRaises(KeyError):
+            attribute_kinds.get_form_field('integer')
+        with self.assertRaises(KeyError):
+            attribute_kinds.get_kind('integer')
+

@@ -1,6 +1,8 @@
 import string
 import json
 
+from itertools import chain
+
 from django import forms
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
@@ -13,10 +15,25 @@ from . import app_settings
 
 capfirst = allow_lazy(capfirst, unicode)
 
+
+DEFAULT_ATTRIBUTE_KINDS = [
+        {
+          'label': _('string'),
+          'name': 'string',
+          'field_class': forms.CharField,
+        },
+]
+
+def get_attribute_kinds():
+    attribute_kinds = {}
+    for attribute_kind in chain(DEFAULT_ATTRIBUTE_KINDS, app_settings.A2_ATTRIBUTE_KINDS):
+        attribute_kinds[attribute_kind['name']] = attribute_kind
+    return attribute_kinds
+
 @to_list
 def get_choices():
     '''Produce a choice list to use in form fields'''
-    for d in ATTRIBUTE_KINDS.itervalues():
+    for d in get_attribute_kinds().itervalues():
         yield (d['name'], capfirst(d['label']))
 
 def only_digits(value):
@@ -46,23 +63,13 @@ def contribute_to_form(attribute_descriptions, form):
         attribute_description.contribute_to_form(form)
 
 def get_form_field(kind, **kwargs):
-    defn = ATTRIBUTE_KINDS[kind]
+    defn = get_attribute_kinds()[kind]
     if 'kwargs' in defn:
         kwargs.update(defn['kwargs'])
     return defn['field_class'](**kwargs)
 
 def get_kind(kind):
-    d = ATTRIBUTE_KINDS[kind]
+    d = get_attribute_kinds()[kind]
     d.setdefault('serialize', json.dumps)
     d.setdefault('deserialize', json.loads)
     return d
-
-ATTRIBUTE_KINDS = [
-        {
-          'label': _('string'),
-          'name': 'string',
-          'field_class': forms.CharField,
-        },
-]
-ATTRIBUTE_KINDS += app_settings.A2_ATTRIBUTE_KINDS
-ATTRIBUTE_KINDS = dict((d['name'], d) for d in ATTRIBUTE_KINDS)
