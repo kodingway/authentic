@@ -517,6 +517,10 @@ class AttributeKindsTest(TestCase):
                     'name': 'integer',
                     'field_class': forms.IntegerField,
                 }]):
+            title_field = attribute_kinds.get_form_field('title')
+            self.assertTrue(isinstance(title_field, forms.ChoiceField))
+            self.assertTrue(isinstance(title_field.widget, forms.RadioSelect))
+            self.assertIsNotNone(title_field.choices)
             self.assertTrue(isinstance(attribute_kinds.get_form_field('string'),
                     forms.CharField))
             self.assertEqual(attribute_kinds.get_kind('string')['name'],

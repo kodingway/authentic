@@ -6,7 +6,7 @@ from itertools import chain
 from django import forms
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from django.utils.functional import allow_lazy
 from django.template.defaultfilters import capfirst
 
@@ -15,6 +15,13 @@ from . import app_settings
 
 capfirst = allow_lazy(capfirst, unicode)
 
+DEFAULT_TITLE_CHOICES = (
+    pgettext_lazy('title', 'Mrs'),
+    pgettext_lazy('title', 'Mr'),
+)
+
+def get_title_choices():
+    return app_settings.A2_ATTRIBUTE_KIND_TITLE_CHOICES or DEFAULT_TITLE_CHOICES
 
 DEFAULT_ATTRIBUTE_KINDS = [
         {
@@ -22,6 +29,15 @@ DEFAULT_ATTRIBUTE_KINDS = [
           'name': 'string',
           'field_class': forms.CharField,
         },
+        {
+          'label': _('title'),
+          'name': 'title',
+          'field_class': forms.ChoiceField,
+          'kwargs': {
+               'choices': get_title_choices(),
+               'widget': forms.RadioSelect,
+          }
+        }
 ]
 
 def get_attribute_kinds():

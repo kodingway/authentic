@@ -155,6 +155,7 @@ default_settings = dict(
             definition='exponential backoff maximum duration as seconds until '
             'time until next try after a login failure'),
     A2_VERIFY_SSL=Setting(default=True, definition='Verify SSL certificate in HTTP requests'),
+    A2_ATTRIBUTE_KIND_TITLE_CHOICES=Setting(default=(), definition='Choices for the title attribute kind'),
 )
 
 app_settings = AppSettings(default_settings)

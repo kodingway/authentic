@@ -94,7 +94,21 @@ msgstr ""
 msgid "Username"
 msgstr "Identifiant"
 
+#: src/authentic2/attribute_kinds.py:26
+msgid "title"
+msgstr "civilité"
+
+#: src/authentic2/attribute_kinds.py:30
+msgctxt "title"
+msgid "Mrs"
+msgstr "Madame"
+
 #: src/authentic2/attribute_kinds.py:31
+msgctxt "title"
+msgid "Mr"
+msgstr "Monsieur"
+
+#: src/authentic2/attribute_kinds.py:58
 msgid "SIRET number must contain 14 digits"
 msgstr "Le SIRET doit contenir 14 chiffres"
 
