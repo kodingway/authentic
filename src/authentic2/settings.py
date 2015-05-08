@@ -45,6 +45,7 @@ STATIC_URL = '/static/'
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
+    'django_rbac.context_processors.auth',
     'django.core.context_processors.debug',
     'django.core.context_processors.i18n',
     'django.core.context_processors.media',
@@ -116,6 +117,8 @@ INSTALLED_APPS = (
     'authentic2.disco_service',
     'authentic2.manager',
     'authentic2',
+    'django_rbac',
+    'authentic2.a2_rbac',
     'gadjo',
 )
 
@@ -126,6 +129,7 @@ AUTHENTICATION_BACKENDS = (
     'authentic2.backends.ldap_backend.LDAPBackend',
     'authentic2.backends.ldap_backend.LDAPBackendPasswordLost',
     'authentic2.backends.models_backend.ModelBackend',
+    'django_rbac.backends.DjangoRBACBackend',
 )
 AUTHENTICATION_BACKENDS = plugins.register_plugins_authentication_backends(
         AUTHENTICATION_BACKENDS)
@@ -147,6 +151,14 @@ ACCOUNT_ACTIVATION_DAYS = 2
 AUTH_USER_MODEL = 'custom_user.User'
 AUTH_FRONTENDS = plugins.register_plugins_auth_frontends((
     'authentic2.auth_frontends.LoginPasswordBackend',))
+
+###########################
+# RBAC settings
+###########################
+RBAC_OU_MODEL = 'a2_rbac.OrganizationalUnit'
+RBAC_PERMISSION_MODEL = 'a2_rbac.Permission'
+RBAC_ROLE_MODEL = 'a2_rbac.Role'
+RBAC_ROLE_PARENTING_MODEL = 'a2_rbac.RoleParenting'
 
 #############################
 # Identity Provider settings

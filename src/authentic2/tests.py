@@ -124,6 +124,7 @@ class SerializerTests(TestCase):
                        'groups': [],
                        'user_permissions': [],
                        'password': '',
+                       'ou': None,
                    }
                  },
                   {

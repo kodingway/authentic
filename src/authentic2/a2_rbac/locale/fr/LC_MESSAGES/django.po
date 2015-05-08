@@ -1,0 +1,68 @@
+# Authentic2 RBAC french translation
+# Copyright (C) 2015 Entr'ouert
+# This file is distributed under the same license as the PACKAGE package.
+# Benjamin Dauvergne <bdauvergne@entrouvert.com, 2015.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: django-rbac\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-05-05 18:15+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Benjamin Dauvergner <bdauvergne@entrouvert.com>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: authentic2/a2_rbac/management.py:61
+#, python-brace-format
+msgid "Management of {target}"
+msgstr "Gestion de {target}"
+
+#: authentic2/a2_rbac/management.py:62
+#, python-brace-format
+msgid "Management of {target} in {ou}"
+msgstr "Gestion de {target} dans {ou}"
+
+#: authentic2/a2_rbac/management.py:79
+#, python-brace-format
+msgid "Management of role {target}"
+msgstr "Gestion du rôle {target}"
+
+#: authentic2/a2_rbac/models.py:12
+msgid "organizational unit"
+msgstr "unité d'organisation"
+
+#: authentic2/a2_rbac/models.py:13
+msgid "organizational units"
+msgstr "unités d'organisation"
+
+#: authentic2/a2_rbac/models.py:17
+msgid "permission"
+msgstr ""
+
+#: authentic2/a2_rbac/models.py:18
+msgid "permissions"
+msgstr ""
+
+#: authentic2/a2_rbac/models.py:22
+msgid "permission mirror"
+msgstr "mirroir d'une permission"
+
+#: authentic2/a2_rbac/models.py:31
+msgid "role"
+msgstr "rôle"
+
+#: authentic2/a2_rbac/models.py:32
+msgid "roles"
+msgstr "rôles"
+
+#: authentic2/a2_rbac/models.py:36
+msgid "role parenting relation"
+msgstr "relation de parenté entre rôles"
+
+#: authentic2/a2_rbac/models.py:37
+msgid "role parenting relations"
+msgstr "relations de parenté entre rôles"

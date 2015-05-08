@@ -12,6 +12,7 @@ from django.contrib.auth import get_user_model
 from django.forms import CharField
 
 from authentic2.utils import get_form_class, redirect, make_url, get_fields_and_labels
+from authentic2.a2_rbac.utils import get_default_ou
 from .. import models, app_settings, compat, cbv, views, forms, validators
 from .forms import RegistrationCompletionForm
 
@@ -96,7 +97,9 @@ class RegistrationCompletionView(CreateView):
     def get_form_kwargs(self, **kwargs):
         '''Initialize mail from token'''
         kwargs = super(RegistrationCompletionView, self).get_form_kwargs(**kwargs)
-        kwargs['instance'] = get_user_model()(email=self.request.token['email'])
+        kwargs['instance'] = get_user_model()(
+            email=self.request.token['email'],
+            ou=get_default_ou())
         return kwargs
 
     def get_context_data(self, **kwargs):

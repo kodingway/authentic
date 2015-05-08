@@ -4,10 +4,13 @@ from django.utils.http import urlquote
 from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.core.exceptions import ValidationError
 
 from model_utils.managers import QueryManager
 
 from . import attribute_kinds
+from authentic2.a2_rbac.models import Role
+from authentic2.a2_rbac.utils import get_default_ou
 
 try:
     from django.contrib.contenttypes.fields import GenericForeignKey
@@ -15,8 +18,8 @@ except ImportError:
     from django.contrib.contenttypes.generic import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
-
 from . import managers
+
 
 class DeletedUser(models.Model):
     '''Record users to delete'''
@@ -240,10 +243,26 @@ class Service(models.Model):
     slug = models.SlugField(
         verbose_name=_('slug'),
         max_length=128)
+    ou = models.ForeignKey(
+        to='a2_rbac.OrganizationalUnit',
+        null=True,
+        blank=True,
+        swappable=False)
+
+    def clean(self):
+        if not self.ou:
+            raise ValidationError({
+                    'ou': [
+                        ValidationError(
+                                _('An organizational unit is mandatory'),
+                                code='missing-ou')]})
 
     class Meta:
         verbose_name = _('base service model')
         verbose_name_plural = _('base service models')
+        unique_together = (
+                ('slug', 'ou'),
+        )
 
     def __unicode__(self):
         return self.name

@@ -51,6 +51,14 @@ class CustomIndexDashboard(Dashboard):
                 'authentic2.models.PasswordReset'),
         ))
         self.children.append(modules.ModelList(
+            _('Access control'),
+            models=('authentic2.a2_rbac.models.OrganizationalUnit',
+                'authentic2.a2_rbac.models.Role',
+                'authentic2.a2_rbac.models.Permission',
+                'authentic2.models.ServiceRole',
+            ),
+        ))
+        self.children.append(modules.ModelList(
             _('Debug'),
             models=(
                 'authentic2.models.AttributeValue',

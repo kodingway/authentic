@@ -2,15 +2,18 @@ from django.utils.http import urlquote
 from django.db import models
 from django.utils import timezone
 from django.core.mail import send_mail
-from django.contrib.auth.models import (AbstractBaseUser, PermissionsMixin)
+from django.contrib.auth.models import AbstractBaseUser
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
+
+from django_rbac.backends import DjangoRBACBackend
+from django_rbac.models import PermissionMixin
 
 from authentic2 import utils, validators, app_settings
 
 from .managers import UserManager
 
-class User(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, PermissionMixin):
     """
     An abstract base class implementing a fully featured User model with
     admin-compliant permissions.
@@ -31,6 +34,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         help_text=_('Designates whether this user should be treated as '
                     'active. Unselect this instead of deleting accounts.'))
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+    ou = models.ForeignKey(
+            to='a2_rbac.OrganizationalUnit',
+            blank=True,
+            null=True,
+            swappable=False)
+
 
     objects = UserManager()
 
@@ -90,6 +99,9 @@ class User(AbstractBaseUser, PermissionsMixin):
             else:
                 errors['email'] = _('This email address is already in '
                                         'use. Please supply a different email address.')
+        if not self.ou:
+            errors['ou'] = ValidationError(_('An organizational unit is '
+                        'mandatory'), code='missing-ou')
         if errors:
             raise ValidationError(errors)
 
