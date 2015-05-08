@@ -78,6 +78,7 @@ default_settings = dict(
                  'authentic2.attributes_ng.sources.django_user',
                  'authentic2.attributes_ng.sources.ldap',
                  'authentic2.attributes_ng.sources.computed_targeted_id',
+                 'authentic2.attributes_ng.sources.service_roles',
         ),
         definition='List of attribute backend classes or modules',
     ),

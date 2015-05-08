@@ -223,8 +223,7 @@ class ValidateBaseView(CasMixin, View):
             st.attributes = get_attributes({
                 'request': request,
                 'user': user,
-                'service': st.service.slug,
-                'service_url': st.service_url,
+                'service': st.service,
                 '__wanted_attributes': wanted_attributes,
             })
         return st.attributes

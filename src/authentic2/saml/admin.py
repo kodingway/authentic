@@ -180,8 +180,13 @@ def update_metadata(modeladmin, request, queryset):
 
 class SAMLAttributeInlineForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+        service = kwargs.pop('service', None)
         super(SAMLAttributeInlineForm, self).__init__(*args, **kwargs)
-        choices = self.choices({'user': None, 'request': None})
+        choices = self.choices({
+                'user': None,
+                'request': None,
+                'service': service,
+        })
         self.fields['attribute_name'].choices = choices
         self.fields['attribute_name'].widget = forms.Select(choices=choices)
 
@@ -199,11 +204,18 @@ class SAMLAttributeInlineForm(forms.ModelForm):
                 'enabled',
         ]
 
-
 class SAMLAttributeInlineAdmin(GenericTabularInline):
     model = SAMLAttribute
     form = SAMLAttributeInlineForm
 
+    def get_formset(self, request, obj=None, **kwargs):
+        # add service argument to form constructor
+        class NewForm(self.form):
+            def __init__(self, *args, **kwargs):
+                kwargs['service'] = obj
+                super(NewForm, self).__init__(*args, **kwargs)
+        kwargs['form'] = NewForm
+        return super(SAMLAttributeInlineAdmin, self).get_formset(request, obj=obj, **kwargs)
 
 class LibertyProviderAdmin(admin.ModelAdmin):
     form = LibertyProviderForm

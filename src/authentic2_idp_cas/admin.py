@@ -11,7 +11,7 @@ from . import models
 class ServiceForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ServiceForm, self).__init__(*args, **kwargs)
-        choices = self.choices({'user': None, 'request': None})
+        choices = self.choices({'user': None, 'request': None, 'service': self.instance})
         self.fields['identifier_attribute'].choices = choices
         self.fields['identifier_attribute'].widget = forms.Select(choices=choices)
 
@@ -25,8 +25,13 @@ class ServiceForm(forms.ModelForm):
 
 class AttributeInlineForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+        service = kwargs.pop('service', None)
         super(AttributeInlineForm, self).__init__(*args, **kwargs)
-        choices = self.choices({'user': None, 'request': None})
+        choices = self.choices({
+                'user': None,
+                'request': None,
+                'service': service
+        })
         self.fields['attribute_name'].choices = choices
         self.fields['attribute_name'].widget = forms.Select(choices=choices)
 
@@ -45,6 +50,15 @@ class AttributeInlineForm(forms.ModelForm):
 class AttributeInlineAdmin(admin.TabularInline):
     model = models.Attribute
     form = AttributeInlineForm
+
+    def get_formset(self, request, obj=None, **kwargs):
+        # add service argument to form constructor
+        class NewForm(self.form):
+            def __init__(self, *args, **kwargs):
+                kwargs['service'] = obj
+                super(NewForm, self).__init__(*args, **kwargs)
+        kwargs['form'] = NewForm
+        return super(AttributeInlineAdmin, self).get_formset(request, obj=obj, **kwargs)
 
 class ServiceAdmin(admin.ModelAdmin):
     form = ServiceForm

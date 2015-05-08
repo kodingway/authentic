@@ -200,7 +200,7 @@ def add_attributes(request, assertion, provider):
     ctx = get_attributes({
         'request': request,
         'user': request.user,
-        'service': provider.entity_id,
+        'service': provider,
         '__wanted_attributes': wanted_attributes,
     })
     if not assertion.attributeStatement:
