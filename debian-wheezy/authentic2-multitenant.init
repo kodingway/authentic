@@ -21,6 +21,7 @@ LOG_DIR=/var/log/$NAME
 PIDFILE=$PID_DIR/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 BIND=unix:$PID_DIR/$NAME.sock
+WORKERS=4
 
 export AUTHENTIC2_SETTINGS_FILE=/usr/lib/$NAME/debian_config.py
 MANAGE_SCRIPT="/usr/bin/$NAME-manage"
@@ -40,7 +41,7 @@ DAEMON_ARGS="--pid $PIDFILE \
 --access-logfile $LOG_DIR/gunicorn-access.log \
 --log-file $LOG_DIR/gunicorn-error.log \
 --bind=$BIND \
---workers=10 \
+--workers=$WORKERS \
 --worker-class=sync \
 --timeout=60 \
 authentic2.wsgi:application"
