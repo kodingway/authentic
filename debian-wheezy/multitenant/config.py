@@ -1,41 +1,72 @@
-# Here your custom configuration.
-# Use it to declare new settings or overload existing ones
+# Configuration for authentic.
+# You can override Authentic default settings here
 
-# STATIC_ROOT='/var/lib/authentic2/static'
+# Authentic is a Django application: for the full list of settings and their
+# values, see https://docs.djangoproject.com/en/1.7/ref/settings/
+# For more information on settings see
+# https://docs.djangoproject.com/en/1.7/topics/settings/
 
-# ALLOWED_HOSTS='*'
+# WARNING! Quick-start development settings unsuitable for production!
+# See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
-# SAML_SIGNATURE_PUBLIC_KEY=""
-# SAML_SIGNATURE_PRIVATE_KEY=""
+# This file is sourced by "execfile" from /usr/lib/authentic/debian_config.py
 
-# USE_MEMCACHED=yes # required python-memcache memcached
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = False
+TEMPLATE_DEBUG = False
 
-# IDP_SAML2='yes'
-# IDP_OPENID='yes' # require package python-openid
-# IDP_CAS='yes'
-# AUTH_SAML2='yes'
-# AUTH_OPENID='yes' # require package python-openid
-# AUTH_SSL='yes'
+#ADMINS = (
+#        # ('User 1', 'watchdog@example.net'),
+#        # ('User 2', 'janitor@example.net'),
+#)
+
+# ALLOWED_HOSTS must be correct in production!
+# See https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
+ALLOWED_HOSTS = [
+        '*',
+]
+
+# Databases
+# Default: a local database named "authentic"
+# https://docs.djangoproject.com/en/1.7/ref/settings/#databases
+# Warning: don't change ENGINE
+#DATABASES['default']['NAME'] = 'authentic2_multitenant'
+#DATABASES['default']['USER'] = 'authentic-multitenant'
+#DATABASES['default']['PASSWORD'] = '******'
+#DATABASES['default']['HOST'] = 'localhost'
+#DATABASES['default']['PORT'] = '5432'
+
+LANGUAGE_CODE = 'fr-fr'
+TIME_ZONE = 'Europe/Paris'
 
 # Sentry / Raven configuration
-# RAVEN_CONFIG_DSN='' # require package  python-raven
+#RAVEN_CONFIG = {
+#    'dsn': '',
+#}
 
 # Email configuration
-# EMAIL_HOST = 'localhost'
-# EMAIL_PORT = 25
-# EMAIL_SUBJECT_PREFIX='[Authentic2]'
-# SERVER_EMAIL='admin+authentic2@entrouvert.com'
+#EMAIL_SUBJECT_PREFIX = '[authentic] '
+#SERVER_EMAIL = 'root@authentic.example.org'
+#DEFAULT_FROM_EMAIL = 'webmaster@authentic.example.org'
 
-# complete database config
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'tenant_schemas.postgresql_backend',
-#         'HOST': 'localhost',
-#         'NAME':  'authentic',
-#         'PASSWORD': 'secret',
-#         'PORT': 5432
-#     }
-# }
-# or each param separately
-# DATABASES['default']['HOST'] = 'another host'
-# DATABASES['default']['PASSWORD'] = 'another secret'
+# SMTP configuration
+#EMAIL_HOST = 'localhost'
+#EMAIL_HOST_USER = ''
+#EMAIL_HOST_PASSWORD = ''
+#EMAIL_PORT = 25
+
+# HTTPS Security
+#CSRF_COOKIE_SECURE = True
+#SESSION_COOKIE_SECURE = True
+
+# Idp
+# SAML 2.0 IDP
+#A2_IDP_SAML2_ENABLE = False
+# CAS 1.0 / 2.0 IDP
+#A2_IDP_CAS_ENABLE = False
+# OpenID 1.0 / 2.0 IDP
+#A2_IDP_OPENID_ENABLE = False
+
+# Authentifications
+#A2_AUTH_PASSWORD_ENABLE = True
+#A2_SSLAUTH_ENABLE = False
