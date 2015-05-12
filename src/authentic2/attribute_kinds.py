@@ -16,8 +16,8 @@ from . import app_settings
 capfirst = allow_lazy(capfirst, unicode)
 
 DEFAULT_TITLE_CHOICES = (
-    pgettext_lazy('title', 'Mrs'),
-    pgettext_lazy('title', 'Mr'),
+    (pgettext_lazy('title', 'Mrs'), pgettext_lazy('title', 'Mrs')),
+    (pgettext_lazy('title', 'Mr'), pgettext_lazy('title', 'Mr')),
 )
 
 def get_title_choices():
