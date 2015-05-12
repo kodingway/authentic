@@ -267,7 +267,7 @@ class ServiceValidateView(ValidateBaseView):
         user.text = unicode(identifier)
         self.provision_pgt(request, st, success)
         self.provision_attributes(request, st, success)
-        return HttpResponse(ET.tostring(root, encoding='utf8'),
+        return HttpResponse(ET.tostring(root, encoding='utf-8'),
                 content_type='text/xml')
 
     def provision_attributes(self, request, st, success):
@@ -390,7 +390,7 @@ class ProxyView(View):
         success = ET.SubElement(root, PROXY_SUCCESS_ELT)
         proxy_ticket = ET.SubElement(success, PROXY_TICKET_ELT)
         proxy_ticket.text = pt.ticket_id
-        return HttpResponse(ET.tostring(root, encoding='utf8'),
+        return HttpResponse(ET.tostring(root, encoding='utf-8'),
                 content_type='text/xml')
 
 
