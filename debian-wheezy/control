@@ -10,7 +10,7 @@ X-Python-Version: >= 2.6
 
 Package: python-authentic2
 Architecture: all
-Pre-Depends: python-django (>= 1.7), python-django (<< 1.8), openssl
+Pre-Depends: python-django (>= 1.7.6), python-django (<< 1.8), openssl
 Depends: ${misc:Depends}, ${python:Depends},
     python-requests,
     python-django-admin-tools (>=0.5.2),
@@ -30,7 +30,7 @@ Description: Versatile identity server
 
 Package: authentic2
 Architecture: all
-Pre-Depends: python-django (>= 1.5), postgresql
+Pre-Depends: postgresql
 Depends: ${misc:Depends}, adduser,
     python-authentic2 (= ${binary:Version}), python-psycopg2,
     gunicorn, dbconfig-common,
@@ -48,7 +48,7 @@ Description: Versatile identity server Python module
 
 Package: authentic2-multitenant
 Architecture: all
-Pre-Depends: python-django (>= 1.7), postgresql
+Pre-Depends: postgresql
 Depends: ${misc:Depends}, adduser,
     python-authentic2 (= ${binary:Version}), python-psycopg2,
     python-django-tenant-schemas (>= 1.5.2.1),
