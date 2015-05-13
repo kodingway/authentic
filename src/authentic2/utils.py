@@ -9,6 +9,7 @@ from functools import wraps
 
 from importlib import import_module
 
+import django
 from django.conf import settings
 from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.core.exceptions import ImproperlyConfigured
@@ -22,6 +23,12 @@ from django.utils.translation import ugettext as _
 from django.shortcuts import resolve_url
 from django.template.loader import render_to_string, TemplateDoesNotExist
 from django.core.mail import send_mail
+
+try:
+    from django.core.exceptions import FieldDoesNotExist
+except ImportError:
+    # Django < 1.8
+    from django.db.models.fields import FieldDoesNotExist
 
 from authentic2.saml.saml2utils import filter_attribute_private_key, \
     filter_element_private_key
@@ -455,3 +462,26 @@ def send_templated_mail(user_or_email, template_name, ctx, with_html=True,
             from_email or settings.DEFAULT_FROM_EMAIL,
             [user_or_email],
             html_message=html_body, **kwargs)
+
+if django.VERSION < (1,8,0):
+    from django.db.models import ForeignKey
+
+    def get_fk_model(model, fieldname):
+        '''returns None if not foreignkey, otherswise the relevant model'''
+        try:
+            field_object, model, direct, m2m = model._meta.get_field_by_name(fieldname)
+        except FieldDoesNotExist:
+            return None
+        if not m2m and direct and isinstance(field_object, ForeignKey):
+            return field_object.rel.to
+        return None
+else:
+    def get_fk_model(model, fieldname):
+        try:
+            field = model._meta.get_field('ou')
+        except FieldDoesNotExist:
+            return None
+        else:
+            if not field.is_relation or not field.many_to_one:
+                return None
+            return field.related_model
