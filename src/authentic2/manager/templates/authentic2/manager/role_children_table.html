@@ -1,0 +1,12 @@
+{% extends "authentic2/manager/table.html" %}
+
+{% load i18n %}
+
+{% if perms.auth.change_group %}
+  {% block table.head.last.column %}
+    <th></th>
+  {% endblock %}
+  {% block table.tbody.last.column %}
+    <td>{% if view.can_change and row.record.direct %}<a class="icon-remove-sign js-remove-object" data-confirm="{% blocktrans with name=row.record.name role=active_role.name %}Do you really want to remove role &quot;{{ name }}&quot; from role &quot;{{ object }}&quot;&nbsp;?{% endblocktrans %}" href="#" data-pk-arg="role"></a>{% endif %}</td>
+  {% endblock %}
+{% endif %}

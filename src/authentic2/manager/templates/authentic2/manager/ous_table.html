@@ -1,0 +1,17 @@
+{% extends "authentic2/manager/table.html" %}
+
+{% load i18n %}
+
+{% if perms.a2_rbac.delete_organizationalunit %}
+  {% block table.head.last.column %}
+    <th></th>
+  {% endblock %}
+  {% block table.tbody.last.column %}
+    {% if row.record.default %}
+    <td><a class="icon-remove-sign disabled" 
+           title="{% trans "You cannot delete the default organizational unit, your must first elect a new default organizational unit." %}"></a></td>
+    {% else %}
+       <td><a class="icon-remove-sign" rel="popup" href="{% url "a2-manager-ou-delete" pk=row.record.pk %}"></a></td>
+    {% endif %}
+  {% endblock %}
+{% endif %}

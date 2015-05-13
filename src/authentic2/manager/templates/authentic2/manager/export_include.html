@@ -1,0 +1,10 @@
+{% load i18n %}
+ <p id="export-formats">{% trans "Export" %} :
+   {% for format in formats %}
+     {% if object %}
+         <a class="export-format" href="{% url export_view_name pk=object.pk format=format %}?{{ request.GET.urlencode }}">{{ format|upper }}</a>
+     {% else %}
+         <a class="export-format" href="{% url export_view_name format=format %}?{{ request.GET.urlencode }}">{{ format|upper }}</a>
+     {% endif %}
+   {% endfor %}
+ </p>

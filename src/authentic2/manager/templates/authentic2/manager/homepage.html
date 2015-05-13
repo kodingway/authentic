@@ -16,8 +16,34 @@
      </div>
 
       <ul class="apps">
-        <li id="users"><a href="{% url "a2-manager-users" %}">{% trans "User management" %}</a></li>
-        <li id="roles"><a href="{% url "a2-manager-roles" %}">{% trans "Role management" %}</a></li>
+        {% if perms.any.a2_rbac.view_organizationalunit %}
+          <li id="organizational-units">
+            <a href="{% url "a2-manager-ous" %}">
+              {% trans "Organizational units management" %}
+            </a>
+          </li>
+        {% endif %}
+        {% if perms.any.custom_user.view_user %}
+	  <li id="users">
+            <a href="{% url "a2-manager-users" %}">
+              {% trans "User management" %}
+            </a>
+          </li>
+        {% endif %}
+        {% if perms.any.auth.view_group %}
+	  <li id="groups">
+            <a href="{% url "a2-manager-groups" %}">
+              {% trans "Group management" %}
+            </a>
+          </li>
+        {% endif %}
+        {% if perms.any.a2_rbac.view_role %}
+          <li id="roles">
+            <a href="{% url "a2-manager-roles" %}">
+              {% trans "Roles management" %}
+            </a>
+          </li>
+        {% endif %}
       </ul>
       <br style="clear: both;"/>
   </div>

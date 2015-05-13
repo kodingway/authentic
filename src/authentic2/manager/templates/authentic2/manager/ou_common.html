@@ -1,0 +1,9 @@
+{% extends "authentic2/manager/sidebar.html" %}
+{% load i18n staticfiles %}
+
+{% block title %}{{ block.super }} - {% trans "Organizational units management" %}{% endblock %}
+
+{% block more-user-links %}
+  {{ block.super }}
+  <a href="{% url 'a2-manager-ous' %}">{% trans 'Organizational units management' %}</a>
+{% endblock %}

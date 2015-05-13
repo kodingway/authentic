@@ -50,16 +50,8 @@ $(function() {
         update_table(location.href);
       }
     });
-    $(document).on('gadjo:dialog-done', function (e, form) {
-      /* on listing pages, do not redirect user elsewhere */
-      if ($('.table-container').length) {
-        e.preventDefault();
-        update_table(location.href);
-        $(form).dialog('destroy');
-      }
-    });
     /* user deletion */
-    $(document).on('click', '.js-remove-user', function (e) {
+    $(document).on('click', '.js-remove-object', function (e) {
       var $anchor = $(e.target);
       if ($(e.target).data('confirm')) {
         if (! confirm($(e.target).data('confirm'))) {
@@ -67,8 +59,13 @@ $(function() {
         }
       }
       var $tr = $anchor.parents('tr');
-      var ref = $tr.data('ref');
-      $.post('', {'csrfmiddlewaretoken': window.csrf_token, 'action': 'remove', 'ref': ref}, function () {
+      var pk = $tr.data('pk');
+      var pk_arg = $anchor.data('pk-arg');
+      var post_content = {
+         'csrfmiddlewaretoken': window.csrf_token,
+        'action': 'remove'}
+      post_content[pk_arg] = pk
+      $.post('', post_content, function () {
           update_table(window.location.href);
       });
       return false;
@@ -77,8 +74,45 @@ $(function() {
     $(document).on('click', 'input[type=submit]', function (e) {
       if ($(e.target).data('confirm')) {
         if (! confirm($(e.target).data('confirm'))) {
+          e.preventDefault();
           return false;
         }
+      } else if ($(e.target).data('url')) {
+       e.preventDefault();
+       return displayPopup.apply($(e.target), [e]);
       }
     })
+    $(document).on('change', '#id_generate_new_password', function (e) {
+        if ($(e.target).is(':checked')) {
+            $('#id_send_mail').prop('disabled', true);
+            $('#id_password1').prop('disabled', true);
+            $('#id_password2').prop('disabled', true);
+        } else {
+            $('#id_send_mail').prop('disabled', false);
+            $('#id_password1').prop('disabled', false);
+            $('#id_password2').prop('disabled', false);
+        }
+    });
+    $(document).on('click.manager', 'table tr[data-url][rel=popup]', displayPopup);
+    $(document).on('click.manager', 'table tr[data-url]:not([rel=popup])', function (e) {
+            window.location.href = $(this).data('url');
+    });
+    /* Prepopulate slug fields */
+    $('#id_slug').data('_changed', false);
+    $(document).on('change', '#id_slug', function (e) {
+        $(e.target).data('_changed', true);
+    });
+    $(document).on('gadjo:dialog-loaded', function (e, form) {
+        if ($('#id_slug').val()) {
+            $('#id_slug').data('_changed', true);
+        }
+    });
+    $(document).on('keyup', '#id_name', function (e) {
+        var $this = $(this);
+        var $target = $(e.target);
+        var $slug = $('#id_slug');
+        if (! $slug.data('_changed')) {
+            $slug.val(URLify($target.val()));
+        }
+    });
 });

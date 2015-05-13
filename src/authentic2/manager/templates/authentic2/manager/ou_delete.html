@@ -12,7 +12,7 @@
     {% csrf_token %}
     <div class="form-inner-container">
       {% block caption %}
-      <p>{% blocktrans user_count=object.user_set.count service_count=object.service_set.count %}There are currently {{ user_count }} users and {{ service_count }} services in this organizational unit. They will all be deleted. Are you sure you want to delete organizational unit "{{ object }}"&nbsp;?{% endblocktrans %}</p>
+      <p>{% blocktrans with user_count=object.user_set.count service_count=object.service_set.count %}There are currently {{ user_count }} users and {{ service_count }} services in this organizational unit. They will all be deleted. Are you sure you want to delete organizational unit "{{ object }}"&nbsp;?{% endblocktrans %}</p>
       {% endblock %}
       <div class="buttons">
         <button>{% trans "Delete" %}</button>

@@ -1,0 +1,44 @@
+{% extends "authentic2/manager/role_common.html" %}
+{% load i18n staticfiles django_tables2 %}
+
+{% block more-user-links %}
+  {{ block.super }}
+  <a href="#">{{ object }}</a>
+{% endblock %}
+
+{% block page_title %}
+{% trans "Children roles" %}
+{% endblock %}
+
+{% block appbar %}
+  {{ block.super }}
+  {% if perms.a2_rbac.delete_role %}
+    <a rel="popup" href="{% url "a2-manager-role-delete" pk=object.pk %}">{% trans "Delete" %}</a>
+  {% endif %}
+  {% if perms.a2_rbac.change_role %}
+    <a rel="popup" href="{% url "a2-manager-role-edit" pk=object.pk %}">{% trans "Modify description" %}</a>
+  {% endif  %}
+  {% if not object.admin_scope_ct_id %}
+    <a href="{% url "a2-manager-role-permissions" pk=object.pk %}">{% trans "Modify permissions" %}</a>
+  {% endif %}
+  <a href="{% url "a2-manager-role-managers" pk=object.pk %}">{% trans "Managers" %}</a>
+  <a href="{% url "a2-manager-role-members" pk=object.pk %}">{% trans "Members" %}</a>
+{% endblock %}
+
+
+{% block extra_scripts %}
+  {{ block.super }}
+  {{ choose_user_form.media }}
+{% endblock %}
+
+{% block main %}
+ {% render_table table "authentic2/manager/role_children_table.html" %}
+
+ {% if view.can_change %}
+   <form method="post" class="manager-m2m-add-form">
+           {% csrf_token %}
+           {{ form }}
+           <button>{% trans "Add" %}</button>
+   </form>
+ {% endif %}
+{% endblock %}

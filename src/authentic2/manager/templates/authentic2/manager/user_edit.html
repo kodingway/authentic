@@ -1,6 +1,16 @@
 {% extends "authentic2/manager/form.html" %}
 {% load i18n %}
 
+{% block page-title %}{{ block.super }} - {% trans "Edit user" %} {{ object }}{% endblock %}
+
+{% block page_title %}{% trans "Edit user" %} {{ object }}{% endblock %}
+
+{% block more-user-links %}
+  {{ block.super }}
+  <a href="{% url 'a2-manager-users' %}">{% trans 'User management' %}</a>
+  <a href="#">{{ object.get_full_name }}</a>
+{% endblock %}
+
 {% block beforeform %}
     <p>
      <label for="id_uuid">{% trans "UUID" %}&nbsp;:</label>

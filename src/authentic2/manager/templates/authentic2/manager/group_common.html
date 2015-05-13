@@ -1,0 +1,9 @@
+{% extends "authentic2/manager/sidebar.html" %}
+{% load i18n staticfiles %}
+
+{% block title %}{{ block.super }} - {% trans "Groups management" %}{% endblock %}
+
+{% block more-user-links %}
+  {{ block.super }}
+  <a href="{% url 'a2-manager-groups' %}">{% trans 'Groups management' %}</a>
+{% endblock %}

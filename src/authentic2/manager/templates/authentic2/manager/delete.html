@@ -12,7 +12,7 @@
     {% csrf_token %}
     <div class="form-inner-container">
       {% block caption %}
-      <p>{% blocktrans %}Do you want to delete role {{ object }} ?{% endblocktrans %}</p>
+      <p>{% blocktrans %}Do you want to delete {{ model_name }} {{ object }} ?{% endblocktrans %}</p>
       {% endblock %}
       <div class="buttons">
         <button>{% trans "Delete" %}</button>

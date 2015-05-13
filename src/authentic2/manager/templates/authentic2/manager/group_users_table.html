@@ -1,0 +1,12 @@
+{% extends "authentic2/manager/table.html" %}
+
+{% load i18n %}
+
+{% if perms.auth.change_group %}
+  {% block table.head.last.column %}
+    <th></th>
+  {% endblock %}
+  {% block table.tbody.last.column %}
+    <td>{% if view.can_change %}<a class="icon-remove-sign js-remove-object" data-confirm="{% blocktrans with username=row.record.get_full_name role=active_role.name %}Do you really want to remove user &quot;{{ username }}&quot; from group &quot;{{ object }}&quot;&nbsp;?{% endblocktrans %}" href="#" data-pk-arg="user"></a>{% endif %}</td>
+  {% endblock %}
+{% endif %}

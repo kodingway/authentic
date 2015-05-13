@@ -1,0 +1,14 @@
+{% extends "authentic2/manager/form.html" %}
+{% load i18n %}
+
+{% block page-title %}{{ block.super }} - {% trans "Add role" %}{% endblock %}
+
+{% block more-user-links %}
+  {{ block.super }}
+  <a href="{% url 'a2-manager-roles' %}">{% trans 'Roles management' %}</a>
+  <a href="#">{% trans "Add role" %}</a>
+{% endblock %}
+
+{% block page_title %}
+  {% trans "Add role" %}
+{% endblock %}

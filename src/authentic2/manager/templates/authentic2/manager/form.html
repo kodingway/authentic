@@ -4,13 +4,12 @@
 {% block messages %}
 {% endblock %}
 
+{% block page_title %}{{ title }}{% endblock %}
+
 {% block main %}
   <div class="content">
-    {% if title %}
-      <div id="appbar"><h2>{{ title }}</h2></div>
-    {% endif %}
     <form method="post">
-      <div class="form-inner-container">
+      <div class="form-inner-container{% if other_actions %} with-actions{% endif %}">
         {% if messages %}
           <ul class="messages">
               {% for message in messages %}
@@ -19,16 +18,6 @@
               </li>
               {% endfor %}
           </ul>
-        {% endif %}
-        {% if other_actions %}
-          <div class="other_actions">
-            <strong>{% trans "Actions" %}</strong>
-            {% for action in other_actions %}
-              <input type="submit" name="{{ action.name }}" value="{{ action.title }}"
-                {% if action.confirm %}data-confirm="{{ action.confirm }}"{% endif %}
-              />
-            {% endfor %}
-          </div>
         {% endif %}
         {% block beforeform %}
         {% endblock %}
@@ -40,6 +29,17 @@
           <button>{% if action %}{{ action }}{% else %}{% trans "Save" %}{% endif %}</button>
           <a class="cancel" href="..">{% trans "Cancel" %}</a>
         </div>
+        {% if other_actions %}
+          <div class="other_actions">
+            <strong>{% trans "Actions" %}</strong>
+            {% for action in other_actions %}
+              <input type="submit" name="{{ action.name }}" value="{{ action.title }}"
+                {% if action.confirm %}data-confirm="{{ action.confirm }}"{% endif %}
+                {% if action.url_name %}data-url="{% url action.url_name pk=object.pk %}"{% endif %}
+              />
+            {% endfor %}
+          </div>
+        {% endif %}
       </div>
     </form>
   </div>

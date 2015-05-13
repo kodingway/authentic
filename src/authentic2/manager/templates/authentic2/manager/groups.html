@@ -1,0 +1,26 @@
+{% extends "authentic2/manager/group_common.html" %}
+{% load i18n staticfiles django_tables2 %}
+
+{% block appbar %}
+  {{ block.super }}
+  {% if perms.any.auth.add_group %}
+    <p><a href="{% url "a2-manager-group-add" %}" rel="popup">{% trans "Add group" %}</a></p>
+  {% endif %}
+{% endblock %}
+
+
+{% block sidebar %}
+   {% if search_form %}
+     <div id="search-form">
+       <h3>{% trans "Search" %}</h3>
+       <form method="get">
+         {{ search_form }}
+         <button>{% trans "Search" %}</button>
+       </form>
+     </div>
+   {% endif %}
+{% endblock %}
+
+{% block main %}
+  {% render_table table "authentic2/manager/table.html" %}
+{% endblock %}

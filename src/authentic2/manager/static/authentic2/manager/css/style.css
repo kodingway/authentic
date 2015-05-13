@@ -43,7 +43,7 @@ div.content {
 div.role-info h3 {
 }
 
-form#add-user-role {
+.manager-m2m-add-form {
 	margin-top: 2em;
 	margin-bottom: 2em;
 }
@@ -57,9 +57,16 @@ form#add-user-role div.select2-container {
 	margin-right: 1ex;
 }
 
+table.main td.name {
+        text-align: left;
+}
 table.feeds td.url {
 	text-align: left;
 	padding-left: 1em;
+}
+
+form input, form .select2-container {
+	width: 50% !important;
 }
 
 form#errors label span,
@@ -121,7 +128,11 @@ table.users tbody tr td:nth-child(2):hover {
 }
 
 .form-inner-container {
-  width: 500px;
+  width: 100%;
+}
+
+.form-inner-container.with-actions {
+  margin-right: 35%;
 }
 
 .other_actions {
@@ -180,8 +191,43 @@ li#users a:hover { background-image: url(icon-user-hover.png); }
 	border-radius:7px;
 	border: none;
   background: orange;
+  display: inline-block;
+  max-width: 50%;
 }
 
 .warning-box input[type=submit] {
   float: right;
+}
+
+th:first-letter {
+   text-transform: uppercase;
+}
+th {
+   text-transform: lowercase;
+}
+
+/* pad ordering indicator on the left */
+th.asc:after, th.desc:after {
+  padding-left: 5px;
+  color: #0066cc;
+  font-family: FontAwesome;
+  font-weight: normal;
+  font-style: normal;
+  text-decoration: none;
+}
+th.asc:after {
+  content: "\f175";
+}
+th.desc:after {
+  content: "\f176";
+}
+
+a.disabled {
+  color: grey;
+  text-decoration: none;
+  text-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+#s2id_id_permissions {
+  width: 100%;
 }

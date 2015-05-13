@@ -1,0 +1,14 @@
+{% load i18n %}{% blocktrans with fullname=user.get_full_name username=user.username first_name=user.first_name last_name=user.last_name email=user.email roles=user.roles.all|join:", " %}Hi {{ fullname }} !
+
+An administrator has created you an account with these informations:
+
+	Username : {{ username }}
+	Email : {{ email }}
+	First name : {{ first_name }}
+	Last name : {{ last_name }}
+	Roles: {{ roles }}
+
+Your new password is:
+
+	{{ new_password }}
+{% endblocktrans %}

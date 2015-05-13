@@ -1,9 +1,10 @@
 import sys
 
+
 class AppSettings(object):
     __PREFIX = 'A2_MANAGER_'
     __DEFAULTS = {
-            'LOGOUT_URL': None,
+        'LOGOUT_URL': None,
     }
 
     def __getattr__(self, name):

@@ -1,0 +1,21 @@
+{% extends "authentic2/manager/ou_common.html" %}
+{% load i18n staticfiles django_tables2 %}
+
+{% block appbar %}
+  {{ block.super }}
+  <p><a href="{% url "a2-manager-ou-add" %}" rel="popup">{% blocktrans %}Add {{ model_name }}{% endblocktrans %}</a></p>
+{% endblock %}
+
+{% block sidebar %}
+   <div id="search-form">
+     <h3>{% trans "Search" %}</h3>
+     <input id="search-input" type="search" value="{{ request.GET.search }}">
+     <button>{% trans "Search" %}</button>
+   </div>
+{% endblock %}
+
+{% block main %}
+  {% with popup_edit=1 %}
+      {% render_table table "authentic2/manager/ous_table.html" %}
+  {% endwith %}
+{% endblock %}

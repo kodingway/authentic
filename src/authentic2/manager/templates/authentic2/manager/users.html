@@ -7,7 +7,13 @@
 
 {% block appbar %}
   {{ block.super }}
-  <a rel="popup" href="{% url "a2-manager-user-add" %}" id="add-user-btn">{% trans "Add user" %}</a>
+   {% if view.can_add %}
+     <a rel="popup"
+        href="{% url "a2-manager-user-add" %}"
+        id="add-user-btn">
+         {% trans "Add user" %}
+     </a>
+   {% endif %}
 {% endblock %}
 
 {% block more-user-links %}
@@ -16,22 +22,18 @@
 {% endblock %}
 
 {% block sidebar %}
-  <div>
-    <h3>{% trans "Search" %}</h3>
-     <div id="search-form">
-       <input id="search-input" type="search" value="{{ request.GET.search }}">
+   <div id="search-form">
+     <h3>{% trans "Search" %}</h3>
+     <form method="get">
+       {{ search_form }}
        <button>{% trans "Search" %}</button>
-     </div>
-  </div>
-  <p>{% blocktrans with count=users.count %}{{ count }} users{% endblocktrans %}</p>
+     </form>
+   </div>
 {% endblock %}
 
 {% block main %}
-  {% render_table table "authentic2/manager/table.html" %}
-  <p id="export-formats">{% trans "Export" %}
-    <a class="export-format" href="{% url "a2-manager-users-export" "csv" %}?{{ request.GET.urlencode }}">CSV</a></li>
-    <a class="export-format" href="{% url "a2-manager-users-export" "json" %}?{{ request.GET.urlencode }}">JSON</a></li>
-    <a class="export-format" href="{% url "a2-manager-users-export" "ods" %}?{{ request.GET.urlencode }}">ODS</a></li>
-    <a class="export-format" href="{% url "a2-manager-users-export" "html" %}?{{ request.GET.urlencode }}">HTML</a></li>
-  </p>
+  {% with popup_edit=True %}
+	  {% render_table table "authentic2/manager/table.html" %}
+  {% endwith %}
+  {% include "authentic2/manager/export_include.html" with export_view_name="a2-manager-users-export" %}
 {% endblock %}

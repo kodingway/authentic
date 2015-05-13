@@ -16,6 +16,7 @@
   {% else %}
     <script src="{% static "jquery/js/jquery.form.min.js" %}"></script>
   {% endif %}
+  <script type="text/javascript" src="{% static "admin/js/urlify.js" %}"></script>
   <script type="text/javascript" src="{% static "authentic2/js/purl.js" %}"></script>
   <script type="text/javascript" src="{% static "authentic2/manager/js/manager.js" %}"></script>
   {% import_django_select2_js %}
@@ -36,7 +37,14 @@
   {% endif %}
 {% endblock %}
 
-{% block logout-url %}{{ logout_url }}{% endblock %}
+{% block user-links %}
+  <ul class="user-info">
+    {% if user.is_authenticated %}
+      <li class="ui-name">{{ user }}</li>
+      <li class="ui-logout"><a href="{{ logout_url }}">{% trans "Logout" %}</a></li>
+    {% endif %}
+  </ul>
+{% endblock %}
 
 {% block appbar %}
   <h2>{% block page_title %}{% endblock %}</h2>

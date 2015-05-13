@@ -1,0 +1,49 @@
+{% extends "authentic2/manager/group_common.html" %}
+{% load i18n staticfiles django_tables2 %}
+
+{% block more-user-links %}
+  {{ block.super }}
+  <a href="#">{% blocktrans with name=object.name %}Members of group "{{ name }}"{% endblocktrans %}</a>
+{% endblock %}
+
+{% block page_title %}
+  {% blocktrans with name=object.name %}Group "{{ name }}"{% endblocktrans %}
+{% endblock %}
+
+{% block appbar %}
+  {{ block.super }}
+  {% if perms.auth.delete_group %}
+    <a rel="popup" href="{% url "a2-manager-group-delete" pk=object.pk %}">{% trans "Delete" %}</a>
+  {% endif %}
+  {% if perms.auth.change_group %}
+    <a rel="popup" href="{% url "a2-manager-group-edit" pk=object.pk %}">{% trans "Modify name" %}</a>
+  {% endif  %}
+  {% if perms.auth.change_permissions_group %}
+    <a href="{% url "a2-manager-group-edit-permissions" pk=object.pk %}">{% trans "Modify permissions" %}</a>
+  {% endif %}
+{% endblock %}
+
+
+{% block extra_scripts %}
+  {{ block.super }}
+  {{ choose_user_form.media }}
+{% endblock %}
+
+{% block main %}
+   <div class="group-info">
+     <h3 style="margin-top: 0;">{% trans "Users with group" %}: {{ active_role.name }}</h3>
+     {% with popup_edit=True popup_edit_url_name="a2-manager-user-edit" %}
+	     {% render_table table "authentic2/manager/group_users_table.html" %}
+     {% endwith %}
+
+     {% include "authentic2/manager/export_include.html" with export_view_name="a2-manager-group-users-export" %}
+
+     {% if perms.auth.change_group %}
+       <form method="post">
+               {% csrf_token %}
+               {{ form }}
+               <button>{% trans "Add" %}</button>
+       </form>
+     {% endif %}
+   </div>
+{% endblock %}
