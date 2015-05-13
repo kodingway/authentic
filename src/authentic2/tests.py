@@ -11,6 +11,7 @@ from django.test.client import Client
 from django.contrib.auth.hashers import check_password
 from django.test.utils import override_settings
 from django.contrib.auth import REDIRECT_FIELD_NAME
+from django import forms
 
 from . import hashers, utils, models, decorators, attribute_kinds
 
@@ -536,4 +537,8 @@ class AttributeKindsTest(TestCase):
             attribute_kinds.get_form_field('integer')
         with self.assertRaises(KeyError):
             attribute_kinds.get_kind('integer')
-
+        fields = {}
+        for i, name in enumerate(attribute_kinds.get_attribute_kinds()):
+            fields['field_%d' % i] = attribute_kinds.get_form_field(name)
+        AttributeKindForm = type('AttributeKindForm', (forms.Form,), fields)
+        unicode(AttributeKindForm().as_p())
