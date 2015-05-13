@@ -52,11 +52,6 @@ if [ -f /etc/authentic2/authentic.conf ]; then
 	. /etc/authentic2/authentic.conf
 fi
 
-# Load extra config
-for extra_config in `ls /etc/authentic2/config.d|sort -V`; do
-	. $extra_config
-done
-
 # Load the VERBOSE setting and other rcS variables
 . /lib/init/vars.sh
 
