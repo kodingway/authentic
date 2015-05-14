@@ -52,7 +52,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.messages.context_processors.messages',
     'django.core.context_processors.static',
     'authentic2.context_processors.a2_processor',
-    'sekizai.context_processors.sekizai',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -118,7 +117,6 @@ INSTALLED_APPS = (
     'authentic2.custom_user',
     'authentic2',
     'gadjo',
-    'sekizai',
 )
 
 INSTALLED_APPS = tuple(plugins.register_plugins_installed_apps(INSTALLED_APPS))

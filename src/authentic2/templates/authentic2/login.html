@@ -1,8 +1,17 @@
 {% extends "base.html" %}
-{% load i18n sekizai_tags gadjo %}
+{% load i18n gadjo authentic2 %}
 
 {% block title %}
   {% trans "Log in" %}
+{% endblock %}
+
+{% block extra_scripts %}
+<link rel="stylesheet" href="{{ STATIC_URL }}jquery/css/jquery-ui.custom.css" />
+<link rel="stylesheet" href="{{ STATIC_URL }}ulx/css/ulx.css" />
+<script type="text/javascript" src="{% xstatic 'jquery' 'jquery.min.js' %}"></script>
+<script type="text/javascript" src="{% xstatic 'jquery-ui' 'jquery-ui.min.js' %}"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}jquery/js/jquery.cookie.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}jquery/js/jquery.simplemodal.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -23,10 +32,4 @@
   <script type="text/javascript">
     $( "#tabs" ).tabs({cookie: {path: '/'}});
   </script>
-  {% addtoblock "css" %}<link rel="stylesheet" href="{{ STATIC_URL }}jquery/css/jquery-ui.custom.css" />{% endaddtoblock %}
-  {% addtoblock "css" %}<link rel="stylesheet" href="{{ STATIC_URL }}ulx/css/ulx.css" />{% endaddtoblock %}
-  {% addtoblock "js" %}<script type="text/javascript" src="{% xstatic 'jquery' 'jquery.min.js' %}"></script>{% endaddtoblock %}
-  {% addtoblock "js" %}<script type="text/javascript" src="{% xstatic 'jquery-ui' 'jquery-ui.min.js' %}"></script>{% endaddtoblock %}
-  {% addtoblock "js" %}<script type="text/javascript" src="{{ STATIC_URL }}jquery/js/jquery.cookie.js"></script>{% endaddtoblock %}
-  {% addtoblock "js" %}<script type="text/javascript" src="{{ STATIC_URL }}jquery/js/jquery.simplemodal.js"></script>{% endaddtoblock %}
 {% endblock %}

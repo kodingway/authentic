@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from pkg_resources import get_distribution
 from django.conf import settings
 
@@ -38,4 +40,5 @@ def a2_processor(request):
         else:
             __AUTHENTIC2_DISTRIBUTION = str(get_distribution('authentic2'))
     variables['AUTHENTIC2_VERSION'] = __AUTHENTIC2_DISTRIBUTION
+    variables['add_to_blocks'] = defaultdict(lambda:[])
     return variables
