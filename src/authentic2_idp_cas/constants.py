@@ -52,7 +52,7 @@ PROXY_TICKET_ELT           = cas_elt('proxyTicket')
 PROXY_FAILURE_ELT          = cas_elt('proxyFailure')
 
 # XML Elements for CAS 3.0
-ATTRIBUTES_ELT             = 'attributes'
+ATTRIBUTES_ELT             = cas_elt('attributes')
 
 # Templates
 
