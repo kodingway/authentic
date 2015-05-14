@@ -11,6 +11,10 @@ from .models import Ticket, Service, Attribute
 from . import constants
 from authentic2.constants import AUTHENTICATION_EVENTS_SESSION_KEY
 
+CAS_NAMESPACES = {
+    'cas': constants.CAS_NAMESPACE,
+}
+
 
 @override_settings(A2_IDP_CAS_ENABLE=True)
 class CasTests(Authentic2TestCase):
@@ -155,14 +159,13 @@ class CasTests(Authentic2TestCase):
             ticket_id, constants.SERVICE_PARAM: self.URL})
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response['content-type'], 'text/xml')
-        EMAIL_ELT = '{%s}%s' % (constants.CAS_NAMESPACE, 'email')
         constraints = (
-                ((constants.AUTHENTICATION_SUCCESS_ELT, constants.USER_ELT),
-                    self.LOGIN, None),
-                ((constants.AUTHENTICATION_SUCCESS_ELT,
-                    constants.ATTRIBUTES_ELT, EMAIL_ELT), self.EMAIL, None),
+                ('/cas:serviceResponse/cas:authenticationSuccess/cas:user',
+                    self.LOGIN),
+                ('/cas:serviceResponse/cas:authenticationSuccess/cas:attributes/cas:email',
+                    self.EMAIL),
         )
-        self.assertEqualsXML(response, constraints)
+        self.assertXPathConstraints(response, constraints, CAS_NAMESPACES)
         # Verify ticket has been deleted
         with self.assertRaises(Ticket.DoesNotExist):
             Ticket.objects.get()
@@ -207,10 +210,10 @@ class CasTests(Authentic2TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response['content-type'], 'text/xml')
         constraints = (
-                ((constants.AUTHENTICATION_FAILURE_ELT), None, {
-                    constants.CODE_ATTR: constants.INVALID_TICKET_SPEC_ERROR}),
+                ('/cas:serviceResponse/cas:authenticationFailure/@code',
+                 'INVALID_TICKET_SPEC'),
         )
-        self.assertEqualsXML(response, constraints)
+        self.assertXPathConstraints(response, constraints, CAS_NAMESPACES)
         # Verify ticket has been deleted
         with self.assertRaises(Ticket.DoesNotExist):
             Ticket.objects.get()
@@ -254,14 +257,13 @@ class CasTests(Authentic2TestCase):
             ticket_id, constants.SERVICE_PARAM: self.URL})
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response['content-type'], 'text/xml')
-        EMAIL_ELT = '{%s}%s' % (constants.CAS_NAMESPACE, 'email')
         constraints = (
-                ((constants.AUTHENTICATION_SUCCESS_ELT, constants.USER_ELT),
-                    self.LOGIN, None),
-                ((constants.AUTHENTICATION_SUCCESS_ELT,
-                    constants.ATTRIBUTES_ELT, EMAIL_ELT), self.EMAIL, None),
+                ('/cas:serviceResponse/cas:authenticationSuccess/cas:user',
+                    self.LOGIN),
+                ('/cas:serviceResponse/cas:authenticationSuccess/cas:attributes/cas:email',
+                    self.EMAIL),
         )
-        self.assertEqualsXML(response, constraints)
+        self.assertXPathConstraints(response, constraints, CAS_NAMESPACES)
         # Verify ticket has been deleted
         with self.assertRaises(Ticket.DoesNotExist):
             Ticket.objects.get()
@@ -314,10 +316,11 @@ class CasTests(Authentic2TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response['content-type'], 'text/xml')
         constraints = (
-                 ((constants.AUTHENTICATION_SUCCESS_ELT, constants.USER_ELT), self.LOGIN, None),
-                 ((constants.AUTHENTICATION_SUCCESS_ELT, constants.PGT_ELT), pgt_iou, None),
+                ('/cas:serviceResponse/cas:authenticationSuccess/cas:user',
+                 self.LOGIN),
+                ('/cas:serviceResponse/cas:authenticationSuccess/cas:proxyGrantingTicket', pgt_iou),
         )
-        self.assertEqualsXML(response, constraints)
+        self.assertXPathConstraints(response, constraints, CAS_NAMESPACES)
         # Verify service ticket has been deleted
         with self.assertRaises(Ticket.DoesNotExist):
             Ticket.objects.get(ticket_id=ticket_id)
@@ -336,11 +339,10 @@ class CasTests(Authentic2TestCase):
             constants.TARGET_SERVICE_PARAM: self.SERVICE2_URL
         })
         constraints = (
-                 ((constants.PROXY_FAILURE_ELT,), None, {
-                     constants.CODE_ATTR: constants.PROXY_UNAUTHORIZED_ERROR
-                  }),
+                ('/cas:serviceResponse/cas:proxyFailure/@code',
+                 'PROXY_UNAUTHORIZED'),
         )
-        self.assertEqualsXML(response, constraints)
+        self.assertXPathConstraints(response, constraints, CAS_NAMESPACES)
         # Set proxy authorization
         self.service2.proxy.add(self.service)
         # Try again !
@@ -355,9 +357,10 @@ class CasTests(Authentic2TestCase):
         self.assertEquals(pt.service_url, self.SERVICE2_URL)
         self.assertEquals(pt.proxies, self.PGT_URL)
         constraints = (
-                 ((constants.PROXY_SUCCESS_ELT, constants.PROXY_TICKET_ELT), pt.ticket_id, None),
+                ('/cas:serviceResponse/cas:proxySuccess/cas:proxyTicket',
+                 pt.ticket_id),
         )
-        self.assertEqualsXML(response, constraints)
+        self.assertXPathConstraints(response, constraints, CAS_NAMESPACES)
         # Now service2 try to resolve the proxy ticket
         client = Client()
         response = client.get('/idp/cas/proxyValidate/', {
@@ -365,14 +368,13 @@ class CasTests(Authentic2TestCase):
             constants.SERVICE_PARAM: self.SERVICE2_URL})
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response['content-type'], 'text/xml')
-        USERNAME_ELT = '{%s}%s' % (constants.CAS_NAMESPACE, 'username')
         constraints = (
-                ((constants.AUTHENTICATION_SUCCESS_ELT, constants.USER_ELT),
-                    self.EMAIL, None),
-                ((constants.AUTHENTICATION_SUCCESS_ELT,
-                    constants.ATTRIBUTES_ELT, USERNAME_ELT), self.LOGIN, None),
+                ('/cas:serviceResponse/cas:authenticationSuccess/cas:user',
+                    self.EMAIL),
+                ('/cas:serviceResponse/cas:authenticationSuccess/cas:attributes/cas:username',
+                    self.LOGIN),
         )
-        self.assertEqualsXML(response, constraints)
+        self.assertXPathConstraints(response, constraints, CAS_NAMESPACES)
         # Verify ticket has been deleted
         with self.assertRaises(Ticket.DoesNotExist):
             Ticket.objects.get(ticket_id=pt.ticket_id)
@@ -383,8 +385,9 @@ class CasTests(Authentic2TestCase):
             constants.TARGET_SERVICE_PARAM: self.SERVICE2_URL
         })
         constraints = (
-                 ((constants.PROXY_FAILURE_ELT,), 'session has expired', {
-                     constants.CODE_ATTR: constants.BAD_PGT_ERROR,
-                  }),
+                ('/cas:serviceResponse/cas:proxyFailure',
+                 'session has expired'),
+                ('/cas:serviceResponse/cas:proxyFailure/@code',
+                 'BAD_PGT'),
         )
-        self.assertEqualsXML(response, constraints)
+        self.assertXPathConstraints(response, constraints, CAS_NAMESPACES)

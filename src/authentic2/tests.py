@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 import urlparse
-from xml.etree import ElementTree as ET
+from lxml import etree
 
 import django
 from django.core import mail
@@ -47,36 +47,18 @@ class Authentic2TestCase(TestCase):
         expected_url = urlparse.urlunsplit((e_scheme, e_netloc, e_path, e_query, e_fragment))
         self.assertEqualsURL(response['Location'], expected_url, **kwargs)
 
-    def assertEqualsXML(self, xml, constraints):
-        '''Check XML content for contraints.
-
-           xml can be a string, a Response object or an element tree object.
-
-           constraints is a sequence of 3-tuple:
-            - first tuple is an element tree XPath or a sequence of element
-              names which will be concatenated to build the XPath,
-            - second is an eventual text content to check, can be None,
-            - third is an eventual dictionnary made of attribute names and
-              attribute value, can be None.
-        '''
+    def assertXPathConstraints(self, xml, constraints, namespaces):
         if hasattr(xml, 'content'):
             xml = xml.content
-        if isinstance(xml, basestring):
-            doc = ET.fromstring(xml)
-        else:
-            doc = xml
-        for path, content, attributes in constraints:
-            if isinstance(path, tuple):
-                path = './' + '/'.join(path)
-            elt = doc.find(path)
-            self.assertIsNotNone(elt, "path %s not found" % path)
-            if content:
-                self.assertEquals(elt.text, content)
-            if attributes:
-                for key, value in attributes.iteritems():
-                    self.assertIn(key, elt.attrib, "attribute %s missing on %s" % (key, path))
-                    self.assertEquals(elt.attrib[key], value, "attribute %s value is not expected: %s != %s" %
-                            (key, elt.attrib[key], value))
+        doc = etree.fromstring(xml)
+        for xpath, content in constraints:
+            nodes = doc.xpath(xpath, namespaces=namespaces)
+            self.assertTrue(len(nodes) > 0, 'xpath %s not found' % xpath)
+            for node in nodes:
+                if hasattr(node, 'text'):
+                    self.assertEqual(node.text, content, 'xpath %s does not contain %s but %s' % (xpath, content, node.text))
+                else:
+                    self.assertEqual(node, content, 'xpath %s does not contain %s but %s' % (xpath, content, node))
 
 
 class HashersTests(TestCase):
