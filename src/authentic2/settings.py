@@ -52,7 +52,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.messages.context_processors.messages',
     'django.core.context_processors.static',
     'authentic2.context_processors.a2_processor',
-    'sekizai.context_processors.sekizai',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -122,7 +121,6 @@ INSTALLED_APPS = (
     'authentic2.manager',
     'authentic2',
     'gadjo',
-    'sekizai',
 )
 
 if django.VERSION < (1,7):
