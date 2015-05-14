@@ -392,7 +392,7 @@ def to_iter(func):
 def normalize_attribute_values(values):
     '''Take a list of values or a single one and normalize it'''
     values_set = set()
-    if not isinstance(values, (tuple, list)):
+    if not isinstance(values, (tuple, list, set)):
         values = [values]
     for value in values:
         if isinstance(value, bool):

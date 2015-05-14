@@ -6,6 +6,7 @@ import six
 
 import requests
 from authentic2.compat_lasso import lasso
+from authentic2.utils import normalize_attribute_values
 
 from django.db import models
 from django.db.models import Q
@@ -385,15 +386,7 @@ class SAMLAttribute(models.Model):
         name = self.name
         friendly_name = self.friendly_name or None
         values = ctx.get(self.attribute_name)
-        if not isinstance(values, (tuple, list)):
-            values = [values]
-        for value in values:
-            if not isinstance(value, tuple(six.string_types) + (bool,
-                numbers.Number, datetime.datetime, datetime.date)):
-                raise NotImplementedError('type of value unsupported: %s' % type(value))
-            text_value = unicode(value)
-            if isinstance(value, bool):
-                text_value = text_value.lower()
+        for text_value in normalize_attribute_values(values):
             yield (name, name_format, friendly_name, text_value)
 
     def __unicode__(self):
