@@ -15,7 +15,7 @@ def copy_old_users_to_custom_user_model(apps, schema_editor):
     fields = ['id', 'username', 'email', 'first_name', 'last_name',
             'is_staff', 'is_active', 'date_joined', 'is_superuser',
             'last_login', 'password']
-    old_users = OldUser.objects.select_related('groups', 'user_permissions')
+    old_users = OldUser.objects.prefetch_related('groups', 'user_permissions')
     new_users = []
     for old_user in old_users:
         new_user = NewUser()
