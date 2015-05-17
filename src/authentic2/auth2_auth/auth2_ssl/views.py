@@ -46,7 +46,7 @@ def handle_request(request):
     # just need to login, treated after
     if 'do_creation' in request.session and not user \
             and not request.user.is_authenticated():
-        from backend import SSLBackend
+        from backends import SSLBackend
         logger.info('Account creation treatment')
         if SSLBackend().create_user(ssl_info):
             user = authenticate(ssl_info=ssl_info)
@@ -88,7 +88,7 @@ def handle_request(request):
         logger.warning('[auth2_ssl]: The certificate belongs to %s, '
             'but %s is logged with, we change the association!'
             % (user.username, request.user.username))
-        from backend import SSLBackend
+        from backends import SSLBackend
         cert = SSLBackend().get_certificate(ssl_info)
         cert.user = request.user
         cert.save()
@@ -151,4 +151,3 @@ def delete_certificate(request, certificate_pk):
 class SslErrorView(TemplateView):
     template_name = 'error_ssl.html'
 error_ssl = SslErrorView.as_view()
-
