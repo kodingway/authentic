@@ -64,7 +64,7 @@ class RegistrationForm(Form):
                   [data['email']], fail_silently=True,
                   html_message=html_message)
 
-class RegistrationCompletionForm(ModelForm):
+class RegistrationCompletionForm(forms.BaseUserForm):
     error_css_class = 'form-field-error'
     required_css_class = 'form-field-required'
 
