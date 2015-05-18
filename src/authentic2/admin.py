@@ -18,7 +18,7 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from .nonce.models import Nonce
 from . import (models, compat, app_settings, decorators,
         attribute_kinds, utils)
-from .forms import modelform_factory
+from .forms import modelform_factory, BaseUserForm
 from .custom_user.models import User
 
 def cleanup_action(modeladmin, request, queryset):
@@ -164,7 +164,7 @@ class UserRealmListFilter(admin.SimpleListFilter):
         return queryset
 
 
-class UserChangeForm(forms.ModelForm):
+class UserChangeForm(BaseUserForm):
     error_messages = {
         'missing_credential': _("You must at least give a username or an email to your user"),
     }
@@ -197,7 +197,7 @@ class UserChangeForm(forms.ModelForm):
                 code='missing_credential',
             )
 
-class UserCreationForm(forms.ModelForm):
+class UserCreationForm(BaseUserForm):
     """
     A form that creates a user, with no privileges, from the given username and
     password.
