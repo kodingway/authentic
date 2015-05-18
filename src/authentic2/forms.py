@@ -93,9 +93,10 @@ def modelform_factory(model, **kwargs):
     # KV attributes are only supported for the user model currently
     modelform = None
     if model == get_user_model():
-        bases = (BaseUserForm,)
         if form:
-            bases = (form, BaseUserForm)
+            bases = (form,)
+        else:
+            bases = (BaseUserForm,)
         attributes = models.Attribute.objects.all()
         for attribute in attributes:
             if fields and attribute.name not in fields:
