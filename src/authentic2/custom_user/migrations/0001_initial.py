@@ -15,7 +15,7 @@ def copy_old_users_to_custom_user_model(apps, schema_editor):
     fields = ['id', 'username', 'email', 'first_name', 'last_name',
             'is_staff', 'is_active', 'date_joined', 'is_superuser',
             'last_login', 'password']
-    old_users = OldUser.objects.prefetch_related('groups', 'user_permissions')
+    old_users = OldUser.objects.prefetch_related('groups', 'user_permissions').order_by('id')
     new_users = []
     for old_user in old_users:
         new_user = NewUser()
@@ -28,9 +28,9 @@ def copy_old_users_to_custom_user_model(apps, schema_editor):
     new_permissions = []
     GroupThrough = NewUser.groups.through
     PermissionThrough = NewUser.user_permissions.through
+    new_users = NewUser.objects.order_by('id')
     for old_user, new_user in zip(old_users, new_users):
-        new_user.groups.add(*old_user.groups.all())
-        new_user.user_permissions.add(*old_user.user_permissions.all())
+        assert old_user.id == new_user.id
         for group in old_user.groups.all():
             new_groups.append(GroupThrough(user_id=new_user.id, group_id=group.id))
         for permission in old_user.user_permissions.all():
