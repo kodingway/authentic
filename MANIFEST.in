@@ -29,7 +29,10 @@ recursive-include src/authentic2/auth2_auth/locale *.po *.mo
 recursive-include src/authentic2/auth2_auth/auth2_ssl/locale *.po *.mo
 recursive-include src/authentic2/attribute_aggregator/locale *.po *.mo
 recursive-include src/authentic2/disco_service/locale *.po *.mo
+recursive-include src/authentic2/custom_user/locale *.po *.mo
 recursive-include src/authentic2/manager/locale *.po *.mo
+recursive-include src/authentic2/a2_rbac/locale *.po *.mo
+recursive-include src/django_rbac/locale *.po *.mo
 recursive-include src/authentic2 README  xrds.xml *.txt yadis.xrdf
 
 recursive-include samples *
