@@ -20,8 +20,8 @@
   {% endif  %}
   {% if not object.admin_scope_ct_id %}
     <a href="{% url "a2-manager-role-permissions" pk=object.pk %}">{% trans "Modify permissions" %}</a>
+    <a href="{% url "a2-manager-role-managers" pk=object.pk %}">{% trans "Managers" %}</a>
   {% endif %}
-  <a href="{% url "a2-manager-role-managers" pk=object.pk %}">{% trans "Managers" %}</a>
   <a href="{% url "a2-manager-role-children" pk=object.pk %}">{% trans "Children roles" %}</a>
 {% endblock %}
 
