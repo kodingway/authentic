@@ -15,7 +15,7 @@
   {% if view.can_delete %}
     <a rel="popup" href="{% url "a2-manager-role-delete" pk=object.pk %}">{% trans "Delete" %}</a>
   {% endif %}
-  {% if view.can_change not object.admin_scope_ct_id %}
+  {% if view.can_change and not object.admin_scope_ct_id %}
     <a rel="popup" href="{% url "a2-manager-role-edit" pk=object.pk %}">{% trans "Modify description" %}</a>
     <a href="{% url "a2-manager-role-permissions" pk=object.pk %}">{% trans "Modify permissions" %}</a>
     <a href="{% url "a2-manager-role-managers" pk=object.pk %}">{% trans "Managers" %}</a>
