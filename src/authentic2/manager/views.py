@@ -40,7 +40,7 @@ class PermissionMixin(object):
         if hasattr(self, 'model'):
             app_label = self.model._meta.app_label
             model_name = self.model._meta.model_name
-            add_perm = '%s.view_%s' % (app_label, model_name)
+            add_perm = '%s.add_%s' % (app_label, model_name)
             self.can_add = request.user.has_perm_any(add_perm)
             if hasattr(self, 'get_object') \
                     and hasattr(self, 'pk_url_kwarg') \
