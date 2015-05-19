@@ -6,6 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models.query import Q
 from django.db.models import Count
 from django.core.urlresolvers import reverse
+from django.http import Http404
 
 from django_rbac.utils import get_role_model, get_permission_model, \
     get_role_parenting_model, get_ou_model
@@ -196,6 +197,8 @@ class RoleManagerViewMixin(RoleViewMixin):
 
     def get_object(self):
         self.role_object = super(RoleManagerViewMixin, self).get_object()
+        if self.role_object.admin_scope_ct_id:
+            raise Http404
         return self.role_object.get_admin_role()
 
     def get_context_data(self, **kwargs):
