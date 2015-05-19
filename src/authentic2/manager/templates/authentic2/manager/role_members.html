@@ -17,8 +17,6 @@
   {% endif %}
   {% if view.can_change and not object.admin_scope_ct_id %}
     <a rel="popup" href="{% url "a2-manager-role-edit" pk=object.pk %}">{% trans "Modify description" %}</a>
-  {% endif  %}
-  {% if not object.admin_scope_ct_id %}
     <a href="{% url "a2-manager-role-permissions" pk=object.pk %}">{% trans "Modify permissions" %}</a>
     <a href="{% url "a2-manager-role-managers" pk=object.pk %}">{% trans "Managers" %}</a>
   {% endif %}
