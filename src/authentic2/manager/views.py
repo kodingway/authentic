@@ -451,14 +451,14 @@ class UserMixin(object):
                                  fields=fields)
 
 
-class UserAddView(PassRequestToFormMixin, UserMixin, ActionMixin, TitleMixin,
-                  AjaxFormViewMixin, CreateView):
+class UserAddView(PassRequestToFormMixin, UserMixin, BaseAddView):
     title = _('Create user')
     action = _('Create')
     fields = ['username', 'ou', 'first_name', 'last_name', 'email',
               'is_active', 'groups', 'roles', 'generate_new_password',
               'send_mail', 'password1', 'password2']
     form_class = forms.UserAddForm
+    permissions = ['custom_user.add_user']
 
     def get_success_url(self):
         return reverse('a2-manager-users')
@@ -467,13 +467,13 @@ class UserAddView(PassRequestToFormMixin, UserMixin, ActionMixin, TitleMixin,
 user_add = UserAddView.as_view()
 
 
-class UserEditView(PassRequestToFormMixin, UserMixin, OtherActionsMixin, ActionMixin, TitleMixin,
-                   AjaxFormViewMixin, UpdateView):
+class UserEditView(PassRequestToFormMixin, UserMixin, OtherActionsMixin, ActionMixin, BaseEditView):
     title = _('Edit user')
     template_name = 'authentic2/manager/user_edit.html'
     fields = ['username', 'ou', 'first_name', 'last_name', 'email',
               'groups', 'roles']
     form_class = forms.UserEditForm
+    permissions = ['custom_user.change_user']
 
     def get_other_actions(self):
         yield Action('password_reset', _('Reset password'))
@@ -488,10 +488,11 @@ class UserEditView(PassRequestToFormMixin, UserMixin, OtherActionsMixin, ActionM
                          'next login'))
         yield Action('change_password', _('Change user password'),
                      url_name='a2-manager-user-change-password')
-        yield Action('delete',
-                     _('Delete'),
-                     _('Do you really want to delete "%s" ?') %
-                     self.object.username)
+        if self.request.user.has_perm('custom_user.delete_user', self.object):
+            yield Action('delete',
+                         _('Delete'),
+                         _('Do you really want to delete "%s" ?') %
+                         self.object.username)
 
     def action_force_password_change(self, request, *args, **kwargs):
         PasswordReset.objects.get_or_create(user=self.object)
