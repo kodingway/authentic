@@ -50,8 +50,10 @@ class PermissionMixin(object):
                 change_perm = '%s.change_%s' % (app_label, model_name)
                 delete_perm = '%s.delete_%s' % (app_label, model_name)
                 self.can_view = request.user.has_perm(view_perm, self.object)
-                self.can_change = request.user.has_perm(change_perm, self.object)
-                self.can_delete = request.user.has_perm(delete_perm, self.object)
+                self.can_change = request.user.has_perm(change_perm,
+                                                        self.object)
+                self.can_delete = request.user.has_perm(delete_perm,
+                                                        self.object)
                 if self.permissions \
                         and not request.user.has_perms(
                             self.permissions, self.object):
@@ -180,7 +182,7 @@ class AjaxFormViewMixin(object):
             # empty location means that the view can be used from anywhere
             # and so the redirect URL should not be used
             # otherwise compute an absolute URI from the relative URI
-            if location and (not location.startswith('http://') 
+            if location and (not location.startswith('http://')
                              or not location.startswith('https://')
                              or not location.startswith('/')):
                 location = request.build_absolute_uri(location)
@@ -281,9 +283,9 @@ class ModelNameMixin(object):
         return ctx
 
 
-class BaseTableView(ModelNameMixin, PermissionMixin, SearchFormMixin,
-                    FilterQuerysetByPermMixin, TableQuerysetMixin,
-                    SingleTableView):
+class BaseTableView(FormatsContextData, ModelNameMixin, PermissionMixin,
+                    SearchFormMixin, FilterQuerysetByPermMixin,
+                    TableQuerysetMixin, SingleTableView):
     pass
 
 
@@ -471,7 +473,8 @@ class UserAddView(PassRequestToFormMixin, UserMixin, BaseAddView):
 user_add = UserAddView.as_view()
 
 
-class UserEditView(PassRequestToFormMixin, UserMixin, OtherActionsMixin, ActionMixin, BaseEditView):
+class UserEditView(PassRequestToFormMixin, UserMixin, OtherActionsMixin,
+                   ActionMixin, BaseEditView):
     title = _('Edit user')
     template_name = 'authentic2/manager/user_edit.html'
     fields = ['username', 'ou', 'first_name', 'last_name', 'email',
