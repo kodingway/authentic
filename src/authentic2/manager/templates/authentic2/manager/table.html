@@ -40,7 +40,7 @@
 {% endblock table.tbody.row %}
 
 {% block pagination %}
-  {% if table.pag.paginagor.count > 1 %}
+  {% if table.page.paginator.num_pages > 1 %}
   <p class="paginator">
       {% if table.page.number > 1 %}
         {% if table.page.previous_page_number != 1 %}
