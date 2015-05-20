@@ -66,7 +66,7 @@ class ManagerRBACTestCase(TestCase):
         doc = html.fromstring(response.content)
         nodes = doc.cssselect('table td.ou')
         self.assertEqual(set(node.text for node in nodes),
-                         set(['ou1', 'ou2']))
+                         set(['ou1', 'ou2', '\u2014']))
 
     def test_ou1_u2_access(self):
         client = Client()
@@ -102,7 +102,7 @@ class ManagerRBACTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         doc = html.fromstring(response.content)
         nodes = doc.cssselect('table td.ou')
-        self.assertEqual(set(node.text for node in nodes), set(['ou2']))
+        self.assertEqual(set(node.text for node in nodes), set(['ou2', u'\u2014']))
 
     def test_ou2_u1_role_add(self):
         client = Client()
