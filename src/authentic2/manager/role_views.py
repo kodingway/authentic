@@ -17,6 +17,7 @@ from . import tables, views, resources, forms
 class RolesMixin(object):
     def get_queryset(self):
         qs = super(RolesMixin, self).get_queryset()
+        qs = qs.select_related('ou')
         Permission = get_permission_model()
         permission_ct = ContentType.objects.get_for_model(Permission)
         ct_ct = ContentType.objects.get_for_model(ContentType)
