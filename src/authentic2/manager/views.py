@@ -329,110 +329,6 @@ class BaseEditView(TitleMixin, ModelNameMixin, PermissionMixin,
     def get_success_url(self):
         return '..'
 
-#
-# Group views
-#
-
-
-class GroupsViewMixin(object):
-    model = Group
-
-
-class GroupsView(GroupsViewMixin, BaseTableView):
-    template_name = 'authentic2/manager/groups.html'
-    table_class = tables.GroupTable
-    search_form_class = forms.NameSearchForm
-
-
-groups = GroupsView.as_view()
-
-
-class GroupAddView(GroupsViewMixin, BaseAddView):
-    template_name = 'authentic2/manager/form.html'
-    form_class = forms.GroupAddForm
-    title = _('Add new group')
-    action = _('Create')
-    permissions = 'auth.add_group'
-    success_view_name = 'a2-manager-group'
-
-
-group_add = GroupAddView.as_view()
-
-
-class GroupDeleteView(GroupsViewMixin, BaseDeleteView):
-    permissions = 'auth.delete_group'
-
-
-group_delete = GroupDeleteView.as_view()
-
-
-class GroupEditView(GroupsViewMixin, BaseEditView):
-    fields = ['name']
-    permissions = 'auth.edit_group'
-    template_name = 'authentic2/manager/group_edit.html'
-
-    def get_form_class(self):
-        return model_forms.modelform_factory(self.model, fields=self.fields)
-
-
-group_edit = GroupEditView.as_view()
-
-
-class GroupMembersView(GroupsViewMixin, BaseSubTableView):
-    template_name = 'authentic2/manager/group.html'
-    table_class = tables.UserTable
-    form_class = forms.ChooseUserForm
-    search_form_class = forms.NameSearchForm
-
-    def get_table_queryset(self):
-        return self.object.user_set.all()
-
-    def form_valid(self, form):
-        if self.can_change:
-            user = form.cleaned_data['user']
-            action = form.cleaned_data['action']
-            if action == 'add':
-                if self.object.user_set.filter(pk=user.pk).exists():
-                    messages.warning(self.request, _('User already in this '
-                                     'group.'))
-                else:
-                    self.object.user_set.add(user)
-            elif action == 'remove':
-                self.object.user_set.remove(user)
-        else:
-            messages.warning(self.request, _('You are not authorized'))
-        return super(GroupMembersView, self).form_valid(form)
-
-
-group = GroupMembersView.as_view()
-
-
-class GroupMembersExportView(GroupsViewMixin, ExportMixin, PermissionMixin,
-                             SearchFormMixin, FilterQuerysetByPermMixin,
-                             SingleObjectMixin, View):
-    model = Group
-    permissions = 'auth.view_group'
-    resource_class = resources.UserResource
-
-    def get_export_prefix(self):
-        return u'group-%s-users-' % slugify(self.get_object().name)
-
-    def get_data(self):
-        return filter_view(self.request, self.get_object().user_set.all())
-
-
-group_users_export = GroupMembersExportView.as_view()
-
-
-class GroupPermissionsView(AjaxFormViewMixin, UpdateView):
-    success_url = ".."
-    template_name = 'authentic2/manager/group_change_permissions.html'
-    model = Group
-    form_class = forms.GroupPermissionsForm
-
-group_permissions = GroupPermissionsView.as_view()
-
-
 class UsersView(BaseTableView):
     template_name = 'authentic2/manager/users.html'
     model = get_user_model()
@@ -461,7 +357,7 @@ class UserAddView(PassRequestToFormMixin, UserMixin, BaseAddView):
     title = _('Create user')
     action = _('Create')
     fields = ['username', 'ou', 'first_name', 'last_name', 'email',
-              'is_active', 'groups', 'roles', 'generate_new_password',
+              'is_active', 'roles', 'generate_new_password',
               'send_mail', 'password1', 'password2']
     form_class = forms.UserAddForm
     permissions = ['custom_user.add_user']
@@ -478,7 +374,7 @@ class UserEditView(PassRequestToFormMixin, UserMixin, OtherActionsMixin,
     title = _('Edit user')
     template_name = 'authentic2/manager/user_edit.html'
     fields = ['username', 'ou', 'first_name', 'last_name', 'email',
-              'groups', 'roles']
+              'roles']
     form_class = forms.UserEditForm
     permissions = ['custom_user.change_user']
 

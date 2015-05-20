@@ -11,7 +11,7 @@ class UserResource(ModelResource):
         model = get_user_model()
         exclude = ('password', 'user_permissions')
         widgets = {
-            'groups': {
+            'roles': {
                 'field': 'name',
             }
         }

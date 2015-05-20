@@ -25,15 +25,6 @@ class UserTable(tables.Table):
         empty_text = _('None')
 
 
-class GroupTable(tables.Table):
-    name = tables.Column()
-
-    class Meta:
-        model = Group
-        attrs = {'class': 'main', 'id': 'group-table'}
-        fields = ('name',)
-
-
 class RoleMembersTable(UserTable):
     uuid = tables.TemplateColumn('{{ record.uuid|slice:":6" }}...',
                                  verbose_name=_('UUID'))

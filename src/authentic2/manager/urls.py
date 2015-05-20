@@ -10,23 +10,6 @@ urlpatterns = required(
         # homepage
         url(r'^$', views.homepage, name='a2-manager-homepage'),
 
-        # Django groups
-        url(r'^groups/$', views.groups, name='a2-manager-groups'),
-        url(r'^groups/add/$', views.group_add,
-            name='a2-manager-group-add'),
-        url(r'^groups/(?P<pk>\d+)/$', views.group,
-            name='a2-manager-group'),
-        url(r'^groups/(?P<pk>\d+)/export/(?P<format>csv|json|html|ods)/$',
-            views.group_users_export,
-            name='a2-manager-group-users-export'),
-        url(r'^groups/(?P<pk>\d+)/edit/$', views.group_edit,
-            name='a2-manager-group-edit'),
-        url(r'^groups/(?P<pk>\d+)/delete/$',
-            views.group_delete, name='a2-manager-group-delete'),
-        url(r'^groups/(?P<pk>\d+)/change-permissions/$',
-            views.group_permissions,
-            name='a2-manager-group-edit-permissions'),
-
         # Authentic2 users
         url(r'^users/$', views.users, name='a2-manager-users'),
         url(r'^users/export/(?P<format>csv|json|html|ods)/$',

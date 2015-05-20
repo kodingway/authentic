@@ -1,6 +1,5 @@
 from django.utils.translation import ugettext_lazy as _
 from django import forms
-from django.contrib.auth.models import Group
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.query import Q
 
@@ -25,12 +24,6 @@ class PrefixFormMixin(object):
     def __init__(self, *args, **kwargs):
         kwargs['prefix'] = self.__class__.prefix
         super(PrefixFormMixin, self).__init__(*args, **kwargs)
-
-
-class GroupAddForm(CssClass, forms.ModelForm):
-    class Meta:
-        fields = ('name',)
-        model = Group
 
 
 class LimitQuerysetFormMixin(object):
@@ -82,11 +75,9 @@ class ChoosePermissionForm(CssClass, forms.Form):
 
 class UserEditForm(LimitQuerysetFormMixin, CssClass, BaseUserForm):
     ou = fields.ChooseOUField(required=True, label=_('Organizational unit'))
-    groups = fields.GroupsField(label=_('Groups'), required=False)
     roles = fields.RolesField(label=_('Roles'), required=False)
 
     field_view_permisions = {
-        'groups': 'auth.change_group',
         'roles': 'a2_rbac.change_role',
     }
 
@@ -129,7 +120,7 @@ class UserEditForm(LimitQuerysetFormMixin, CssClass, BaseUserForm):
 
     class Meta:
         model = get_user_model()
-        fields = ('ou', 'groups')
+        fields = ('ou',) 
 
 
 class UserChangePasswordForm(CssClass, forms.ModelForm):
@@ -235,14 +226,6 @@ class UserAddForm(UserChangePasswordForm,
         fields = ['username', 'ou', 'first_name', 'last_name', 'email',
                   'is_active', 'groups', 'roles', 'password1',
                   'password2']
-
-
-class GroupPermissionsForm(CssClass, forms.ModelForm):
-    permissions = fields.PermissionChoices()
-
-    class Meta:
-        model = Group
-        fields = ('name', 'permissions',)
 
 
 class RoleSearchForm(CssClass, PrefixFormMixin, forms.Form):
