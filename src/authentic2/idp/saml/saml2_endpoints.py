@@ -217,20 +217,25 @@ def add_attributes(request, assertion, provider):
             if atv.any and len(atv.any) == 1 and isinstance(atv.any[0], lasso.MiscTextNode) and \
                     atv.any[0].textChild:
                 seen.add((name, name_format, atv.any[0].content.decode('utf-8')))
+    for definition in qs:
+        name = definition.name
+        name_format = definition.name_format_uri()
+        friendly_name = definition.friendly_name
+        if (name, name_format) in attributes:
+            continue
+        attribute, value = attributes[(name, name_format)] = lasso.Saml2Attribute(), []
+        attribute.friendlyName = friendly_name.encode('utf-8')
+        attribute.name = name.encode('utf-8')
+        attribute.nameFormat = name_format.encode('utf-8')
     tuples = [tuple(t) for definition in qs for t in definition.to_tuples(ctx) ]
     seen = set()
-    logger.info("%r", tuples)
     for name, name_format, friendly_name, value in tuples:
         # prevent repeating attribute values
         if (name, name_format, value) in seen:
             continue
         seen.add((name, name_format, value))
-        if (name, name_format) in attributes:
-            attribute, values = attributes[(name, name_format)]
-        else:
-            attribute, values = attributes[(name, name_format)] = lasso.Saml2Attribute(), []
-            attribute.name = name.encode('utf-8')
-            attribute.nameFormat = name_format.encode('utf-8')
+        attribute, values = attributes[(name, name_format)]
+
         # We keep only one friendly name
         if not attribute.friendlyName and friendly_name:
             attribute.friendlyName = friendly_name.encode('utf-8')
@@ -240,7 +245,7 @@ def add_attributes(request, assertion, provider):
         atv.any = [tn]
         values.append(atv)
     for attribute, values in attributes.itervalues():
-        attribute.attributeValue = list(attribute.attributeValue) + values
+        attribute.attributeValue = values
     attribute_statement.attribute = [attribute for attribute, values in attributes.itervalues()]
 
 def saml2_add_attribute_values(assertion, attributes):
