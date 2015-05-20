@@ -58,8 +58,11 @@ class RoleAddView(views.PassRequestToFormMixin, views.BaseAddView):
 add = RoleAddView.as_view()
 
 
-class RolesExportView(views.ExportMixin, ListView):
+class RolesExportView(views.ExportMixin, RolesView):
     resource_class = resources.RoleResource
+
+    def get_data(self):
+        return self.get_queryset()
 
 export = RolesExportView.as_view()
 

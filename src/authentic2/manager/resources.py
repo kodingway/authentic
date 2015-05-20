@@ -26,7 +26,7 @@ class UserListWidget(Widget):
 
 
 class RoleResource(ModelResource):
-    members = Field(attribute='members', widget=UserListWidget)
+    members = Field(attribute='members', widget=UserListWidget())
 
     class Meta:
         model = Role

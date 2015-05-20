@@ -243,6 +243,7 @@ class OtherActionsMixin(object):
 
 
 class ExportMixin(object):
+    http_method_names = ['get', 'head', 'options']
     export_prefix = ''
 
     def get_export_prefix(self):
@@ -251,15 +252,16 @@ class ExportMixin(object):
     def get_dataset(self):
         return self.resource_class().export(self.get_data())
 
-    def get(self, request, export_format, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
+        export_format = kwargs['format'].lower()
         content_types = {
             'csv': 'text/csv',
             'html': 'text/html',
             'json': 'application/json',
             'ods': 'application/vnd.oasis.opendocument.spreadsheet',
         }
-        response = HttpResponse(getattr(self.get_dataset(), format),
-                                content_type=content_types[format])
+        response = HttpResponse(getattr(self.get_dataset(), export_format),
+                                content_type=content_types[export_format])
         filename = '%s%s.%s' % (self.get_export_prefix(), now().isoformat(),
                                 export_format)
         response['Content-Disposition'] = 'attachment; filename="%s"' \
@@ -564,7 +566,8 @@ class UserEditView(PassRequestToFormMixin, UserMixin, OtherActionsMixin, ActionM
 user_edit = UserEditView.as_view()
 
 
-class UsersExportView(UsersView):
+class UsersExportView(ExportMixin, UsersView):
+    permissions = ['custom_user.view_user']
     resource_class = resources.UserResource
     export_prefix = 'users-'
 
