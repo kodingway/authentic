@@ -10,6 +10,7 @@ from authentic2.tests import Authentic2TestCase
 from .models import Ticket, Service, Attribute
 from . import constants
 from authentic2.constants import AUTHENTICATION_EVENTS_SESSION_KEY
+from authentic2.a2_rbac.utils import get_default_ou
 
 CAS_NAMESPACES = {
     'cas': constants.CAS_NAMESPACE,
@@ -40,14 +41,14 @@ class CasTests(Authentic2TestCase):
                 first_name=self.FIRST_NAME, last_name=self.LAST_NAME)
         self.service = Service.objects.create(name=self.NAME, slug=self.SLUG,
                 urls=self.URL, identifier_attribute='django_user_username',
-                logout_url=self.URL + 'logout/')
+                ou=get_default_ou(), logout_url=self.URL + 'logout/')
         self.service_attribute1 = Attribute.objects.create(
                 service=self.service,
                 slug='email',
                 attribute_name='django_user_email')
         self.service2 = Service.objects.create(name=self.NAME2,
                 slug=self.SLUG2, urls=self.URL2,
-                identifier_attribute='django_user_email')
+                ou=get_default_ou(), identifier_attribute='django_user_email')
         self.service2_attribute1 = Attribute.objects.create(
                 service=self.service2,
                 slug='username',

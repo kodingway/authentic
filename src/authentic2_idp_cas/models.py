@@ -25,6 +25,7 @@ class Service(LogoutUrlAbstract, Service):
 
     def clean(self):
         '''Check urls is a space separated list of urls and normalize it'''
+        super(Service, self).clean()
         urls = self.urls.split(' ')
         for url in urls:
             try:
