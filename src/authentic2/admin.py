@@ -242,7 +242,7 @@ class UserCreationForm(BaseUserForm):
 
 class AuthenticUserAdmin(UserAdmin):
     fieldsets = (
-        (None, {'fields': ('uuid', 'password')}),
+        (None, {'fields': ('uuid', 'ou', 'password')}),
         (_('Personal info'), {'fields': ('username', 'first_name', 'last_name', 'email')}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
                                        'groups')}),
@@ -251,11 +251,12 @@ class AuthenticUserAdmin(UserAdmin):
     add_fieldsets = (
             (None, {
                 'classes': ('wide',),
-                'fields': ('username', 'first_name', 'last_name', 'email', 'password1', 'password2')}
+                'fields': ('ou', 'username', 'first_name', 'last_name', 'email', 'password1', 'password2')}
             ),
         )
     readonly_fields = ('uuid',)
     list_filter = UserAdmin.list_filter + (UserRealmListFilter,ExternalUserListFilter)
+    list_display = ['__unicode__', 'ou', 'first_name', 'last_name', 'email']
 
     def get_fieldsets(self, request, obj=None):
         fieldsets = deepcopy(super(AuthenticUserAdmin, self).get_fieldsets(request, obj))

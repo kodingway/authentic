@@ -62,13 +62,14 @@ class AttributeInlineAdmin(admin.TabularInline):
 
 class ServiceAdmin(admin.ModelAdmin):
     form = ServiceForm
-    list_display = ('name', 'slug', 'urls', 'identifier_attribute')
+    list_display = ('name', 'ou', 'slug', 'urls', 'identifier_attribute')
     prepopulated_fields = {"slug": ("name",)}
     fieldsets = (
             (None, {
                 'fields': [
                     'name',
                     'slug',
+                    'ou',
                     'urls',
                     'identifier_attribute',
                 ]

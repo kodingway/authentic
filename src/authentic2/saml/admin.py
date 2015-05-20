@@ -147,6 +147,7 @@ class LibertyProviderForm(ModelForm):
         fields = [
                 'name',
                 'slug',
+                'ou',
                 'entity_id',
                 'entity_id_sha1',
                 'federation_source',
@@ -219,12 +220,12 @@ class SAMLAttributeInlineAdmin(GenericTabularInline):
 
 class LibertyProviderAdmin(admin.ModelAdmin):
     form = LibertyProviderForm
-    list_display = ('name', 'slug', 'entity_id')
+    list_display = ('name', 'ou', 'slug', 'entity_id')
     search_fields = ('name', 'entity_id')
     readonly_fields = ('entity_id','protocol_conformance','entity_id_sha1','federation_source')
     fieldsets = (
             (None, {
-                'fields' : ('name', 'slug', 'entity_id', 'entity_id_sha1','federation_source')
+                'fields' : ('name', 'slug', 'ou', 'entity_id', 'entity_id_sha1','federation_source')
             }),
             (_('Metadata files'), {
                 'fields': ('metadata_url', 'metadata', 'public_key', 'ssl_certificate', 'ca_cert_chain')
