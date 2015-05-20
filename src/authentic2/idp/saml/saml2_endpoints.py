@@ -212,7 +212,7 @@ def add_attributes(request, assertion, provider):
     for attribute in attribute_statement.attribute:
         name = attribute.name.decode('utf-8')
         name_format = attribute.nameFormat.decode('utf-8')
-        attributes[(name, name_format)] = attribute
+        attributes[(name, name_format)] = attribute, attribute.attributeValue
         for atv in attribute.attributeValue:
             if atv.any and len(atv.any) == 1 and isinstance(atv.any[0], lasso.MiscTextNode) and \
                     atv.any[0].textChild:
