@@ -36,6 +36,11 @@ class OrganizationalUnit(OrganizationalUnitAbstractBase):
             if self.pk:
                 qs = qs.exclude(pk=self.pk)
             qs.update(default=None)
+        if self.pk and not self.default \
+           and self.__class__.objects.get(pk=self.pk).default:
+            raise ValidationError(_('You cannot unset this organizational '
+                                    'unit as the default, but you can set '
+                                    'another one as the default.'))
         super(OrganizationalUnit, self).clean()
 
     def get_admin_role(self):
