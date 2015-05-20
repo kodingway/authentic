@@ -11,7 +11,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import TemplateView, FormView, UpdateView, \
     CreateView, DeleteView, View
 from django.views.generic.detail import SingleObjectMixin
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.utils.translation import ugettext_lazy as _, ugettext as _T
 from django.utils.timezone import now
 from django.forms import models as model_forms
@@ -260,6 +260,8 @@ class ExportMixin(object):
             'json': 'application/json',
             'ods': 'application/vnd.oasis.opendocument.spreadsheet',
         }
+        if export_format not in content_types:
+            raise Http404('unknown format')
         response = HttpResponse(getattr(self.get_dataset(), export_format),
                                 content_type=content_types[export_format])
         filename = '%s%s.%s' % (self.get_export_prefix(), now().isoformat(),
