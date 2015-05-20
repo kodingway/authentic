@@ -104,7 +104,7 @@ def load_one_entity(tree, options, sp_policy=None, idp_policy=None, afp=None):
         # get or create the provider
         provider, created = LibertyProvider.objects.get_or_create(entity_id=entity_id,
                 protocol_conformance=3, defaults={'name': name, 'slug': slug})
-        if verbosity > '1':
+        if verbosity > 1:
             if created:
                 what = 'Creating'
             else:
