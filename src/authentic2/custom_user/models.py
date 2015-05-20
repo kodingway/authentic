@@ -35,10 +35,11 @@ class User(AbstractBaseUser, PermissionMixin):
                     'active. Unselect this instead of deleting accounts.'))
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
     ou = models.ForeignKey(
-            to='a2_rbac.OrganizationalUnit',
-            blank=True,
-            null=True,
-            swappable=False)
+        verbose_name=_('organizational unit'),
+        to='a2_rbac.OrganizationalUnit',
+        blank=True,
+        null=True,
+        swappable=False)
 
 
     objects = UserManager()

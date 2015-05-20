@@ -244,6 +244,7 @@ class Service(models.Model):
         verbose_name=_('slug'),
         max_length=128)
     ou = models.ForeignKey(
+        verbose_name=_('organizational unit'),
         to='a2_rbac.OrganizationalUnit',
         null=True,
         blank=True,
