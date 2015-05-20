@@ -62,9 +62,9 @@ class RoleMembersTable(UserTable):
 
 
 class RoleTable(tables.Table):
-    name = tables.Column(accessor='__unicode__', verbose_name=_('name'))
+    name = tables.Column()
     ou = tables.Column()
-    service = tables.Column(order_by='servicerole__service')
+    service = tables.Column()
     member_count = tables.Column(verbose_name=_('Direct members'))
 
     class Meta:
