@@ -67,12 +67,15 @@ class Role(RoleAbstractBase):
     admin_scope = GenericForeignKey(
         'admin_scope_ct',
         'admin_scope_id')
-
     service = models.ForeignKey(
         to='authentic2.Service',
         verbose_name=_('service'),
         null=True,
         blank=True)
+    external_id = models.TextField(
+        verbose_name=_('external id'),
+        blank=True,
+        db_index=True)
 
     def get_admin_role(self, ou=None):
         return self.__class__.objects.get_admin_role(
