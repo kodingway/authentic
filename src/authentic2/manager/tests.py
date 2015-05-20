@@ -66,7 +66,7 @@ class ManagerRBACTestCase(TestCase):
         doc = html.fromstring(response.content)
         nodes = doc.cssselect('table td.ou')
         self.assertEqual(set(node.text for node in nodes),
-                         set(['ou1', 'ou2', '\u2014']))
+                         set(['ou1', 'ou2', u'\u2014']))
 
     def test_ou1_u2_access(self):
         client = Client()
