@@ -2,23 +2,30 @@ import urllib2
 import xml.etree.ElementTree as ET
 from authentic2.compat_lasso import lasso
 
-from django.forms import Form, CharField, SlugField, URLField, ValidationError
+from django import forms
+from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
 from .models import (LibertyProvider, LibertyServiceProvider,
         LibertyIdentityProvider)
 
-class AddLibertyProviderFromUrlForm(Form):
-    name = CharField(max_length=140, label=_('Name'))
-    slug = SlugField(max_length=140, label=_('Shortcut'),
+from authentic2.a2_rbac.utils import get_default_ou
+
+from django_rbac.utils import get_ou_model
+
+class AddLibertyProviderFromUrlForm(forms.Form):
+    name = forms.CharField(max_length=140, label=_('Name'))
+    slug = forms.SlugField(max_length=140, label=_('Shortcut'),
             help_text=_("Internal nickname for the service provider"))
-    url = URLField(label=_("Metadata's URL"))
+    url = forms.URLField(label=_("Metadata's URL"))
+    ou = forms.ModelChoiceField(queryset=get_ou_model().objects, label=_('Organizational unit'))
 
     def clean(self):
         cleaned_data = super(AddLibertyProviderFromUrlForm, self).clean()
         name = cleaned_data.get('name')
         slug = cleaned_data.get('slug')
         url = cleaned_data.get('url')
+        ou = cleaned_data.get('ou')
         self.instance = None
         self.childs = []
         if name and slug and url:
@@ -32,7 +39,7 @@ class AddLibertyProviderFromUrlForm(Form):
                 if not (is_sp or is_idp):
                     raise ValidationError(_('Invalid SAML metadata: %s') % _('missing IDPSSODescriptor or SPSSODescriptor tags'))
                 liberty_provider = LibertyProvider(name=name,
-                    slug=slug, metadata=content, metadata_url=url)
+                    slug=slug, metadata=content, metadata_url=url, ou=ou)
                 liberty_provider.full_clean(exclude=
                         ('entity_id', 'protocol_conformance'))
                 if is_sp:
