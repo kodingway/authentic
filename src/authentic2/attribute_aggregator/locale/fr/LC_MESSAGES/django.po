@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-15 17:02+0200\n"
+"POT-Creation-Date: 2015-05-22 16:32+0200\n"
 "PO-Revision-Date: 2013-05-07 23:27+0200\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -17,271 +17,271 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n>1;\n"
 
-#: src/authentic2/attribute_aggregator/mapping.py:873
+#: authentic2/attribute_aggregator/mapping.py:873
 msgid "Last name"
 msgstr "Nom de famille"
 
-#: src/authentic2/attribute_aggregator/mapping.py:970
+#: authentic2/attribute_aggregator/mapping.py:970
 msgid "Organization"
 msgstr "Organisation"
 
-#: src/authentic2/attribute_aggregator/mapping.py:1010
+#: authentic2/attribute_aggregator/mapping.py:1010
 msgid "Postal address"
 msgstr "Adresse postale"
 
-#: src/authentic2/attribute_aggregator/mapping.py:1055
+#: authentic2/attribute_aggregator/mapping.py:1055
 msgid "Phone"
 msgstr "Téléphone"
 
-#: src/authentic2/attribute_aggregator/mapping.py:1217
+#: authentic2/attribute_aggregator/mapping.py:1217
 msgid "First name"
 msgstr "Prénom"
 
-#: src/authentic2/attribute_aggregator/mapping.py:1355
+#: authentic2/attribute_aggregator/mapping.py:1355
 msgid "Email Address"
 msgstr "Adresse email"
 
-#: src/authentic2/attribute_aggregator/models.py:58
+#: authentic2/attribute_aggregator/models.py:58
 msgid "Attribute name"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/models.py:64
+#: authentic2/attribute_aggregator/models.py:64
 msgid "Output name format"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/models.py:70
+#: authentic2/attribute_aggregator/models.py:70
 msgid "Output namespace"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/models.py:74
+#: authentic2/attribute_aggregator/models.py:74
 msgid "Required"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/models.py:77
+#: authentic2/attribute_aggregator/models.py:77
 msgid "Attribute source"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/models.py:81
+#: authentic2/attribute_aggregator/models.py:81
 msgid "attribute list item"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/models.py:82
+#: authentic2/attribute_aggregator/models.py:82
 msgid "attribute list items"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/models.py:103
-#: src/authentic2/attribute_aggregator/models.py:125
-#: src/authentic2/attribute_aggregator/models.py:205
+#: authentic2/attribute_aggregator/models.py:103
+#: authentic2/attribute_aggregator/models.py:125
+#: authentic2/attribute_aggregator/models.py:205
 msgid "Name"
 msgstr "Nom"
 
-#: src/authentic2/attribute_aggregator/models.py:106
+#: authentic2/attribute_aggregator/models.py:106
 msgid "Attributes"
 msgstr "Attributs"
 
-#: src/authentic2/attribute_aggregator/models.py:111
+#: authentic2/attribute_aggregator/models.py:111
 msgid "attribute list"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/models.py:112
+#: authentic2/attribute_aggregator/models.py:112
 msgid "attribute lists"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/models.py:128
+#: authentic2/attribute_aggregator/models.py:128
 msgid "Namespace"
 msgstr "Espace de nom"
 
-#: src/authentic2/attribute_aggregator/models.py:143
-#: src/authentic2/attribute_aggregator/models.py:208
+#: authentic2/attribute_aggregator/models.py:143
+#: authentic2/attribute_aggregator/models.py:208
 msgid "attribute source"
 msgstr "source des attributs"
 
-#: src/authentic2/attribute_aggregator/models.py:144
+#: authentic2/attribute_aggregator/models.py:144
 msgid "attribute sources"
 msgstr "sources des attributs"
 
-#: src/authentic2/attribute_aggregator/models.py:163
+#: authentic2/attribute_aggregator/models.py:163
 msgid "Server"
 msgstr "Serveur"
 
-#: src/authentic2/attribute_aggregator/models.py:166
+#: authentic2/attribute_aggregator/models.py:166
 msgid "User"
 msgstr "Utilisateur"
 
-#: src/authentic2/attribute_aggregator/models.py:169
+#: authentic2/attribute_aggregator/models.py:169
 msgid "Password"
 msgstr "Mot de passe"
 
-#: src/authentic2/attribute_aggregator/models.py:172
+#: authentic2/attribute_aggregator/models.py:172
 msgid "Base"
 msgstr "Base"
 
-#: src/authentic2/attribute_aggregator/models.py:175
+#: authentic2/attribute_aggregator/models.py:175
 msgid "Port"
 msgstr "Port"
 
-#: src/authentic2/attribute_aggregator/models.py:178
+#: authentic2/attribute_aggregator/models.py:178
 msgid "LDAPS"
 msgstr "LDAPS"
 
-#: src/authentic2/attribute_aggregator/models.py:181
+#: authentic2/attribute_aggregator/models.py:181
 msgid "Certificate"
 msgstr "Certificat"
 
-#: src/authentic2/attribute_aggregator/models.py:184
+#: authentic2/attribute_aggregator/models.py:184
 msgid "Is it used for authentication?"
 msgstr "Est-elle utilisée pour l'authentification ?"
 
-#: src/authentic2/attribute_aggregator/models.py:199
+#: authentic2/attribute_aggregator/models.py:199
 msgid "ldap attribute source"
 msgstr "source d'attributs de type LDAP"
 
-#: src/authentic2/attribute_aggregator/models.py:200
+#: authentic2/attribute_aggregator/models.py:200
 msgid "ldap attribute sources"
 msgstr "sources d'attributs de type LDAP"
 
-#: src/authentic2/attribute_aggregator/models.py:210
+#: authentic2/attribute_aggregator/models.py:210
 msgid "user"
 msgstr "utilisateur"
 
-#: src/authentic2/attribute_aggregator/models.py:214
+#: authentic2/attribute_aggregator/models.py:214
 msgid "user alias from source"
 msgstr "alias utilisateur par source"
 
-#: src/authentic2/attribute_aggregator/models.py:215
+#: authentic2/attribute_aggregator/models.py:215
 msgid "user aliases from source"
 msgstr "alias utilisateur par source"
 
-#: src/authentic2/attribute_aggregator/models.py:705
+#: authentic2/attribute_aggregator/models.py:705
 msgid "user attribute profile"
 msgstr "profil utilisateur issu des sources"
 
-#: src/authentic2/attribute_aggregator/models.py:706
+#: authentic2/attribute_aggregator/models.py:706
 msgid "user attribute profiles"
 msgstr "profils utilisateurs issus des sources"
 
-#: src/authentic2/attribute_aggregator/xacml_constants.py:96
+#: authentic2/attribute_aggregator/xacml_constants.py:96
 msgid "String"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/xacml_constants.py:97
+#: authentic2/attribute_aggregator/xacml_constants.py:97
 msgid "Boolean"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/xacml_constants.py:98
+#: authentic2/attribute_aggregator/xacml_constants.py:98
 msgid "Integer"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/xacml_constants.py:99
+#: authentic2/attribute_aggregator/xacml_constants.py:99
 msgid "Double"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/xacml_constants.py:100
+#: authentic2/attribute_aggregator/xacml_constants.py:100
 msgid "Time"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/xacml_constants.py:101
+#: authentic2/attribute_aggregator/xacml_constants.py:101
 msgid "Date"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/xacml_constants.py:102
+#: authentic2/attribute_aggregator/xacml_constants.py:102
 msgid "Date and Time"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/xacml_constants.py:109
+#: authentic2/attribute_aggregator/xacml_constants.py:109
 msgid "email address"
 msgstr "Adresse email"
 
-#: src/authentic2/attribute_aggregator/xacml_constants.py:110
+#: authentic2/attribute_aggregator/xacml_constants.py:110
 msgid "IP address"
 msgstr "adresse IP"
 
-#: src/authentic2/attribute_aggregator/xacml_constants.py:168
-#: src/authentic2/attribute_aggregator/xacml_constants.py:187
+#: authentic2/attribute_aggregator/xacml_constants.py:168
+#: authentic2/attribute_aggregator/xacml_constants.py:187
 msgid "String equality"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/xacml_constants.py:169
-#: src/authentic2/attribute_aggregator/xacml_constants.py:188
+#: authentic2/attribute_aggregator/xacml_constants.py:169
+#: authentic2/attribute_aggregator/xacml_constants.py:188
 msgid "String equality ignoring case"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/xacml_constants.py:170
-#: src/authentic2/attribute_aggregator/xacml_constants.py:189
+#: authentic2/attribute_aggregator/xacml_constants.py:170
+#: authentic2/attribute_aggregator/xacml_constants.py:189
 msgid "Boolean equality"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/xacml_constants.py:171
-#: src/authentic2/attribute_aggregator/xacml_constants.py:190
+#: authentic2/attribute_aggregator/xacml_constants.py:171
+#: authentic2/attribute_aggregator/xacml_constants.py:190
 msgid "Integer equality"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/xacml_constants.py:172
-#: src/authentic2/attribute_aggregator/xacml_constants.py:191
+#: authentic2/attribute_aggregator/xacml_constants.py:172
+#: authentic2/attribute_aggregator/xacml_constants.py:191
 msgid "Double equality"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/xacml_constants.py:173
-#: src/authentic2/attribute_aggregator/xacml_constants.py:192
+#: authentic2/attribute_aggregator/xacml_constants.py:173
+#: authentic2/attribute_aggregator/xacml_constants.py:192
 msgid "Date equality"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/xacml_constants.py:174
-#: src/authentic2/attribute_aggregator/xacml_constants.py:193
+#: authentic2/attribute_aggregator/xacml_constants.py:174
+#: authentic2/attribute_aggregator/xacml_constants.py:193
 msgid "Time equality"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/xacml_constants.py:175
-#: src/authentic2/attribute_aggregator/xacml_constants.py:194
+#: authentic2/attribute_aggregator/xacml_constants.py:175
+#: authentic2/attribute_aggregator/xacml_constants.py:194
 msgid "DateTime equality"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/xacml_constants.py:180
-#: src/authentic2/attribute_aggregator/xacml_constants.py:199
+#: authentic2/attribute_aggregator/xacml_constants.py:180
+#: authentic2/attribute_aggregator/xacml_constants.py:199
 msgid "email equality"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/xacml_constants.py:181
-#: src/authentic2/attribute_aggregator/xacml_constants.py:200
+#: authentic2/attribute_aggregator/xacml_constants.py:181
+#: authentic2/attribute_aggregator/xacml_constants.py:200
 msgid "IP address equality"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/xacml_constants.py:245
-#: src/authentic2/attribute_aggregator/xacml_constants.py:256
+#: authentic2/attribute_aggregator/xacml_constants.py:245
+#: authentic2/attribute_aggregator/xacml_constants.py:256
 msgid "Integer 1 greater than integer 2"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/xacml_constants.py:246
-#: src/authentic2/attribute_aggregator/xacml_constants.py:257
+#: authentic2/attribute_aggregator/xacml_constants.py:246
+#: authentic2/attribute_aggregator/xacml_constants.py:257
 msgid "Integer 1 greater than or equal integer 2"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/xacml_constants.py:247
-#: src/authentic2/attribute_aggregator/xacml_constants.py:258
+#: authentic2/attribute_aggregator/xacml_constants.py:247
+#: authentic2/attribute_aggregator/xacml_constants.py:258
 msgid "Integer 1 less than integer 2"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/xacml_constants.py:248
-#: src/authentic2/attribute_aggregator/xacml_constants.py:259
+#: authentic2/attribute_aggregator/xacml_constants.py:248
+#: authentic2/attribute_aggregator/xacml_constants.py:259
 msgid "Integer 1 less than or equal integer 2"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/xacml_constants.py:249
-#: src/authentic2/attribute_aggregator/xacml_constants.py:260
+#: authentic2/attribute_aggregator/xacml_constants.py:249
+#: authentic2/attribute_aggregator/xacml_constants.py:260
 msgid "Double 1 greater than double 2"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/xacml_constants.py:250
-#: src/authentic2/attribute_aggregator/xacml_constants.py:261
+#: authentic2/attribute_aggregator/xacml_constants.py:250
+#: authentic2/attribute_aggregator/xacml_constants.py:261
 msgid "Double 1 greater than or equal double 2"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/xacml_constants.py:251
-#: src/authentic2/attribute_aggregator/xacml_constants.py:262
+#: authentic2/attribute_aggregator/xacml_constants.py:251
+#: authentic2/attribute_aggregator/xacml_constants.py:262
 msgid "Double 1 less than double 2"
 msgstr ""
 
-#: src/authentic2/attribute_aggregator/xacml_constants.py:252
-#: src/authentic2/attribute_aggregator/xacml_constants.py:263
+#: authentic2/attribute_aggregator/xacml_constants.py:252
+#: authentic2/attribute_aggregator/xacml_constants.py:263
 msgid "Double 1 less than or equal double 2"
 msgstr ""

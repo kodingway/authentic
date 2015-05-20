@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-16 16:36+0200\n"
+"POT-Creation-Date: 2015-05-22 16:32+0200\n"
 "PO-Revision-Date: 2014-11-21 00:08+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -17,67 +17,71 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n>1;\n"
 
-#: src/authentic2/saml/admin.py:173
+#: authentic2/saml/admin.py:174
 #, python-format
 msgid "Updating SAML provider %(name)s failed: %(error_msg)s"
 msgstr ""
 "La mise à jour du fournisseur SAML « %(name)s » a échoué: %(error_msg)s"
 
-#: src/authentic2/saml/admin.py:177
+#: authentic2/saml/admin.py:178
 #, python-format
 msgid "%(count)d on %(total)d SAML providers updated"
 msgstr "%(count)d fournisseurs SAML mis à jour sur un total de %(total)d"
 
-#: src/authentic2/saml/admin.py:190 src/authentic2/saml/models.py:97
+#: authentic2/saml/admin.py:196 authentic2/saml/models.py:98
 msgid "None"
 msgstr "Aucun"
 
-#: src/authentic2/saml/admin.py:217
+#: authentic2/saml/admin.py:230
 msgid "Metadata files"
 msgstr "Fichiers de metadonnées"
 
-#: src/authentic2/saml/app_settings.py:14
+#: authentic2/saml/app_settings.py:14
 msgid "explicit"
 msgstr "explicite"
 
-#: src/authentic2/saml/app_settings.py:15
+#: authentic2/saml/app_settings.py:15
 msgid "implicit"
 msgstr "implicite"
 
-#: src/authentic2/saml/common.py:732
+#: authentic2/saml/common.py:732
 msgid "Your access is denied. At least one attribute does not match."
 msgstr "Accés interdit. Au moins un attribut ne correspond pas."
 
-#: src/authentic2/saml/forms.py:12
+#: authentic2/saml/forms.py:17
 msgid "Name"
 msgstr "Nom"
 
-#: src/authentic2/saml/forms.py:13
+#: authentic2/saml/forms.py:18
 msgid "Shortcut"
 msgstr "Raccourci"
 
-#: src/authentic2/saml/forms.py:14
+#: authentic2/saml/forms.py:19
 msgid "Internal nickname for the service provider"
 msgstr "Nom local du fournisseur de service"
 
-#: src/authentic2/saml/forms.py:15
+#: authentic2/saml/forms.py:20
 msgid "Metadata's URL"
 msgstr "URL des métadonnées"
 
-#: src/authentic2/saml/forms.py:29 src/authentic2/saml/forms.py:33
+#: authentic2/saml/forms.py:21
+msgid "Organizational unit"
+msgstr ""
+
+#: authentic2/saml/forms.py:36 authentic2/saml/forms.py:40
 #, python-format
 msgid "Invalid SAML metadata: %s"
 msgstr "Métadonnées SAML incorrectes: %s"
 
-#: src/authentic2/saml/forms.py:29
+#: authentic2/saml/forms.py:36
 msgid "missing EntityDescriptor tag"
 msgstr "Au moins un tag XML EntityDescriptor est nécessaire"
 
-#: src/authentic2/saml/forms.py:33
+#: authentic2/saml/forms.py:40
 msgid "missing IDPSSODescriptor or SPSSODescriptor tags"
 msgstr "Au moins un tag XML IDPSSODescriptor ou SPSSODescriptor est nécessaire"
 
-#: src/authentic2/saml/management/commands/sync-metadata.py:140
+#: authentic2/saml/management/commands/sync-metadata.py:140
 #, python-format
 msgid ""
 "Unable to find an LDAP definition for attribute %(name)s on %(provider)s"
@@ -85,130 +89,130 @@ msgstr ""
 "Impossible de trouver une définition LDAP pour l'attribut %(name)s du "
 "fournisseur %(provider)s"
 
-#: src/authentic2/saml/management/commands/sync-metadata.py:154
+#: authentic2/saml/management/commands/sync-metadata.py:154
 #, python-format
 msgid "Created new attribute %(name)s for %(provider)s"
 msgstr ""
 "Création d'un nouvel attribut %(name)s pour le fournisseur %(provider)s"
 
-#: src/authentic2/saml/management/commands/sync-metadata.py:286
+#: authentic2/saml/management/commands/sync-metadata.py:286
 #, python-format
 msgid "SAML2 service provider options policy with name %s not found"
 msgstr ""
 "La politique de fournisseur de service SAML nommée « %s » est introuvable"
 
-#: src/authentic2/saml/management/commands/sync-metadata.py:301
+#: authentic2/saml/management/commands/sync-metadata.py:301
 #, python-format
 msgid "SAML2 identity provider options policy with name %s not found"
 msgstr ""
 "La politique de fournisseur d'identité SAML nommée « %s » est introuvable"
 
-#: src/authentic2/saml/management/commands/sync-metadata.py:305
+#: authentic2/saml/management/commands/sync-metadata.py:305
 msgid "No SAML2 identity provider options policy provided"
 msgstr "Aucune politique de fournisseur d'identité SAML fournie"
 
-#: src/authentic2/saml/management/commands/sync-metadata.py:321
+#: authentic2/saml/management/commands/sync-metadata.py:321
 #, python-format
 msgid "Failed to load entity descriptor for %s"
 msgstr "Échec du chargement des descripteurs d'entité pour %s"
 
-#: src/authentic2/saml/management/commands/sync-metadata.py:334
+#: authentic2/saml/management/commands/sync-metadata.py:334
 #, python-format
 msgid "Deleted obsolete provider %s"
 msgstr "Suppression du fournisseur obsolète %s"
 
-#: src/authentic2/saml/models.py:35 src/authentic2/saml/models.py:485
+#: authentic2/saml/models.py:36 authentic2/saml/models.py:480
 msgid "Invalid metadata file"
 msgstr "Métadonnées incorrectes"
 
-#: src/authentic2/saml/models.py:89
+#: authentic2/saml/models.py:90
 msgid "Use the default from the metadata file"
 msgstr "Utilisation des valeurs par défaut du fichier de métadonnées"
 
-#: src/authentic2/saml/models.py:90 src/authentic2/saml/models.py:130
+#: authentic2/saml/models.py:91 authentic2/saml/models.py:133
 msgid "Artifact binding"
 msgstr "Binding utilisant les artefacts"
 
-#: src/authentic2/saml/models.py:91 src/authentic2/saml/models.py:131
+#: authentic2/saml/models.py:92 authentic2/saml/models.py:134
 msgid "POST binding"
 msgstr "Binding utilisant le verbe HTTP POST"
 
-#: src/authentic2/saml/models.py:99
+#: authentic2/saml/models.py:100
 msgid "Persistent"
 msgstr "Persistant"
 
-#: src/authentic2/saml/models.py:101
+#: authentic2/saml/models.py:102
 msgid "Transient"
 msgstr "Temporaire"
 
-#: src/authentic2/saml/models.py:103
+#: authentic2/saml/models.py:104
 msgid "Email"
 msgstr "Adresse de courrier électronique"
 
-#: src/authentic2/saml/models.py:105
+#: authentic2/saml/models.py:106
 msgid "Username (use with Google Apps)"
 msgstr "Identifiant (à utiliser par exemple pour Google Apps)"
 
-#: src/authentic2/saml/models.py:107
+#: authentic2/saml/models.py:108
 msgid "Use eduPersonTargetedID attribute"
 msgstr "Utiliser l'attribut eduPersonTargetedID"
 
-#: src/authentic2/saml/models.py:136
+#: authentic2/saml/models.py:139
 msgid "Redirect binding"
 msgstr "Binding utilisant les redirections HTTP"
 
-#: src/authentic2/saml/models.py:137
+#: authentic2/saml/models.py:140
 msgid "SOAP binding"
 msgstr "Binding utilisant le protocole SOAP sur HTTP"
 
-#: src/authentic2/saml/models.py:142
+#: authentic2/saml/models.py:145
 msgid "Let authentic decides which signatures to check"
 msgstr "Laisser authentic decider quelles signatures vérifier"
 
-#: src/authentic2/saml/models.py:143
+#: authentic2/saml/models.py:146
 msgid "Always check signatures"
 msgstr "Vérifier toutes les signatures"
 
-#: src/authentic2/saml/models.py:144
+#: authentic2/saml/models.py:147
 msgid "Does not check signatures"
 msgstr "Ne pas vérifier les signatures"
 
-#: src/authentic2/saml/models.py:148
+#: authentic2/saml/models.py:151
 msgid "Account linking by authentication"
 msgstr "Liaison des comptes par authentification"
 
-#: src/authentic2/saml/models.py:150
+#: authentic2/saml/models.py:153
 msgid "Create new account"
 msgstr "Créer un nouveau compte"
 
-#: src/authentic2/saml/models.py:154
+#: authentic2/saml/models.py:157
 msgid "Ask authentication"
 msgstr "Requerir l'authentification"
 
-#: src/authentic2/saml/models.py:155
+#: authentic2/saml/models.py:158
 msgid "Open a session"
 msgstr "Etablir une session"
 
-#: src/authentic2/saml/models.py:166 src/authentic2/saml/models.py:264
-#: src/authentic2/saml/models.py:352 src/authentic2/saml/models.py:435
+#: authentic2/saml/models.py:169 authentic2/saml/models.py:267
+#: authentic2/saml/models.py:355 authentic2/saml/models.py:430
 msgid "name"
 msgstr "nom"
 
-#: src/authentic2/saml/models.py:167 src/authentic2/saml/models.py:265
-#: src/authentic2/saml/models.py:436 src/authentic2/saml/models.py:532
-#: src/authentic2/saml/models.py:575
+#: authentic2/saml/models.py:170 authentic2/saml/models.py:268
+#: authentic2/saml/models.py:431 authentic2/saml/models.py:527
+#: authentic2/saml/models.py:570
 msgid "Enabled"
 msgstr "Activé"
 
-#: src/authentic2/saml/models.py:170
+#: authentic2/saml/models.py:173
 msgid "Do not send a nameId Policy"
 msgstr "Ne pas envoyer une nameId Policy"
 
-#: src/authentic2/saml/models.py:173
+#: authentic2/saml/models.py:176
 msgid "Requested NameID format"
 msgstr "Format du NameID demandé"
 
-#: src/authentic2/saml/models.py:179
+#: authentic2/saml/models.py:182
 msgid ""
 "This IdP sends a transient NameID but you want a persistent behaviour for "
 "your SP"
@@ -216,15 +220,15 @@ msgstr ""
 "Cet IdP envoie un nameID transient mais vous souhaitez un comportement "
 "persistent pour ce fournisseur de service"
 
-#: src/authentic2/saml/models.py:181
+#: authentic2/saml/models.py:184
 msgid "Persistent identifier attribute"
 msgstr "Attribut servant d'identifiant persistent"
 
-#: src/authentic2/saml/models.py:184
+#: authentic2/saml/models.py:187
 msgid "Allow IdP to create an identity"
 msgstr "Autoriser l'IdP à créer une identité"
 
-#: src/authentic2/saml/models.py:187
+#: authentic2/saml/models.py:190
 msgid ""
 "Binding for Authnresponse             (taken from metadata by the IdP if not "
 "enabled)"
@@ -232,11 +236,11 @@ msgstr ""
 "Transport pour les réponses d'authentification (extrait des métadonnées du "
 "fournisseur de service si non activé)"
 
-#: src/authentic2/saml/models.py:191
+#: authentic2/saml/models.py:194
 msgid "Binding for the SSO responses"
 msgstr "Binding pour les reponses au SSO"
 
-#: src/authentic2/saml/models.py:195
+#: authentic2/saml/models.py:198
 msgid ""
 "HTTP method for single logout request             (taken from metadata if "
 "not enabled)"
@@ -244,11 +248,11 @@ msgstr ""
 "Transport pour les requêtes de déconnexion (extrait des métadonnées du "
 "fournisseur de service si non activé)"
 
-#: src/authentic2/saml/models.py:199 src/authentic2/saml/models.py:313
+#: authentic2/saml/models.py:202 authentic2/saml/models.py:316
 msgid "HTTP binding for the SLO requests"
 msgstr "Binding HTTP pour les requêtes de SLO"
 
-#: src/authentic2/saml/models.py:204
+#: authentic2/saml/models.py:207
 msgid ""
 "HTTP method for federation termination request             (taken from "
 "metadata if not enabled)"
@@ -256,89 +260,89 @@ msgstr ""
 "Transport pour les requêtes de suppression de fédération (extrait des "
 "métadonnées du fournisseur de service si non activé)"
 
-#: src/authentic2/saml/models.py:208
+#: authentic2/saml/models.py:211
 msgid "HTTP method for the defederation requests"
 msgstr "Méthode HTTP pour les requêtes de défédération"
 
-#: src/authentic2/saml/models.py:213
+#: authentic2/saml/models.py:216
 msgid "Require the user consent be given at account linking"
 msgstr ""
 "Requerir que le consentement utilisateur soit donné lors de la liaison de "
 "compte"
 
-#: src/authentic2/saml/models.py:216
+#: authentic2/saml/models.py:219
 msgid "Force authentication"
 msgstr "Forcer l'authentification"
 
-#: src/authentic2/saml/models.py:219
+#: authentic2/saml/models.py:222
 msgid "Passive authentication"
 msgstr "Authentification sans action de l'utilisateur"
 
-#: src/authentic2/saml/models.py:222
+#: authentic2/saml/models.py:225
 msgid "Want AuthnRequest signed"
 msgstr "Les requêtes d'authentification doivent être signées"
 
-#: src/authentic2/saml/models.py:226
+#: authentic2/saml/models.py:229
 msgid "Behavior with persistent NameID"
 msgstr "Comportement avec un NameID persistent"
 
-#: src/authentic2/saml/models.py:231
+#: authentic2/saml/models.py:234
 msgid "Behavior with transient NameID"
 msgstr "Comportement avec un NameID transient"
 
-#: src/authentic2/saml/models.py:237
+#: authentic2/saml/models.py:240
 msgid "Return URL after a successful authentication"
 msgstr "URL de retour après un authentification valide"
 
-#: src/authentic2/saml/models.py:239 src/authentic2/saml/models.py:297
+#: authentic2/saml/models.py:242 authentic2/saml/models.py:300
 msgid "Accept to receive Single Logout requests"
 msgstr "Accepter les requêtes de déconnexion"
 
-#: src/authentic2/saml/models.py:242 src/authentic2/saml/models.py:300
+#: authentic2/saml/models.py:245 authentic2/saml/models.py:303
 msgid "Forward Single Logout requests"
 msgstr "Faire suivre les requêtes de déconnexion"
 
-#: src/authentic2/saml/models.py:251 src/authentic2/saml/models.py:583
+#: authentic2/saml/models.py:254 authentic2/saml/models.py:578
 msgid "identity provider options policy"
 msgstr "règlement des options de fournisseur d'identités"
 
-#: src/authentic2/saml/models.py:252
+#: authentic2/saml/models.py:255
 msgid "identity provider options policies"
 msgstr "règlements des options de fournisseur d'identités"
 
-#: src/authentic2/saml/models.py:268
+#: authentic2/saml/models.py:271
 msgid "Prefered assertion consumer binding"
 msgstr "Binding du consommateur d'assertion préféré"
 
-#: src/authentic2/saml/models.py:271
+#: authentic2/saml/models.py:274
 msgid "Encrypt NameID"
 msgstr "Encrypter le NameID"
 
-#: src/authentic2/saml/models.py:274
+#: authentic2/saml/models.py:277
 msgid "Encrypt Assertion"
 msgstr "Encrypter l'assertion"
 
-#: src/authentic2/saml/models.py:277
+#: authentic2/saml/models.py:280
 msgid "Authentication request signed"
 msgstr "Requête d'authentification signée"
 
-#: src/authentic2/saml/models.py:280
+#: authentic2/saml/models.py:283
 msgid "Allow IdP initiated SSO"
 msgstr "Autoriser le SSO initié par l'IdP"
 
-#: src/authentic2/saml/models.py:288
+#: authentic2/saml/models.py:291
 msgid "NameID formats accepted"
 msgstr "Formats de NameID acceptés"
 
-#: src/authentic2/saml/models.py:295
+#: authentic2/saml/models.py:298
 msgid "Ask user for consent when creating a federation"
 msgstr "Demander le consentement utilisateur à la création d'une fédération"
 
-#: src/authentic2/saml/models.py:303
+#: authentic2/saml/models.py:306
 msgid "needs iframe logout"
 msgstr "nécessite une iframe pour la déconnexion"
 
-#: src/authentic2/saml/models.py:304
+#: authentic2/saml/models.py:307
 msgid ""
 "logout URL are normally loaded inside an <img> HTML tag, some service "
 "provider need to use an iframe"
@@ -346,11 +350,11 @@ msgstr ""
 "Les URLs de déconnexion sont normalement chargées via un tag HTML <img>, "
 "mais certains services ont besoin d'une iframe pour fonctionner"
 
-#: src/authentic2/saml/models.py:307
+#: authentic2/saml/models.py:310
 msgid "iframe logout timeout"
 msgstr "délai d'attente avant chargement de l'iframe"
 
-#: src/authentic2/saml/models.py:308
+#: authentic2/saml/models.py:311
 msgid ""
 "if iframe logout is used, it's the time between the onload event for this "
 "iframe and the moment we consider its loading to be really finished"
@@ -359,101 +363,101 @@ msgstr ""
 "l'évèvenement onload pour cette IFRAME and le moment où nous considérons que "
 "son chargement est terminé."
 
-#: src/authentic2/saml/models.py:315
+#: authentic2/saml/models.py:318
 msgid "federation mode"
 msgstr "mode de fédération"
 
-#: src/authentic2/saml/models.py:326 src/authentic2/saml/models.py:539
+#: authentic2/saml/models.py:329 authentic2/saml/models.py:534
 msgid "service provider options policy"
 msgstr "règlement des options de fournisseur de services"
 
-#: src/authentic2/saml/models.py:327
+#: authentic2/saml/models.py:330
 msgid "service provider options policies"
 msgstr "règlements des options de fournisseur de services"
 
-#: src/authentic2/saml/models.py:341
+#: authentic2/saml/models.py:344
 msgid "content type"
 msgstr "type de contenu"
 
-#: src/authentic2/saml/models.py:343
+#: authentic2/saml/models.py:346
 msgid "object identifier"
 msgstr "identifiant de l'objet"
 
-#: src/authentic2/saml/models.py:347
+#: authentic2/saml/models.py:350
 msgid "name format"
 msgstr "format de nom"
 
-#: src/authentic2/saml/models.py:354
+#: authentic2/saml/models.py:357
 msgid "the local attribute name is used if left blank"
 msgstr "le nom d'attribut local est utilisé si laissé vide"
 
-#: src/authentic2/saml/models.py:357
+#: authentic2/saml/models.py:360
 msgid "friendly name"
 msgstr "pseudonyme"
 
-#: src/authentic2/saml/models.py:360
+#: authentic2/saml/models.py:363
 msgid "attribute name"
 msgstr "nom de l'attribut"
 
-#: src/authentic2/saml/models.py:362
+#: authentic2/saml/models.py:365
 msgid "enabled"
 msgstr "Activé"
 
-#: src/authentic2/saml/models.py:418
+#: authentic2/saml/models.py:413
 msgid "authorization attribute map"
 msgstr "carte des attributs d'autorisation"
 
-#: src/authentic2/saml/models.py:419
+#: authentic2/saml/models.py:414
 msgid "authorization attribute maps"
 msgstr "cartes des attributs d'autorisation"
 
-#: src/authentic2/saml/models.py:431
+#: authentic2/saml/models.py:426
 msgid "authorization attribute mapping"
 msgstr "correspondance entre attributs d'autorisation"
 
-#: src/authentic2/saml/models.py:432
+#: authentic2/saml/models.py:427
 msgid "authorization attribute mappings"
 msgstr "correspondances entre attributs d'autorisation"
 
-#: src/authentic2/saml/models.py:444
+#: authentic2/saml/models.py:439
 msgid "Default message to display to the user when access is denied"
 msgstr ""
 "Message par défaut à afficher à l'utilisateur quand l'accès lui est refusé"
 
-#: src/authentic2/saml/models.py:445
+#: authentic2/saml/models.py:440
 msgid "You are not authorized to access the service."
 msgstr "Vous n'etes pas autorise à acceder a ce service."
 
-#: src/authentic2/saml/models.py:448 src/authentic2/saml/models.py:592
+#: authentic2/saml/models.py:443 authentic2/saml/models.py:587
 msgid "authorization identity providers policy"
 msgstr "règlement des autorisations pour les fournisseurs d'identité"
 
-#: src/authentic2/saml/models.py:449
+#: authentic2/saml/models.py:444
 msgid "authorization identity providers policies"
 msgstr "règlement des autorisations pour les fournisseurs d'identité"
 
-#: src/authentic2/saml/models.py:491
+#: authentic2/saml/models.py:486
 msgid "Protocol other than SAML 2.0 are unsupported"
 msgstr "Les protocoles autre que SAML 2.0 ne sont pas supportés"
 
-#: src/authentic2/saml/models.py:499
+#: authentic2/saml/models.py:494
 msgid "No metadata URL"
 msgstr "Pas d'URL des métadonnées"
 
-#: src/authentic2/saml/models.py:502
+#: authentic2/saml/models.py:497
 #, python-format
 msgid "Retrieval of metadata failed: %s"
 msgstr "La récupération des métadonnées a échoué: %s"
 
-#: src/authentic2/saml/models.py:510
+#: authentic2/saml/models.py:505
 msgid "SAML provider"
 msgstr "fournisseur SAML"
 
-#: src/authentic2/saml/models.py:511
+#: authentic2/saml/models.py:506
 msgid "SAML providers"
 msgstr "fournisseurs SAML"
 
-#: src/authentic2/saml/models.py:535
+#: authentic2/saml/models.py:530
 msgid ""
 "The following options policy will apply except if a policy for all service "
 "provider is defined."
@@ -461,7 +465,7 @@ msgstr ""
 "Active le règlement d'option de fournisseur de service qui suit sauf si un "
 "règlementpour tous les fournisseurs de service est actif"
 
-#: src/authentic2/saml/models.py:543
+#: authentic2/saml/models.py:538
 msgid ""
 "The following attribute policy will apply except if a policy for all service "
 "provider is defined."
@@ -469,23 +473,23 @@ msgstr ""
 "Le règlement sur les attributs qui suit s'appliquera sauf si un "
 "règlementpour tous les fournisseurs de services est défini."
 
-#: src/authentic2/saml/models.py:547
+#: authentic2/saml/models.py:542
 msgid "attribute policy"
 msgstr "règlement sur les attributs"
 
-#: src/authentic2/saml/models.py:550
+#: authentic2/saml/models.py:545
 msgid "users can manage federation"
 msgstr "Les utilisateurs peuvent gérer leurs fédérations"
 
-#: src/authentic2/saml/models.py:564
+#: authentic2/saml/models.py:559
 msgid "SAML service provider"
 msgstr "fournisseur de service SAML"
 
-#: src/authentic2/saml/models.py:565
+#: authentic2/saml/models.py:560
 msgid "SAML service providers"
 msgstr "fournisseurs de service SAML"
 
-#: src/authentic2/saml/models.py:578
+#: authentic2/saml/models.py:573
 msgid ""
 "The following options policy will apply except if a policy for all identity "
 "provider is defined."
@@ -493,7 +497,7 @@ msgstr ""
 "Le règlement d'option pour les fournisseurs d'identité qui suit s'appliquera "
 "sauf si un règlement pour tous les fournisseurs d'identité est défini."
 
-#: src/authentic2/saml/models.py:587
+#: authentic2/saml/models.py:582
 msgid ""
 "The following authorization policy will apply except if a policy for all "
 "identity provider is defined."
@@ -502,111 +506,111 @@ msgstr ""
 "s'appliquera sauf si un règlement pour tous les fournisseurs d'identité est "
 "défini."
 
-#: src/authentic2/saml/models.py:608
+#: authentic2/saml/models.py:603
 msgid "SAML identity provider"
 msgstr "fournisseur d'identité SAML"
 
-#: src/authentic2/saml/models.py:609
+#: authentic2/saml/models.py:604
 msgid "SAML identity providers"
 msgstr "fournisseurs d'identité SAML"
 
-#: src/authentic2/saml/models.py:628
+#: authentic2/saml/models.py:623
 msgid "SAML session dump"
 msgstr "dump de session SAML"
 
-#: src/authentic2/saml/models.py:629
+#: authentic2/saml/models.py:624
 msgid "SAML session dumps"
 msgstr "dumps de session SAML"
 
-#: src/authentic2/saml/models.py:642
+#: authentic2/saml/models.py:637
 msgid "SAML manage dump"
 msgstr "dump du profil gestion des fédérations SAML"
 
-#: src/authentic2/saml/models.py:643
+#: authentic2/saml/models.py:638
 msgid "SAML manage dumps"
 msgstr "dumps du profil gestion des fédérations SAML"
 
-#: src/authentic2/saml/models.py:655
+#: authentic2/saml/models.py:650
 msgid "SAML artifact"
 msgstr "artéfact SAML"
 
-#: src/authentic2/saml/models.py:656
+#: authentic2/saml/models.py:651
 msgid "SAML artifacts"
 msgstr "artéfacts SAML"
 
-#: src/authentic2/saml/models.py:722
+#: authentic2/saml/models.py:717
 msgid "SAML federation"
 msgstr "fédérations SAML"
 
-#: src/authentic2/saml/models.py:723
+#: authentic2/saml/models.py:718
 msgid "SAML federations"
 msgstr "fédérations SAML"
 
-#: src/authentic2/saml/models.py:737
+#: authentic2/saml/models.py:732
 msgid "Qualifier"
 msgstr ""
 
-#: src/authentic2/saml/models.py:739
+#: authentic2/saml/models.py:734
 msgid "NameIDFormat"
 msgstr ""
 
-#: src/authentic2/saml/models.py:741
+#: authentic2/saml/models.py:736
 msgid "NameID"
 msgstr ""
 
-#: src/authentic2/saml/models.py:743
+#: authentic2/saml/models.py:738
 msgid "SPNameQualifier"
 msgstr ""
 
-#: src/authentic2/saml/models.py:779
+#: authentic2/saml/models.py:774
 msgid "SAML session"
 msgstr "session SAML"
 
-#: src/authentic2/saml/models.py:780
+#: authentic2/saml/models.py:775
 msgid "SAML sessions"
 msgstr "sessions SAML"
 
-#: src/authentic2/saml/models.py:789
+#: authentic2/saml/models.py:784
 msgid "SAML service provider session"
 msgstr "session de fournisseur de service SAML"
 
-#: src/authentic2/saml/models.py:790
+#: authentic2/saml/models.py:785
 msgid "SAML service provider sessions"
 msgstr "sessions de fournisseur de service SAML"
 
-#: src/authentic2/saml/models.py:803
+#: authentic2/saml/models.py:798
 msgid "key value association"
 msgstr "association clé valeur"
 
-#: src/authentic2/saml/models.py:804
+#: authentic2/saml/models.py:799
 msgid "key value associations"
 msgstr "associations clé valeurs"
 
-#: src/authentic2/saml/templates/admin/saml/libertyprovider/add_from_url.html:18
+#: authentic2/saml/templates/admin/saml/libertyprovider/add_from_url.html:18
 msgid "Home"
 msgstr "Accueil"
 
-#: src/authentic2/saml/templates/admin/saml/libertyprovider/add_from_url.html:21
-#: src/authentic2/saml/templates/admin/saml/libertyprovider/change_list.html:13
+#: authentic2/saml/templates/admin/saml/libertyprovider/add_from_url.html:21
+#: authentic2/saml/templates/admin/saml/libertyprovider/change_list.html:13
 msgid "Add from URL"
 msgstr "Ajouter depuis une URL"
 
-#: src/authentic2/saml/templates/admin/saml/libertyprovider/add_from_url.html:30
+#: authentic2/saml/templates/admin/saml/libertyprovider/add_from_url.html:30
 msgid "Please correct the error below."
 msgid_plural "Please correct the errors below."
 msgstr[0] "Veuillez corriger l'erreur suivante."
 msgstr[1] "Veuillez corriger les erreurs suivantes."
 
-#: src/authentic2/saml/templates/admin/saml/libertyprovider/change_list.html:9
+#: authentic2/saml/templates/admin/saml/libertyprovider/change_list.html:9
 #, python-format
 msgid "Add %(name)s"
 msgstr "Ajouter %(name)s"
 
-#: src/authentic2/saml/templates/saml/post_form.html:11
+#: authentic2/saml/templates/saml/post_form.html:11
 msgid "You should be automatically redirected."
 msgstr "Vous devriez être automatiquement redirigé."
 
-#: src/authentic2/saml/templates/saml/post_form.html:12
+#: authentic2/saml/templates/saml/post_form.html:12
 msgid ""
 "If this page is still visible after a few seconds, press the Send button "
 "below."
@@ -614,6 +618,6 @@ msgstr ""
 "Si cette page est encore visible après quelques secondes, cliquez sur le "
 "bouton Envoyer ci-dessous."
 
-#: src/authentic2/saml/templates/saml/post_form.html:19
+#: authentic2/saml/templates/saml/post_form.html:19
 msgid "Send"
 msgstr "Envoyer"

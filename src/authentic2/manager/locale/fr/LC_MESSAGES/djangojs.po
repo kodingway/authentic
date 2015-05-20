@@ -1,0 +1,64 @@
+# Authentic2 manager javascript french locale.
+# Copyright (C) 2015 Entr'ouvert
+# This file is distributed under the same license as the authentic2 package.
+# Benjamin Dauvergne <bdauvergne@entrouvert.com>, 2015.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: authentic2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-05-21 11:24+0200\n"
+"PO-Revision-Date: 2015-05-21 11:24+0200\n"
+"Last-Translator: Benjamin Dauvergne <bdauvergne@entrouvert.com>\n"
+"Language: french\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+
+#: authentic2/manager/static/authentic2/manager/js/select2_locale.js:3
+msgid "One result is available, press enter to select it."
+msgstr "Un seul résultat disponible, appuyer sur Entrer pour le sélectionner."
+
+#: authentic2/manager/static/authentic2/manager/js/select2_locale.js:3
+#, c-format
+msgid "%s results are available, use up and down arrow keys to navigate."
+msgstr "%s résultat sont disponible, utiliser les flèches haut et bas pour naviguer."
+
+#: authentic2/manager/static/authentic2/manager/js/select2_locale.js:4
+msgid "No matches found"
+msgstr "Aucun résultat"
+
+#: authentic2/manager/static/authentic2/manager/js/select2_locale.js:5
+msgid "Loading failed"
+msgstr "Échec du chargement"
+
+#: authentic2/manager/static/authentic2/manager/js/select2_locale.js:6
+#, c-format
+msgid "Please enter %s or more character"
+msgid_plural "Please enter %s or more characters"
+msgstr[0] "Veuillez entrer %s caractère ou plus"
+msgstr[1] "Veuillez entrer %s caractères ou plus"
+
+#: authentic2/manager/static/authentic2/manager/js/select2_locale.js:7
+#, c-format
+msgid "Please delete %s character"
+msgid_plural "Please delete %s characters"
+msgstr[0] "Veuillez supprimer %s caractère"
+msgstr[1] "Veuillez supprimer %s caractères"
+
+#: authentic2/manager/static/authentic2/manager/js/select2_locale.js:8
+#, c-format
+msgid "You can only select %s item"
+msgid_plural "You can only select %s items"
+msgstr[0] "Vous ne pouvez sélectionner que %s élément"
+msgstr[1] "Vous ne pouvez sélectionner que %s éléments"
+
+#: authentic2/manager/static/authentic2/manager/js/select2_locale.js:9
+msgid "Loading more results…"
+msgstr "Chargement de plus de résultats…"
+
+#: authentic2/manager/static/authentic2/manager/js/select2_locale.js:10
+msgid "Searching…"
+msgstr "Recherche…"

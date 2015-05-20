@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-15 17:16+0200\n"
+"POT-Creation-Date: 2015-05-22 16:32+0200\n"
 "PO-Revision-Date: 2015-02-26 17:53+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -34,8 +34,8 @@ msgstr "adresses IP"
 msgid "deleted user %r"
 msgstr "utilisateur supprimé %r"
 
-#: authentic2/admin.py:107 authentic2/models.py:29 authentic2/models.py:39
-#: authentic2/models.py:229
+#: authentic2/admin.py:107 authentic2/models.py:30 authentic2/models.py:40
+#: authentic2/models.py:230
 msgid "user"
 msgstr "utilisateur"
 
@@ -75,8 +75,8 @@ msgstr "Mot de passe"
 #: authentic2/admin.py:173
 msgid ""
 "Raw passwords are not stored, so there is no way to see this user's "
-"password, but you can change the password using <a href=\"../password/"
-"\">this form</a>."
+"password, but you can change the password using <a href=\"password/\">this "
+"form</a>."
 msgstr ""
 
 #: authentic2/admin.py:206 authentic2/registration_backend/forms.py:85
@@ -103,7 +103,7 @@ msgstr "Permissions"
 msgid "Important dates"
 msgstr "Dates importantes"
 
-#: authentic2/admin.py:274
+#: authentic2/admin.py:275
 msgid "Attributes"
 msgstr "Attributs"
 
@@ -253,72 +253,72 @@ msgstr "Tableau de bord"
 msgid "You must change your password to continue"
 msgstr "Vous devez changer votre mot de passe avant de continuer."
 
-#: authentic2/models.py:31 authentic2/models.py:45
+#: authentic2/models.py:32 authentic2/models.py:46
 msgid "creation date"
 msgstr "date de création"
 
-#: authentic2/models.py:34
+#: authentic2/models.py:35
 msgid "user to delete"
 msgstr "utilisateur à effacer"
 
-#: authentic2/models.py:35
+#: authentic2/models.py:36
 msgid "users to delete"
 msgstr "utilisateurs à effacer"
 
-#: authentic2/models.py:41
+#: authentic2/models.py:42
 msgid "source"
 msgstr "source"
 
-#: authentic2/models.py:43
+#: authentic2/models.py:44
 msgid "external id"
 msgstr "identifiant externe"
 
-#: authentic2/models.py:47
+#: authentic2/models.py:48
 msgid "last update date"
 msgstr "dernière date de mise à jour"
 
-#: authentic2/models.py:60
+#: authentic2/models.py:61
 msgid "user external id"
 msgstr "identifiant externe d'un utilisateur"
 
-#: authentic2/models.py:61
+#: authentic2/models.py:62
 msgid "user external ids"
 msgstr "identifiants externes des utilisateurs"
 
-#: authentic2/models.py:66
+#: authentic2/models.py:67
 msgid "when"
 msgstr "quand"
 
-#: authentic2/models.py:68
+#: authentic2/models.py:69
 msgid "who"
 msgstr "qui"
 
-#: authentic2/models.py:70
+#: authentic2/models.py:71
 msgid "how"
 msgstr "comment"
 
-#: authentic2/models.py:72
+#: authentic2/models.py:73
 msgid "nonce"
 msgstr "numéro unique"
 
-#: authentic2/models.py:77
+#: authentic2/models.py:78
 msgid "authentication log"
 msgstr "Journal des authentifications"
 
-#: authentic2/models.py:78
+#: authentic2/models.py:79
 msgid "authentication logs"
 msgstr "Journaux des authentification"
 
-#: authentic2/models.py:81
+#: authentic2/models.py:82
 #, python-format
 msgid "Authentication of %(who)s by %(how)s at %(when)s"
 msgstr "Authentification de %(who)s par %(how)s à %(when)s"
 
-#: authentic2/models.py:85
+#: authentic2/models.py:86
 msgid "url"
 msgstr "url"
 
-#: authentic2/models.py:85
+#: authentic2/models.py:86
 msgid ""
 "you can use a {} to pass the URL of the success icon, ex.: http://example."
 "com/logout?next={}"
@@ -326,15 +326,15 @@ msgstr ""
 "vous pouvez utiliser la chaîne {} pour passer l'URL de l'icône de succès,  "
 "ex.: http://example.com/logout?next={}"
 
-#: authentic2/models.py:89
+#: authentic2/models.py:90
 msgid "use an iframe instead of an img tag for logout"
 msgstr "utiliser une iframe au lieu d'un tag img pour la déconnexion"
 
-#: authentic2/models.py:92
+#: authentic2/models.py:93
 msgid "iframe logout timeout (ms)"
 msgstr "temps d'expiration pour les iframe de déconnexion (en ms)"
 
-#: authentic2/models.py:93
+#: authentic2/models.py:94
 msgid ""
 "if iframe logout is used, it's the time between the onload event for this "
 "iframe and the moment we consider its loading to be really finished"
@@ -343,125 +343,129 @@ msgstr ""
 "l'évènement onload pour cette iframe et le moment où l'on peut considérer "
 "que le chargement vraiment terminé."
 
-#: authentic2/models.py:109 authentic2/models.py:201
+#: authentic2/models.py:110 authentic2/models.py:202
 msgid "content type"
 msgstr "type d'objet"
 
-#: authentic2/models.py:111 authentic2/models.py:203
+#: authentic2/models.py:112 authentic2/models.py:204
 msgid "object identifier"
 msgstr "identifiant d'objet"
 
-#: authentic2/models.py:115 authentic2/models.py:116
+#: authentic2/models.py:116 authentic2/models.py:117
 msgid "logout URL"
 msgstr "URL de déconnexion"
 
-#: authentic2/models.py:120
+#: authentic2/models.py:121
 msgid "provider"
 msgstr "fournisseur"
 
-#: authentic2/models.py:122
+#: authentic2/models.py:123
 msgid "about"
 msgstr "à propos"
 
-#: authentic2/models.py:124
+#: authentic2/models.py:125
 msgid "service"
-msgstr "service"
+msgstr "application"
 
-#: authentic2/models.py:126
+#: authentic2/models.py:127
 msgid "format identifier"
 msgstr "identifiant du format"
 
-#: authentic2/models.py:128
+#: authentic2/models.py:129
 msgid "identifier"
 msgstr "identifiant"
 
-#: authentic2/models.py:133
+#: authentic2/models.py:134
 msgid "federation identifier"
 msgstr "identifiant de fédération"
 
-#: authentic2/models.py:134
+#: authentic2/models.py:135
 msgid "federation identifiers"
 msgstr "identifiants de fédération"
 
-#: authentic2/models.py:137
+#: authentic2/models.py:138
 msgid "label"
 msgstr "label"
 
-#: authentic2/models.py:139
+#: authentic2/models.py:140
 msgid "description"
 msgstr "description"
 
-#: authentic2/models.py:140 authentic2/models.py:240
+#: authentic2/models.py:141 authentic2/models.py:241
 msgid "name"
 msgstr "identifiant"
 
-#: authentic2/models.py:143
+#: authentic2/models.py:144
 msgid "required"
 msgstr "requis"
 
-#: authentic2/models.py:146
+#: authentic2/models.py:147
 msgid "asked on registration"
 msgstr "demandé à l'enregistrement"
 
-#: authentic2/models.py:149
+#: authentic2/models.py:150
 msgid "user editable"
 msgstr "éditable par l'utilisateur"
 
-#: authentic2/models.py:152
+#: authentic2/models.py:153
 msgid "user visible"
 msgstr "visible de l'utilisateur"
 
-#: authentic2/models.py:155
+#: authentic2/models.py:156
 msgid "multiple"
 msgstr "multiple"
 
-#: authentic2/models.py:158
+#: authentic2/models.py:159
 msgid "kind"
 msgstr "type"
 
-#: authentic2/models.py:196
+#: authentic2/models.py:197
 msgid "attribute definition"
 msgstr "définition d'un attribut"
 
-#: authentic2/models.py:197
+#: authentic2/models.py:198
 msgid "attribute definitions"
 msgstr "définition des attributs"
 
-#: authentic2/models.py:207
+#: authentic2/models.py:208
 msgid "attribute"
 msgstr "attribut"
 
-#: authentic2/models.py:209
+#: authentic2/models.py:210
 msgid "content"
 msgstr "contenu"
 
-#: authentic2/models.py:224
+#: authentic2/models.py:225
 msgid "attribute value"
 msgstr "valeur d'un attribut"
 
-#: authentic2/models.py:225
+#: authentic2/models.py:226
 msgid "attribute values"
 msgstr "valeurs des attributs"
 
-#: authentic2/models.py:232 authentic2/models.py:233
+#: authentic2/models.py:233 authentic2/models.py:234
 msgid "password reset"
 msgstr "obligation de changement de mot de passe"
 
-#: authentic2/models.py:243
+#: authentic2/models.py:244
 msgid "slug"
-msgstr ""
+msgstr "code court"
 
-#: authentic2/models.py:256
+#: authentic2/models.py:247
+msgid "organizational unit"
+msgstr "entité"
+
+#: authentic2/models.py:258
 msgid "An organizational unit is mandatory"
-msgstr "L'unité d'organisation est obligatoire."
+msgstr "L'entité est obligatoire."
 
-#: authentic2/models.py:260
+#: authentic2/models.py:262
 msgid "base service model"
-msgstr "modèle de base pour les modèles de service"
+msgstr "application"
 
-#: authentic2/models.py:261
+#: authentic2/models.py:263
 msgid "base service models"
-msgstr "modèles de base pour les modèles de service"
+msgstr "applications"
 
 #: authentic2/registration_backend/forms.py:37
 #: authentic2/registration_backend/forms.py:113
@@ -487,7 +491,7 @@ msgstr ""
 msgid "New password"
 msgstr "Nouveau mot de passe"
 
-#: authentic2/registration_backend/views.py:149
+#: authentic2/registration_backend/views.py:152
 msgid ""
 "Your account has been scheduled for deletion. You cannot use it anymore."
 msgstr ""
@@ -1077,7 +1081,7 @@ msgstr ""
 
 #: authentic2/views.py:442
 msgid "Logging out from all your services"
-msgstr "Déconnexion de tous vos services"
+msgstr "Déconnexion de toutes vos applications"
 
 #: authentic2/views.py:447
 msgid "You have been logged out"

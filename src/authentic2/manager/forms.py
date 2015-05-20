@@ -70,11 +70,19 @@ class ChooseOUForm(CssClass, forms.Form):
 
 
 class ChoosePermissionForm(CssClass, forms.Form):
-    operation = forms.ModelChoiceField(queryset=Operation.objects)
-    ou = forms.ModelChoiceField(queryset=get_ou_model().objects,
-                                required=False)
-    target = forms.ModelChoiceField(queryset=ContentType.objects)
-    action = forms.CharField(initial='add', widget=forms.HiddenInput)
+    operation = forms.ModelChoiceField(
+        label=_('Operation'),
+        queryset=Operation.objects)
+    ou = forms.ModelChoiceField(
+        label=_('Organizational unit'),
+        queryset=get_ou_model().objects,
+        required=False)
+    target = forms.ModelChoiceField(
+        label=_('Target object'),
+        queryset=ContentType.objects)
+    action = forms.CharField(
+        initial='add',
+        widget=forms.HiddenInput)
 
 
 class UserEditForm(LimitQuerysetFormMixin, CssClass, BaseUserForm):

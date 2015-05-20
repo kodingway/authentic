@@ -9,7 +9,8 @@
   {% block table.tbody.last.column %}
     {% if row.record.default %}
     <td><a class="icon-remove-sign disabled" 
-           title="{% trans "You cannot delete the default organizational unit, your must first elect a new default organizational unit." %}"></a></td>
+           title="{% trans "You cannot delete the default organizational unit, you must first set "
+"another default organiational unit." %}"></a></td>
     {% else %}
        <td><a class="icon-remove-sign" rel="popup" href="{% url "a2-manager-ou-delete" pk=row.record.pk %}"></a></td>
     {% endif %}

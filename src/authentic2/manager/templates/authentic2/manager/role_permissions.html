@@ -3,7 +3,8 @@
 
 {% block more-user-links %}
   {{ block.super }}
-  <a href="#">{% blocktrans with name=object.name %}Permissions of role "{{ name }}"{% endblocktrans %}</a>
+  <a href="..">{{ object }}</a>
+  <a href="#">{% trans "Permissions" %}</a>
 {% endblock %}
 
 {% block page_title %}
@@ -12,18 +13,16 @@
 
 {% block appbar %}
   {{ block.super }}
-  {% if perms.a2_rbac.delete_role %}
+  {% if view.can_delete %}
     <a rel="popup" href="{% url "a2-manager-role-delete" pk=object.pk %}">{% trans "Delete" %}</a>
   {% endif %}
-  {% if perms.a2_rbac.change_role %}
-    <a rel="popup" href="{% url "a2-manager-role-edit" pk=object.pk %}">{% trans "Modify name" %}</a>
-  {% endif  %}
-  {% if perms.a2_rbac.view_role %}
-    <a href="{% url "a2-manager-role-members" pk=object.pk %}">{% trans "Modify members" %}</a>
+  {% if view.can_change and not object.admin_scope_ct_id %}
+    <a rel="popup" href="{% url "a2-manager-role-edit" pk=object.pk %}">{% trans "Modify description" %}</a>
+    <a href="{% url "a2-manager-role-managers" pk=object.pk %}">{% trans "Managers" %}</a>
   {% endif %}
+  <a href="{% url "a2-manager-role-children" pk=object.pk %}">{% trans "Children roles" %}</a>
+  <a href="{% url "a2-manager-role-members" pk=object.pk %}">{% trans "Members" %}</a>
 {% endblock %}
-
-
 
 {% block main %}
    <div class="role-info">

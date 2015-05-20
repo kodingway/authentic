@@ -3,7 +3,8 @@
 
 {% block more-user-links %}
   {{ block.super }}
-  <a href="#">{{ object }}</a>
+  <a href="..">{{ object }}</a>
+  <a href="#">{% trans "Children roles" %}</a>
 {% endblock %}
 
 {% block page_title %}
@@ -17,7 +18,7 @@
   {% endif %}
   {% if view.can_change and not object.admin_scope_ct_id %}
     <a rel="popup" href="{% url "a2-manager-role-edit" pk=object.pk %}">{% trans "Modify description" %}</a>
-    <a href="{% url "a2-manager-role-permissions" pk=object.pk %}">{% trans "Modify permissions" %}</a>
+    <a href="{% url "a2-manager-role-permissions" pk=object.pk %}">{% trans "Permissions" %}</a>
     <a href="{% url "a2-manager-role-managers" pk=object.pk %}">{% trans "Managers" %}</a>
   {% endif %}
   <a href="{% url "a2-manager-role-members" pk=object.pk %}">{% trans "Members" %}</a>

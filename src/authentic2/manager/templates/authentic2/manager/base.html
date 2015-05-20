@@ -21,6 +21,8 @@
   <script type="text/javascript" src="{% static "authentic2/manager/js/manager.js" %}"></script>
   {% import_django_select2_js %}
   {% import_django_select2_css %}
+  <script type="text/javascript" src="{% url 'a2-manager-javascript-catalog' %}"></script>
+  <script type="text/javascript" src="{% static "authentic2/manager/js/select2_locale.js" %}"></script>
   <script>
     window.csrf_token = '{{ csrf_token }}';
   </script>

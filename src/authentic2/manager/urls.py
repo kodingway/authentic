@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, url, include
 
+from django.views.i18n import javascript_catalog
 from django.contrib.auth.decorators import login_required
 from . import views, role_views, ou_views, user_views
 from ..decorators import required
@@ -62,6 +63,10 @@ urlpatterns = required(
         url(r'^organizational-units/(?P<pk>\d+)/delete/$', ou_views.delete,
             name='a2-manager-ou-delete'),
 
+        url(r'^jsi18n/$', javascript_catalog,
+            {'packages': ('authentic2.manager',)},
+            name='a2-manager-javascript-catalog'),
         url(r'^', include('django_select2.urls')),
+
     )
 )

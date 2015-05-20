@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-15 17:02+0200\n"
+"POT-Creation-Date: 2015-05-22 16:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,26 +17,26 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: src/authentic2/disco_service/disco_responder.py:134
+#: authentic2/disco_service/disco_responder.py:134
 #, python-format
 msgid "HTTP verb not supported %s"
 msgstr "verbe HTTP %s non supporté"
 
-#: src/authentic2/disco_service/disco_responder.py:177
+#: authentic2/disco_service/disco_responder.py:177
 msgid "missing mandatory parameter entityID"
 msgstr "paramètre obligatoire entityID manquant"
 
-#: src/authentic2/disco_service/disco_responder.py:182
+#: authentic2/disco_service/disco_responder.py:182
 #, python-format
 msgid "policy %r not implemented"
 msgstr "le règlement %r n'est pas géré"
 
-#: src/authentic2/disco_service/disco_responder.py:193
+#: authentic2/disco_service/disco_responder.py:193
 #, python-format
 msgid "unable to find a valid return url for %s"
 msgstr "impossible de trouver une URL de retour valide pour %s"
 
-#: src/authentic2/disco_service/disco_responder.py:200
+#: authentic2/disco_service/disco_responder.py:200
 #, python-format
 msgid "invalid return url %(return_url)s for %(entity_id)s"
 msgstr "URL de retour %(return_url)s invalide pour %(entity_id)s"

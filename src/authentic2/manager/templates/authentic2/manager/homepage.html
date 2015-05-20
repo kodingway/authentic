@@ -30,13 +30,6 @@
             </a>
           </li>
         {% endif %}
-        {% if perms.any.auth.view_group %}
-	  <li id="groups">
-            <a href="{% url "a2-manager-groups" %}">
-              {% trans "Group management" %}
-            </a>
-          </li>
-        {% endif %}
         {% if perms.any.a2_rbac.view_role %}
           <li id="roles">
             <a href="{% url "a2-manager-roles" %}">

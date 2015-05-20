@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: authentic2_idp_cas 1.0 \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-15 17:02+0200\n"
+"POT-Creation-Date: 2015-05-22 16:32+0200\n"
 "PO-Revision-Date: 2015-02-27 15:54+0100\n"
 "Last-Translator: Benjamin Dauvergne <bdauvergne@entrouvert.com>\n"
 "Language: fr\n"
@@ -17,101 +17,103 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: src/authentic2_idp_cas/__init__.py:39
+#: authentic2_idp_cas/__init__.py:39
 msgid "CAS"
 msgstr ""
 
-#: src/authentic2_idp_cas/admin.py:20 src/authentic2_idp_cas/admin.py:35
+#: authentic2_idp_cas/admin.py:20 authentic2_idp_cas/admin.py:40
 msgid "None"
 msgstr "Aucun"
 
-#: src/authentic2_idp_cas/admin.py:62
+#: authentic2_idp_cas/admin.py:77
 msgid "Logout"
-msgstr ""
+msgstr "Déconnexion"
 
-#: src/authentic2_idp_cas/models.py:17
+#: authentic2_idp_cas/models.py:17
 msgid "urls"
 msgstr "URLs"
 
-#: src/authentic2_idp_cas/models.py:19 src/authentic2_idp_cas/models.py:66
+#: authentic2_idp_cas/models.py:19 authentic2_idp_cas/models.py:67
 msgid "attribute name"
 msgstr "nom de l'attribut"
 
-#: src/authentic2_idp_cas/models.py:21
+#: authentic2_idp_cas/models.py:21
 msgid "proxy"
-msgstr ""
+msgstr "mandataire"
 
-#: src/authentic2_idp_cas/models.py:22
+#: authentic2_idp_cas/models.py:22
 msgid "services who can request proxy tickets for this service"
-msgstr "services qui peuvent demander un ticket proxy vers ce service"
+msgstr ""
+"autres applications qui peuvent demander un ticket mandataire vers cette "
+"application"
 
-#: src/authentic2_idp_cas/models.py:33
+#: authentic2_idp_cas/models.py:34
 #, python-format
 msgid "%s is an invalid URL"
 msgstr "%s n'est pas une URL valide"
 
-#: src/authentic2_idp_cas/models.py:58 src/authentic2_idp_cas/models.py:63
-#: src/authentic2_idp_cas/models.py:93
+#: authentic2_idp_cas/models.py:59 authentic2_idp_cas/models.py:64
+#: authentic2_idp_cas/models.py:94
 msgid "service"
-msgstr ""
+msgstr "application"
 
-#: src/authentic2_idp_cas/models.py:59
+#: authentic2_idp_cas/models.py:60
 msgid "services"
-msgstr ""
+msgstr "applications"
 
-#: src/authentic2_idp_cas/models.py:64
+#: authentic2_idp_cas/models.py:65
 msgid "slug"
-msgstr ""
+msgstr "code court"
 
-#: src/authentic2_idp_cas/models.py:68
+#: authentic2_idp_cas/models.py:69
 msgid "enabled"
-msgstr ""
+msgstr "activé"
 
-#: src/authentic2_idp_cas/models.py:75
+#: authentic2_idp_cas/models.py:76
 msgid "CAS attribute"
 msgstr "attribut pour les tickets"
 
-#: src/authentic2_idp_cas/models.py:76
+#: authentic2_idp_cas/models.py:77
 msgid "CAS attributes"
 msgstr "attributs pour les tickets"
 
-#: src/authentic2_idp_cas/models.py:86
+#: authentic2_idp_cas/models.py:87
 msgid "ticket id"
 msgstr "identifiant du ticket"
 
-#: src/authentic2_idp_cas/models.py:90
+#: authentic2_idp_cas/models.py:91
 msgid "fresh authentication"
 msgstr "nécessite une ré-authentification"
 
-#: src/authentic2_idp_cas/models.py:92
+#: authentic2_idp_cas/models.py:93
 msgid "valid"
 msgstr "valide"
 
-#: src/authentic2_idp_cas/models.py:95
+#: authentic2_idp_cas/models.py:96
 msgid "service URL"
-msgstr "URL du service"
+msgstr "URL de l'application"
 
-#: src/authentic2_idp_cas/models.py:98
+#: authentic2_idp_cas/models.py:99
 msgid "user"
 msgstr "utilisateur"
 
-#: src/authentic2_idp_cas/models.py:100
+#: authentic2_idp_cas/models.py:101
 msgid "creation"
 msgstr "date de création"
 
-#: src/authentic2_idp_cas/models.py:102
+#: authentic2_idp_cas/models.py:103
 msgid "expire"
 msgstr "date d'expiration"
 
-#: src/authentic2_idp_cas/models.py:104
+#: authentic2_idp_cas/models.py:105
 msgid "django session key"
 msgstr "clé de session django"
 
-#: src/authentic2_idp_cas/models.py:106
+#: authentic2_idp_cas/models.py:107
 msgid "proxies"
-msgstr "proxys"
+msgstr "mandataires"
 
-#: src/authentic2_idp_cas/templates/authentic2_idp_cas/logout_fragment.html:2
+#: authentic2_idp_cas/templates/authentic2_idp_cas/logout_fragment.html:2
 #, python-format
 msgid "Sending logout to %(name)s...."
 msgstr "Déconnexion de %(name)s...."

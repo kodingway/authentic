@@ -34,12 +34,24 @@ def update_ou_admin_roles():
             ou_admin_roles[ou] = ou.get_admin_role()
     return ou_admin_roles
 
-MANAGED_CT = (
-    ('authentic2', 'service'),
-    ('a2_rbac', 'role'),
-    ('a2_rbac', 'organizationalunit'),
-    ('custom_user', 'user'),
-)
+MANAGED_CT = {
+    ('authentic2', 'service'): {
+        'name': _('Manager of services'),
+        'scoped_name': _('Services - {ou}'),
+    },
+    ('a2_rbac', 'role'): {
+        'name': _('Manager of roles'),
+        'scoped_name': _('Roles - {ou}'),
+    },
+    ('a2_rbac', 'organizationalunit'): {
+        'name': _('Manager of organizational units'),
+        'scoped_name': _('Organizational unit - {ou}'),
+    },
+    ('custom_user', 'user'): {
+        'name': _('Manager of users'),
+        'scoped_name': _('Users - {ou}'),
+    },
+}
 
 
 @atomic
@@ -53,25 +65,26 @@ def update_content_types_roles(ou_admin_roles):
     Role = get_role_model()
 
     for ct in cts:
-        if (ct.app_label.lower(), ct.model.lower()) not in MANAGED_CT:
+        ct_tuple = (ct.app_label.lower(), ct.model.lower())
+        if ct_tuple not in MANAGED_CT:
             continue
         # General admin role
         model_class = ct.model_class()
-        ct_name = unicode(model_class._meta.verbose_name)
-        name = _('Managers of content type "{ct}"').format(ct=ct_name)
-        slug = u'managers-of-content-type-{ct}'.format(ct=slugify(ct_name))
-        Role.objects.get_admin_role(instance=ct, name=name, slug=slug,
+        name = MANAGED_CT[ct_tuple]['name']
+        Role.objects.get_admin_role(instance=ct, name=name, slug=slugify(name),
                                     update_name=True)
         ou_model = get_fk_model(model_class, 'ou')
         # do not create scoped admin roles if the model is not scopable
         if not ou_model:
             continue
+        scoped_name = MANAGED_CT[ct_tuple]['scoped_name']
         for ou in ous:
+            name = scoped_name.format(ou=ou)
             ou_ct_admin_role = Role.objects.get_admin_role(
                 instance=ct,
                 ou=ou,
                 name=name,
-                slug=slug,
+                slug=slugify(name),
                 update_name=True)
             ou_ct_admin_role.add_child(ou_admin_roles[ou])
 

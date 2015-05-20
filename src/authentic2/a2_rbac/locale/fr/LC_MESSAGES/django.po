@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-rbac\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-13 17:14+0200\n"
+"POT-Creation-Date: 2015-05-22 16:32+0200\n"
 "PO-Revision-Date: 2015-05-13 15:21+0200\n"
 "Last-Translator: Benjamin Dauvergner <bdauvergne@entrouvert.com>\n"
 "Language: \n"
@@ -16,93 +16,134 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: authentic2/a2_rbac/admin.py:50 authentic2/a2_rbac/models.py:104
+#: authentic2/a2_rbac/admin.py:58 authentic2/a2_rbac/models.py:139
 msgid "name"
 msgstr "nom"
 
-#: authentic2/a2_rbac/management.py:29
-#, python-brace-format
-msgid "Managers of \"{ou}\""
-msgstr "Gestionnaires « {ou} »"
+#: authentic2/a2_rbac/management.py:39
+msgid "Manager of services"
+msgstr "Administrateur des applications"
 
-#: authentic2/a2_rbac/management.py:78 authentic2/a2_rbac/management.py:95
+#: authentic2/a2_rbac/management.py:40
 #, python-brace-format
-msgid "Managers of content type \"{ct}\""
-msgstr "Gestionnaires des objets « {ct} »"
+msgid "Services - {ou}"
+msgstr "Applications - {ou}"
 
-#: authentic2/a2_rbac/models.py:22
-msgid "organizational unit"
-msgstr "unité d'organisation"
+#: authentic2/a2_rbac/management.py:43
+msgid "Manager of roles"
+msgstr "Administrateur des rôles"
+
+#: authentic2/a2_rbac/management.py:44
+#, python-brace-format
+msgid "Roles - {ou}"
+msgstr "Rôles - {ou}"
+
+#: authentic2/a2_rbac/management.py:47
+msgid "Manager of organizational units"
+msgstr "Administrateur des entités"
+
+#: authentic2/a2_rbac/management.py:48
+#, python-brace-format
+msgid "Organizational unit - {ou}"
+msgstr "Entités - {ou}"
+
+#: authentic2/a2_rbac/management.py:51
+msgid "Manager of users"
+msgstr "Administrateur des utilisateurs"
+
+#: authentic2/a2_rbac/management.py:52
+#, python-brace-format
+msgid "Users - {ou}"
+msgstr "Utilisateurs - {ou}"
+
+#: authentic2/a2_rbac/models.py:20 authentic2/a2_rbac/signal_handlers.py:27
+msgid "Default organizational unit"
+msgstr "Entité par défaut"
 
 #: authentic2/a2_rbac/models.py:23
-msgid "organizational units"
-msgstr "unités d'organisation"
+msgid "organizational unit"
+msgstr "entité"
 
-#: authentic2/a2_rbac/models.py:28
+#: authentic2/a2_rbac/models.py:24
+msgid "organizational units"
+msgstr "entités"
+
+#: authentic2/a2_rbac/models.py:41
+msgid ""
+"You cannot unset this organizational unit as the default, but you can set "
+"another one as the default."
+msgstr ""
+
+#: authentic2/a2_rbac/models.py:50
+#, python-brace-format
+msgid "Managers of \"{ou}\""
+msgstr "Administrateur de l'entité « {ou} »"
+
+#: authentic2/a2_rbac/models.py:59
 msgid "permission"
 msgstr "permission"
 
-#: authentic2/a2_rbac/models.py:29
+#: authentic2/a2_rbac/models.py:60
 msgid "permissions"
 msgstr "permissions"
 
-#: authentic2/a2_rbac/models.py:37
+#: authentic2/a2_rbac/models.py:68
 msgid "administrative scope content type"
 msgstr "type d'objet administré"
 
-#: authentic2/a2_rbac/models.py:39
+#: authentic2/a2_rbac/models.py:70
 msgid "administrative scope id"
 msgstr "identifiant de l'objet administré"
 
-#: authentic2/a2_rbac/models.py:48
+#: authentic2/a2_rbac/models.py:78
 msgid "service"
-msgstr "service"
+msgstr "application"
 
-#: authentic2/a2_rbac/models.py:55
+#: authentic2/a2_rbac/models.py:82
+msgid "external id"
+msgstr "identifiant externe"
+
+#: authentic2/a2_rbac/models.py:89
 #, python-brace-format
 msgid "Managers of role \"{role}\""
-msgstr "Gestionnaires du rôle « {role} »"
+msgstr "Administrateur du rôle « {role} »"
 
-#: authentic2/a2_rbac/models.py:62
+#: authentic2/a2_rbac/models.py:97
 msgid "This slug is not unique over this organizational unit."
-msgstr "Ce code n'est pas unique pour cette unité d'organisation."
+msgstr "Ce code n'est pas unique pour cette entité."
 
-#: authentic2/a2_rbac/models.py:66
+#: authentic2/a2_rbac/models.py:102
 msgid "This name is not unique over this organizational unit."
-msgstr "Ce nom n'est pas unique pour cette unité d'orgnisation."
+msgstr "Ce nom n'est pas unique pour cette entité."
 
-#: authentic2/a2_rbac/models.py:78 authentic2/a2_rbac/models.py:100
+#: authentic2/a2_rbac/models.py:114 authentic2/a2_rbac/models.py:135
 msgid "role"
 msgstr "rôle"
 
-#: authentic2/a2_rbac/models.py:79
+#: authentic2/a2_rbac/models.py:115
 msgid "roles"
 msgstr "rôles"
 
-#: authentic2/a2_rbac/models.py:90
+#: authentic2/a2_rbac/models.py:125
 msgid "role parenting relation"
 msgstr "relation de parenté entre rôles"
 
-#: authentic2/a2_rbac/models.py:91
+#: authentic2/a2_rbac/models.py:126
 msgid "role parenting relations"
 msgstr "relations de parenté entre rôles"
 
-#: authentic2/a2_rbac/models.py:96
+#: authentic2/a2_rbac/models.py:131
 msgid "string"
 msgstr "chaîne"
 
-#: authentic2/a2_rbac/models.py:108
+#: authentic2/a2_rbac/models.py:143
 msgid "kind"
 msgstr "type"
 
-#: authentic2/a2_rbac/models.py:110
+#: authentic2/a2_rbac/models.py:145
 msgid "value"
 msgstr "valeur"
 
-#: authentic2/a2_rbac/models.py:114
+#: authentic2/a2_rbac/models.py:149
 msgid "role attributes"
 msgstr "attributs de rôle"
-
-#: authentic2/a2_rbac/signal_handlers.py:26
-msgid "Default organizational unit"
-msgstr "Unité d'organisation par défaut"

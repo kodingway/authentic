@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-rbac\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-13 15:21+0200\n"
+"POT-Creation-Date: 2015-05-22 16:32+0200\n"
 "PO-Revision-Date: 2015-05-13 15:21+0200\n"
 "Last-Translator: Benjamin Dauvergner <bdauvergne@entrouvert.com>\n"
 "Language: \n"
@@ -20,25 +20,25 @@ msgstr ""
 msgid "uuid"
 msgstr "Identifiant unique"
 
-#: django_rbac/models.py:37 django_rbac/models.py:105
+#: django_rbac/models.py:38 django_rbac/models.py:105
 msgid "name"
 msgstr "nom"
 
-#: django_rbac/models.py:40 django_rbac/models.py:108
+#: django_rbac/models.py:41 django_rbac/models.py:108
 msgid "slug"
 msgstr "code"
 
-#: django_rbac/models.py:42
+#: django_rbac/models.py:43
 msgid "description"
-msgstr ""
+msgstr "description"
 
-#: django_rbac/models.py:71 django_rbac/models.py:98 django_rbac/models.py:125
+#: django_rbac/models.py:72 django_rbac/models.py:98 django_rbac/models.py:125
 msgid "organizational unit"
-msgstr "unité d'organisation"
+msgstr "entité"
 
 #: django_rbac/models.py:99
 msgid "organizational units"
-msgstr "unités d'organisation"
+msgstr "entités"
 
 #: django_rbac/models.py:122
 msgid "operation"
@@ -52,38 +52,38 @@ msgstr ""
 msgid "permissions"
 msgstr ""
 
-#: django_rbac/models.py:238
+#: django_rbac/models.py:245
 msgid "role"
 msgstr "rôle"
 
-#: django_rbac/models.py:239
+#: django_rbac/models.py:246
 msgid "roles"
 msgstr "rôles"
 
-#: django_rbac/models.py:268
+#: django_rbac/models.py:275
 msgid "role parenting relation"
 msgstr "relation de parenté entre rôles"
 
-#: django_rbac/models.py:269
+#: django_rbac/models.py:276
 msgid "role parenting relations"
 msgstr "relations de parenté entre rôles"
 
-#: django_rbac/models.py:293
+#: django_rbac/models.py:300
 msgid "Management"
 msgstr "Administration"
 
-#: django_rbac/models.py:294
+#: django_rbac/models.py:301
 msgid "Change"
 msgstr "Modification"
 
-#: django_rbac/models.py:295
+#: django_rbac/models.py:302
 msgid "Delete"
 msgstr "Suppression"
 
-#: django_rbac/models.py:296
+#: django_rbac/models.py:303
 msgid "Add"
 msgstr "Ajout"
 
-#: django_rbac/models.py:297
+#: django_rbac/models.py:304
 msgid "View"
 msgstr "Visualisation"
