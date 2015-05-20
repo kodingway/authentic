@@ -22,14 +22,13 @@ class RolesMixin(object):
         permission_ct = ContentType.objects.get_for_model(Permission)
         ct_ct = ContentType.objects.get_for_model(ContentType)
         ou_ct = ContentType.objects.get_for_model(get_ou_model())
-        permission_qs = Permission.objects.filter(target_ct=ct_ct) \
+        permission_qs = Permission.objects.filter(target_ct_id__in=[ct_ct.id, ou_ct.id]) \
             .values_list('id', flat=True)
         # only non role-admin roles, they are accessed through the
         # RoleManager views
         return qs.filter(Q(admin_scope_ct__isnull=True)
                          | Q(admin_scope_ct=permission_ct,
-                             admin_scope_id__in=permission_qs)
-                         | Q(admin_scope_ct=ou_ct))
+                             admin_scope_id__in=permission_qs))
 
 
 class RolesView(RolesMixin, views.BaseTableView):
