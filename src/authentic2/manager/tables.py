@@ -11,9 +11,8 @@ from authentic2.compat import get_user_model
 
 
 class UserTable(tables.Table):
-    uuid = tables.TemplateColumn('{{ record.uuid|slice:":6" }}',
-                                 verbose_name=_('UUID'))
-    ou = tables.Column(verbose_name=_('Organizational unit'))
+    uuid = tables.Column()
+    ou = tables.Column()
     username = tables.Column()
     email = tables.Column()
 
@@ -26,8 +25,7 @@ class UserTable(tables.Table):
 
 
 class RoleMembersTable(UserTable):
-    uuid = tables.TemplateColumn('{{ record.uuid|slice:":6" }}...',
-                                 verbose_name=_('UUID'))
+    uuid = tables.Column()
     username = tables.TemplateColumn(
         '''{% load i18n %}
 {% with perm=perms.custom_user.change_user %}

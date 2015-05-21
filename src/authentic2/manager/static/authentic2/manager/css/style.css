@@ -222,6 +222,13 @@ th.desc:after {
   content: "\f176";
 }
 
+td.uuid {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 6ex;
+    max-width: 6ex;
+}
+
 a.disabled {
   color: grey;
   text-decoration: none;
