@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, url, include
 
 from django.contrib.auth.decorators import login_required
-from . import views, role_views, ou_views
+from . import views, role_views, ou_views, user_views
 from ..decorators import required
 
 urlpatterns = required(
@@ -11,15 +11,18 @@ urlpatterns = required(
         url(r'^$', views.homepage, name='a2-manager-homepage'),
 
         # Authentic2 users
-        url(r'^users/$', views.users, name='a2-manager-users'),
+        url(r'^users/$', user_views.users, name='a2-manager-users'),
         url(r'^users/export/(?P<format>csv|json|html|ods)/$',
-            views.users_export, name='a2-manager-users-export'),
-        url(r'^users/add/$', views.user_add,
+            user_views.users_export, name='a2-manager-users-export'),
+        url(r'^users/add/$', user_views.user_add,
             name='a2-manager-user-add'),
-        url(r'^users/(?P<pk>\d+)/$', views.user_edit,
+        url(r'^users/(?P<pk>\d+)/$', user_views.user_edit,
             name='a2-manager-user-edit'),
+        url(r'^users/(?P<pk>\d+)/roles/$',
+            user_views.roles,
+            name='a2-manager-user-roles'),
         url(r'^users/(?P<pk>\d+)/change-password/$',
-            views.user_change_password,
+            user_views.user_change_password,
             name='a2-manager-user-change-password'),
 
         # Authentic2 roles

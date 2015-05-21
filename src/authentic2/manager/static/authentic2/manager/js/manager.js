@@ -82,13 +82,16 @@ $(function() {
        return displayPopup.apply($(e.target), [e]);
       }
     })
-    $(document).on('change', '#id_generate_new_password', function (e) {
+    $(document).on('change', '#id_generate_password', function (e) {
         if ($(e.target).is(':checked')) {
             $('#id_send_mail').prop('disabled', true);
+            $('#id_send_mail').data('old_value', $('#id_send_mail').is(':checked'));
+            $('#id_send_mail').prop('checked', true);
             $('#id_password1').prop('disabled', true);
             $('#id_password2').prop('disabled', true);
         } else {
             $('#id_send_mail').prop('disabled', false);
+            $('#id_send_mail').prop('checked', $('#id_send_mail').data('old_value'));
             $('#id_password1').prop('disabled', false);
             $('#id_password2').prop('disabled', false);
         }

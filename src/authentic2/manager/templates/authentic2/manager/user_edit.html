@@ -11,11 +11,15 @@
   <a href="#">{{ object.get_full_name }}</a>
 {% endblock %}
 
+{% block appbar %}
+  <a href="{% url "a2-manager-user-roles" pk=object.pk %}">{% trans "Roles" %}</a>
+{% endblock %}
+
 {% block beforeform %}
-    <p>
-     <label for="id_uuid">{% trans "UUID" %}&nbsp;:</label>
-     <input readonly type="text" id="id_uuid" value="{{ form.instance.uuid }}" disabled/>
-    </p>
+  <p>
+    <label for="id_uuid">{% trans "UUID" %}&nbsp;:</label>
+    <input disabled type="text" id="id_uuid" value="{{ form.instance.uuid }}"/>
+  </p>
 {% endblock %}
 
 {% block afterform %}

@@ -1,0 +1,30 @@
+{% extends "authentic2/manager/sidebar.html" %}
+{% load i18n staticfiles django_tables2 %}
+
+{% block more-user-links %}
+  {{ block.super }}
+  <a href="{% url 'a2-manager-users' %}">{% trans 'User management' %}</a>
+  <a href="{% url 'a2-manager-user-edit' pk=object.pk %}">{{ object.get_full_name }}</a>
+  <a href="#">{% trans "Roles" %}</a>
+{% endblock %}
+
+{% block page_title %}
+{% trans "Roles" %}
+{% endblock %}
+
+{% block extra_scripts %}
+  {{ block.super }}
+  {{ choose_user_form.media }}
+{% endblock %}
+
+{% block main %}
+ {% render_table table "authentic2/manager/user_roles_table.html" %}
+
+ {% if view.can_change %}
+   <form method="post" class="manager-m2m-add-form">
+           {% csrf_token %}
+           {{ form }}
+           <button>{% trans "Add" %}</button>
+   </form>
+ {% endif %}
+{% endblock %}

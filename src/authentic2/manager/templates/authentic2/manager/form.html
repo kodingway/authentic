@@ -1,4 +1,4 @@
-{% extends "authentic2/manager/sidebar.html" %}
+{% extends "authentic2/manager/base.html" %}
 {% load i18n %}
 
 {% block messages %}
@@ -6,41 +6,53 @@
 
 {% block page_title %}{{ title }}{% endblock %}
 
-{% block main %}
-  <div class="content">
-    <form method="post">
-      <div class="form-inner-container{% if other_actions %} with-actions{% endif %}">
-        {% if messages %}
-          <ul class="messages">
-              {% for message in messages %}
-              <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-                  {{ message }}
-              </li>
-              {% endfor %}
-          </ul>
-        {% endif %}
-        {% block beforeform %}
-        {% endblock %}
-        {% csrf_token %}
-        {{ form.as_p }}
-        {% block afterform %}
-        {% endblock %}
-        <div class="buttons">
-          <button>{% if action %}{{ action }}{% else %}{% trans "Save" %}{% endif %}</button>
-          <a class="cancel" href="..">{% trans "Cancel" %}</a>
-        </div>
-        {% if other_actions %}
-          <div class="other_actions">
-            <strong>{% trans "Actions" %}</strong>
-            {% for action in other_actions %}
-              <input type="submit" name="{{ action.name }}" value="{{ action.title }}"
-                {% if action.confirm %}data-confirm="{{ action.confirm }}"{% endif %}
-                {% if action.url_name %}data-url="{% url action.url_name pk=object.pk %}"{% endif %}
-              />
+{% block content %}
+  <form 
+    {% if form.form_id %}id="{{ form.form_id }}"{% endif %}
+    class="{{ form.css_class }}" method="post">
+    <div class="form-inner-container{% if other_actions %} with-actions{% endif %}">
+      {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                {{ message }}
+            </li>
             {% endfor %}
-          </div>
-        {% endif %}
+        </ul>
+      {% endif %}
+      {% csrf_token %}
+      {% block beforeform %}
+      {% endblock %}
+      {{ form.non_field_errors }}
+      {% for field in form %}
+      <p id="{{field.id_for_label}}_p" class="{% if field.field.required %}required{% endif %} {% if field.errors %}error{% endif %}">
+          {{ field.label_tag }}
+          {{ field }}
+          {% if field.errors %}
+            <span class="errorlist">
+              {% for error in  field.errors %}
+                  <span>{{ error }}</span>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </p>
+      {% endfor %}
+      {% block afterform %}
+      {% endblock %}
+      <div class="buttons">
+        <a class="cancel" href="..">{% trans "Cancel" %}</a>
+        <button>{% if action %}{{ action }}{% else %}{% trans "Save" %}{% endif %}</button>
       </div>
-    </form>
-  </div>
+    </div>
+      {% if other_actions %}
+        <div class="other_actions">
+          <strong>{% trans "Actions" %}</strong>
+          {% for action in other_actions %}
+            <input type="submit" name="{{ action.name }}" value="{{ action.title }}"
+              {% if action.confirm %}data-confirm="{{ action.confirm }}"{% endif %}
+              {% if action.url_name %}data-url="{% url action.url_name pk=object.pk %}"{% endif %}
+            />
+          {% endfor %}
+        </div>
+      {% endif %}
 {% endblock %}

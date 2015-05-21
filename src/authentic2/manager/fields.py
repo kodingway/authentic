@@ -14,13 +14,22 @@ from . import utils
 
 
 class SecurityCheckMixin(object):
+    operations = ['change', 'add', 'view', 'delete']
+
+    @property
+    def perms(self):
+        model = self.queryset.model
+        app_label = model._meta.app_label
+        model_name = model._meta.model_name
+        return ['%s.%s_%s' % (app_label, perm, model_name)
+                 for perm in ['change', 'add', 'view', 'delete']]
+
     def security_check(self, request, *args, **kwargs):
         model = self.queryset.model
         app_label = model._meta.app_label
         model_name = model._meta.model_name
         return request.user.is_authenticated() \
-            and request.user.has_perm_any(
-                '%s.view_%s' % (app_label, model_name))
+            and request.user.has_perm_any(self.perms)
 
     def prepare_qs_params(self, request, search_term, search_fields):
         '''Only search visible objects'''
@@ -34,11 +43,9 @@ class SecurityCheckMixin(object):
         model = self.queryset.model
         app_label = model._meta.app_label
         model_name = model._meta.model_name
-        perms = ['%s.%s_%s' % (app_label, perm, model_name)
-                 for perm in ['change', 'add', 'view', 'delete']]
         rbac_backend = DjangoRBACBackend()
         query = rbac_backend.filter_by_perm_query(
-            request.user, perms, self.queryset)
+            request.user, self.perms, self.queryset)
         if query is False:
             ands['id'] = -1
         elif query is True:
@@ -117,7 +124,7 @@ class ChooseRoleField(SecurityCheckMixin, SplitSearchTermMixin,
                       AutoModelSelect2Field):
     queryset = get_role_model().objects.filter(admin_scope_ct__isnull=True)
     search_fields = [
-        'name__icontains', 'slug__icontains',
+        'name__icontains',
     ]
 
 
@@ -132,6 +139,15 @@ class ChooseOUField(SecurityCheckMixin, SplitSearchTermMixin,
 class ChooseServiceField(SecurityCheckMixin, SplitSearchTermMixin,
                          AutoModelSelect2Field):
     queryset = Service.objects
+    search_fields = [
+        'name__icontains',
+    ]
+
+
+class ChooseUserRoleField(SecurityCheckMixin, SplitSearchTermMixin,
+                      AutoModelSelect2Field):
+    operations = ['change']
+    queryset = get_role_model().objects
     search_fields = [
         'name__icontains',
     ]

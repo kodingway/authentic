@@ -13,12 +13,9 @@ div.content {
 	text-align: left;
 }
 
-#sidebar input {
-       width: 100%;
-}
-
-#sidebar button {
-       width: 100%;
+#sidebar form button {
+       width: calc(100% - 10px);
+       margin-left: 10px;
 }
 
 
@@ -48,14 +45,6 @@ div.role-info h3 {
 	margin-bottom: 2em;
 }
 
-form#add-user-role div.select2-container {
-	width: 30%;
-	display: inline-block;
-	position: relative;
-	top: 2px;
-	margin-left: 1ex;
-	margin-right: 1ex;
-}
 
 table.main td.name {
         text-align: left;
@@ -63,45 +52,6 @@ table.main td.name {
 table.feeds td.url {
 	text-align: left;
 	padding-left: 1em;
-}
-
-form input, form .select2-container {
-	width: 50% !important;
-}
-
-form#errors label span,
-form#smtp label span {
-        width: 16em;
-        display: inline-block;
-}
-
-form#errors button, form#smtp button {
-	margin-left: 15.4em;
-}
-
-div#user-edit div.left {
-        float: left;
-        width: 400px;
-}
-
-div#user-edit div.left button {
-        margin-top: 2em;
-}
-
-div#user-edit div.right {
-        float: right;
-        width: 150px;
-}
-
-div#user-edit div.right strong {
-        display: block;
-        margin-bottom: 1ex;
-}
-
-div#user-edit div.right button {
-        width: 100%;
-        text-align: left;
-        padding: 0.5ex 1ex;
 }
 
 table.users tbody tr td:nth-child(2) {
@@ -132,14 +82,13 @@ table.users tbody tr td:nth-child(2):hover {
 }
 
 .form-inner-container.with-actions {
-  margin-right: 35%;
+  width: 70%;
+  float: left;
 }
 
 .other_actions {
-  position: absolute;
-  max-width: 35%;
-  top: 15px;
-  right: 15px;
+  margin-left: 70%;
+  width: 30%;
 }
 
 .other_actions input[type=submit] {
@@ -237,4 +186,66 @@ a.disabled {
 
 #s2id_id_permissions {
   width: 100%;
+}
+form table tr th {
+        text-align: right;
+}
+form p input, form p select, form p textarea {
+  width: calc(100% - 28px);
+}
+
+form p .select2-container {
+  width: calc(100% - 10px);
+  margin-left: 10px;
+}
+
+form input[type="checkbox"] {
+  width: auto;
+}
+
+#id_username_p, .user-form #id_ou_p, #id_first_name_p, #id_last_name_p,
+#id_password1_p, #id_password2_p {
+  width: 50%;
+}
+#id_username_p, #id_first_name_p, #id_password1_p {
+  float: left;
+  clear: both;
+}
+.user-form #id_ou_p, #id_last_name_p, #id_password2_p {
+  margin-left: 50%;
+}
+
+form p select{
+    background: none repeat scroll 0 0 white;
+    border: 1px solid #bbb;
+    box-shadow: 0 1px 3px #ddd inset;
+    color: black;
+    display: inline;
+    font-size: 0.99em;
+    height: calc(1em + 17px);
+    margin-left: 10px;
+    padding: 5px 8px;
+    width: calc(100% - 10px);
+}
+
+#id_generate_password_p label, #id_reset_password_at_next_login_p label, #id_send_mail_p label {
+  display: inline;
+}
+.form-inner-container > .errorlist {
+  margin: 5px 8px;
+  margin-left: 0px;
+}
+span.errorlist {
+  display: block;
+  margin-left: 10px;
+  margin-top: 8px;
+}
+span.errorlist span {
+  display: block;
+  margin: 0;
+  padding: 0;
+  color: #e80404;
+}
+#id_user_edit_form .form-inner-container {
+  width: 50%;
 }

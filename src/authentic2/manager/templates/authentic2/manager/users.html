@@ -25,15 +25,13 @@
    <div id="search-form">
      <h3>{% trans "Search" %}</h3>
      <form method="get">
-       {{ search_form }}
+       {{ search_form.as_p }}
        <button>{% trans "Search" %}</button>
      </form>
    </div>
 {% endblock %}
 
 {% block main %}
-  {% with popup_edit=True %}
-	  {% render_table table "authentic2/manager/table.html" %}
-  {% endwith %}
+  {% render_table table "authentic2/manager/table.html" %}
   {% include "authentic2/manager/export_include.html" with export_view_name="a2-manager-users-export" %}
 {% endblock %}

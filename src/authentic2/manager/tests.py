@@ -113,7 +113,8 @@ class ManagerRBACTestCase(TestCase):
                                                       'slug': 'service-petite-enfance',
                                                       'ou': str(self.ou1.pk) })
         doc = html.fromstring(response.content)
-        self.assertEqual(len(doc.cssselect('p.error input#id_ou')), 1,
+        print response.content
+        self.assertEqual(len(doc.cssselect('p.error select#id_ou')), 1,
                          'adding role in ou1 should fail')
         response = client.post('/manage/roles/add/', {'name': 'Service petite enfance',
                                                       'slug': 'service-petite-enfance',
@@ -132,7 +133,7 @@ class ManagerRBACTestCase(TestCase):
                                                       'send_mail': '1',
                                                       'ou': str(self.ou1.pk) })
         doc = html.fromstring(response.content)
-        self.assertEqual(len(doc.cssselect('p.error input#id_ou')), 1,
+        self.assertEqual(len(doc.cssselect('p.error select#id_ou')), 1,
                          'adding role in ou1 should fail')
         self.assertEqual(len(mail.outbox), 0)
         response = client.post('/manage/users/add/', {'username': 'Service petite enfance',

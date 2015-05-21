@@ -11,6 +11,7 @@ from django_rbac.models import Operation
 from django_rbac.utils import get_ou_model, get_role_model
 
 from authentic2.forms import BaseUserForm
+from authentic2.models import PasswordReset
 
 from . import fields
 
@@ -60,6 +61,9 @@ class ChooseRoleForm(CssClass, forms.Form):
     role = fields.ChooseRoleField(label=_('Add a role'))
     action = forms.CharField(initial='add', widget=forms.HiddenInput)
 
+class ChooseUserRoleForm(CssClass, forms.Form):
+    role = fields.ChooseUserRoleField(label=_('Add a role'))
+    action = forms.CharField(initial='add', widget=forms.HiddenInput)
 
 class ChooseOUForm(CssClass, forms.Form):
     role = fields.ChooseRoleField(label=_('Organizational unit'))
@@ -74,53 +78,28 @@ class ChoosePermissionForm(CssClass, forms.Form):
 
 
 class UserEditForm(LimitQuerysetFormMixin, CssClass, BaseUserForm):
-    ou = fields.ChooseOUField(required=True, label=_('Organizational unit'))
-    roles = fields.RolesField(label=_('Roles'), required=False)
+    css_class = "user-form"
+    form_id = "id_user_edit_form"
 
-    field_view_permisions = {
-        'roles': 'a2_rbac.change_role',
-    }
+    ou = forms.ModelChoiceField(queryset=get_ou_model().objects,
+                                required=True, label=_('Organizational unit'))
 
     def __init__(self, *args, **kwargs):
-        request = kwargs.get('request')
-        if kwargs.get('instance') and kwargs['instance'].pk:
-            initial = kwargs.setdefault('initial', {})
-            roles = kwargs['instance'].roles.all()
-            if request and not request.user.is_anonymous():
-                roles = request.user.filter_by_perm(
-                    'a2_rbac.change_role', roles)
-            initial['roles'] = [role.pk for role in roles]
         super(UserEditForm, self).__init__(*args, **kwargs)
+        if not self.request.user.is_superuser and \
+           'is_superuser' in self.fields:
+            del self.fields['is_superuser']
 
-    def save(self, commit=True):
-        # roles is a virtual field, we must save it manually
-        user = super(UserEditForm, self).save(commit=commit)
-        roles = list(self.cleaned_data['roles'])
-
-        def save_roles():
-            visible_roles = self.request.user.filter_by_perm(
-                'a2_rbac.change_role', user.roles.all())
-            for role in visible_roles:
-                if role not in roles:
-                    user.roles.remove(role)
-            for role in roles:
-                if role not in visible_roles:
-                    user.roles.add(role)
-        if commit:
-            save_roles()
-        else:
-            old_save = user.save
-
-            def save(*args, **kwargs):
-                user = old_save(*args, **kwargs)
-                save_roles()
-                return user
-            user.save = save
-        return user
+    def clean(self):
+        if not self.cleaned_data.get('username') and \
+           not self.cleaned_data.get('email'):
+            raise forms.ValidationError(
+                _('You must set a username or an email.'))
 
     class Meta:
         model = get_user_model()
-        fields = ('ou',) 
+        exclude = ('is_staff', 'groups', 'user_permissions', 'last_login',
+                   'date_joined', 'password')
 
 
 class UserChangePasswordForm(CssClass, forms.ModelForm):
@@ -141,20 +120,27 @@ class UserChangePasswordForm(CssClass, forms.ModelForm):
         return password2
 
     def clean(self):
-        if not self.cleaned_data.get('generate_new_password') \
+        if not self.cleaned_data.get('generate_password') \
                 and not self.cleaned_data.get('password1'):
             raise forms.ValidationError(
                 _('You must choose password generation or type a new'
                   '  one'))
+        if self.instance and self.instance.pk \
+           and not self.instance.email and \
+           (self.cleaned_data.get('send_mail') or
+            self.cleaned_data.get('generate_password')):
+            raise forms.ValidationError(
+                _('User does not have a mail, we cannot send the '
+                  'informations to him.'))
 
     def save(self, commit=True):
         user = super(UserChangePasswordForm, self).save(commit=False)
-        if self.cleaned_data['generate_new_password']:
+        if self.cleaned_data['generate_password']:
             new_password = generate_password()
         else:
             new_password = self.cleaned_data["password1"]
         user.set_password(new_password)
-        if self.cleaned_data['generate_new_password'] \
+        if self.cleaned_data['generate_password'] \
                 or self.cleaned_data['send_mail']:
             old_save = user.save
 
@@ -172,23 +158,22 @@ class UserChangePasswordForm(CssClass, forms.ModelForm):
                 self.save_m2m()
         return user
 
-    generate_new_password = forms.BooleanField(
+    generate_password = forms.BooleanField(
         initial=False,
-        label=_('Generate and send a new password'),
+        label=_('Generate new password'),
         required=False)
-    send_mail = forms.BooleanField(
-        initial=True,
-        label=_('Send mail to user with the new password'),
-        required=False)
-
     password1 = forms.CharField(
         label=_("Password"),
         widget=forms.PasswordInput,
         required=False)
     password2 = forms.CharField(
-        label=_("Password confirmation"),
+        label=_("Confirmation"),
         widget=forms.PasswordInput,
         help_text=_("Enter the same password as above, for verification."),
+        required=False)
+    send_mail = forms.BooleanField(
+        initial=True,
+        label=_('Send informations to user'),
         required=False)
 
     class Meta:
@@ -196,36 +181,40 @@ class UserChangePasswordForm(CssClass, forms.ModelForm):
         fields = ()
 
 
-class UserAddForm(UserChangePasswordForm,
-                  UserEditForm):
+class UserAddForm(UserChangePasswordForm, UserEditForm):
+    css_class = "user-form"
+    form_id = "id_user_add_form"
+
     notification_template_prefix = \
         'authentic2/manager/new-account-notification'
-
-    generate_new_password = forms.BooleanField(
+    reset_password_at_next_login = forms.BooleanField(
         initial=False,
-        label=_('Generate and send a new password'),
-        required=False)
-    send_mail = forms.BooleanField(
-        initial=True,
-        label=_('Send mail to user with the new password'),
+        label=_('Ask for password reset on next login'),
         required=False)
 
-    password1 = forms.CharField(
-        label=_("Password"),
-        widget=forms.PasswordInput,
-        required=False)
-    password2 = forms.CharField(
-        label=_("Password confirmation"),
-        widget=forms.PasswordInput,
-        help_text=_("Enter the same password as above, for verification."),
-        required=False)
+    def clean(self):
+        if not self.cleaned_data.get('username') and \
+           not self.cleaned_data.get('email'):
+            raise forms.ValidationError(
+                _('You must set a username or an email.'))
+
+    def save(self, commit=True):
+        user = super(UserAddForm, self).save(commit=commit)
+        if self.cleaned_data.get('reset_password_at_next_login'):
+            if commit:
+                PasswordReset.objects.get_or_create(user=user)
+            else:
+                old_save = user.save
+
+                def save(*args, **kwargs):
+                    old_save(*args, **kwargs)
+                    PasswordReset.objects.get_or_create(user=user)
+                user.save = save
+        return user
 
     class Meta:
         model = get_user_model()
-        fields = ()
-        fields = ['username', 'ou', 'first_name', 'last_name', 'email',
-                  'is_active', 'groups', 'roles', 'password1',
-                  'password2']
+        fields = '__all__'
 
 
 class RoleSearchForm(CssClass, PrefixFormMixin, forms.Form):
@@ -234,9 +223,8 @@ class RoleSearchForm(CssClass, PrefixFormMixin, forms.Form):
     text = forms.CharField(
         label=_('Name'),
         required=False)
-    ou = fields.ChooseOUField(
-        label=_('Organizational unit'),
-        required=False)
+    ou = forms.ModelChoiceField(queryset=get_ou_model().objects,
+                                required=False, label=_('Organizational unit'))
     service = fields.ChooseServiceField(
         label=_('Service'),
         required=False)
@@ -290,13 +278,13 @@ class NameSearchForm(CssClass, PrefixFormMixin, forms.Form):
 
 
 class RoleEditForm(LimitQuerysetFormMixin, CssClass, forms.ModelForm):
-    ou = fields.ChooseOUField(
-        label=_('Organizational unit'),
-        required=True)
+    ou = forms.ModelChoiceField(queryset=get_ou_model().objects,
+                                required=True, label=_('Organizational unit'))
 
     class Meta:
         model = get_role_model()
         fields = ('name', 'slug', 'ou', 'description')
+
 
 class OUEditForm(CssClass, forms.ModelForm):
     class Meta:
