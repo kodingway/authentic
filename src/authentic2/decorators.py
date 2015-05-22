@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 import time
 from functools import wraps
 
@@ -190,3 +191,10 @@ class DjangoCache(SimpleDictionnaryCacheMixin, CacheDecoratorBase):
     def delete(self, key, value):
         if self.get(key) == value:
             self.delete(key)
+
+@contextmanager
+def errorcollector(error_dict):
+    try:
+        yield
+    except ValidationError, e:
+        e.update_error_dict(error_dict)
