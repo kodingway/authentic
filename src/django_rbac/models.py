@@ -230,6 +230,13 @@ class RoleAbstractBase(AbstractOrganizationalUnitScopedBase, AbstractBase):
                            .prefetch_related(
                                    Prefetch('roles', queryset=self.__class__.objects.filter(pk=self.pk), to_attr='direct'))
 
+    def is_direct(self):
+        if hasattr(self, 'direct'):
+            if self.direct is None:
+                return True
+            return bool(self.direct)
+        return None
+
     class Meta:
         abstract = True
 
