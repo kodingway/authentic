@@ -49,4 +49,4 @@ def update_rbac_on_save(sender, instance, created, raw, **kwargs):
 
 
 def update_service_role_ou(sender, instance, created, raw, **kwargs):
-    get_role_model().filter(service=instance).update(ou=instance.ou)
+    get_role_model().objects.filter(service=instance).update(ou=instance.ou)
