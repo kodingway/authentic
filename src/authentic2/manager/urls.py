@@ -63,10 +63,12 @@ urlpatterns = required(
         url(r'^organizational-units/(?P<pk>\d+)/delete/$', ou_views.delete,
             name='a2-manager-ou-delete'),
 
+    )
+)
+
+urlpatterns += patterns('',
         url(r'^jsi18n/$', javascript_catalog,
             {'packages': ('authentic2.manager',)},
             name='a2-manager-javascript-catalog'),
         url(r'^', include('django_select2.urls')),
-
-    )
 )
