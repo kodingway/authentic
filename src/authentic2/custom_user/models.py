@@ -8,6 +8,7 @@ from django.core.exceptions import ValidationError
 
 from django_rbac.backends import DjangoRBACBackend
 from django_rbac.models import PermissionMixin
+from django_rbac.utils import get_role_parenting_model
 
 from authentic2 import utils, validators, app_settings
 
@@ -75,6 +76,16 @@ class User(AbstractBaseUser, PermissionMixin):
     def get_username(self):
         "Return the identifying username for this User"
         return self.username or self.email or self.get_full_name() or self.uuid
+
+    def roles_and_parents(self):
+        qs1 = self.roles.all().extra(select={'member': 'a2_rbac_role_members.id is not null'})
+        qs2 = qs1.model.objects.filter(child_relation__child=qs1)
+        qs = (qs1 | qs2).order_by('name').distinct()
+        RoleParenting = get_role_parenting_model()
+        rp_qs = RoleParenting.objects.filter(child=qs1)
+        qs = qs.prefetch_related(models.Prefetch(
+            'child_relation', queryset=rp_qs), 'child_relation__parent')
+        return qs
 
     def __unicode__(self):
         human_name = self.username or self.get_full_name() or self.email
