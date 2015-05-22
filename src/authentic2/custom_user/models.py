@@ -111,9 +111,6 @@ class User(AbstractBaseUser, PermissionMixin):
             else:
                 errors['email'] = _('This email address is already in '
                                         'use. Please supply a different email address.')
-        if not self.ou:
-            errors['ou'] = ValidationError(_('An organizational unit is '
-                        'mandatory'), code='missing-ou')
         if errors:
             raise ValidationError(errors)
 
