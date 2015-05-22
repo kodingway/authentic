@@ -201,6 +201,7 @@ class UserAddForm(UserChangePasswordForm, UserEditForm):
         required=False)
 
     def clean(self):
+        super(UserAddForm, self).clean()
         if not self.cleaned_data.get('username') and \
            not self.cleaned_data.get('email'):
             raise forms.ValidationError(
