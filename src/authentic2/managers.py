@@ -121,5 +121,9 @@ class AttributeValueQuerySet(QuerySet):
         return self.get(content_type=ct, object_id=owner.pk, attribute=at)
 
 
+class ServiceManager(GetBySlugManager):
+    pass
+
+
 AttributeValueManager = managers.PassThroughManager \
         .for_queryset_class(AttributeValueQuerySet)

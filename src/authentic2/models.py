@@ -250,6 +250,8 @@ class Service(models.Model):
         blank=True,
         swappable=False)
 
+    objects = managers.ServiceManager()
+
     def clean(self):
         if not self.ou:
             raise ValidationError({
