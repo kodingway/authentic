@@ -121,8 +121,14 @@ class AttributeValueQuerySet(QuerySet):
         return self.get(content_type=ct, object_id=owner.pk, attribute=at)
 
 
-class ServiceManager(GetBySlugManager):
+class ServiceQuerySet(managers.InheritanceQuerySetMixin, GetBySlugQuerySet):
     pass
+
+
+class BaseServiceManager(models.Manager):
+    use_for_related_fields = True
+
+ServiceManager = BaseServiceManager.from_queryset(ServiceQuerySet)
 
 
 AttributeValueManager = managers.PassThroughManager \
