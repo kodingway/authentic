@@ -253,12 +253,24 @@ class Service(models.Model):
     objects = managers.ServiceManager()
 
     def clean(self):
+        errors = {}
+
         if not self.ou:
-            raise ValidationError({
-                    'ou': [
-                        ValidationError(
-                                _('An organizational unit is mandatory'),
-                                code='missing-ou')]})
+            errors['ou'] = ValidationError(
+                _('An organizational unit is mandatory'),
+                code='missing-ou')
+        if self.ou is None and self.__class__.objects.exclude(pk=self.pk) \
+               .filter(slug=self.slug, ou__isnull=True):
+            errors['slug'] = ValidationError(
+                _('The slug must be unique for this ou'),
+                code='duplicate-slug')
+        if self.ou is None and self.__class__.objects.exclude(pk=self.pk) \
+               .filter(name=self.name, ou__isnull=True):
+            errors['name'] = ValidationError(
+                _('The name must be unique for this ou'),
+                code='duplicate-name')
+        if errors:
+            raise ValidationError(errors)
 
     class Meta:
         verbose_name = _('base service model')

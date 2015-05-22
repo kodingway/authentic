@@ -114,10 +114,6 @@ class Role(RoleAbstractBase):
         verbose_name = _('role')
         verbose_name_plural = _('roles')
         ordering = ('ou', 'service', 'name',)
-        unique_together = (
-            ('slug', 'admin_scope_ct', 'admin_scope_id', 'ou'),
-            ('slug', 'service'),
-        )
 
 
 class RoleParenting(RoleParentingAbstractBase):

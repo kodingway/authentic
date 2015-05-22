@@ -11,6 +11,7 @@ from django_rbac.models import PermissionMixin
 from django_rbac.utils import get_role_parenting_model
 
 from authentic2 import utils, validators, app_settings
+from authentic2.decorators import errorcollector
 
 from .managers import UserManager
 
@@ -93,20 +94,30 @@ class User(AbstractBaseUser, PermissionMixin):
         return u'%s (%s)' % (human_name, short_id)
 
     def clean(self):
-        super(User, self).clean()
         errors = {}
+        with errorcollector(errors):
+            super(User, self).clean()
+
+        model = self.__class__
+        qs = model.objects
+        if self.pk:
+            qs = qs.exclude(pk=self.pk)
+        if self.ou_id:
+            qs = qs.filter(ou_id=self.ou_id)
+        else:
+            qs = qs.filter(ou__isnull=True)
         if self.username and app_settings.A2_USERNAME_IS_UNIQUE:
             try:
-                self.__class__.objects.exclude(id=self.id).get(username=self.username)
-            except self.__class__.DoesNotExist:
+                qs.get(username=self.username)
+            except model.DoesNotExist:
                 pass
             else:
                 errors['username'] = _('This username is already in '
                                         'use. Please supply a different username.')
         if self.email and app_settings.A2_EMAIL_IS_UNIQUE:
             try:
-                self.__class__.objects.exclude(id=self.id).get(email__iexact=self.email)
-            except self.__class__.DoesNotExist:
+                qs.get(email__iexact=self.email)
+            except model.DoesNotExist:
                 pass
             else:
                 errors['email'] = _('This email address is already in '
