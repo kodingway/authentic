@@ -88,7 +88,7 @@ class RoleChildrenTable(tables.Table):
     name = tables.Column(accessor='__unicode__', verbose_name=_('name'))
     ou = tables.Column()
     service = tables.Column(order_by='servicerole__service')
-    direct = tables.BooleanColumn(verbose_name=_('Direct child'))
+    is_direct = tables.BooleanColumn(verbose_name=_('Direct child'))
 
     class Meta:
         models = get_role_model()

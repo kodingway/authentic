@@ -7,6 +7,6 @@
     <th></th>
   {% endblock %}
   {% block table.tbody.last.column %}
-    <td>{% if view.can_change and row.record.direct %}<a class="icon-remove-sign js-remove-object" data-confirm="{% blocktrans with name=row.record.name role=active_role.name %}Do you really want to remove role &quot;{{ name }}&quot; from role &quot;{{ object }}&quot;&nbsp;?{% endblocktrans %}" href="#" data-pk-arg="role"></a>{% endif %}</td>
+    <td>{% if view.can_change and row.record.is_direct %}<a class="icon-remove-sign js-remove-object" data-confirm="{% blocktrans with name=row.record.name role=active_role.name %}Do you really want to remove role &quot;{{ name }}&quot; from role &quot;{{ object }}&quot;&nbsp;?{% endblocktrans %}" href="#" data-pk-arg="role"></a>{% endif %}</td>
   {% endblock %}
 {% endif %}
