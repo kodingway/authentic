@@ -96,7 +96,7 @@ $(function() {
             $('#id_password2').prop('disabled', false);
         }
     });
-    $(document).on('click.manager', 'table tr[data-url][rel=popup]', displayPopup);
+    $(document).on('click.manager', 'table tr[data-url][rel=popup], button[rel=popup]', displayPopup);
     $(document).on('click.manager', 'table tr[data-url]:not([rel=popup])', function (e) {
             window.location.href = $(this).data('url');
     });
