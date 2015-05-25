@@ -18,7 +18,9 @@
 {% endblock %}
 
 {% block main %}
- {% render_table table "authentic2/manager/user_roles_table.html" %}
+ {% with row_link=1 url_name="a2-manager-role-members" %}
+   {% render_table table "authentic2/manager/user_roles_table.html" %}
+ {% endwith %}
 
  {% if view.can_change %}
    <form method="post" class="manager-m2m-add-form">

@@ -30,7 +30,9 @@
 {% endblock %}
 
 {% block main %}
- {% render_table table "authentic2/manager/role_members_table.html" %}
+ {% with row_link=1 url_name="a2-manager-user-edit" %}
+   {% render_table table "authentic2/manager/role_members_table.html" %}
+ {% endwith %}
 
  {% include "authentic2/manager/export_include.html" with export_view_name="a2-manager-role-members-export" %}
 

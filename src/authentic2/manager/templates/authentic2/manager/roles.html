@@ -19,6 +19,8 @@
 {% endblock %}
 
 {% block main %}
-  {% render_table table "authentic2/manager/table.html" %}
+  {% with row_link=1 %}
+    {% render_table table "authentic2/manager/table.html" %}
+  {% endwith %}
   {% include "authentic2/manager/export_include.html" with export_view_name="a2-manager-roles-export" %}
 {% endblock %}

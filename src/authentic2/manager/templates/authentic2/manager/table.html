@@ -20,13 +20,15 @@
 
 {% block table.tbody.row %}
 <tr 
-     {% if popup_edit %}
-       rel="popup"
-     {% endif %}
-     {% if popup_edit_url_name %}
-       data-url="{% url popup_edit_url_name pk=row.record.pk %}"
-     {% else %}
-       data-url="{{ row.record.id }}/"
+     {% if row_link %}
+       {% if popup_edit %}
+         rel="popup"
+       {% endif %}
+       {% if url_name %}
+         data-url="{% url url_name pk=row.record.pk %}"
+       {% else %}
+         data-url="{{ row.record.pk }}/"
+       {% endif %}
      {% endif %}
      data-pk="{{ row.record.id }}"
      class="{{ forloop.counter|divisibleby:2|yesno:"even,odd" }}"> 
