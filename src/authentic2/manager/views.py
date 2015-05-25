@@ -1,8 +1,9 @@
 import json
 
 from django.core.exceptions import PermissionDenied
+from django.views.generic.base import ContextMixin
 from django.views.generic import TemplateView, FormView, UpdateView, \
-    CreateView, DeleteView
+    CreateView, DeleteView, TemplateView
 from django.views.generic.detail import SingleObjectMixin
 from django.http import HttpResponse, Http404
 from django.utils.translation import ugettext_lazy as _
@@ -271,11 +272,16 @@ class BaseTableView(FormatsContextData, ModelNameMixin, PermissionMixin,
                     TableQuerysetMixin, SingleTableView):
     pass
 
+class SubTableViewMixin(FormatsContextData, PermissionMixin,
+                        SearchFormMixin, FilterTableQuerysetByPermMixin,
+                        TableQuerysetMixin, SingleObjectMixin,
+                        SingleTableMixin, ContextMixin):
+    pass
 
-class BaseSubTableView(FormatsContextData, PermissionMixin,
-                       SearchFormMixin, FilterTableQuerysetByPermMixin,
-                       TableQuerysetMixin, SingleObjectMixin, SingleTableMixin,
-                       FormView):
+class SimpleSubTableView(SubTableViewMixin, TemplateView):
+    pass
+
+class BaseSubTableView(SubTableViewMixin, FormView):
     success_url = '.'
 
 

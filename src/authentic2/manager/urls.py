@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url, include
 
 from django.views.i18n import javascript_catalog
 from django.contrib.auth.decorators import login_required
-from . import views, role_views, ou_views, user_views
+from . import views, role_views, ou_views, user_views, service_views
 from ..decorators import required
 
 urlpatterns = required(
@@ -63,6 +63,25 @@ urlpatterns = required(
         url(r'^organizational-units/(?P<pk>\d+)/delete/$', ou_views.delete,
             name='a2-manager-ou-delete'),
 
+        # Services
+        url(r'^services/$', service_views.listing,
+            name='a2-manager-services'),
+        url(r'^services/(?P<pk>\d+)/$', service_views.roles,
+            name='a2-manager-service'),
+        url(r'^services/(?P<pk>\d+)/edit/$', service_views.edit,
+            name='a2-manager-service-edit'),
+        url(r'^services/(?P<service_pk>\d+)/(?P<pk>\d+)/$',
+            service_views.role_members,
+            name='a2-manager-service-role-members'),
+        url(r'^services/(?P<service_pk>\d+)/(?P<pk>\d+)/children/$',
+            service_views.role_children,
+            name='a2-manager-service-role-children'),
+        url(r'^services/(?P<service_pk>\d+)/(?P<pk>\d+)/managers/$',
+            service_views.role_managers,
+            name='a2-manager-service-role-managers'),
+        url(r'^services/(?P<service_pk>\d+)/(?P<pk>\d+)/managers/roles/$',
+            service_views.role_managers_roles,
+            name='a2-manager-service-role-managers-roles'),
     )
 )
 

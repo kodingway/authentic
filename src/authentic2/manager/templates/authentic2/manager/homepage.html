@@ -37,6 +37,13 @@
             </a>
           </li>
         {% endif %}
+        {% if perms.any.authentic2.view_service %}
+          <li id="services">
+            <a href="{% url "a2-manager-services" %}">
+              {% trans "Services management" %}
+            </a>
+          </li>
+        {% endif %}
       </ul>
       <br style="clear: both;"/>
   </div>

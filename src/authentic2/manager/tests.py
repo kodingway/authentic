@@ -52,9 +52,9 @@ class ManagerRBACTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         doc = html.fromstring(response.content)
         nodes = doc.cssselect('ul.apps > li')
-        self.assertEqual(len(nodes), 3)
+        self.assertEqual(len(nodes), 4)
         self.assertEqual(set(node.get('id') for node in nodes),
-                         set(['organizational-units', 'users', 'roles']))
+                         set(['organizational-units', 'users', 'roles', 'services']))
         response = client.get('/manage/users/')
         self.assertEqual(response.status_code, 200)
         doc = html.fromstring(response.content)
@@ -89,9 +89,9 @@ class ManagerRBACTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         doc = html.fromstring(response.content)
         nodes = doc.cssselect('ul.apps > li')
-        self.assertEqual(len(nodes), 3)
+        self.assertEqual(len(nodes), 4)
         self.assertEqual(set(node.get('id') for node in nodes),
-                         set(['organizational-units', 'users', 'roles']))
+                         set(['organizational-units', 'users', 'roles', 'services']))
         response = client.get('/manage/users/')
         self.assertEqual(response.status_code, 200)
         doc = html.fromstring(response.content)

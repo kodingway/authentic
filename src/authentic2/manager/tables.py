@@ -7,6 +7,7 @@ import django_tables2 as tables
 from django_rbac.utils import get_role_model, get_permission_model, \
     get_ou_model
 
+from authentic2.models import Service
 from authentic2.compat import get_user_model
 
 
@@ -109,3 +110,21 @@ class UserRolesTable(tables.Table):
         models = get_role_model()
         attrs = {'class': 'main', 'id': 'role-table'}
         fields = ('name', 'ou', 'service')
+
+
+class ServiceTable(tables.Table):
+    ou = tables.Column()
+    name = tables.Column()
+    slug = tables.Column()
+
+    class Meta:
+        models = Service
+        attrs = {'class': 'main', 'id': 'service-table'}
+
+class ServiceRolesTable(tables.Table):
+    name = tables.Column(accessor='__unicode__', verbose_name=_('name'))
+
+    class Meta:
+        models = get_role_model()
+        attrs = {'class': 'main', 'id': 'service-role-table'}
+        fields = ('name',)

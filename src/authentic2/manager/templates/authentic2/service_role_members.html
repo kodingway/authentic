@@ -1,0 +1,36 @@
+{% extends "authentic2/manager/service.html" %}
+{% load i18n staticfiles django_tables2 %}
+
+{% block more-user-links %}
+  {{ block.super }}
+  <a href="{% url 'a2-manager-service-role-members' service_pk=view.kwargs.service_pk pk=object.pk %}">{{ object.name }}</a>
+{% endblock %}
+
+{% block appbar %}
+  {% if view.can_change and not object.admin_scope_ct_id %}
+    <a href="{% url "a2-manager-service-role-managers" pk=object.pk %}">{% trans "Managers" %}</a>
+  {% endif %}
+  <a href="{% url "a2-manager-service-role-children" pk=object.pk %}">{% trans "Childrenroles" %}</a>
+{% endblock %}
+
+
+{% block extra_scripts %}
+  {{ block.super }}
+  {{ choose_user_form.media }}
+{% endblock %}
+
+{% block main %}
+ {% with row_link=1 url_name="a2-manager-user-edit" %}
+   {% render_table table "authentic2/manager/role_members_table.html" %}
+ {% endwith %}
+
+ {% include "authentic2/manager/export_include.html" with export_view_name="a2-manager-role-members-export" %}
+
+ {% if view.can_change %}
+   <form method="post" class="manager-m2m-add-form">
+           {% csrf_token %}
+           {{ form }}
+           <button>{% trans "Add" %}</button>
+   </form>
+ {% endif %}
+{% endblock %}
