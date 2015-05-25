@@ -213,26 +213,6 @@ class RoleManagerViewMixin(RoleViewMixin):
 class RoleManagersView(RoleManagerViewMixin, RoleMembersView):
     template_name = 'authentic2/manager/role_managers.html'
 
-    def get_table_queryset(self):
-        return self.object.all_members()
-
-    def form_valid(self, form):
-        if self.can_change:
-            user = form.cleaned_data['user']
-            action = form.cleaned_data['action']
-            if action == 'add':
-                if self.object.members.filter(pk=user.pk).exists():
-                    messages.warning(
-                        self.request,
-                        _('User already in this role.'))
-                else:
-                    self.object.members.add(user)
-            elif action == 'remove':
-                self.object.members.remove(user)
-        else:
-            messages.warning(self.request, _('You are not authorized'))
-        return super(RoleManagersView, self).form_valid(form)
-
 managers = RoleManagersView.as_view()
 
 
