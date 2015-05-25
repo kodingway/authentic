@@ -1,6 +1,12 @@
 {% extends "authentic2/manager/ou_common.html" %}
 {% load i18n staticfiles django_tables2 %}
 
+{% block page-title %}{{ block.super }} - {% trans "Services management" %}{% endblock %}
+
+{% block more-user-links %}
+  {{ block.super }}
+{% endblock %}
+
 {% block appbar %}
   {{ block.super }}
   <p><a href="{% url "a2-manager-ou-add" %}" rel="popup">{% blocktrans %}Add {{ model_name }}{% endblocktrans %}</a></p>
