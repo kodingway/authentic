@@ -77,7 +77,8 @@ class Role(RoleAbstractBase):
         to='authentic2.Service',
         verbose_name=_('service'),
         null=True,
-        blank=True)
+        blank=True,
+        related_name='roles')
     external_id = models.TextField(
         verbose_name=_('external id'),
         blank=True,
