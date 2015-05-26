@@ -11,7 +11,10 @@ from django.views.decorators.cache import never_cache
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.sessions.models import Session
 from django.contrib.auth import REDIRECT_FIELD_NAME
-from django.contrib.admin.utils import flatten_fieldsets
+try:
+    from django.contrib.admin.utils import flatten_fieldsets
+except ImportError:
+    from django.contrib.admin.util import flatten_fieldsets
 
 from .nonce.models import Nonce
 from . import forms, models, admin_forms, compat, app_settings
