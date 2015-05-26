@@ -227,7 +227,6 @@ class SamlSSOTestCase(SamlBaseTestCase):
         namespaces = {
             'saml': lasso.SAML2_ASSERTION_HREF,
         }
-        print assertion_xml
         constraints = (
             ('/saml:Assertion/saml:Subject/saml:NameID',
                 federation.name_id_content),

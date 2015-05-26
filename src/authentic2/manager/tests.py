@@ -113,7 +113,6 @@ class ManagerRBACTestCase(TestCase):
                                                       'slug': 'service-petite-enfance',
                                                       'ou': str(self.ou1.pk) })
         doc = html.fromstring(response.content)
-        print response.content
         self.assertEqual(len(doc.cssselect('p.error select#id_ou')), 1,
                          'adding role in ou1 should fail')
         response = client.post('/manage/roles/add/', {'name': 'Service petite enfance',
