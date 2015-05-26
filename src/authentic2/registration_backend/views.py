@@ -61,11 +61,11 @@ class RegistrationCompletionView(CreateView):
             .order_by('date_joined')
         self.email_is_unique = app_settings.A2_EMAIL_IS_UNIQUE \
             or app_settings.A2_REGISTRATION_EMAIL_IS_UNIQUE
+        self.init_fields_labels_and_help_texts()
         return super(RegistrationCompletionView, self) \
             .dispatch(request, *args, **kwargs)
 
-
-    def get_form_class(self):
+    def init_fields_labels_and_help_texts(self):
         attributes = models.Attribute.objects.filter(
             asked_on_registration=True)
         default_fields = attributes.values_list('name', flat=True)
@@ -79,29 +79,40 @@ class RegistrationCompletionView(CreateView):
             models.Attribute.objects.filter(required=True).values_list('name', flat=True))
         help_texts = {}
         if app_settings.A2_REGISTRATION_FORM_USERNAME_LABEL:
-            labels['username'] = app_settings.A2_REGISTRATION_FORM_USERNAME_LABEL
+            labels['username'] = \
+                    app_settings.A2_REGISTRATION_FORM_USERNAME_LABEL
         if app_settings.A2_REGISTRATION_FORM_USERNAME_HELP_TEXT:
-            help_texts['username'] = app_settings.A2_REGISTRATION_FORM_USERNAME_HELP_TEXT
-        required = list(app_settings.A2_REGISTRATION_REQUIRED_FIELDS) + list(required_fields)
+            help_texts['username'] = \
+                app_settings.A2_REGISTRATION_FORM_USERNAME_HELP_TEXT
+        required = list(app_settings.A2_REGISTRATION_REQUIRED_FIELDS) + \
+            list(required_fields)
         if 'email' in fields:
             fields.remove('email')
+        self.fields = fields
+        self.labels = labels
+        self.required = required
+        self.help_texts = help_texts
+
+    def get_form_class(self):
         form_class = forms.modelform_factory(self.model,
-                form=RegistrationCompletionForm, fields=fields, labels=labels,
-                required=required, help_texts=help_texts)
-        if 'username' in fields and app_settings.A2_REGISTRATION_FORM_USERNAME_REGEX:
+                                             form=RegistrationCompletionForm,
+                                             fields=self.fields,
+                                             labels=self.labels,
+                                             required=self.required,
+                                             help_texts=self.help_texts)
+        if 'username' in self.fields and app_settings.A2_REGISTRATION_FORM_USERNAME_REGEX:
             # Keep existing field label and help_text
             old_field = form_class.base_fields['username']
             field = CharField(max_length=256, label=old_field.label, help_text=old_field.help_text,
                     validators=[validators.UsernameValidator()])
             form_class = type('RegistrationForm', (form_class,), {'username': field})
         return form_class
-    
 
     def get_form_kwargs(self, **kwargs):
         '''Initialize mail from token'''
         kwargs = super(RegistrationCompletionView, self).get_form_kwargs(**kwargs)
         kwargs['instance'] = get_user_model()(
-            email=self.request.token['email'],
+            email=self.email,
             ou=get_default_ou())
         return kwargs
 
@@ -109,7 +120,7 @@ class RegistrationCompletionView(CreateView):
         ctx = super(RegistrationCompletionView, self).get_context_data(**kwargs)
         ctx['token'] = self.token
         ctx['users'] = self.users
-        ctx['email'] = self.token['email']
+        ctx['email'] = self.email
         ctx['email_is_unique'] = self.email_is_unique
         ctx['create'] = 'create' in self.request.GET
         return ctx
@@ -119,7 +130,23 @@ class RegistrationCompletionView(CreateView):
             # Found one user, EMAIL is unique, log her in
             login(request, self.users[0])
             return redirect(request, self.get_success_url())
-        return super(RegistrationCompletionView, self).get(request, *args, **kwargs)
+        if all(field in self.token for field in self.fields):
+            # We already have every fields
+            form_kwargs = self.get_form_kwargs()
+            form_class = self.get_form_class()
+            data = self.token
+            if 'password' in data:
+                data['password1'] = data['password']
+                data['password2'] = data['password']
+                del data['password']
+            form_kwargs['data'] = data
+            form = form_class(**form_kwargs)
+            if form.is_valid():
+                user = form.save()
+                login(request, user)
+                return redirect(request, self.get_success_url())
+        return super(RegistrationCompletionView, self).get(request, *args,
+                                                           **kwargs)
 
     def post(self, request, *args, **kwargs):
         if self.users and self.email_is_unique:
