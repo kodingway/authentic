@@ -7,8 +7,6 @@ import errno
 
 from django.conf import settings
 
-import models
-
 __all__ = ('accept_nonce', 'cleanup_nonces')
 
 STORAGE_MODEL = 'model'
@@ -84,6 +82,8 @@ def accept_nonce_file_storage(path, now, value, context=None,
     return True
 
 def accept_nonce_model(now, value, context=None, not_on_or_after=None):
+    import models
+
     if not_on_or_after:
         not_on_or_after = compute_not_on_or_after(now, not_on_or_after)
     nonce, created = models.Nonce.objects.get_or_create(value=value,
@@ -121,6 +121,8 @@ def cleanup_nonces(now=None):
            a datetime value to define what is the current time, if None is
            given, datetime.now() is used. It can be used for unit testing.
     '''
+    import models
+
     now = now or dt.datetime.now()
     mode = getattr(settings, 'NONCE_STORAGE', STORAGE_MODEL)
     # the model always exists, so we always clean it

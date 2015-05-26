@@ -128,3 +128,6 @@ class User(AbstractBaseUser, PermissionMixin):
     def natural_key(self):
         return (self.uuid,)
 
+User._meta.get_field('last_login').null = True
+User._meta.get_field('last_login').blank = True
+

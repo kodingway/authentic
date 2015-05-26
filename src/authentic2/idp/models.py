@@ -29,7 +29,7 @@ class AttributePolicy(models.Model):
     attribute_list_for_sso_from_pull_sources = \
         models.ForeignKey('attribute_aggregator.AttributeList',
         verbose_name = _("Pull attributes list"),
-        related_name = "attributes from pull sources",
+        related_name='+',
         blank = True, null = True)
 
     # Set to true for proxying attributes from pull sources at SSO Login.
@@ -69,15 +69,14 @@ class AttributePolicy(models.Model):
         models.ManyToManyField('attribute_aggregator.AttributeSource',
         verbose_name = \
             _("Filter by source the forwarded pushed attributes"),
-        related_name = "filter attributes of push sources with sources",
-        blank = True, null = True)
+        blank=True)
 
     # List of attributes to filter from push sources at SSO Login.
     attribute_filter_for_sso_from_push_sources = \
         models.ForeignKey('attribute_aggregator.AttributeList',
         verbose_name = \
             _("Filter by attribute names the forwarded pushed attributes"),
-        related_name = "filter attributes of push sources with list",
+        related_name='+',
         blank = True, null = True)
 
     # The sources of attributes of the previous list are considered.

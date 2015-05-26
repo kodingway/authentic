@@ -240,7 +240,6 @@ class LibertyProviderAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
     list_filter = (
             'service_provider__sp_options_policy',
-            'service_provider__attribute_policy',
             'service_provider__enabled',
             'identity_provider__enabled',
     )

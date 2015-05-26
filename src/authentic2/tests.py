@@ -119,7 +119,7 @@ class SerializerTests(TestCase):
                        'is_active': True,
                        'is_staff': False,
                        'is_superuser': False,
-                       'last_login': u.last_login.isoformat()[:-3],
+                       'last_login': u.last_login and u.last_login.isoformat()[:-3],
                        'date_joined': u.date_joined.isoformat()[:-3],
                        'groups': [],
                        'user_permissions': [],
@@ -295,7 +295,7 @@ class RegistrationTests(TestCase):
         self.assertTrue(new_user.is_active)
         self.assertFalse(new_user.is_staff)
         self.assertFalse(new_user.is_superuser)
-        self.assertEqual(self.client.session['_auth_user_id'], new_user.pk)
+        self.assertEqual(str(self.client.session['_auth_user_id']), str(new_user.pk))
         client = Client()
         response = client.post('/login/', {
                 'username': 'testbot@entrouvert.com',

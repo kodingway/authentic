@@ -8,7 +8,7 @@ from django.db import models
 from django.db.models.query import QuerySet
 from django.dispatch import Signal
 from django.utils.timezone import now
-from django.utils.importlib import import_module
+from importlib import import_module
 from django.contrib.contenttypes.models import ContentType
 
 

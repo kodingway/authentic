@@ -104,8 +104,7 @@ class AttributeList(models.Model):
         max_length = 100, unique = True)
     attributes = models.ManyToManyField(AttributeItem,
         verbose_name = _("Attributes"),
-        related_name = "attributes of the list",
-        blank = True, null = True)
+        blank=True)
 
     class Meta:
         verbose_name = _('attribute list')
@@ -207,8 +206,7 @@ class UserAliasInSource(models.Model):
     source = models.ForeignKey(AttributeSource,
         verbose_name = _('attribute source'))
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
-        verbose_name = _("user"),
-        related_name='user_alias_in_source')
+        verbose_name = _("user"))
 
     class Meta:
         verbose_name = _('user alias from source')

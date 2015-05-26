@@ -200,7 +200,7 @@ _("This IdP sends a transient NameID but you want a persistent behaviour for you
             default=False)
     http_method_for_slo_request = models.IntegerField(
             verbose_name = _("HTTP binding for the SLO requests"),
-            max_length = 200, choices = HTTP_METHOD,
+            choices = HTTP_METHOD,
             default = lasso.HTTP_METHOD_REDIRECT)
     enable_http_method_for_defederation_request = models.BooleanField(
             verbose_name = \
@@ -209,7 +209,7 @@ _("This IdP sends a transient NameID but you want a persistent behaviour for you
             default=False)
     http_method_for_defederation_request = models.IntegerField(
             verbose_name = _("HTTP method for the defederation requests"),
-            max_length = 200, choices = HTTP_METHOD,
+            choices = HTTP_METHOD,
             default = lasso.HTTP_METHOD_SOAP)
     force_user_consent = models.BooleanField(\
             verbose_name = \
@@ -451,8 +451,8 @@ class LibertyProvider(Service):
     entity_id = models.URLField(unique = True)
     entity_id_sha1 = models.CharField(max_length = 40, blank=True)
     metadata_url = models.URLField(max_length=256, blank=True)
-    protocol_conformance = models.IntegerField(max_length = 10,
-            choices = ((lasso.PROTOCOL_SAML_2_0, 'SAML 2.0'),))
+    protocol_conformance = models.IntegerField(
+        choices=((lasso.PROTOCOL_SAML_2_0, 'SAML 2.0'),))
     metadata = models.TextField(validators = [ metadata_validator ])
     # All following field must be PEM formatted textual data
     public_key = models.TextField(blank=True)

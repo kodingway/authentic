@@ -256,6 +256,8 @@ MIGRATION_MODULES = {
         'menu': 'authentic2.menu_migrations',
         'dashboard': 'authentic2.dashboard_migrations',
 }
+if django.VERSION >= (1,8):
+    MIGRATION_MODULES['auth'] = 'authentic2.auth_migrations_18'
 
 #
 # Load configuration file

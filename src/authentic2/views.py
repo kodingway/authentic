@@ -105,6 +105,7 @@ def su(request, username, redirect_url='/'):
 
 
 class RedirectToHomepageView(RedirectView):
+    permanent = True
     url = app_settings.A2_HOMEPAGE_URL
 
 

@@ -5,7 +5,7 @@ from django.utils import six
 from django.core.serializers.json import Serializer as JSONSerializer
 from django.core.serializers.python import _get_model
 from django.core.serializers.base import DeserializationError
-from django.contrib.contenttypes.generic import GenericForeignKey
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import DEFAULT_DB_ALIAS
 

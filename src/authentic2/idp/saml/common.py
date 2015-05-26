@@ -2,7 +2,7 @@ import logging
 
 from django.contrib.auth import REDIRECT_FIELD_NAME, SESSION_KEY
 from django.utils.http import urlencode
-from django.utils.importlib import import_module
+from importlib import import_module
 from django.conf import settings
 from django.http import HttpResponseRedirect
 
