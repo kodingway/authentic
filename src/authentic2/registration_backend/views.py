@@ -64,10 +64,13 @@ class RegistrationCompletionView(CreateView):
         return super(RegistrationCompletionView, self) \
             .dispatch(request, *args, **kwargs)
 
+
     def get_form_class(self):
         attributes = models.Attribute.objects.filter(
-                asked_on_registration=True)
+            asked_on_registration=True)
         default_fields = attributes.values_list('name', flat=True)
+        required_fields = models.Attribute.objects.filter(required=True) \
+            .values_list('name', flat=True)
         fields, labels = get_fields_and_labels(
             app_settings.A2_REGISTRATION_FIELDS,
             default_fields,
@@ -79,7 +82,7 @@ class RegistrationCompletionView(CreateView):
             labels['username'] = app_settings.A2_REGISTRATION_FORM_USERNAME_LABEL
         if app_settings.A2_REGISTRATION_FORM_USERNAME_HELP_TEXT:
             help_texts['username'] = app_settings.A2_REGISTRATION_FORM_USERNAME_HELP_TEXT
-        required = app_settings.A2_REGISTRATION_REQUIRED_FIELDS
+        required = list(app_settings.A2_REGISTRATION_REQUIRED_FIELDS) + list(required_fields)
         if 'email' in fields:
             fields.remove('email')
         form_class = forms.modelform_factory(self.model,
