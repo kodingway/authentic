@@ -11,6 +11,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        CreatePartialIndexes('authentic2_service', 'authentic2_service_uniq_idx',
-                             ('ou_id',), ('slug',)),
+        CreatePartialIndexes('Service', 'authentic2_service',
+                             'authentic2_service_uniq_idx', ('ou_id',),
+                             ('slug',)),
     ]

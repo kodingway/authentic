@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        CreatePartialIndexes('a2_rbac_role', 'a2_rbac_role_unique_idx',
+        CreatePartialIndexes('Role', 'a2_rbac_role', 'a2_rbac_role_unique_idx',
                              ('ou_id', 'service_id'), ('slug',),
-                            null_columns=('admin_scope_ct_id',)),
+                             null_columns=('admin_scope_ct_id',)),
     ]

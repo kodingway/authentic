@@ -1,12 +1,13 @@
 import itertools
-import hashlib
 
 from django.db.migrations.operations.base import Operation
+
 
 class CreatePartialIndexes(Operation):
     reversible = True
 
-    def __init__(self, table_name, index_name, nullable_columns, non_null_columns, null_columns=()):
+    def __init__(self, model_name, table_name, index_name, nullable_columns, non_null_columns, null_columns=()):
+        self.model_name = model_name
         self.table_name = table_name
         self.index_name = index_name
         assert not set(nullable_columns) & set(non_null_columns)
@@ -16,7 +17,10 @@ class CreatePartialIndexes(Operation):
         self.non_null_columns = set(non_null_columns)
         self.null_columns = set(null_columns)
 
-    def allowed(self, schema_editor):
+    def allowed(self, app_label, schema_editor, to_state):
+        to_model = to_state.render().get_model(app_label, self.model_name)
+        if not self.allowed_to_migrate(schema_editor.connection.alias, to_model):
+            return False
         if schema_editor.connection.vendor == 'postgresql':
             return True
         # Partial indexed were introduced in sqlite 3.8.0
@@ -31,14 +35,13 @@ class CreatePartialIndexes(Operation):
                 non_null_columns = self.non_null_columns | (self.nullable_columns - set(null_columns))
                 null_columns = set(null_columns) | self.null_columns
                 non_null_columns = sorted(non_null_columns)
-                index_name = '%s_uniq_%s' % (self.table_name, '_'.join(non_null_columns))
                 yield null_columns, non_null_columns
 
     def state_forwards(self, app_label, state):
         pass
 
     def database_forwards(self, app_label, schema_editor, from_state, to_state):
-        if not self.allowed(schema_editor):
+        if not self.allowed(app_label, schema_editor, to_state):
             return
         for i, (null_columns, non_null_columns) in enumerate(self.indexes()):
             index = ', '.join(non_null_columns)
@@ -49,7 +52,7 @@ class CreatePartialIndexes(Operation):
                 schema_editor.execute('CREATE UNIQUE INDEX "%s_%s" ON %s (%s)' % (self.index_name, i, self.table_name, index))
 
     def database_backwards(self, app_label, schema_editor, from_state, to_state):
-        if not self.allowed(schema_editor):
+        if not self.allowed(app_label, schema_editor, to_state):
             return
         for i, (null_columns, non_null_columns) in enumerate(self.indexes()):
             schema_editor.execute('DROP INDEX "%s_%s"' % (self.index_name, i))
