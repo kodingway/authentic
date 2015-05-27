@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-22 16:32+0200\n"
+"POT-Creation-Date: 2015-05-27 23:38+0200\n"
 "PO-Revision-Date: 2014-11-21 11:43+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -102,8 +102,8 @@ msgstr ""
 "\"\">réessayer</a>.\n"
 "   "
 
-#: authentic2/idp/saml/tests.py:201 authentic2/idp/saml/tests.py:276
-#: authentic2/idp/saml/tests.py:310
+#: authentic2/idp/saml/tests.py:201 authentic2/idp/saml/tests.py:275
+#: authentic2/idp/saml/tests.py:309
 msgid "Cancel"
 msgstr "Annuler"
 

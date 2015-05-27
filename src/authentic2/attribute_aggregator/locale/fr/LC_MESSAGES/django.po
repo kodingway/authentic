@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-22 16:32+0200\n"
+"POT-Creation-Date: 2015-05-27 23:38+0200\n"
 "PO-Revision-Date: 2013-05-07 23:27+0200\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -70,8 +70,8 @@ msgid "attribute list items"
 msgstr ""
 
 #: authentic2/attribute_aggregator/models.py:103
-#: authentic2/attribute_aggregator/models.py:125
-#: authentic2/attribute_aggregator/models.py:205
+#: authentic2/attribute_aggregator/models.py:124
+#: authentic2/attribute_aggregator/models.py:204
 msgid "Name"
 msgstr "Nom"
 
@@ -79,84 +79,84 @@ msgstr "Nom"
 msgid "Attributes"
 msgstr "Attributs"
 
-#: authentic2/attribute_aggregator/models.py:111
+#: authentic2/attribute_aggregator/models.py:110
 msgid "attribute list"
 msgstr ""
 
-#: authentic2/attribute_aggregator/models.py:112
+#: authentic2/attribute_aggregator/models.py:111
 msgid "attribute lists"
 msgstr ""
 
-#: authentic2/attribute_aggregator/models.py:128
+#: authentic2/attribute_aggregator/models.py:127
 msgid "Namespace"
 msgstr "Espace de nom"
 
-#: authentic2/attribute_aggregator/models.py:143
-#: authentic2/attribute_aggregator/models.py:208
+#: authentic2/attribute_aggregator/models.py:142
+#: authentic2/attribute_aggregator/models.py:207
 msgid "attribute source"
 msgstr "source des attributs"
 
-#: authentic2/attribute_aggregator/models.py:144
+#: authentic2/attribute_aggregator/models.py:143
 msgid "attribute sources"
 msgstr "sources des attributs"
 
-#: authentic2/attribute_aggregator/models.py:163
+#: authentic2/attribute_aggregator/models.py:162
 msgid "Server"
 msgstr "Serveur"
 
-#: authentic2/attribute_aggregator/models.py:166
+#: authentic2/attribute_aggregator/models.py:165
 msgid "User"
 msgstr "Utilisateur"
 
-#: authentic2/attribute_aggregator/models.py:169
+#: authentic2/attribute_aggregator/models.py:168
 msgid "Password"
 msgstr "Mot de passe"
 
-#: authentic2/attribute_aggregator/models.py:172
+#: authentic2/attribute_aggregator/models.py:171
 msgid "Base"
 msgstr "Base"
 
-#: authentic2/attribute_aggregator/models.py:175
+#: authentic2/attribute_aggregator/models.py:174
 msgid "Port"
 msgstr "Port"
 
-#: authentic2/attribute_aggregator/models.py:178
+#: authentic2/attribute_aggregator/models.py:177
 msgid "LDAPS"
 msgstr "LDAPS"
 
-#: authentic2/attribute_aggregator/models.py:181
+#: authentic2/attribute_aggregator/models.py:180
 msgid "Certificate"
 msgstr "Certificat"
 
-#: authentic2/attribute_aggregator/models.py:184
+#: authentic2/attribute_aggregator/models.py:183
 msgid "Is it used for authentication?"
 msgstr "Est-elle utilisée pour l'authentification ?"
 
-#: authentic2/attribute_aggregator/models.py:199
+#: authentic2/attribute_aggregator/models.py:198
 msgid "ldap attribute source"
 msgstr "source d'attributs de type LDAP"
 
-#: authentic2/attribute_aggregator/models.py:200
+#: authentic2/attribute_aggregator/models.py:199
 msgid "ldap attribute sources"
 msgstr "sources d'attributs de type LDAP"
 
-#: authentic2/attribute_aggregator/models.py:210
+#: authentic2/attribute_aggregator/models.py:209
 msgid "user"
 msgstr "utilisateur"
 
-#: authentic2/attribute_aggregator/models.py:214
+#: authentic2/attribute_aggregator/models.py:212
 msgid "user alias from source"
 msgstr "alias utilisateur par source"
 
-#: authentic2/attribute_aggregator/models.py:215
+#: authentic2/attribute_aggregator/models.py:213
 msgid "user aliases from source"
 msgstr "alias utilisateur par source"
 
-#: authentic2/attribute_aggregator/models.py:705
+#: authentic2/attribute_aggregator/models.py:703
 msgid "user attribute profile"
 msgstr "profil utilisateur issu des sources"
 
-#: authentic2/attribute_aggregator/models.py:706
+#: authentic2/attribute_aggregator/models.py:704
 msgid "user attribute profiles"
 msgstr "profils utilisateurs issus des sources"
 

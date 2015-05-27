@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-22 16:32+0200\n"
+"POT-Creation-Date: 2015-05-27 23:38+0200\n"
 "PO-Revision-Date: 2014-11-13 16:57+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -54,27 +54,27 @@ msgstr "Espace de nom de sortie"
 msgid "Filter by source the forwarded pushed attributes"
 msgstr "Filtrer par source les attributs poussés à faire suivre"
 
-#: authentic2/idp/models.py:79
+#: authentic2/idp/models.py:78
 msgid "Filter by attribute names the forwarded pushed attributes"
 msgstr "Filtrer par attribut les attributs poussés à faire suivre"
 
-#: authentic2/idp/models.py:87
+#: authentic2/idp/models.py:86
 msgid "Filter by source and per attribute the forwarded pushed attributes"
 msgstr ""
 "Filtrer par source et par attribut les attributs poussés à faire suivre"
 
-#: authentic2/idp/models.py:95
+#: authentic2/idp/models.py:94
 msgid "Map filtered attributes"
 msgstr "Mapper les attributs filtrés"
 
-#: authentic2/idp/models.py:102
+#: authentic2/idp/models.py:101
 msgid "Send an error when a required attribute is missing"
 msgstr "envoyer une erreur lorsqu'un attribut requis est manquant"
 
-#: authentic2/idp/models.py:109
+#: authentic2/idp/models.py:108
 msgid "attribute policy"
 msgstr "règlement sur les attributs"
 
-#: authentic2/idp/models.py:110
+#: authentic2/idp/models.py:109
 msgid "attribute policies"
 msgstr "règlements sur les attributs"
