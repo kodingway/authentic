@@ -1,4 +1,5 @@
 from django.utils.translation import ugettext as _
+from django.shortcuts import get_object_or_404
 
 from authentic2.models import Service
 
@@ -15,18 +16,26 @@ listing = ServicesView.as_view()
 
 
 class ServiceView(views.SimpleSubTableView):
+    search_form_class = forms.NameSearchForm
     model = Service
+    pk_url_kwarg = 'service_pk'
     template_name = 'authentic2/manager/service.html'
     table_class = tables.ServiceRolesTable
 
     def get_table_queryset(self):
         return self.object.roles.all()
 
+    def get(self, request, *args, **kwargs):
+        result = super(ServiceView, self).get(request, *args, **kwargs)
+        self.service = self.object
+        return result
+
 roles = ServiceView.as_view()
 
 
 class ServiceEditView(views.BaseEditView):
     model = Service
+    pk_url_kwarg = 'service_pk'
     template_name = 'authentic2/manager/form.html'
     title = _('Edit service')
     permissions = ['authentic2.change_service']
@@ -37,6 +46,10 @@ edit = ServiceEditView.as_view()
 
 
 class ServiceRoleMixin(object):
+    def dispatch(self, request, *args, **kwargs):
+        self.service = get_object_or_404(Service, pk=kwargs['service_pk'])
+        return super(ServiceRoleMixin, self).dispatch(request, *args, **kwargs)
+
     def get_queryset(self):
         return super(ServiceRoleMixin, self).get_queryset() \
             .filter(service_id=self.kwargs['service_pk'])

@@ -6,6 +6,7 @@ from django.db.models.query import Q
 from authentic2.compat import get_user_model
 from authentic2.passwords import generate_password
 from authentic2.utils import send_templated_mail
+from authentic2.models import Service
 
 from django_rbac.models import Operation
 from django_rbac.utils import get_ou_model, get_role_model
@@ -61,12 +62,10 @@ class ChooseRoleForm(CssClass, forms.Form):
     role = fields.ChooseRoleField(label=_('Add a role'))
     action = forms.CharField(initial='add', widget=forms.HiddenInput)
 
+
 class ChooseUserRoleForm(CssClass, forms.Form):
     role = fields.ChooseUserRoleField(label=_('Add a role'))
     action = forms.CharField(initial='add', widget=forms.HiddenInput)
-
-class ChooseOUForm(CssClass, forms.Form):
-    role = fields.ChooseRoleField(label=_('Organizational unit'))
 
 
 class ChoosePermissionForm(CssClass, forms.Form):
@@ -226,25 +225,33 @@ class UserAddForm(UserChangePasswordForm, UserEditForm):
         fields = '__all__'
 
 
-class RoleSearchForm(CssClass, PrefixFormMixin, forms.Form):
+class ServiceRoleSearchForm(CssClass, PrefixFormMixin, forms.Form):
     prefix = 'search'
 
     text = forms.CharField(
         label=_('Name'),
         required=False)
+
+    def filter(self, qs):
+        if self.cleaned_data.get('text'):
+            qs = qs.filter(name__icontains=self.cleaned_data['text'])
+        return qs
+
+
+class RoleSearchForm(ServiceRoleSearchForm):
     ou = forms.ModelChoiceField(queryset=get_ou_model().objects,
                                 required=False, label=_('Organizational unit'))
-    service = fields.ChooseServiceField(
+    service = forms.ModelChoiceField(
+        queryset=Service.objects,
         label=_('Service'),
         required=False)
 
     def filter(self, qs):
+        qs = super(RoleSearchForm, self).filter(qs)
         if self.cleaned_data.get('ou'):
             qs = qs.filter(ou=self.cleaned_data['ou'])
         if self.cleaned_data.get('service'):
             qs = qs.filter(service=self.cleaned_data['service'])
-        if self.cleaned_data.get('text'):
-            qs = qs.filter(name__icontains=self.cleaned_data['text'])
         return qs
 
 
@@ -254,7 +261,8 @@ class UserSearchForm(CssClass, PrefixFormMixin, forms.Form):
     text = forms.CharField(
         label=_('Name'),
         required=False)
-    ou = fields.ChooseOUField(
+    ou = forms.ModelChoiceField(
+        queryset=get_ou_model().objects,
         label=_('Organizational unit'),
         required=False)
 

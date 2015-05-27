@@ -11,9 +11,10 @@ div.content {
 	float: left;
 	padding-right: 10px;
 	text-align: left;
+	margin-bottom: 2em;
 }
 
-#sidebar form button {
+#sidebar button {
        width: calc(100% - 10px);
        margin-left: 10px;
 }
@@ -189,6 +190,9 @@ a.disabled {
 }
 form table tr th {
         text-align: right;
+}
+div.buttons, form p label {
+  margin-left: 10px;
 }
 form p input, form p select, form p textarea {
   width: calc(100% - 28px);

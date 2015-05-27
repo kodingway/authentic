@@ -3,25 +3,33 @@
 
 {% block more-user-links %}
   {{ block.super }}
-  <a href="{% url 'a2-manager-service-role-members' service_pk=view.kwargs.service_pk pk=object.pk %}">{{ object.name }}</a>
-  <a href="#">{% trans "Children roles" %}</a>
+  <a href="{% url "a2-manager-service-role-members" service_pk=view.kwargs.service_pk pk=role.pk %}">{{ role }}</a>
+  <a href="#">{% trans "Manager roles" %}</a>
 {% endblock %}
 
 {% block page_title %}
-  {% trans "Children roles" %}
+  {% trans "Manager roles" %}
 {% endblock %}
 
 {% block appbar %}
-  {% if view.can_change and not object.admin_scope_ct_id %}
-    <a href="{% url "a2-manager-service-role-managers" service_pk=view.kwargs.service_pk pk=object.pk %}">{% trans "Managers" %}</a>
-  {% endif %}
-  <a href="{% url "a2-manager-service-role-members" service_pk=view.kwargs.service_pk pk=object.pk %}">{% trans "Members" %}</a>
+  {{ block.super }}
+  <a href="{% url "a2-manager-role-managers" pk=role.pk %}">{% trans "Managers" %}</a>
 {% endblock %}
 
 
 {% block extra_scripts %}
   {{ block.super }}
-  {{ choose_user_form.media }}
+  {{ form.media }}
+{% endblock %}
+
+{% block sidebar %}
+   <div id="search-form">
+     <h3>{% trans "Search" %}</h3>
+     <form method="get">
+       {{ search_form.as_p }}
+       <button>{% trans "Search" %}</button>
+     </form>
+   </div>
 {% endblock %}
 
 {% block main %}
@@ -36,4 +44,5 @@
            <button>{% trans "Add" %}</button>
    </form>
  {% endif %}
+</div>
 {% endblock %}

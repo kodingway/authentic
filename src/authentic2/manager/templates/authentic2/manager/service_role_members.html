@@ -1,4 +1,4 @@
-{% extends "authentic2/manager/role_common.html" %}
+{% extends "authentic2/manager/service.html" %}
 {% load i18n staticfiles django_tables2 %}
 
 {% block more-user-links %}
@@ -12,21 +12,26 @@
 
 {% block appbar %}
   {{ block.super }}
-  {% if not object.admin_scope_ct_id and view.can_delete %}
-    <a rel="popup" href="{% url "a2-manager-role-delete" pk=object.pk %}">{% trans "Delete" %}</a>
-  {% endif %}
   {% if view.can_change and not object.admin_scope_ct_id %}
-    <a rel="popup" href="{% url "a2-manager-role-edit" pk=object.pk %}">{% trans "Modify description" %}</a>
-    <a href="{% url "a2-manager-role-permissions" pk=object.pk %}">{% trans "Permissions" %}</a>
-    <a href="{% url "a2-manager-role-managers" pk=object.pk %}">{% trans "Managers" %}</a>
+    <a href="{% url "a2-manager-service-role-managers" service_pk=view.kwargs.service_pk pk=object.pk %}">{% trans "Managers" %}</a>
   {% endif %}
-  <a href="{% url "a2-manager-role-children" pk=object.pk %}">{% trans "Children roles" %}</a>
+  <a href="{% url "a2-manager-service-role-children" service_pk=view.kwargs.service_pk pk=object.pk %}">{% trans "Children roles" %}</a>
 {% endblock %}
 
 
 {% block extra_scripts %}
   {{ block.super }}
-  {{ choose_user_form.media }}
+  {{ form.media }}
+{% endblock %}
+
+{% block sidebar %}
+   <div id="search-form">
+     <h3>{% trans "Search" %}</h3>
+     <form method="get">
+       {{ search_form.as_p }}
+       <button>{% trans "Search" %}</button>
+     </form>
+   </div>
 {% endblock %}
 
 {% block main %}

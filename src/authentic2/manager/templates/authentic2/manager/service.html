@@ -3,10 +3,17 @@
 
 {% block more-user-links %}
   {{ block.super }}
-  <a href="{% url 'a2-manager-service' pk=object.pk %}">{{ object.name }}</a>
+  <a href="{% url 'a2-manager-service' service_pk=view.kwargs.service_pk %}">{{ view.service.name }}</a>
 {% endblock %}
 
 {% block sidebar %}
+   <div id="search-form">
+     <h3>{% trans "Search" %}</h3>
+     <form method="get">
+       {{ search_form.as_p }}
+       <button>{% trans "Search" %}</button>
+     </form>
+   </div>
    <div id="details">
      <h3>{{ object }}</h3>
      <dl>
@@ -19,10 +26,12 @@
        <dt>{% trans "Slug" %}</dt>
        <dd>{{ object.slug }}</dd>
      </dl>
-     <button rel="popup" data-url="{% url "a2-manager-service-edit" pk=object.pk %}">{% trans "Edit" %}</button>
+     <button rel="popup" data-url="{% url "a2-manager-service-edit" service_pk=view.kwargs.service_pk %}">{% trans "Edit" %}</button>
    </div>
 {% endblock %}
 
 {% block main %}
-  {% render_table table "authentic2/manager/table.html" %}
+  {% with row_link=1 %}
+    {% render_table table "authentic2/manager/table.html" %}
+  {% endwith %}
 {% endblock %}

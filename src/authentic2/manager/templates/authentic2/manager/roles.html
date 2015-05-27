@@ -1,6 +1,10 @@
 {% extends "authentic2/manager/role_common.html" %}
 {% load i18n staticfiles django_tables2 %}
 
+{% block page_title %}
+  {% trans "Roles" %}
+{% endblock %}
+
 {% block appbar %}
   {{ block.super }}
   {% if perms.any.a2_rbac.add_role %}

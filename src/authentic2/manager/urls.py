@@ -66,9 +66,9 @@ urlpatterns = required(
         # Services
         url(r'^services/$', service_views.listing,
             name='a2-manager-services'),
-        url(r'^services/(?P<pk>\d+)/$', service_views.roles,
+        url(r'^services/(?P<service_pk>\d+)/$', service_views.roles,
             name='a2-manager-service'),
-        url(r'^services/(?P<pk>\d+)/edit/$', service_views.edit,
+        url(r'^services/(?P<service_pk>\d+)/edit/$', service_views.edit,
             name='a2-manager-service-edit'),
         url(r'^services/(?P<service_pk>\d+)/(?P<pk>\d+)/$',
             service_views.role_members,

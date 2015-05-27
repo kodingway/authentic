@@ -26,9 +26,9 @@ class RolesMixin(object):
             .values_list('id', flat=True)
         # only non role-admin roles, they are accessed through the
         # RoleManager views
-        return qs.filter(Q(admin_scope_ct__isnull=True)
-                         | Q(admin_scope_ct=permission_ct,
-                             admin_scope_id__in=permission_qs))
+        return qs.filter(Q(admin_scope_ct__isnull=True) |
+                         Q(admin_scope_ct=permission_ct,
+                           admin_scope_id__in=permission_qs), service__isnull=True)
 
 
 class RolesView(RolesMixin, views.BaseTableView):
@@ -117,7 +117,7 @@ class RoleChildrenView(RoleViewMixin, views.BaseSubTableView):
     template_name = 'authentic2/manager/role_children.html'
     table_class = tables.RoleChildrenTable
     form_class = forms.ChooseRoleForm
-    search_form_class = forms.NameSearchForm
+    search_form_class = forms.RoleSearchForm
     success_url = '.'
 
     def get_table_queryset(self):
