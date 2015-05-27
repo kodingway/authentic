@@ -76,27 +76,21 @@ class BaseUserForm(forms.ModelForm):
             self.save_m2m = save_m2m
         return result
 
+
 def modelform_factory(model, **kwargs):
     '''Build a modelform for the given model,
 
        For the user model also add attribute based fields.
     '''
-    form = kwargs.pop('form', None) or forms.ModelForm
+    form = kwargs.pop('form', None)
     fields = kwargs.get('fields', [])
     required = list(kwargs.pop('required', []))
     d = {}
-    if not form or not hasattr(form, 'Meta'):
-        meta_d = {'model': model, 'fields': '__all__'}
-        meta = type('Meta', (), meta_d)
-        d['Meta'] = meta
-    bases = (form,)
     # KV attributes are only supported for the user model currently
     modelform = None
     if model == get_user_model():
-        if form:
-            bases = (form,)
-        else:
-            bases = (BaseUserForm,)
+        if not form:
+            form = BaseUserForm
         attributes = models.Attribute.objects.all()
         for attribute in attributes:
             if fields and attribute.name not in fields:
@@ -105,14 +99,20 @@ def modelform_factory(model, **kwargs):
         for field in app_settings.A2_REQUIRED_FIELDS:
             if not field in required:
                 required.append(field)
+    if not form or not hasattr(form, 'Meta'):
+        meta_d = {'model': model, 'fields': '__all__'}
+        meta = type('Meta', (), meta_d)
+        d['Meta'] = meta
+    if not form:  # fallback
+        form = forms.ModelForm
     modelform = None
     if required:
         def __init__(self, *args, **kwargs):
             super(modelform, self).__init__(*args, **kwargs)
             for field in required:
                 if field in self.fields:
-		    self.fields[field].required = True
+                    self.fields[field].required = True
         d['__init__'] = __init__
-    modelform = type(model.__name__ + 'ModelForm', bases, d)
+    modelform = type(model.__name__ + 'ModelForm', (form,), d)
     kwargs['form'] = modelform
     return django_modelform_factory(model, **kwargs)
