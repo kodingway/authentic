@@ -6,6 +6,7 @@ from django.views.generic import TemplateView, FormView, UpdateView, \
     CreateView, DeleteView, TemplateView
 from django.views.generic.detail import SingleObjectMixin
 from django.http import HttpResponse, Http404
+from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
 from django.core.urlresolvers import reverse
@@ -337,3 +338,39 @@ class HomepageView(PermissionMixin, ManagerMixin, TemplateView):
                    'auth.view_group', 'custom_user.view_user']
 
 homepage = HomepageView.as_view()
+
+
+def menu_json(request):
+    response = HttpResponse(content_type='application/json')
+    menu_entries = []
+    if request.user.has_perm_any('a2_rbac.view_organizationalunit'):
+        menu_entries.append({
+            'label': force_text(_('Organizational units management')),
+            'slug': 'organizational-units',
+            'url': request.build_absolute_uri(reverse('a2-manager-ous'))
+            })
+    if request.user.has_perm_any('custom_user.view_user'):
+        menu_entries.append({
+            'label': force_text(_('User management')),
+            'slug': 'users',
+            'url': request.build_absolute_uri(reverse('a2-manager-users'))
+            })
+    if request.user.has_perm_any('a2_rbac.view_role'):
+        menu_entries.append({
+            'label': force_text(_('Roles management')),
+            'slug': 'roles',
+            'url': request.build_absolute_uri(reverse('a2-manager-roles'))
+            })
+    if request.user.has_perm_any('a2_rbac.view_service'):
+        menu_entries.append({
+            'label': force_text(_('Services management')),
+            'slug': 'services',
+            'url': request.build_absolute_uri(reverse('a2-manager-services'))
+            })
+    json_str = json.dumps(menu_entries)
+    for variable in ('jsonpCallback', 'callback'):
+        if variable in request.GET:
+            json_str = '%s(%s);' % (request.GET[variable], json_str)
+            break
+    response.write(json_str)
+    return response

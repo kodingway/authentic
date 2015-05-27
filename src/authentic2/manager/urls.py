@@ -82,6 +82,9 @@ urlpatterns = required(
         url(r'^services/(?P<service_pk>\d+)/(?P<pk>\d+)/managers/roles/$',
             service_views.role_managers_roles,
             name='a2-manager-service-role-managers-roles'),
+
+        # backoffice menu as json
+        url(r'^menu.json$', views.menu_json),
     )
 )
 
