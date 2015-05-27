@@ -255,10 +255,6 @@ class Service(models.Model):
     def clean(self):
         errors = {}
 
-        if not self.ou:
-            errors['ou'] = ValidationError(
-                _('An organizational unit is mandatory'),
-                code='missing-ou')
         if self.ou is None and self.__class__.objects.exclude(pk=self.pk) \
                .filter(slug=self.slug, ou__isnull=True):
             errors['slug'] = ValidationError(
