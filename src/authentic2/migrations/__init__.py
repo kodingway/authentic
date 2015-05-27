@@ -16,6 +16,15 @@ class CreatePartialIndexes(Operation):
         self.non_null_columns = set(non_null_columns)
         self.null_columns = set(null_columns)
 
+    def allowed(self, schema_editor):
+        if schema_editor.connection.vendor == 'postgresql':
+            return True
+        # Partial indexed were introduced in sqlite 3.8.0
+        if schema_editor.connection.vendor == 'sqlite' and \
+                schema_editor.connection.Database.sqlite_version_info >= (3, 8):
+            return True
+        return False
+
     def indexes(self):
         for i in range(0, len(self.nullable_columns)+1):
             for null_columns in itertools.combinations(sorted(self.nullable_columns), i):
@@ -29,6 +38,8 @@ class CreatePartialIndexes(Operation):
         pass
 
     def database_forwards(self, app_label, schema_editor, from_state, to_state):
+        if not self.allowed(schema_editor):
+            return
         for i, (null_columns, non_null_columns) in enumerate(self.indexes()):
             index = ', '.join(non_null_columns)
             if null_columns:
@@ -38,6 +49,8 @@ class CreatePartialIndexes(Operation):
                 schema_editor.execute('CREATE UNIQUE INDEX "%s_%s" ON %s (%s)' % (self.index_name, i, self.table_name, index))
 
     def database_backwards(self, app_label, schema_editor, from_state, to_state):
+        if not self.allowed(schema_editor):
+            return
         for i, (null_columns, non_null_columns) in enumerate(self.indexes()):
             schema_editor.execute('DROP INDEX "%s_%s"' % (self.index_name, i))
 
