@@ -1,5 +1,6 @@
 from django.utils.http import urlquote
 from django.db import models
+from django.db.models.fields import NOT_PROVIDED
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.contrib.auth.models import AbstractBaseUser
@@ -128,6 +129,8 @@ class User(AbstractBaseUser, PermissionMixin):
     def natural_key(self):
         return (self.uuid,)
 
+# Alter default from AbstractBaseUser to comply with Django 1.8
+# we should stop depending on this asbtract class one day
 User._meta.get_field('last_login').null = True
 User._meta.get_field('last_login').blank = True
-
+User._meta.get_field('last_login').default = NOT_PROVIDED
