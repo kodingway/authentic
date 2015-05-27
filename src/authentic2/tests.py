@@ -286,7 +286,7 @@ class RegistrationTests(TestCase):
                                             'password2': 'toto'})
         self.assertEqual(response.status_code, 200)
         self.assertFormError(response, 'form', 'password1', ['password must contain at least 6 characters'])
-        
+
         response = self.client.post(link, { 'password1': 'T0toto',
                                             'password2': 'T0toto'})
         new_user = User.objects.get()
@@ -453,6 +453,55 @@ class RegistrationTests(TestCase):
         self.assertNotContains(response, 'pompier')
         self.assertNotContains(response, 'Prénom')
         self.assertNotContains(response, 'John')
+
+
+class UserProfileTests(TestCase):
+    def setUp(self):
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        user = User.objects.create(username='testbot')
+        user.set_password('secret')
+        user.save()
+        self.client = Client()
+
+    def test_edit_profile_attributes(self):
+
+        models.Attribute.objects.create(
+            label=u'custom',
+            name='custom',
+            required=True,
+            user_visible=True,
+            user_editable=True,
+            kind='string')
+        models.Attribute.objects.create(
+            label=u'ID',
+            name='national_number',
+            user_editable=True,
+            user_visible=True,
+            kind='string')
+        self.assertTrue(self.client.login(username='testbot', password='secret'))
+
+        # get the edit page in order to check form's prefix
+        response = self.client.get(reverse('profile_edit'))
+        form = get_response_form(response)
+
+        kwargs = {'custom': 'random data',
+                  'national_number': 'xx20153566342yy'}
+        if form.prefix:
+            kwargs = dict(('%s-%s' % (form.prefix, k), v)
+                          for k, v in kwargs.iteritems())
+
+        response = self.client.post(reverse('profile_edit'), kwargs)
+
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get(reverse('account_management'))
+        self.assertContains(response, 'random data')
+        self.assertContains(response, 'xx20153566342yy')
+
+        response = self.client.get(reverse('profile_edit'))
+        form = get_response_form(response)
+        self.assertEqual(form['custom'].value(), 'random data')
+        self.assertEqual(form['national_number'].value(), 'xx20153566342yy')
 
 
 class CacheTests(TestCase):
