@@ -161,105 +161,6 @@ AUTHSAML2_UNAUTH_TRANSIENT = (
 )
 
 
-class IdPOptionsSPPolicy(models.Model):
-    '''
-        Policies configured as a SAML2 service provider.
-
-        Used to define SAML2 parameters employed with third SAML2 identity
-        providers
-    '''
-    name = models.CharField(_('name'), max_length=200, unique=True)
-    enabled = models.BooleanField(verbose_name = _('Enabled'),
-            default=False)
-    no_nameid_policy = models.BooleanField(
-            verbose_name = _("Do not send a nameId Policy"),
-            default=False)
-    requested_name_id_format = models.CharField(
-            verbose_name = _("Requested NameID format"),
-            max_length = 200,
-            default = DEFAULT_NAME_ID_FORMAT,
-            choices = NAME_ID_FORMATS_CHOICES)
-    transient_is_persistent = models.BooleanField(
-            verbose_name = \
-_("This IdP sends a transient NameID but you want a persistent behaviour for your SP"),
-            default=False)
-    persistent_identifier_attribute = models.CharField(_('Persistent '
-            'identifier attribute'), max_length=200, null=True, blank=True)
-    allow_create = models.BooleanField(
-            verbose_name = _("Allow IdP to create an identity"),
-            default=False)
-    enable_binding_for_sso_response = models.BooleanField(
-            verbose_name = _('Binding for Authnresponse \
-            (taken from metadata by the IdP if not enabled)'),
-            default=False)
-    binding_for_sso_response = models.CharField(
-            verbose_name = _("Binding for the SSO responses"),
-            max_length = 200, choices = BINDING_SSO_IDP,
-            default = lasso.SAML2_METADATA_BINDING_ARTIFACT)
-    enable_http_method_for_slo_request = models.BooleanField(
-            verbose_name = _('HTTP method for single logout request \
-            (taken from metadata if not enabled)'),
-            default=False)
-    http_method_for_slo_request = models.IntegerField(
-            verbose_name = _("HTTP binding for the SLO requests"),
-            choices = HTTP_METHOD,
-            default = lasso.HTTP_METHOD_REDIRECT)
-    enable_http_method_for_defederation_request = models.BooleanField(
-            verbose_name = \
-            _('HTTP method for federation termination request \
-            (taken from metadata if not enabled)'),
-            default=False)
-    http_method_for_defederation_request = models.IntegerField(
-            verbose_name = _("HTTP method for the defederation requests"),
-            choices = HTTP_METHOD,
-            default = lasso.HTTP_METHOD_SOAP)
-    force_user_consent = models.BooleanField(\
-            verbose_name = \
-                _("Require the user consent be given at account linking"),
-            default=False)
-    want_force_authn_request = models.BooleanField(
-            verbose_name = _("Force authentication"),
-            default=False)
-    want_is_passive_authn_request = models.BooleanField(
-            verbose_name = _("Passive authentication"),
-            default=False)
-    want_authn_request_signed = models.BooleanField(
-            verbose_name = _("Want AuthnRequest signed"),
-            default=False)
-    handle_persistent = models.CharField(
-            max_length=200,
-            verbose_name = _('Behavior with persistent NameID'),
-            choices=AUTHSAML2_UNAUTH_PERSISTENT,
-            default = 'AUTHSAML2_UNAUTH_PERSISTENT_ACCOUNT_LINKING_BY_AUTH')
-    handle_transient = models.CharField(
-            max_length=200,
-            verbose_name = _('Behavior with transient NameID'),
-            choices=AUTHSAML2_UNAUTH_TRANSIENT,
-            default = '')
-    back_url = models.CharField(
-            max_length = 200,
-            default = '/',
-            verbose_name = _('Return URL after a successful authentication'))
-    accept_slo = models.BooleanField(\
-            verbose_name = _("Accept to receive Single Logout requests"),
-            default=True)
-    forward_slo = models.BooleanField(\
-            verbose_name = _("Forward Single Logout requests"),
-            default=True)
-
-    objects = a2_managers.GetByNameManager()
-
-    def natural_key(self):
-        return (self.name,)
-
-    class Meta:
-        verbose_name = _('identity provider options policy')
-        verbose_name_plural = _('identity provider options policies')
-
-    def __unicode__(self):
-        return self.name
-
-
 class SPOptionsIdPPolicy(models.Model):
     '''
         Policies configured as a SAML2 identity provider.
@@ -406,49 +307,6 @@ class SAMLAttribute(models.Model):
             'friendly_name', 'attribute_name'),)
 
 
-class AuthorizationAttributeMap(models.Model):
-    name = models.CharField(max_length = 40, unique = True)
-    def __unicode__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = _('authorization attribute map')
-        verbose_name_plural = _('authorization attribute maps')
-
-class AuthorizationAttributeMapping(models.Model):
-    source_attribute_name = models.CharField(max_length = 40,
-            blank=True)
-    attribute_value_format = models.CharField(max_length = 40,
-            blank=True)
-    attribute_name = models.CharField(max_length = 40)
-    attribute_value = models.CharField(max_length = 40)
-    map = models.ForeignKey(AuthorizationAttributeMap)
-
-    class Meta:
-        verbose_name = _('authorization attribute mapping')
-        verbose_name_plural = _('authorization attribute mappings')
-
-class AuthorizationSPPolicy(models.Model):
-    name = models.CharField(_('name'), max_length=80, unique=True)
-    enabled = models.BooleanField(verbose_name = _('Enabled'),
-            default=False)
-    attribute_map = models.ForeignKey(AuthorizationAttributeMap,
-            related_name = "authorization_attributes",
-            blank = True, null = True)
-    default_denial_message = models.CharField(
-            max_length = 80,
-            verbose_name = \
-            _("Default message to display to the user when access is denied"),
-            default=_('You are not authorized to access the service.'))
-
-    class Meta:
-        verbose_name = _('authorization identity providers policy')
-        verbose_name_plural = _('authorization identity providers policies')
-
-    def __unicode__(self):
-        return self.name
-
-
 class LibertyProvider(Service):
     entity_id = models.URLField(unique = True)
     entity_id_sha1 = models.CharField(max_length = 40, blank=True)
@@ -536,13 +394,6 @@ class LibertyServiceProvider(models.Model):
             verbose_name=_('service provider options policy'), blank=True,
             null=True,
             on_delete=models.SET_NULL)
-    enable_following_attribute_policy = models.BooleanField(verbose_name = \
-        _('The following attribute policy will apply except if a policy for all service provider is defined.'),
-        default=False)
-    attribute_policy = models.ForeignKey('idp.AttributePolicy',
-             related_name = "attribute_policy",
-            verbose_name=_("attribute policy"), null=True, blank=True,
-            on_delete=models.SET_NULL)
     users_can_manage_federations = models.BooleanField(
             verbose_name=_('users can manage federation'),
             default=True,
@@ -561,49 +412,6 @@ class LibertyServiceProvider(models.Model):
         verbose_name = _('SAML service provider')
         verbose_name_plural = _('SAML service providers')
 
-
-# TODO: The choice for requests must be restricted by the IdP metadata
-# The SP then chooses the binding in this list.
-# For response, if the requester uses a (a)synchronous binding, the responder uses the same.
-# However, the responder can choose which asynchronous binding it employs.
-class LibertyIdentityProvider(models.Model):
-    liberty_provider = models.OneToOneField(LibertyProvider,
-            primary_key = True, related_name = 'identity_provider')
-    enabled = models.BooleanField(verbose_name = _('Enabled'),
-            default=False)
-    enable_following_idp_options_policy = models.BooleanField(verbose_name = \
-        _('The following options policy will apply except if a policy for all '
-          'identity provider is defined.'),
-        default=False)
-    idp_options_policy = models.ForeignKey(IdPOptionsSPPolicy,
-            related_name="idp_options_policy",
-            verbose_name=_('identity provider options policy'), blank=True,
-            null=True,
-            on_delete=models.SET_NULL)
-    enable_following_authorization_policy = models.BooleanField(verbose_name = \
-        _('The following authorization policy will apply except if a policy for'
-          ' all identity provider is defined.'),
-        default=False)
-    authorization_policy = models.ForeignKey(AuthorizationSPPolicy,
-            related_name="authorization_policy",
-            verbose_name=_('authorization identity providers policy'), blank=True, null=True,
-            on_delete=models.SET_NULL)
-
-    objects = managers.GetByLibertyProviderManager()
-
-    # TODO: add clean method which checks that the LassoProvider we can create
-    # with the metadata file support the IDP role
-    # i.e. provider.roles & lasso.PROVIDER_ROLE_IDP != 0
-
-    def __unicode__(self):
-        return unicode(self.liberty_provider)
-
-    def natural_key(self):
-        return (self.liberty_provider.slug,)
-
-    class Meta:
-        verbose_name = _('SAML identity provider')
-        verbose_name_plural = _('SAML identity providers')
 
 LIBERTY_SESSION_DUMP_KIND_SP = 0
 LIBERTY_SESSION_DUMP_KIND_IDP = 1
@@ -625,20 +433,6 @@ class LibertySessionDump(models.Model):
         verbose_name = _('SAML session dump')
         verbose_name_plural = _('SAML session dumps')
         unique_together = (('django_session_key', 'kind'),)
-
-class LibertyManageDump(models.Model):
-    '''Store lasso manage dump
-
-       Should be replaced in the future by direct reference to ?
-       objects'''
-    django_session_key = models.CharField(max_length = 128)
-    manage_dump = models.TextField(blank = True)
-
-    objects = managers.SessionLinkedManager()
-
-    class Meta:
-        verbose_name = _('SAML manage dump')
-        verbose_name_plural = _('SAML manage dumps')
 
 class LibertyArtifact(models.Model):
     """Store an artifact and the associated XML content"""
@@ -668,7 +462,6 @@ class LibertyFederation(models.Model):
        it IdP or SP"""
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True,
             on_delete=models.SET_NULL)
-    idp = models.ForeignKey('LibertyIdentityProvider', null=True, blank=True)
     sp = models.ForeignKey('LibertyServiceProvider', null=True, blank=True)
     name_id_format = models.CharField(max_length = 100,
             verbose_name = "NameIDFormat", blank=True, null=True)
@@ -776,16 +569,6 @@ class LibertySession(models.Model):
     class Meta:
         verbose_name = _("SAML session")
         verbose_name_plural = _("SAML sessions")
-
-class LibertySessionSP(models.Model):
-    """Store the link between a Django session and a SAML session on the SP"""
-    django_session_key = models.CharField(max_length = 128)
-    session_index =  models.CharField(max_length = 80, )
-    federation = models.ForeignKey(LibertyFederation)
-
-    class Meta:
-        verbose_name = _("SAML service provider session")
-        verbose_name_plural = _("SAML service provider sessions")
 
 class KeyValue(models.Model):
     key = models.CharField(max_length=128, primary_key=True)

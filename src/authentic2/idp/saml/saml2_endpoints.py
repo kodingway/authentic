@@ -44,7 +44,6 @@ from django.contrib import messages
 
 from authentic2.compat import get_user_model
 import authentic2.views as a2_views
-from authentic2.idp.models import get_attribute_policy
 from authentic2.saml.models import (LibertyArtifact,
     LibertySession, LibertyFederation, 
     nameid2kwargs, saml2_urn_to_nidformat,
@@ -54,8 +53,8 @@ from authentic2.saml.common import redirect_next, asynchronous_bindings, \
     soap_bindings, load_provider, get_saml2_request_message, \
     error_page, set_saml2_response_responder_status_code, \
     AUTHENTIC_STATUS_CODE_MISSING_DESTINATION, \
-    load_federation, load_session, \
-    return_saml2_response, save_session, \
+    load_federation, \
+    return_saml2_response, \
     get_soap_message, soap_fault, return_saml_soap_response, \
     AUTHENTIC_STATUS_CODE_UNKNOWN_PROVIDER, \
     AUTHENTIC_STATUS_CODE_MISSING_NAMEID, \
@@ -72,7 +71,6 @@ from common import kill_django_sessions
 from authentic2.constants import NONCE_FIELD_NAME
 
 from authentic2.idp import signals as idp_signals
-# from authentic2.idp.models import *
 
 from authentic2.utils import (make_url, get_backends as get_idp_backends,
         get_username, login_require, find_authentication_event)
@@ -310,7 +308,7 @@ def saml2_add_attribute_values(assertion, attributes):
             "%s" % assertion.dump())
 
 
-def build_assertion(request, login, nid_format='transient', attributes=None):
+def build_assertion(request, login, nid_format='transient'):
     """After a successfully validated authentication request, build an
        authentication assertion
     """
@@ -397,9 +395,6 @@ def build_assertion(request, login, nid_format='transient', attributes=None):
     kwargs['user'] = request.user
     logger.info(u'sending nameID %(name_id_format)s: '
         '%(name_id_content)s to %(entity_id)s for user %(user)s' % kwargs)
-    if attributes:
-        logger.debug("add attributes to the assertion")
-        saml2_add_attribute_values(login.assertion, attributes)
     register_new_saml2_session(request, login)
 
 
@@ -521,12 +516,12 @@ def sso(request):
     return sso_after_process_request(request, login, nid_format=nid_format)
 
 
-def need_login(request, login, save, nid_format):
+def need_login(request, login, nid_format):
     """Redirect to the login page with a nonce parameter to verify later that
        the login form was submitted
     """
     nonce = login.request.id or get_nonce()
-    save_key_values(nonce, login.dump(), False, save, nid_format)
+    save_key_values(nonce, login.dump(), False, nid_format)
     next_url = make_url(continue_sso, params={NONCE_FIELD_NAME: nonce})
     logger.debug('redirect to login page with next url %s', next_url)
     return login_require(request, next_url=next_url,
@@ -538,9 +533,9 @@ def get_url_with_nonce(request, function, nonce):
     return urllib.quote(url)
 
 
-def need_consent_for_federation(request, login, save, nid_format):
+def need_consent_for_federation(request, login, nid_format):
     nonce = login.request.id or get_nonce()
-    save_key_values(nonce, login.dump(), False, save, nid_format)
+    save_key_values(nonce, login.dump(), False, nid_format)
     display_name = None
     try:
         provider = \
@@ -552,27 +547,6 @@ def need_consent_for_federation(request, login, save, nid_format):
         display_name = urllib.quote(login.request.issuer.content)
     url = '%s?%s=%s&next=%s&provider_id=%s' \
         % (reverse('a2-consent-federation'), NONCE_FIELD_NAME,
-            nonce, get_url_with_nonce(request, continue_sso, nonce),
-            display_name)
-    logger.debug('redirect to url %s' % url)
-    return HttpResponseRedirect(url)
-
-
-def need_consent_for_attributes(request, login, consent_obtained, save,
-        nid_format):
-    nonce = login.request.id or get_nonce()
-    save_key_values(nonce, login.dump(), consent_obtained, save, nid_format)
-    display_name = None
-    try:
-        provider = \
-            LibertyProvider.objects.get(entity_id=login.request.issuer.content)
-        display_name = provider.name
-    except ObjectDoesNotExist:
-        pass
-    if not display_name:
-        display_name = urllib.quote(login.request.issuer.content)
-    url = '%s?%s=%s&next=%s&provider_id=%s' \
-        % (reverse('a2-consent-attributes'), NONCE_FIELD_NAME,
             nonce, get_url_with_nonce(request, continue_sso, nonce),
             display_name)
     logger.debug('redirect to url %s' % url)
@@ -600,7 +574,7 @@ def continue_sso(request):
         logger.warning('nonce not found')
         return HttpResponseBadRequest()
     try:
-        login_dump, consent_obtained, save, nid_format = \
+        login_dump, consent_obtained, nid_format = \
                 get_and_delete_key_values(nonce)
     except KeyError:
         return error_redirect(request, N_('request has expired'))
@@ -643,7 +617,7 @@ def needs_persistence(nid_format):
 
 
 def sso_after_process_request(request, login, consent_obtained=False,
-        consent_attribute_answer=False, user=None, save=True,
+        consent_attribute_answer=False, user=None,
         nid_format='transient', return_profile=False):
     """Common path for sso and idp_initiated_sso.
 
@@ -651,7 +625,6 @@ def sso_after_process_request(request, login, consent_obtained=False,
        federation
        user: the user which must be federated, if None, current user is the
        default.
-       save: whether to save the result of this transaction or not.
     """
     nonce = login.request.id
     user = user or request.user
@@ -665,7 +638,7 @@ def sso_after_process_request(request, login, consent_obtained=False,
     if not passive and \
             (user.is_anonymous() or (force_authn and not did_auth)):
         logger.info('login required')
-        return need_login(request, login, save, nid_format)
+        return need_login(request, login, nid_format)
 
     # No user is authenticated and passive is True, deny request
     if passive and user.is_anonymous():
@@ -701,32 +674,9 @@ def sso_after_process_request(request, login, consent_obtained=False,
     if nid_format == 'transient':
         transient = True
 
-    attributes = {}
-    if 'attributes_loaded' in request.session:
-        logger.debug('attributes already loaded')
-        attributes = request.session['attributes_loaded']
-    else:
-        logger.debug('attributes loading...')
-        attributes_provided = \
-            idp_signals.add_attributes_to_response.send(sender=None,
-                request=request, user=request.user,
-                audience=login.remoteProviderId)
-        logger.info(''
-            'signal add_attributes_to_response sent')
-        for attrs in attributes_provided:
-            logger.info('add_attributes_to_response '
-                'connected to function %s' % attrs[0].__name__)
-            if attrs[1] and 'attributes' in attrs[1]:
-                dic = attrs[1]
-                logger.info('attributes provided are '
-                    '%s' % str(dic['attributes']))
-                for key in dic['attributes'].keys():
-                    attributes[key] = dic['attributes'][key]
-        request.session['attributes_loaded'] = attributes
-
     decisions = idp_signals.authorize_service.send(sender=None,
          request=request, user=request.user, audience=login.remoteProviderId,
-         attributes=attributes)
+         attributes={})
     logger.info('signal authorize_service sent')
 
     # You don't dream. By default, access granted.
@@ -856,28 +806,7 @@ def sso_after_process_request(request, login, consent_obtained=False,
 
     if not consent_obtained and not transient:
         logger.debug('ask the user consent now')
-        return need_consent_for_federation(request, login, save, nid_format)
-
-    attribute_policy = get_attribute_policy(provider)
-
-    if not attribute_policy and attributes:
-        logger.info('no attribute policy, we do '
-            'not forward attributes')
-        attributes = None
-    elif attribute_policy and attribute_policy.ask_consent_attributes and attributes:
-        if not consent_attribute_answer:
-            logger.info('consent for attribute '
-                'propagation')
-            request.session['attributes_to_send'] = attributes
-            request.session['allow_attributes_selection'] = \
-                attribute_policy.allow_attributes_selection
-            return need_consent_for_attributes(request, login,
-                consent_obtained, save, nid_format)
-        if consent_attribute_answer == 'accepted' and \
-                attribute_policy.allow_attributes_selection:
-            attributes = request.session['attributes_to_send']
-        elif consent_attribute_answer == 'refused':
-            attributes = None
+        return need_consent_for_federation(request, login, nid_format)
 
     logger.debug(''
         'login dump before processing %s' % login.dump())
@@ -885,8 +814,6 @@ def sso_after_process_request(request, login, consent_obtained=False,
         if needs_persistence(nid_format):
             logger.debug('load identity dump')
             load_federation(request, get_entity_id(request, reverse(metadata)), login, user)
-        load_session(request, login)
-        logger.debug('load session')
         login.validateRequestMsg(not user.is_anonymous(), consent_obtained)
         logger.debug('validateRequestMsg %s' \
             % login.dump())
@@ -894,19 +821,18 @@ def sso_after_process_request(request, login, consent_obtained=False,
         logger.error('access denied due to LoginRequestDeniedError')
         set_saml2_response_responder_status_code(login.response,
             lasso.SAML2_STATUS_CODE_REQUEST_DENIED)
-        return finish_sso(request, login, user=user, save=save)
+        return finish_sso(request, login, user=user)
     except lasso.LoginFederationNotFoundError:
         logger.error('access denied due to LoginFederationNotFoundError')
         set_saml2_response_responder_status_code(login.response,
                 lasso.SAML2_STATUS_CODE_REQUEST_DENIED)
-        return finish_sso(request, login, user=user, save=save)
+        return finish_sso(request, login, user=user)
 
     login.response.consent = consent_value
 
-    build_assertion(request, login, nid_format=nid_format,
-            attributes=attributes)
+    build_assertion(request, login, nid_format=nid_format)
     add_attributes(request, login.assertion, provider)
-    return finish_sso(request, login, user=user, save=save, return_profile=return_profile)
+    return finish_sso(request, login, user=user, return_profile=return_profile)
 
 
 def return_login_error(request, login, error):
@@ -935,15 +861,12 @@ def return_login_response(request, login):
         title=_('You are being redirected to "%s"') % provider.name)
 
 
-def finish_sso(request, login, user=None, save=False, return_profile=False):
+def finish_sso(request, login, user=None, return_profile=False):
     logger.info('finishing sso...')
     if user is None:
         logger.debug('user is None')
         user = request.user
     response = return_login_response(request, login)
-    if save:
-        save_session(request, login)
-        logger.debug('session saved')
     logger.info('sso treatment ended, send response')
     if return_profile:
         return login
@@ -1017,7 +940,7 @@ def check_delegated_authentication_permission(request):
 @never_cache
 @csrf_exempt
 @login_required
-def idp_sso(request, provider_id=None, save=True, return_profile=False):
+def idp_sso(request, provider_id=None, return_profile=False):
     '''Initiate an SSO toward provider_id without a prior AuthnRequest
     '''
     User = get_user_model()
@@ -1076,7 +999,7 @@ def idp_sso(request, provider_id=None, save=True, return_profile=False):
     logger.info('authentication request initialized toward provider_id %r', provider_id)
 
     return sso_after_process_request(request, login,
-            consent_obtained=False, user=user, save=save,
+            consent_obtained=False, user=user,
             nid_format=nid_format, return_profile=return_profile)
 
 

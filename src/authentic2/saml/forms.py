@@ -6,8 +6,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
-from .models import (LibertyProvider, LibertyServiceProvider,
-        LibertyIdentityProvider)
+from .models import LibertyProvider, LibertyServiceProvider
 
 from authentic2.a2_rbac.utils import get_default_ou
 
@@ -35,21 +34,15 @@ class AddLibertyProviderFromUrlForm(forms.Form):
                 if root.tag != '{%s}EntityDescriptor' % lasso.SAML2_METADATA_HREF:
                     raise ValidationError(_('Invalid SAML metadata: %s') % _('missing EntityDescriptor tag'))
                 is_sp = not root.find('{%s}SPSSODescriptor' % lasso.SAML2_METADATA_HREF) is None
-                is_idp = not root.find('{%s}IDPSSODescriptor' % lasso.SAML2_METADATA_HREF) is None
-                if not (is_sp or is_idp):
-                    raise ValidationError(_('Invalid SAML metadata: %s') % _('missing IDPSSODescriptor or SPSSODescriptor tags'))
+                if not is_sp:
+                    raise ValidationError(_('Invalid SAML metadata: %s') % _('missing SPSSODescriptor tags'))
                 liberty_provider = LibertyProvider(name=name,
                     slug=slug, metadata=content, metadata_url=url, ou=ou)
                 liberty_provider.full_clean(exclude=
                         ('entity_id', 'protocol_conformance'))
-                if is_sp:
-                    self.childs.append(LibertyServiceProvider(
-                        liberty_provider=liberty_provider,
-                        enabled=True))
-                if is_idp:
-                    self.childs.append(LibertyIdentityProvider(
-                        liberty_provider=liberty_provider,
-                        enabled=True))
+                self.childs.append(LibertyServiceProvider(
+                    liberty_provider=liberty_provider,
+                    enabled=True))
             except ValidationError, e:
                 raise
             except Exception, e:

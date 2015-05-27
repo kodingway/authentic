@@ -13,13 +13,9 @@ try:
 except ImportError:
     from django.contrib.contenttypes.generic import GenericTabularInline
 
-from authentic2.saml.models import LibertyProvider, LibertyServiceProvider
-from authentic2.saml.models import LibertyIdentityProvider, IdPOptionsSPPolicy
-from authentic2.saml.models import SPOptionsIdPPolicy
-from authentic2.saml.models import LibertySessionDump, LibertyFederation
-from authentic2.saml.models import LibertySessionSP, KeyValue
-from authentic2.saml.models import LibertySession
-from authentic2.saml.models import SAMLAttribute
+from authentic2.saml.models import (LibertyProvider, LibertyServiceProvider,
+                                    SPOptionsIdPPolicy, LibertyFederation,
+                                    KeyValue, LibertySession, SAMLAttribute)
 
 from authentic2.decorators import to_iter
 from authentic2.attributes_ng.engine import get_attribute_names
@@ -28,84 +24,8 @@ from . import admin_views
 
 logger = logging.getLogger(__name__)
 
-class AuthorizationAttributeMapAdmin(admin.ModelAdmin):
-    fieldsets = (
-            (None, {
-                'fields' : (
-                    'name',
-                )
-            }),
-    )
-
-class AuthorizationAttributeMappingAdmin(admin.ModelAdmin):
-    fieldsets = (
-            (None, {
-                'fields' : (
-                    'attribute_name',
-                    'attribute_value',
-                    'map',
-                )
-            }),
-    )
-
-class IdPOptionsSPPolicyAdmin(admin.ModelAdmin):
-    fieldsets = (
-            (None, {
-                'fields' : (
-                    'name',
-                    'enabled',
-                    'no_nameid_policy',
-                    'requested_name_id_format',
-                    'transient_is_persistent',
-                    'persistent_identifier_attribute',
-                    'allow_create',
-                    ('enable_binding_for_sso_response',
-                        'binding_for_sso_response'),
-                    ('enable_http_method_for_slo_request',
-                        'http_method_for_slo_request'),
-                    ('enable_http_method_for_defederation_request',
-                        'http_method_for_defederation_request'),
-                    'force_user_consent',
-                    'want_force_authn_request',
-                    'want_is_passive_authn_request',
-                    'want_authn_request_signed',
-                    'handle_persistent',
-                    'handle_transient',
-                    'back_url',
-                    'accept_slo',
-                    'forward_slo',
-                )
-            }),
-    )
-
-class AuthorizationSPPolicyAdmin(admin.ModelAdmin):
-    fieldsets = (
-            (None, {
-                'fields' : (
-                    'name',
-                    'enabled',
-                    'attribute_map',
-                    'default_denial_message',
-                )
-            }),
-    )
-
 class LibertyServiceProviderInline(admin.StackedInline):
     model = LibertyServiceProvider
-
-class LibertyIdentityProviderInline(admin.StackedInline):
-    model = LibertyIdentityProvider
-    fieldsets = (
-            (None, {
-                'fields' : (
-                    'enabled',
-                    'enable_following_idp_options_policy',
-                    'idp_options_policy',
-#                    'enable_following_authorization_policy',
-#                    'authorization_policy',
-                )
-            }),
-    )
 
 class TextAndFileWidget(forms.widgets.MultiWidget):
     def __init__(self, attrs=None):
@@ -233,7 +153,6 @@ class LibertyProviderAdmin(admin.ModelAdmin):
     )
     inlines = [
             LibertyServiceProviderInline,
-            LibertyIdentityProviderInline,
             SAMLAttributeInlineAdmin,
     ]
     actions = [ update_metadata ]
@@ -241,7 +160,6 @@ class LibertyProviderAdmin(admin.ModelAdmin):
     list_filter = (
             'service_provider__sp_options_policy',
             'service_provider__enabled',
-            'identity_provider__enabled',
     )
 
     def get_urls(self):
@@ -256,16 +174,14 @@ class LibertyProviderAdmin(admin.ModelAdmin):
 
 class LibertyFederationAdmin(admin.ModelAdmin):
     search_fields = ('name_id_content', 'user__username')
-    list_display = ('user', 'creation', 'last_modification', 'name_id_content', 'format', 'idp', 'sp')
-    list_filter = ('name_id_format', 'idp', 'sp')
+    list_display = ('user', 'creation', 'last_modification', 'name_id_content', 'format', 'sp')
+    list_filter = ('name_id_format', 'sp')
 
     def format(self, obj):
         name_id_format = obj.name_id_format
         if name_id_format > 15:
             name_id_format = u'\u2026' + name_id_format[-12:]
         return name_id_format
-
-admin.site.register(IdPOptionsSPPolicy, IdPOptionsSPPolicyAdmin)
 
 class SPOptionsIdPPolicyAdmin(admin.ModelAdmin):
     inlines = [ SAMLAttributeInlineAdmin ]
@@ -292,8 +208,6 @@ admin.site.register(SPOptionsIdPPolicy, SPOptionsIdPPolicyAdmin)
 admin.site.register(LibertyProvider, LibertyProviderAdmin)
 
 if settings.DEBUG:
-    admin.site.register(LibertySessionDump)
     admin.site.register(LibertyFederation, LibertyFederationAdmin)
     admin.site.register(LibertySession)
-    admin.site.register(LibertySessionSP)
     admin.site.register(KeyValue)

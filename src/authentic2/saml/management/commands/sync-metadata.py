@@ -82,6 +82,7 @@ def check_support_saml2(tree):
         return True
     return False
 
+<<<<<<< HEAD
 def text_child(tree, tag, default=''):
     elt = tree.find(tag)
     return elt.text if not elt is None else default
@@ -126,7 +127,7 @@ def load_acs(tree, provider, pks, verbosity):
                 pks.extend(SAMLAttribute.objects.filter(**kwargs).values_list('pk', flat=True))
 
 
-def load_one_entity(tree, options, sp_policy=None, idp_policy=None, afp=None):
+def load_one_entity(tree, options, sp_policy=None, afp=None):
     '''Load or update an EntityDescriptor into the database'''
     verbosity = int(options['verbosity'])
     entity_id = tree.get(ENTITY_ID)
@@ -147,18 +148,13 @@ def load_one_entity(tree, options, sp_policy=None, idp_policy=None, afp=None):
                 name = organization_name.text
     if not name:
         name = entity_id
-    idp, sp = False, False
-    idp = check_support_saml2(tree.find(IDP_SSO_DESCRIPTOR_TN))
+    sp = False, False
     sp = check_support_saml2(tree.find(SP_SSO_DESCRIPTOR_TN))
-    if options.get('idp'):
-        sp = False
-    if options.get('sp'):
-        idp = False
     if options.get('delete'):
         LibertyProvider.objects.filter(entity_id=entity_id).delete()
         print 'Deleted', entity_id
         return
-    if idp or sp:
+    if sp:
         # build an unique slug
         baseslug = slug = slugify(name)
         n = 1
@@ -181,13 +177,6 @@ def load_one_entity(tree, options, sp_policy=None, idp_policy=None, afp=None):
         provider.federation_source = options['source']
         provider.save()
         options['count'] = options.get('count', 0) + 1
-        if idp:
-            identity_provider, created = LibertyIdentityProvider.objects.get_or_create(
-                    liberty_provider=provider,
-                    defaults={'enabled': not options['create-disabled']})
-            if idp_policy:
-                identity_provider.idp_options_policy = idp_policy
-            identity_provider.save()
         if sp:
             service_provider, created = LibertyServiceProvider.objects.get_or_create(
                     liberty_provider=provider,
@@ -233,20 +222,16 @@ class Command(BaseCommand):
             action='store_true',
             dest='idp',
             default=False,
-            help='Load identity providers only'),
+            help='Do nothing'),
         make_option('--sp',
             action='store_true',
             dest='sp',
             default=False,
-            help='Load service providers only'),
+            help='Do nothing'),
         make_option('--sp-policy',
             dest='sp_policy',
             default=None,
             help='SAML2 service provider options policy'),
-        make_option('--idp-policy',
-            dest='idp_policy',
-            default=None,
-            help='SAML2 identity provider options policy'),
         make_option('--delete',
             action='store_true',
             dest='delete',
@@ -355,21 +340,6 @@ Any other kind of attribute filter policy is unsupported.
             else:
                 if verbosity > 1:
                     print 'No SAML2 service provider options policy provided'
-            idp_policy = None
-            if 'idp_policy' in options and options['idp_policy']:
-                idp_policy_name = options['idp_policy']
-                try:
-                    idp_policy = IdPOptionsSPPolicy.objects.get(name=idp_policy_name)
-                    if verbosity > 1:
-                        print 'Identity providers are set with the following SAML2 \
-                            options policy: %s' % idp_policy
-                except:
-                    if verbosity > 0:
-                        print >>sys.stderr, _('SAML2 identity provider options policy with name %s not found') % idp_policy_name
-                        raise CommandError()
-            else:
-                if verbosity > 1:
-                    print _('No SAML2 identity provider options policy provided')
             loaded = []
             if doc.getroot().tag == ENTITY_DESCRIPTOR_TN:
                 entity_descriptors = [ doc.getroot() ]
@@ -378,7 +348,7 @@ Any other kind of attribute filter policy is unsupported.
             for entity_descriptor in entity_descriptors:
                 try:
                     load_one_entity(entity_descriptor, options,
-                            sp_policy=sp_policy, idp_policy=idp_policy,
+                            sp_policy=sp_policy,
                             afp=afp)
                     loaded.append(entity_descriptor.get(ENTITY_ID))
                 except Exception, e:
