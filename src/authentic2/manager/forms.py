@@ -88,13 +88,15 @@ class UserEditForm(LimitQuerysetFormMixin, CssClass, BaseUserForm):
     css_class = "user-form"
     form_id = "id_user_edit_form"
 
-    ou = forms.ModelChoiceField(queryset=get_ou_model().objects,
-                                required=True, label=_('Organizational unit'))
-
     def __init__(self, *args, **kwargs):
         super(UserEditForm, self).__init__(*args, **kwargs)
+        if 'ou' in self.fields:
+            self.fields['ou'] = forms.ModelChoiceField(
+                queryset=self.fields['ou'].queryset,
+                required=True, label=_('Organizational unit'))
+
         if not self.request.user.is_superuser and \
-           'is_superuser' in self.fields:
+                'is_superuser' in self.fields:
             del self.fields['is_superuser']
 
     def clean(self):
