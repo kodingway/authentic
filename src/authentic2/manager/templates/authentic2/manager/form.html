@@ -55,6 +55,7 @@
             <input type="submit" name="{{ action.name }}" value="{{ action.title }}"
               {% if action.confirm %}data-confirm="{{ action.confirm }}"{% endif %}
               {% if action.url_name %}data-url="{% url action.url_name pk=object.pk %}"{% endif %}
+              {% if action.url %}data-url="{{ action.url }}"{% endif %}
             />
           {% endfor %}
         </div>

@@ -135,12 +135,13 @@ class FormatsContextData(object):
 
 
 class Action(object):
-    def __init__(self, name, title, confirm=None, display=True, url_name=None):
+    def __init__(self, name, title, confirm=None, display=True, url_name=None, url=None):
         self.name = name
         self.title = title
         self.confirm = confirm
         self.display = display
         self.url_name = url_name
+        self.url = url
 
 
 class ManagerMixin(object):
