@@ -48,10 +48,10 @@ class OrganizationalUnit(OrganizationalUnitAbstractBase):
            unit.
         '''
         name = _('Managers of "{ou}"').format(ou=self)
-        slug = 'managemers-of-{ou.slug}'.format(ou=self)
+        slug = '_a2-managers-of-{ou.slug}'.format(ou=self)
         return Role.objects.get_admin_role(
             instance=self, name=name, slug=slug, operation=VIEW_OP,
-            update_name=True)
+            update_name=True, update_slug=True)
 
 
 class Permission(PermissionAbstractBase):
@@ -88,9 +88,13 @@ class Role(RoleAbstractBase):
         return self.__class__.objects.get_admin_role(
             self, ou=self.ou,
             name=_('Managers of role "{role}"').format(role=unicode(self)),
-            slug='managers-of-role-{role}'.format(role=slugify(unicode(self))))
+            slug='_a2-managers-of-role-{role}'.format(role=slugify(unicode(self))))
 
     def clean(self):
+        super(Role, self).clean()
+        if self.slug and self.slug.startswith('_'):
+            raise ValidationError(
+                {'slug': _('Slug starting with _ are reserved.')})
         if not self.service and not self.admin_scope_ct_id:
             if not self.id and self.__class__.objects.filter(
                     slug=self.slug, ou=self.ou):

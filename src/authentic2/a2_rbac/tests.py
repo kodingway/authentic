@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 
 from django_rbac.utils import get_permission_model, get_role_model
 
@@ -58,3 +59,40 @@ class A2RBACTestCase(TestCase):
         self.assertTrue(user1.has_perm('a2_rbac.view_role'))
         self.assertTrue(user1.has_perm('a2_rbac.delete_role'))
         self.assertTrue(user1.has_perm('a2_rbac.add_role'))
+
+    def test_admin_roles_startswith_a2(self):
+        coin = Role.objects.create(name='Coin', slug='coin')
+        coin.get_admin_role()
+        for role in Role.objects.filter(admin_scope_ct__isnull=False):
+            self.assertTrue(role.slug.startswith('_a2'), u'role %s slug must '
+                            'start with _a2: %s' % (role.name, role.slug))
+
+
+    def test_admin_roles_update_slug(self):
+        user = User.objects.create(username='john.doe')
+        name1 = 'Can manage john.doe'
+        slug1 = 'can-manage-john-doe'
+        admin_role1 = Role.objects.get_admin_role(user, name1, slug1)
+        self.assertEqual(admin_role1.name, name1)
+        self.assertEqual(admin_role1.slug, slug1)
+        name2 = 'Should manage john.doe'
+        slug2 = 'should-manage-john-doe'
+        admin_role2 = Role.objects.get_admin_role(user, name2, slug2, update_slug=True)
+        self.assertEqual(admin_role2.name, name1)
+        self.assertEqual(admin_role2.slug, slug2)
+        admin_role3 = Role.objects.get_admin_role(user, name2, slug2, update_name=True)
+        self.assertEqual(admin_role3.name, name2)
+        self.assertEqual(admin_role3.slug, slug2)
+
+    def test_role_clean(self):
+        coin = Role(name=u'Coin')
+        coin.clean()
+        coin.save()
+        self.assertEqual(coin.slug, 'coin')
+        with self.assertRaises(ValidationError):
+            Role(name='Coin2', slug='coin').clean()
+        with self.assertRaises(ValidationError):
+            Role(name='Coin', slug='coin2').clean()
+        with self.assertRaises(ValidationError):
+            Role(name='Coin', slug='_coin').clean()
+            Role(name='Coin', slug='_coin').clean()

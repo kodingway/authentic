@@ -71,7 +71,8 @@ def update_content_types_roles(ou_admin_roles):
         # General admin role
         model_class = ct.model_class()
         name = MANAGED_CT[ct_tuple]['name']
-        Role.objects.get_admin_role(instance=ct, name=name, slug=slugify(name),
+        slug = '_a2-' + slugify(name)
+        Role.objects.get_admin_role(instance=ct, name=name, slug=slug,
                                     update_name=True)
         ou_model = get_fk_model(model_class, 'ou')
         # do not create scoped admin roles if the model is not scopable
@@ -80,11 +81,12 @@ def update_content_types_roles(ou_admin_roles):
         scoped_name = MANAGED_CT[ct_tuple]['scoped_name']
         for ou in ous:
             name = scoped_name.format(ou=ou)
+            ou_slug = slug + '-' + ou.slug
             ou_ct_admin_role = Role.objects.get_admin_role(
                 instance=ct,
                 ou=ou,
                 name=name,
-                slug=slugify(name),
+                slug=ou_slug,
                 update_name=True)
             ou_ct_admin_role.add_child(ou_admin_roles[ou])
 

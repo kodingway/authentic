@@ -8,7 +8,7 @@ from django_rbac import utils as rbac_utils
 
 class RoleManager(BaseRoleManager):
     def get_admin_role(self, instance, name, slug, ou=None, operation=ADMIN_OP,
-                       update_name=False):
+                       update_name=False, update_slug=False):
         '''Get or create the role of manager's of this object instance'''
         kwargs = {}
         if ou or getattr(instance, 'ou', None):
@@ -24,7 +24,8 @@ class RoleManager(BaseRoleManager):
             target_id=instance.pk,
             **kwargs)
         admin_role = self.get_mirror_role(perm, name, slug, ou=ou,
-                                          update_name=update_name)
+                                          update_name=update_name,
+                                          update_slug=update_slug)
         self_perm, created = Permission.objects.get_or_create(
             operation=op,
             target_ct=ContentType.objects.get_for_model(admin_role),
@@ -37,7 +38,7 @@ class RoleManager(BaseRoleManager):
         return admin_role
 
     def get_mirror_role(self, instance, name, slug, ou=None,
-                        update_name=False):
+                        update_name=False, update_slug=False):
         '''Get or create a role which mirror another model, for example a
            permission.
         '''
@@ -56,5 +57,8 @@ class RoleManager(BaseRoleManager):
                 }, **kwargs)
         if update_name and not created and role.name != name:
             role.name = name
+            role.save()
+        if update_slug and not created and role.slug != slug:
+            role.slug = slug
             role.save()
         return role
