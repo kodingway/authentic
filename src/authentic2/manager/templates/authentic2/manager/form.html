@@ -25,7 +25,9 @@
       {% endblock %}
       {{ form.non_field_errors }}
       {% for field in form %}
-      <p id="{{field.id_for_label}}_p" class="{% if field.field.required %}required{% endif %} {% if field.errors %}error{% endif %}">
+        {% block beforefield %}
+        {% endblock %}
+        <p id="{{field.id_for_label}}_p" class="{% if field.field.required %}required{% endif %} {% if field.errors %}error{% endif %}">
           {{ field.label_tag }}
           {{ field }}
           {% if field.errors %}
@@ -36,6 +38,8 @@
             </ul>
           {% endif %}
         </p>
+        {% block afterfield %}
+        {% endblock %}
       {% endfor %}
       {% block afterform %}
       {% endblock %}
