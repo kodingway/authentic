@@ -485,3 +485,9 @@ else:
             if not field.is_relation or not field.many_to_one:
                 return None
             return field.related_model
+
+
+def get_registration_url(request):
+    next_url = request.GET.get(REDIRECT_FIELD_NAME) or reverse('homepage')
+    next_url = make_url(next_url, request=request, keep_params=True, include=(constants.NONCE_FIELD_NAME,))
+    return make_url('registration_register', params={REDIRECT_FIELD_NAME: next_url})

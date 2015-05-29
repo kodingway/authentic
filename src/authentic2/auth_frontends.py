@@ -2,9 +2,11 @@ from django.contrib.auth import forms
 from django.utils.translation import gettext_noop
 from django.shortcuts import render
 from django.utils.translation import ugettext as _
+from django.core.urlresolvers import reverse
 
 from . import views, app_settings, utils
 from .exponential_retry_timeout import ExponentialRetryTimeout
+
 
 class LoginPasswordBackend(object):
     submit_name = 'login-password-submit'
@@ -32,6 +34,7 @@ class LoginPasswordBackend(object):
         is_secure = request.is_secure
         context = {
             'submit_name': self.submit_name,
+            'registration_url': utils.get_registration_url(request),
         }
         seconds_to_wait = exponential_backoff.seconds_to_wait(request)
         reset = True
