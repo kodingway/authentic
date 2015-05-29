@@ -503,6 +503,29 @@ class UserProfileTests(TestCase):
         self.assertEqual(form['custom'].value(), 'random data')
         self.assertEqual(form['national_number'].value(), 'xx20153566342yy')
 
+    def test_noneditable_profile_attributes(self):
+        """
+        tests if user non editable attributes do not appear in profile form
+        """
+
+        models.Attribute.objects.create(
+            label=u'custom',
+            name='custom',
+            required=False,
+            user_editable=False,
+            kind='string')
+        models.Attribute.objects.create(
+            label=u'ID',
+            name='national_number',
+            user_editable=False,
+            user_visible=False,
+            kind='string')
+
+        self.assertTrue(self.client.login(username='testbot', password='secret'))
+        response = self.client.get(reverse('profile_edit'))
+        form = get_response_form(response)
+        self.assertEqual(set(form.fields), set())
+
 
 class CacheTests(TestCase):
     urls = 'authentic2.cache_tests_urls'

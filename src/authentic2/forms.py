@@ -93,7 +93,7 @@ def modelform_factory(model, **kwargs):
             form = BaseUserForm
         attributes = models.Attribute.objects.all()
         for attribute in attributes:
-            if fields and attribute.name not in fields:
+            if attribute.name not in fields:
                 continue
             d[attribute.name] = attribute.get_form_field()
         for field in app_settings.A2_REQUIRED_FIELDS:
