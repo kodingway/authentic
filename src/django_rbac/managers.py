@@ -1,8 +1,12 @@
+import contextlib
+import threading
+
 from django.db import models
 from django.db.models import query
 from django.contrib.contenttypes.models import ContentType
 
 from . import constants, utils
+
 
 class AbstractBaseManager(models.Manager):
     def get_by_natural_key(self, uuid):
@@ -116,6 +120,12 @@ class RoleQuerySet(query.QuerySet):
 RoleManager = AbstractBaseManager.from_queryset(RoleQuerySet)
 
 class RoleParentingManager(models.Manager):
+    class Local(threading.local):
+        DO_UPDATE_CLOSURE = True
+        CLOSURE_UPDATED = False
+
+    tls = Local()
+
     def get_by_natural_key(self, parent_nk, child_nk, direct):
         Role = utils.get_role_model()
         try:
@@ -133,6 +143,10 @@ class RoleParentingManager(models.Manager):
            from scratch. Add missing indirect relations and delete
            obsolete indirect relations.
         '''
+        if not self.tls.DO_UPDATE_CLOSURE:
+            self.tls.CLOSURE_UPDATED = True
+            return
+
         # existing indirect paths
         old = set(self.filter(direct=False).values_list('parent_id', 'child_id'))
         # existing direct paths
@@ -168,3 +182,19 @@ class RoleParentingManager(models.Manager):
         if obsolete:
 	    queries = (query.Q(parent_id=a, child_id=b, direct=False) for a, b in obsolete)
             self.model.objects.filter(reduce(query.Q.__or__, queries)).delete()
+
+@contextlib.contextmanager
+def defer_update_transitive_closure():
+    from . import utils
+
+    RoleParentingManager.tls.DO_UPDATE_CLOSURE = False
+    try:
+        yield
+    except:
+        pass
+    else:
+        if RoleParentingManager.tls.CLOSURE_UPDATED:
+            utils.get_role_parenting_model().objects.update_transitive_closure()
+    finally:
+        RoleParentingManager.tls.DO_UPDATE_CLOSURE = True
+        RoleParentingManager.tls.CLOSURE_UPDATED = False
