@@ -13,14 +13,8 @@ class Authentic2RBACConfig(AppConfig):
 
         # update rbac on save to contenttype, ou and roles
         post_save.connect(
-            signal_handlers.update_rbac_on_save,
+            signal_handlers.update_rbac_on_ou_save,
             sender=models.OrganizationalUnit)
-        post_save.connect(
-            signal_handlers.update_rbac_on_save,
-            sender=models.Role)
-        post_save.connect(
-            signal_handlers.update_rbac_on_save,
-            sender=ContentType)
         # keep service role and service ou field in sync
         post_save.connect(
             signal_handlers.update_service_role_ou,
