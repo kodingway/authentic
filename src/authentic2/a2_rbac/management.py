@@ -40,7 +40,12 @@ def update_ous_admin_roles():
     '''
     OU = get_ou_model()
     ou_all = OU.objects.all()
-    for ou in ou_all:
+    ou_ids = ou_all.values_list('id', flat=True)
+    ou_ids_with_perm = Permission.objects.filter(operation__slug='admin',
+        target_ct=ContentType.objects.get_for_model(OU)) \
+        .values_list('target_id', flat=True)
+
+    for ou in OU.objects.filter(id__in=set(ou_ids)-set(ou_ids_with_perm)):
         update_ou_admin_roles(ou)
         print 'Administrative roles of', ou, 'updated.'
 
