@@ -42,6 +42,7 @@ def update_ous_admin_roles():
     ou_all = OU.objects.all()
     for ou in ou_all:
         update_ou_admin_roles(ou)
+        print 'Administrative roles of', ou, 'updated.'
 
 MANAGED_CT = {
     ('authentic2', 'service'): {
