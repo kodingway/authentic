@@ -1,4 +1,5 @@
 from authentic2.utils import get_hex_uuid
+from authentic2.decorators import GlobalCache
 from django.conf import settings
 from django.apps import apps
 
@@ -74,6 +75,7 @@ def get_objects_with_permission(user, operation_slug, model):
     else:
         return model.objects.none()
 
+@GlobalCache
 def get_operation(operation_tpl):
     from . import models
     operation, created = models.Operation.objects.get_or_create(
