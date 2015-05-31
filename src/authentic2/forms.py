@@ -88,7 +88,7 @@ def modelform_factory(model, **kwargs):
     d = {}
     # KV attributes are only supported for the user model currently
     modelform = None
-    if model == get_user_model():
+    if issubclass(model, get_user_model()):
         if not form:
             form = BaseUserForm
         attributes = models.Attribute.objects.all()
