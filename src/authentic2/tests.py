@@ -12,6 +12,7 @@ from django.contrib.auth.hashers import check_password
 from django.test.utils import override_settings
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django import forms
+from django.core.serializers.json import DjangoJSONEncoder
 
 from . import hashers, utils, models, decorators, attribute_kinds
 
@@ -119,8 +120,8 @@ class SerializerTests(TestCase):
                        'is_active': True,
                        'is_staff': False,
                        'is_superuser': False,
-                       'last_login': u.last_login and u.last_login.isoformat()[:-3],
-                       'date_joined': u.date_joined.isoformat()[:-3],
+                       'last_login': u.last_login,
+                       'date_joined': u.date_joined,
                        'groups': [],
                        'user_permissions': [],
                        'password': '',
@@ -150,6 +151,7 @@ class SerializerTests(TestCase):
                   }
                  }
                 ]
+        expected = json.loads(json.dumps(expected, cls=DjangoJSONEncoder))
         for obj in serializers.deserialize('json', result):
             obj.save()
         self.assertEqual(json.loads(result), expected)
