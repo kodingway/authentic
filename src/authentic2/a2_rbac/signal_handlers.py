@@ -2,10 +2,11 @@ from django.utils.translation import ugettext as _
 from django.conf import settings
 from django.apps import apps
 from django.utils.translation import override
-from django.db import DEFAULT_DB_ALIAS, router
+from django.db import DEFAULT_DB_ALIAS, router, transaction
 
 from ..utils import get_fk_model
 from django_rbac.utils import get_ou_model, get_role_model
+from django_rbac.managers import defer_update_transitive_closure
 
 from .management import update_ou_admin_roles, update_ous_admin_roles, \
     update_content_types_roles
@@ -42,8 +43,10 @@ def post_migrate_update_rbac(app_config, verbosity=2, interactive=True,
     if not router.allow_migrate(using, get_role_model()):
         return
     with override(settings.LANGUAGE_CODE):
-        update_content_types_roles()
-        update_ous_admin_roles()
+        with transaction.atomic():
+            with defer_update_transitive_closure():
+                update_content_types_roles()
+                update_ous_admin_roles()
 
 
 def update_rbac_on_ou_save(sender, instance, created, raw, **kwargs):
