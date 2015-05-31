@@ -38,6 +38,7 @@ DATABASES = {
 TIME_ZONE = 'Europe/Paris'
 LANGUAGE_CODE = 'fr'
 USE_L10N = True
+USE_TZ = True
 
 # Static files
 
