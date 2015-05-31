@@ -171,6 +171,13 @@ class SimpleDictionnaryCacheMixin(object):
         if key in self.cache and self.cache[key] == value:
             del self.cache[key]
 
+
+class GlobalCache(SimpleDictionnaryCacheMixin, CacheDecoratorBase):
+    def __init__(self, *args, **kwargs):
+        self.cache = {}
+        super(GlobalCache, self).__init__(*args, **kwargs)
+
+
 class RequestCache(SimpleDictionnaryCacheMixin, CacheDecoratorBase):
     @property
     def cache(self):
