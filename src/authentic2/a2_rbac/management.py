@@ -10,20 +10,17 @@ from ..utils import get_fk_model
 def update_ou_admin_roles(ou):
     Role = get_role_model()
     admin_role = ou.get_admin_role()
-    cts = ContentType.objects.all()
 
-    for ct in cts:
-        ct_tuple = (ct.app_label.lower(), ct.model.lower())
-        if ct_tuple not in MANAGED_CT:
-            continue
+    for key in MANAGED_CT:
+        ct = ContentType.objects.get_by_natural_key(key[0], key[1])
         model_class = ct.model_class()
         ou_model = get_fk_model(model_class, 'ou')
         # do not create scoped admin roles if the model is not scopable
         if not ou_model:
             continue
-        name = MANAGED_CT[ct_tuple]['name']
+        name = MANAGED_CT[key]['name']
         slug = '_a2-' + slugify(name)
-        scoped_name = MANAGED_CT[ct_tuple]['scoped_name']
+        scoped_name = MANAGED_CT[key]['scoped_name']
         name = scoped_name.format(ou=ou)
         ou_slug = slug + '-' + ou.slug
         ou_ct_admin_role = Role.objects.get_admin_role(
