@@ -597,8 +597,10 @@ def send_soap_request(request, profile):
     #return soap_call(profile.msgUrl, profile.msgBody, p.ssl_certificate)
     return soap_call(profile.msgUrl, profile.msgBody, None)
 
-def set_saml2_response_responder_status_code(response, code):
+def set_saml2_response_responder_status_code(response, code, msg=None):
     response.status = lasso.Samlp2Status()
+    if msg:
+        response.status.statusMessage = msg
     response.status.statusCode = lasso.Samlp2StatusCode()
     response.status.statusCode.value = lasso.SAML2_STATUS_CODE_RESPONDER
     response.status.statusCode.statusCode = lasso.Samlp2StatusCode()
