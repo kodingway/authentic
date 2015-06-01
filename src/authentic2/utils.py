@@ -282,7 +282,7 @@ def record_authentication_event(request, how):
 def find_authentication_event(request, nonce):
     '''Find an authentication event occurring during this session and matching
        this nonce.'''
-    authentication_events = request.session.pop(constants.AUTHENTICATION_EVENTS_SESSION_KEY, [])
+    authentication_events = request.session.get(constants.AUTHENTICATION_EVENTS_SESSION_KEY, [])
     for event in authentication_events:
         if event.get('nonce') == nonce:
             return event
