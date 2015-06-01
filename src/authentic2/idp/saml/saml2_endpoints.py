@@ -743,24 +743,21 @@ def sso_after_process_request(request, login, consent_obtained=False,
             'to function %s' % decision[0].__name__)
         dic = decision[1]
         if dic and 'authz' in dic:
-            logger.info('decision is %s' \
-                % dic['authz'])
+	    logger.info('decision is %s', dic['authz'])
             if 'message' in dic:
-                logger.info('with message %s' \
-                    % dic['message'])
+		logger.info(u'with message %s', unicode(dic['message']))
             if not dic['authz']:
-                logger.info('access denied by '
-                    'an external function')
+                logger.info('access denied by an external function')
                 access_granted = False
         else:
-            logger.info('no function connected to '
-                'authorize_service')
+            logger.info('no function connected to authorize_service')
 
     if not access_granted:
         logger.info('access denied, return answer '
             'to the requester')
         set_saml2_response_responder_status_code(login.response,
-                lasso.SAML2_STATUS_CODE_REQUEST_DENIED)
+                lasso.SAML2_STATUS_CODE_REQUEST_DENIED,
+                msg=unicode(dic['message']))
         return finish_sso(request, login)
 
     provider = load_provider(request, login.remoteProviderId,
