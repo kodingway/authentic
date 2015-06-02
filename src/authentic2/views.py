@@ -10,7 +10,7 @@ import collections
 from django.conf import settings
 from django.shortcuts import render_to_response, render
 from django.template import RequestContext
-from django.template.loader import render_to_string
+from django.template.loader import render_to_string, select_template
 from django.views.generic.edit import UpdateView, FormView
 from django.views.generic import RedirectView, TemplateView
 from django.views.generic.base import View
@@ -320,8 +320,9 @@ def _homepage(request):
     if not decorators.is_transient_user(request.user):
         tpl_parameters['account_management'] = 'account_management'
         tpl_parameters['authorized_services'] = service_list(request)
-    return render_to_response('idp/homepage.html',
-       tpl_parameters, RequestContext(request))
+    return render_to_response(('idp/homepage.html',
+                               'authentic2/homepage.html'), tpl_parameters,
+                              RequestContext(request))
 
 class ProfileView(TemplateView):
     template_name = 'idp/account_management.html'
