@@ -95,10 +95,6 @@ class UserEditForm(LimitQuerysetFormMixin, CssClass, BaseUserForm):
                 queryset=self.fields['ou'].queryset,
                 required=True, label=_('Organizational unit'))
 
-        if not self.request.user.is_superuser and \
-                'is_superuser' in self.fields:
-            del self.fields['is_superuser']
-
     def clean(self):
         if not self.cleaned_data.get('username') and \
            not self.cleaned_data.get('email'):

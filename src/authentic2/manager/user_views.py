@@ -48,6 +48,18 @@ class UserAddView(PassRequestToFormMixin, BaseAddView):
     form_class = UserAddForm
     permissions = ['custom_user.add_user']
 
+    def get_fields(self):
+        fields = list(self.fields)
+        i = fields.index('generate_password')
+        if self.request.user.is_superuser and \
+                'is_superuser' not in self.fields:
+            fields.insert(i, 'is_superuser')
+            i += 1
+        for attribute in Attribute.objects.all():
+            fields.insert(i, attribute.name)
+            i += 1
+        return fields
+
     def get_success_url(self):
         return reverse('a2-manager-user-edit', kwargs={'pk': self.object.pk})
 
@@ -69,6 +81,9 @@ class UserEditView(PassRequestToFormMixin, OtherActionsMixin,
         fields = list(self.fields)
         for attribute in Attribute.objects.all():
             fields.append(attribute.name)
+        if self.request.user.is_superuser and \
+                'is_superuser' not in self.fields:
+            fields.append('is_superuser')
         return fields
 
     def get_other_actions(self):
