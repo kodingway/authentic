@@ -145,13 +145,6 @@ class Action(object):
         self.url = url
 
 
-class ManagerMixin(object):
-    def get_context_data(self, **kwargs):
-        ctx = super(ManagerMixin, self).get_context_data(**kwargs)
-        ctx['logout_url'] = app_settings.LOGOUT_URL or reverse('auth_logout')
-        return ctx
-
-
 class AjaxFormViewMixin(object):
     success_url = '.'
 
@@ -334,7 +327,7 @@ class BaseEditView(TitleMixin, ModelNameMixin, PermissionMixin,
         return '..'
 
 
-class HomepageView(PermissionMixin, ManagerMixin, TemplateView):
+class HomepageView(PermissionMixin, TemplateView):
     template_name = 'authentic2/manager/homepage.html'
     permissions = ['a2_rbac.view_role', 'a2_rbac.view_organizationalunit',
                    'auth.view_group', 'custom_user.view_user']
