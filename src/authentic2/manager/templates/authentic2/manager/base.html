@@ -11,6 +11,7 @@
 {% endblock %}
 
 {% block extrascripts %}
+  {{ block.super }}
   {% if debug %}
     <script src="{% static "jquery/js/jquery.form.js" %}"></script>
   {% else %}
