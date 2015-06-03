@@ -47,8 +47,8 @@ class AbstractBase(models.Model):
         return self.name
 
     def __repr__(self):
-        return u'<{0} {1} {2}>'.format(self.__class__.__name__,
-                                       self.slug, self.name)
+        return '<{0} {1} {2}>'.format(self.__class__.__name__, repr(self.slug),
+                                      repr(self.name))
 
     def save(self, *args, **kwargs):
         # truncate slug and add a hash if it's too long
