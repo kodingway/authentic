@@ -232,7 +232,8 @@ form p select{
     width: calc(100% - 10px);
 }
 
-#id_generate_password_p label, #id_reset_password_at_next_login_p label, #id_send_mail_p label {
+#id_generate_password_p label, #id_reset_password_at_next_login_p label,
+#id_send_mail_p label, #id_is_superuser_p label {
   display: inline;
 }
 .form-inner-container > .errorlist {
