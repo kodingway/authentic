@@ -43,7 +43,7 @@
 {% block user-links %}
   <ul class="user-info">
     {% if user.is_authenticated %}
-      <li class="ui-name">{{ user }}</li>
+      <li class="ui-name">{{ user.get_full_name }}</li>
       <li class="ui-logout"><a href="{{ logout_url }}">{% trans "Logout" %}</a></li>
     {% endif %}
   </ul>
