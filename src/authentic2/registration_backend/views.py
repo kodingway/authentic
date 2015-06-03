@@ -140,21 +140,17 @@ class RegistrationCompletionView(CreateView):
 
 class DeleteView(TemplateView):
     def get(self, request, *args, **kwargs):
-        next_url = request.build_absolute_uri(request.META.get('HTTP_REFERER')\
-                                              or request.GET.get('next_url'))
         if not app_settings.A2_REGISTRATION_CAN_DELETE_ACCOUNT:
-            return redirect(request, next_url)
+            return redirect(request, '..')
         return render(request, 'registration/delete_account.html')
 
     def post(self, request, *args, **kwargs):
-        next_url = request.build_absolute_uri(request.META.get('HTTP_REFERER')\
-                                              or request.GET.get('next_url'))
         if 'submit' in request.POST:
             models.DeletedUser.objects.delete_user(request.user)
             logger.info(u'deletion of account %s requested', request.user)
             messages.info(request, _('Your account has been scheduled for deletion. You cannot use it anymore.'))
             return redirect(request, 'auth_logout')
         else:
-            return redirect(request, next_url)
+            return redirect(request, '..')
 
 registration_completion = valid_token(RegistrationCompletionView.as_view())
