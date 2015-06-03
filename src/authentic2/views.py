@@ -218,56 +218,55 @@ def login(request, template_name='authentic2/login.html',
 
     blocks = []
 
-    # Cancel button
-    if request.method == "POST" and constants.CANCEL_FIELD_NAME in request.POST:
-        return utils.continue_to_next_url(request, params={'cancel': 1})
-    for frontend in frontends:
-        if hasattr(frontend, 'login'):
-            continue
-        if not frontend.enabled():
-            continue
-        fid = frontend.id()
-        name = frontend.name
-        form_class = frontend.form()
-        submit_name = 'submit-%s' % fid
-        block = {
-                'id': fid,
-                'name': name,
-                'frontend': frontend
-        }
-        if request.method == 'POST' and submit_name in request.POST:
-            form = form_class(data=request.POST)
-            if form.is_valid():
-                if request.session.test_cookie_worked():
-                    request.session.delete_test_cookie()
-                return frontend.post(request, form, nonce, redirect_to)
-            block['form'] = form
-        else:
-            block['form'] = form_class()
-        blocks.append(block)
-
     context_instance = RequestContext(request, {
         'cancel': nonce is not None,
         'can_reset_password': app_settings.A2_CAN_RESET_PASSWORD,
         'registration_authorized': getattr(settings, 'REGISTRATION_OPEN', True),
     })
 
-    # New frontends API 
+    # Cancel button
+    if request.method == "POST" \
+            and constants.CANCEL_FIELD_NAME in request.POST:
+        return utils.continue_to_next_url(request, params={'cancel': 1})
 
+    # Create blocks
     for frontend in frontends:
-        if not hasattr(frontend, 'login') or not frontend.enabled():
+        if not frontend.enabled():
             continue
-        response = frontend.login(request, context_instance=context_instance)
-        if not response:
-            continue
-        if response.status_code != 200:
-            return response
-        blocks.append({
-                'id': frontend.id(),
-                'name': frontend.name,
-                'content': response.content,
-                'frontend': frontend,
-        })
+        # Legacy API
+        if not hasattr(frontend, 'login'):
+            fid = frontend.id()
+            name = frontend.name
+            form_class = frontend.form()
+            submit_name = 'submit-%s' % fid
+            block = {
+                    'id': fid,
+                    'name': name,
+                    'frontend': frontend
+            }
+            if request.method == 'POST' and submit_name in request.POST:
+                form = form_class(data=request.POST)
+                if form.is_valid():
+                    if request.session.test_cookie_worked():
+                        request.session.delete_test_cookie()
+                    return frontend.post(request, form, nonce, redirect_to)
+                block['form'] = form
+            else:
+                block['form'] = form_class()
+            blocks.append(block)
+        else: # New frontends API
+            response = frontend.login(request,
+                                      context_instance=context_instance)
+            if not response:
+                continue
+            if response.status_code != 200:
+                return response
+            blocks.append({
+                    'id': frontend.id(),
+                    'name': frontend.name,
+                    'content': response.content,
+                    'frontend': frontend,
+            })
 
     # Old frontends API
     for block in blocks:
