@@ -400,8 +400,8 @@ def build_assertion(request, login, nid_format='transient', attributes=None):
         kwargs = nameid2kwargs(login.assertion.subject.nameID)
     kwargs['entity_id'] = login.remoteProviderId
     kwargs['user'] = request.user
-    logger.info("sending nameID %(name_id_format)s: "
-        "%(name_id_content)s to %(entity_id)s for user %(user)s" % kwargs)
+    logger.info(u'sending nameID %(name_id_format)s: '
+        '%(name_id_content)s to %(entity_id)s for user %(user)s' % kwargs)
     if attributes:
         logger.debug("add attributes to the assertion")
         saml2_add_attribute_values(login.assertion, attributes)
@@ -421,8 +421,8 @@ def sso(request):
         logger.debug('called by GET')
         consent_answer = request.GET.get('consent_answer', '')
         if consent_answer:
-            logger.info('back from the consent page for federation with \
-                answer %s' % consent_answer)
+            logger.info(u'back from the consent page for federation with answer '
+                        '%s', consent_answer)
     message = get_saml2_request_message(request)
     server = create_server(request)
     login = lasso.Login(server)
@@ -431,7 +431,7 @@ def sso(request):
         logger.warn("missing query string")
         return HttpResponseForbidden("A SAMLv2 Single Sign On request need a "
             "query string")
-    logger.debug('processing sso request %r' % message)
+    logger.debug('processing sso request %r', message)
     policy = None
     signed = True
     while True:
@@ -1032,6 +1032,7 @@ def idp_sso(request, provider_id=None, save=True, return_profile=False):
     if not provider_id:
         return error_redirect(request,
                 N_('missing provider identifier'))
+    logger.info('start of an idp initiated sso toward %r', provider_id)
     server = create_server(request)
     login = lasso.Login(server)
     liberty_provider = load_provider(request, provider_id,
@@ -1051,7 +1052,6 @@ def idp_sso(request, provider_id=None, save=True, return_profile=False):
                     N_('you cannot login as %r as it does not exist'), username)
     else:
         user = request.user
-    logger.info('sso by %r', user)
     policy = get_sp_options_policy(liberty_provider)
     # Control assertion consumer binding
     if not policy:

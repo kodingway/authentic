@@ -282,8 +282,6 @@ def get_user_alias_in_source(user, source):
 
 def set_user_alias_in_source(user, source, name, force_change=False):
     from authentic2.attribute_aggregator.models import UserAliasInSource
-    logger.debug('set_user_alias_in_source: set alias %s for user %s in \
-        source %s' % (name, user, source))
     alias = None
     try:
         '''
@@ -306,11 +304,9 @@ def set_user_alias_in_source(user, source, name, force_change=False):
         pass
     else:
         if not force_change:
-            logger.warn('set_user_alias_in_source: \
-                a user has already this alias, we do nothing.')
+            logger.warn('set_user_alias_in_source: a user has already this alias, we do nothing.')
             return None
-        logger.warn('set_user_alias_in_source: \
-            a user has already this alias, we give it to %s.' % user)
+        logger.warn('set_user_alias_in_source: a user has already this alias, we take it.')
         alias.delete()
     try:
         alias = UserAliasInSource(user=user, name=name, source=source)

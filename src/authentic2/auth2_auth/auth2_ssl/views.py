@@ -47,10 +47,9 @@ def handle_request(request):
     if 'do_creation' in request.session and not user \
             and not request.user.is_authenticated():
         from backends import SSLBackend
-        logger.info('Account creation treatment')
         if SSLBackend().create_user(ssl_info):
             user = authenticate(ssl_info=ssl_info)
-            logger.info('account created for %s' % user.username)
+            logger.info(u'account created for %s', user)
         else:
             logger.error('account creation failure')
             messages.add_message(request, messages.ERROR,
@@ -85,9 +84,9 @@ def handle_request(request):
     # check that the SSL entry for the certificate is this user.
     # else, we make this certificate point on that user.
     if user.username != request.user.username:
-        logger.warning('[auth2_ssl]: The certificate belongs to %s, '
-            'but %s is logged with, we change the association!'
-            % (user.username, request.user.username))
+        logger.warning(u'The certificate belongs to %s, '
+            'but %s is logged with, we change the association!',
+            user, request.user)
         from backends import SSLBackend
         cert = SSLBackend().get_certificate(ssl_info)
         cert.user = request.user

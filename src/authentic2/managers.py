@@ -40,7 +40,7 @@ class DeletedUserManager(models.Manager):
             user = deleted_user.user
             deleted_user.delete()
             user.delete()
-            logger.info(u'deleted account %s' % user)
+            logger.info(u'deleted account %s', user)
 
 class AuthenticationEventManager(models.Manager):
     def cleanup(self):

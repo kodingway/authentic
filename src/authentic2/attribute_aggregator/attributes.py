@@ -184,31 +184,24 @@ def provide_attributes_at_sso(request, user, audience, **kwargs):
     In parameter, the service provider id and the user authenticated.'''
     if not user or not audience:
         return None
-    logger.debug('provide_attributes_at_sso: search attribute for %s' \
-                    % user)
-    logger.debug('provide_attributes_at_sso: attributes for %s' \
-                    % audience)
     provider = None
     try:
         provider = LibertyProvider.objects.get(entity_id=audience)
     except LibertyProvider.DoesNotExist:
-        logger.debug('provide_attributes_at_sso: Provider with name %s not '
-            'found' % audience)
+        logger.debug('provide_attributes_at_sso: provider not found')
     attribute_policy = get_attribute_policy(provider)
     if not attribute_policy:
-        logger.debug('provide_attributes_at_sso: no attribute policy found '
-            'for %s' % audience)
+        logger.debug('provide_attributes_at_sso: no attribute policy found')
         return None
 
     p = load_or_create_user_profile(user=user)
     if not p:
-        logger.error('provide_attributes_at_sso: unable to load or create a '
-            'profile for %s' % user)
+        logger.error('provide_attributes_at_sso: unable to load or create a profile')
         return None
     # XXX: hack so that UserAttributeProfile.user is the same as request.user
     # which can contain monkey patched fields
     p.user = user
-    logger.debug('provide_attributes_at_sso: profile loaded %s' % p)
+    logger.debug('provide_attributes_at_sso: profile loaded %r', p)
 
     '''Returned dictionnary'''
     dic = dict()

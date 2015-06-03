@@ -151,7 +151,7 @@ class DeleteView(TemplateView):
                                               or request.GET.get('next_url'))
         if 'submit' in request.POST:
             models.DeletedUser.objects.delete_user(request.user)
-            logger.info(u'deletion of account %s requested' % request.user)
+            logger.info(u'deletion of account %s requested', request.user)
             messages.info(request, _('Your account has been scheduled for deletion. You cannot use it anymore.'))
             return redirect(request, 'auth_logout')
         else:

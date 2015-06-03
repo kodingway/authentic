@@ -17,7 +17,7 @@ class RequestContextFilter(logging.Filter):
         request_id = self.DEFAULT_REQUEST_ID
         if not request is None:
             if hasattr(request, 'user') and request.user.is_authenticated():
-                user = unicode(request.user).encode('utf-8')
+                user = unicode(request.user)
             ip = request.META['REMOTE_ADDR']
             request_id = request.request_id
         record.user = user

@@ -55,8 +55,7 @@ def get_attributes(user, definitions=None, source=None, auth_source=False, **kwa
     if not user:
         logger.error('get_attributes: No user provided')
         return None
-    logger.debug('get_attributes: Searching attributes for user %s' \
-        % user)
+    logger.debug('get_attributes: Searching attributes')
 
     from authentic2.attribute_aggregator.models import LdapSource
     sources = None

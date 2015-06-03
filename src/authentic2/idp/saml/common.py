@@ -21,8 +21,7 @@ def kill_django_sessions(session_key):
     try:
         for key in session_key:
             store = engine.SessionStore(key)
-            logging.debug('Killing session %s of user %s' %
-                    (key, store[SESSION_KEY]))
+            logging.debug('Killing session %s', key)
             store.delete()
     except Exception, e:
         logging.error(e)
