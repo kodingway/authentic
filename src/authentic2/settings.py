@@ -121,6 +121,7 @@ INSTALLED_APPS = (
     'django_rbac',
     'authentic2.a2_rbac',
     'gadjo',
+    'rest_framework',
 )
 
 INSTALLED_APPS = tuple(plugins.register_plugins_installed_apps(INSTALLED_APPS))

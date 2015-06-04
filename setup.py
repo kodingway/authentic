@@ -117,6 +117,7 @@ setup(name="authentic2",
         'XStatic_jquery_ui',
         'django-import-export>=0.2.7',
         'django-sekizai',
+        'djangorestframework>=3.1',
         'six',
       ],
       extras_require = {
