@@ -14,6 +14,7 @@ from django.core.urlresolvers import reverse
 from django_tables2 import SingleTableView, SingleTableMixin
 
 from authentic2.forms import modelform_factory
+from authentic2.utils import redirect
 
 from . import app_settings
 
@@ -337,6 +338,12 @@ class HomepageView(PermissionMixin, ManagerMixin, TemplateView):
     template_name = 'authentic2/manager/homepage.html'
     permissions = ['a2_rbac.view_role', 'a2_rbac.view_organizationalunit',
                    'auth.view_group', 'custom_user.view_user']
+
+    def dispatch(self, request, *args, **kwargs):
+        if app_settings.HOMEPAGE_URL:
+            return redirect(request, app_settings.HOMEPAGE_URL)
+        return super(HomepageView, self).dispatch(request, *args, **kwargs)
+
 
 homepage = HomepageView.as_view()
 

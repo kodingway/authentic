@@ -5,6 +5,7 @@ class AppSettings(object):
     __PREFIX = 'A2_MANAGER_'
     __DEFAULTS = {
         'LOGOUT_URL': None,
+        'HOMEPAGE_URL': None,
     }
 
     def __getattr__(self, name):
