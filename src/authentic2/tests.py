@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
+import json
 import re
 import urlparse
 from lxml import etree
+import base64
 
 import django
 from django.core import mail
@@ -607,3 +609,98 @@ class AttributeKindsTest(TestCase):
             fields['field_%d' % i] = attribute_kinds.get_form_field(name)
         AttributeKindForm = type('AttributeKindForm', (forms.Form,), fields)
         unicode(AttributeKindForm().as_p())
+
+@override_settings(A2_REQUIRED_FIELDS=['username'])
+class APITest(TestCase):
+    def setUp(self):
+        from django.contrib.auth import get_user_model
+        from django_rbac.utils import get_role_model, get_ou_model
+        from django.contrib.contenttypes.models import ContentType
+        User = get_user_model()
+        Role = get_role_model()
+        OU = get_ou_model()
+
+        ct_user = ContentType.objects.get_for_model(User)
+
+        self.ou = OU.objects.create(slug='ou', name='OU')
+        self.reguser1 = User.objects.create(username='reguser1')
+        self.reguser1.set_password('password')
+        self.reguser1.save()
+        self.user_admin_role = Role.objects.get_admin_role(
+            instance=ct_user, name='user admin', slug='user-admin')
+        self.reguser1.roles.add(self.user_admin_role)
+
+        self.reguser2 = User.objects.create(username='reguser2',
+                                            password='password')
+        self.reguser2.set_password('password')
+        self.reguser2.save()
+        self.ou_user_admin_role = Role.objects.get_admin_role(
+            instance=ct_user, name='user admin', slug='user-admin',
+            ou=self.ou)
+        self.ou_user_admin_role.members.add(self.reguser2)
+
+        self.reguser3 = User.objects.create(username='reguser3',
+                                            password='password',
+                                            is_superuser=True)
+        self.reguser3.set_password('password')
+        self.reguser3.save()
+
+    def test_register_reguser1(self):
+        self.register_with_user(self.reguser1)
+
+    def test_register_reguser2(self):
+        self.register_with_user(self.reguser2)
+
+    def test_register_reguser3(self):
+        self.register_with_user(self.reguser3)
+
+    def register_with_user(self, user):
+        from django.contrib.auth import get_user_model
+        from rest_framework import test
+        from rest_framework import status
+        User = get_user_model()
+        user_count = User.objects.count()
+        client = test.APIClient()
+        password = '12XYab'
+        username = 'john.doe'
+        email = 'john.doe@example.com'
+        return_url = 'http://sp.org/register/'
+        payload = {
+            'email': email,
+            'username': username,
+            'ou': self.ou.slug,
+            'password': password,
+            'return_url': return_url,
+        }
+        outbox_level = len(mail.outbox)
+        cred = base64.b64encode('%s:%s' % (user.username.encode('utf-8'), 'password'))
+        client.credentials(HTTP_AUTHORIZATION='Basic %s' % cred)
+        response = client.post(reverse('a2-api-register'),
+                               content_type='application/json',
+                               data=json.dumps(payload))
+        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
+        self.assertIn('result', response.data)
+        self.assertEqual(response.data['result'], 1)
+        self.assertIn('token', response.data)
+        token = response.data['token']
+        self.assertIn('request', response.data)
+        self.assertEqual(response.data['request'], payload)
+        self.assertEqual(len(mail.outbox), outbox_level+1)
+
+        # User side
+        client = Client()
+        activation_mail = mail.outbox[-1]
+        m = re.search('https?://[^\n ]*', activation_mail.body)
+        self.assertNotEqual(m, None)
+        activation_url = m.group()
+        response = client.get(activation_url)
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.assertEqual(response['Location'], utils.make_url(return_url, params={'token': token}))
+        self.assertEqual(User.objects.count(), user_count+1)
+        response = client.get(reverse('auth_homepage'))
+        self.assertContains(response, username)
+        last_user = User.objects.order_by('id').last()
+        self.assertEqual(last_user.username, username)
+        self.assertEqual(last_user.email, email)
+        self.assertEqual(last_user.ou.slug, self.ou.slug)
+        self.assertTrue(last_user.check_password(password))
