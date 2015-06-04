@@ -119,6 +119,7 @@ setup(name="authentic2",
         'django-sekizai',
         'djangorestframework>=3.1',
         'six',
+        'Markdown',
       ],
       extras_require = {
           'idp-openid': ['python-openid'],
