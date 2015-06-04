@@ -1,9 +1,9 @@
 {% extends "authentic2/manager/form.html" %}
 {% load i18n %}
 
-{% block page-title %}{{ block.super }} - {% trans "Edit user" %} {{ object }}{% endblock %}
-
-{% block page_title %}{% trans "Edit user" %} {{ object }}{% endblock %}
+{% block page-title %}
+  {{ block.super }} - {% trans "Edit user" %} {{ object }}
+{% endblock %}
 
 {% block breadcrumb %}
   {{ block.super }}

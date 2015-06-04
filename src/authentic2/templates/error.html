@@ -1,6 +1,16 @@
 {% extends "authentic2/base-page.html" %}
-{% load i18n %}
-{% block bodyargs %}onload="setTimeout(function () { window.location='{{ next_page }}' }, {{ redir_timeout }})"{% endblock %}
+{% load i18n authentic2 gadjo %}
+
+{% block extrascripts %}
+  {{ block.super }}
+  <script src="{% xstatic 'jquery' 'jquery.min.js' %}"></script>
+  <script>$(function () {
+    setTimeout(function () {
+        window.location='{{ next_page|escapejs }}' 
+      }, {{ redir_timeout }});
+    });
+  </script>
+{% endblock %}
 
 {% block content %}
 <h1>{{ title }}</h1>

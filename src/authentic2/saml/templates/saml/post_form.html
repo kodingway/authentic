@@ -1,7 +1,9 @@
 {% extends "authentic2/base-page.html" %}
-{% load i18n %}
+{% load i18n authentic2 gadjo %}
 
-{% block title %} {{ title }} {% endblock %}
+{% block page-title %}
+  {{ block.super }} - {{ title }}
+{% endblock %}
 
 {% block content %}
 <div class="post-redirect">

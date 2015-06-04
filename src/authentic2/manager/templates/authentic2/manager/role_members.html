@@ -6,10 +6,6 @@
   <a href="#">{{ object }}</a>
 {% endblock %}
 
-{% block page_title %}
-  {% trans "Members" %}
-{% endblock %}
-
 {% block appbar %}
   {{ block.super }}
   {% if not object.admin_scope_ct_id and view.can_delete %}

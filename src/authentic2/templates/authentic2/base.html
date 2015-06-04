@@ -1,59 +1,37 @@
-{% load i18n authentic2 %}<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link rel="stylesheet" href="{{ STATIC_URL }}authentic2/css/style.css" />
-    <title>{% block title %}Authentic2 - {{ request.get_host }}{% endblock %}</title>
-    {% block extra_scripts %}
-    {% endblock %}
-    {% renderblock "css" %}
-    {% renderblock "js" %}
-</head>
+{% extends "gadjo/base.html" %}
+{% load i18n authentic2 %}
 
-<body {% block bodyargs %}{% endblock %} >
-  <div id="wrap">
-    <a href="/"><div id="header">
-      {% block header %}
-      <h1>Authentic 2</h1>
-      <span>{% trans "Versatile Identity Management Server" %}</span>
-      {% endblock %}
-    </div></a>
+{% block page-title %}Authentic2 - {{ request.get_host }}{% endblock %}
 
-    <div id="splash"></div>
+{% block site-title %}Authentic2 - {{ request.get_host }}{% endblock %}
 
-    <div id="content">
-        {% if request.user.is_authenticated %}
-        <div id="user">
-          {% block user %}
-             <p title="{% blocktrans %}Last login {{ LAST_LOGIN }}{% endblocktrans %}">
-              {% blocktrans with request.user.get_full_name as username %}Hello {{ username }}.{% endblocktrans %}
-                <a id="logout" href="{% url 'auth_logout' %}">{% trans "Logout" %}</a>
-            </p>
-          {% endblock %}
-        </div>
-        {% endif %}
-        {% block messages %}
-          {% if messages %}
-          <ul class="messages">
-              {% for message in messages %}
-              <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-              {% endfor %}
-          </ul>
-          {% endif %}
-        {% endblock %}
-        {% block content %}{% endblock %}
-    </div>
+{% block css %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{{ STATIC_URL }}authentic2/css/style.css" />
+  {% renderblock "css" %}
+{% endblock %}
 
-    <div id="footer">
-        {% block footer %}
-        Copyright &copy; 2013 Entr'ouvert&nbsp;&mdash;&nbsp;{{ AUTHENTIC2_VERSION }}
-        {% endblock %}
-    </div>
-  </div>
-  {% block js-endpage %}
-  {% renderblock "js-endpage" %}
+{% block extrascripts %}
+  {{ block.super }}
+  {% comment %}block extra_scripts is kept for compatibility with old themes{% endcomment %}
+  {% block extra_scripts %}
   {% endblock %}
-</body>
+  {% renderblock "js" %}
+{% endblock %}
 
-</html>
+{% block user-links %}
+  <ul class="user-info">
+    {% if user.is_authenticated %}
+      <li class="ui-name" title="{% blocktrans %}Last login {{ LAST_LOGIN }}{% endblocktrans %}">{{ user.get_full_name }}</li>
+      <li class="ui-logout"><a href="{% block logout-url %}{% url 'auth_logout' %}{% endblock %}">{% trans "Logout" %}</a></li>
+    {% endif %}
+  </ul>
+{% endblock %}
+
+{% block footer %}
+  Copyright &copy; 2013 Entr'ouvert&nbsp;&mdash;&nbsp;{{ AUTHENTIC2_VERSION }}
+{% endblock %}
+
+{% block page-end %}
+  {% renderblock "js-endpage" %}
+{% endblock %}

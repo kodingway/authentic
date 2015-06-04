@@ -7,10 +7,6 @@
   <a href="#">{% trans "Managers" %}</a>
 {% endblock %}
 
-{% block page_title %}
-  {% trans "Managers" %}
-{% endblock %}
-
 {% block appbar %}
   {{ block.super }}
   <a href="{% url "a2-manager-role-manager-roles" pk=role.pk %}">{% trans "Manager roles" %}</a>

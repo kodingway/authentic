@@ -1,35 +1,37 @@
 {% extends "authentic2/base-page.html" %}
-{% load i18n gadjo authentic2 %}
+{% load i18n gadjo authentic2 staticfiles %}
 
-{% block title %}
-  {% trans "Log in" %}
+{% block gadjo-jquery %}{% endblock %}
+
+{% block page-tile %}
+  {{ block.super}} - {% trans "Login" %}
 {% endblock %}
 
-{% block extra_scripts %}
-<link rel="stylesheet" href="{{ STATIC_URL }}jquery/css/jquery-ui.custom.css" />
-<link rel="stylesheet" href="{{ STATIC_URL }}ulx/css/ulx.css" />
-<script type="text/javascript" src="{% xstatic 'jquery' 'jquery.min.js' %}"></script>
-<script type="text/javascript" src="{% xstatic 'jquery-ui' 'jquery-ui.min.js' %}"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}jquery/js/jquery.cookie.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}jquery/js/jquery.simplemodal.js"></script>
+{% block breadcrumb %}{% endblock %}
+
+{% block css %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static "authentic2/css/css-tabs.css" %}">
 {% endblock %}
 
 {% block content %}
-  <div id="tabs">
-    <ul>
-      {% for id, login_block in blocks.iteritems %}
-      <li>
-        <a href="#tabs-{{id}}">{{ login_block.name }}</a>
-      </li>
-      {% endfor %}
-    </ul>
+  <div id="a2-login-forms">
     {% for id, login_block in blocks.iteritems %}
-      <div id="tabs-{{id}}">
+      <span id="css-tab{{ forloop.counter }}"></span>
+    {% endfor %}
+
+    {% if blocks|length != 1 %}
+      {% for id, login_block in blocks.iteritems %}
+      <a class="css-tab-link css-tab{{ forloop.counter }} {% if forloop.first %}css-tab-default{% endif %}" href="#css-tab{{ forloop.counter }}">
+          {{ login_block.name }}
+        </a>
+      {% endfor %}
+    {% endif %}
+
+    {% for id, login_block in blocks.iteritems %}
+      <div class="css-tab-content css-tab{{ forloop.counter }} {% if forloop.first %}css-tab-default{% endif %}">
         {{ login_block.content|safe }}
       </div>
     {% endfor %}
   </div>
-  <script type="text/javascript">
-    $( "#tabs" ).tabs({cookie: {path: '/'}});
-  </script>
 {% endblock %}

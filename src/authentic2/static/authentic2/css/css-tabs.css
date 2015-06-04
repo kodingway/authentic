@@ -1,0 +1,16 @@
+/* CSS tabs style */
+.css-tab-content, :target ~ .css-tab-content.css-tab-default {
+  display: none;
+}
+.css-tab-content.css-tab-default,
+#css-tab1:target ~ .css-tab-content.css-tab1,
+#css-tab2:target ~ .css-tab-content.css-tab2,
+#css-tab3:target ~ .css-tab-content.css-tab3,
+#css-tab4:target ~ .css-tab-content.css-tab4,
+#css-tab5:target ~ .css-tab-content.css-tab5,
+#css-tab6:target ~ .css-tab-content.css-tab6,
+#css-tab7:target ~ .css-tab-content.css-tab7,
+#css-tab8:target ~ .css-tab-content.css-tab8
+{
+  display: block;
+}

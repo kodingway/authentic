@@ -1,0 +1,24 @@
+{% extends "authentic2/base-page.html" %}
+{% load i18n %}
+
+{% block page-title %}
+  {{ block.super }} - {% trans "Edit profile" %}
+{% endblock %}
+
+{% block breadcrumb %}
+  {{ block.super }}
+  <a href="..">{% trans "Your account" %}</a>
+  <a href="">{% trans "Edit" %}</a>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {% if form.instance and form.instance.id %}
+      <input type="submit" value="{% trans "Modify" %}"/>
+    {% else %}
+      <input type="submit" value="{% trans "Create" %}"/>
+    {% endif %}
+  </form>
+{% endblock %}
