@@ -1,13 +1,14 @@
-{% extends "gadjo/base.html" %}
+{% extends "authentic2/base-page.html" %}
 {% load i18n staticfiles %}
 {% load django_select2_tags %}
 {% load firstof from future %}
 
-{% block page-title %}{% trans "Management" %}{% endblock %}
-
-{% block site-title %}Authentic2{% endblock %}
+{% block page-title %}
+  {{ block.super }} - {% trans "Administration" %}
+{% endblock %}
 
 {% block css %}
+  {{ block.super }}
   <link rel="stylesheet" type="text/css" media="all" href="{% static "authentic2/manager/css/style.css" %}"/>
 {% endblock %}
 
@@ -37,20 +38,6 @@
 {% block breadcrumb %}
   {{ block.super }}
   {% if not manager_homepage_url %}
-    <a href="{% url 'a2-manager-homepage' %}">{% trans 'Identity and access management' %}</a>
+    <a href="{% url 'a2-manager-homepage' %}">{% trans 'Administration' %}</a>
   {% endif %}
 {% endblock %}
-
-{% block user-links %}
-  <ul class="user-info">
-    {% if user.is_authenticated %}
-      <li class="ui-name">{{ user.get_full_name }}</li>
-      <li class="ui-logout"><a href="{% url 'auth_logout' %}">{% trans "Logout" %}</a></li>
-    {% endif %}
-  </ul>
-{% endblock %}
-
-{% block appbar %}
-  <h2>{% block page_title %}{% endblock %}</h2>
-{% endblock %}
-

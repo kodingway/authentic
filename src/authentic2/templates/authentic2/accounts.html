@@ -1,0 +1,72 @@
+{% extends "authentic2/base-page.html" %}
+{% load i18n %}
+
+{% block page-title %}
+  {{ block.super }} - {% trans "Your account" %}
+{% endblock %}
+
+{% block breadcrumb %}
+  {{ block.super }}
+  <a href="">{% trans "Your account" %}</a>
+{% endblock %}
+
+{% block content %}
+  <div id="a2-profile-blocks">
+    <div id="a2-profile" class="a2-profile-block">
+      {% if profile %}
+        <dl>
+          {% for key, values in profile %}
+            <dt>{{ key|capfirst }}&nbsp;:</dt>
+            <dd>
+              {% if values|length == 1 %}
+                {{ values.0 }}
+              {% else %}
+                <ul>
+                  {% for value in values %}
+                    <li>{{ value }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </dd>
+          {% endfor %}
+        </dl>
+      {% endif %}
+      {% if allow_email_change %}
+        <p><a href="{% url 'email-change' %}">{% trans "Change email" %}</a></p>
+      {% endif %}
+      {% if allow_profile_edit %}
+        <p><a href="{% url 'profile_edit' %}">{% trans "Edit profile" %}</a></p>
+      {% endif %}
+      {% if allow_account_deletion %}
+        <p><a href="{% url 'delete_account' %}">{% trans "Delete profile" %}</a></p>
+      {% endif %}
+    </div>
+    <div id="a2-credentials" class="a2-profile-block">
+      <h3>{% trans "Credentials" %}</h3>
+      {% for html_block in frontends_block %}
+        {{ html_block|safe }}
+      {% endfor %}
+      {% if federation_management %}
+        <div id="federation-management">
+          <h3>{% trans "Federation management" %}
+          <ul>
+            {% for federation in federation_management %}
+              <li>
+                <form method="post" action="{{ federation.url }}">
+                  {% csrf_token %}
+                  <span class="name">{{ federation.name }}</span>
+                  {% for key, value in federation.hidden_inputs.iteritems %}
+                    <input type="hidden" name="{{ key }}" value="{{ value }}"/>
+                  {% endfor %}
+                  {% for button_name, button_label in federation.buttons %}
+                    <button name="{{ button_name }}">{{ button_label }}</button>
+                  {% endfor %}
+                </form>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

@@ -217,7 +217,7 @@ msgstr "Retourner au site"
 
 #: authentic2/dashboard.py:37
 #: authentic2/templates/auth/login_password_profile.html:6
-msgid "Change password"
+msgid "Change your password"
 msgstr "Modifier votre mot de passe"
 
 #: authentic2/dashboard.py:39
@@ -784,9 +784,13 @@ msgstr "Échec de l'authentification"
 msgid "The SSL authentication has failed"
 msgstr "L'authentification SSL a échouée"
 
-#: authentic2/templates/idp/account_management.html:5
-msgid "Authentic - Account Management"
-msgstr "Authentic - Gestion du compte"
+msgid "Homepage"
+msgstr "Accueil"
+
+#: authentic2/templates/idp/account_management.html:10
+#: authentic2/templates/idp/homepage.html:13
+msgid "Your account"
+msgstr "Votre compte"
 
 #: authentic2/templates/idp/account_management.html:11
 msgid "Profile"

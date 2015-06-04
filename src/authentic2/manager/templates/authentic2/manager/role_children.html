@@ -7,10 +7,6 @@
   <a href="#">{% trans "Children roles" %}</a>
 {% endblock %}
 
-{% block page_title %}
-{% trans "Children roles" %}
-{% endblock %}
-
 {% block appbar %}
   {{ block.super }}
   {% if not object.admin_scope_ct_id and view.can_delete %}

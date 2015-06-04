@@ -39,7 +39,7 @@ from django.db.models.query import Q
 
 
 from . import (utils, app_settings, forms, compat, decorators,
-    constants, models)
+    constants, models, cbv)
 
 
 logger = logging.getLogger(__name__)
@@ -64,9 +64,10 @@ def server_error(request, template_name='500.html'):
     return render(request, template_name)
 
 
-class EditProfile(UpdateView):
+class EditProfile(cbv.TemplateNamesMixin, UpdateView):
     model = compat.get_user_model()
-    template_name = 'profiles/edit_profile.html'
+    template_names = ['profiles/edit_profile.html',
+                      'authentic2/accounts_edit.html']
     success_url = '../'
 
     @classmethod
@@ -113,11 +114,20 @@ def su(request, username, redirect_url='/'):
         return http.HttpResponseRedirect('/')
 
 
-class EmailChangeView(FormView):
+class EmailChangeView(cbv.TemplateNamesMixin, FormView):
     form_class = forms.EmailChangeForm
-    template_name = 'profiles/email_change.html'
-    subject_template = 'profiles/email_change_subject.txt'
-    body_template = 'profiles/email_change_body.txt'
+    template_names = [
+        'profiles/email_change.html',
+        'authentic2//change_email.html'
+    ]
+    subject_template = [
+        'profiles/email_change_subject.txt',
+        'authentic2/change_email_notification_subject.txt',
+    ]
+    body_template = [
+        'profiles/email_change_body.txt',
+        'authentic2/change_email_notification_body.txt',
+    ]
     success_url = '..'
 
     def get_form_kwargs(self):
@@ -330,8 +340,8 @@ def _homepage(request):
                                'authentic2/homepage.html'), tpl_parameters,
                               RequestContext(request))
 
-class ProfileView(TemplateView):
-    template_name = 'idp/account_management.html'
+class ProfileView(cbv.TemplateNamesMixin, TemplateView):
+    template_names = ['idp/account_management.html', 'authentic2/accounts.html']
 
     def get_context_data(self, **kwargs):
         ctx = super(ProfileView, self).get_context_data(**kwargs)
@@ -461,7 +471,8 @@ def login_password_profile(request, *args, **kwargs):
     context_instance = kwargs.pop('context_instance', None) or RequestContext(request)
     can_change_password = (app_settings.A2_REGISTRATION_CAN_CHANGE_PASSWORD
                            and request.user.has_usable_password())
-    return render_to_string('auth/login_password_profile.html',
+    return render_to_string(['auth/login_password_profile.html',
+                             'authentic2/login_password_profile.html'],
                             {'can_change_password' : can_change_password},
                             context_instance=context_instance)
 

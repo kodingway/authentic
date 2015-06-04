@@ -1,4 +1,4 @@
-from django.utils.translation import gettext_noop
+from django.utils.translation import ugettext_lazy as _
 import django.forms
 
 from . import views, app_settings
@@ -13,7 +13,7 @@ class SSLFrontend(object):
         return 'ssl'
 
     def name(self):
-        return gettext_noop('SSL with certificates')
+        return _('SSL with certificates')
 
     def form(self):
         return django.forms.Form

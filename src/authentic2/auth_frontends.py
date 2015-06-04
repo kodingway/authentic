@@ -1,7 +1,7 @@
 from django.contrib.auth import forms
 from django.utils.translation import gettext_noop
 from django.shortcuts import render
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as _, ugettext_lazy
 from django.core.urlresolvers import reverse
 
 from . import views, app_settings, utils
@@ -15,7 +15,7 @@ class LoginPasswordBackend(object):
         return app_settings.A2_AUTH_PASSWORD_ENABLE
 
     def name(self):
-        return gettext_noop('Password')
+        return ugettext_lazy('Password')
 
     def id(self):
         return 'password'

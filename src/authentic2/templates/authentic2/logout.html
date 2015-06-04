@@ -1,22 +1,20 @@
 {% extends "authentic2/base-page.html" %}
-{% load i18n %}
+{% load i18n gadjo %}
 
-{% block title %}
-  {% trans "Logout" %}
+{% block page-title %}
+  {{ block.super }} - {% trans "Logout" %}
 {% endblock %}
 
-{% block user %}
-{% endblock %}
-
-{% block bodyargs %}
-  onload="window.iframe_count -= 1"
-{% endblock %}
-
-{% comment %}Initialize iframe countdown {% endcomment %}
-{% block extra_scripts %}
+{% block extrascripts %}
+  {{ block.super }}
+  <script src="{% xstatic 'jquery' 'jquery.min.js' %}"></script>
   <script>
     window.iframe_count = 1;
+    $(function () {window.iframe_count -= 1});
   </script>
+{% endblock %}
+
+{% block user-links %}
 {% endblock %}
 
 {% block content %}
