@@ -92,10 +92,16 @@ class DjangoRBACBackend(object):
     def has_perm(self, user_obj, perm, obj=None):
         if user_obj.is_anonymous():
             return False
+        if not user_obj.is_active:
+            return False
+        if user_obj.is_superuser:
+            return True
         return perm in self.get_all_permissions(user_obj, obj=obj)
 
     def has_perms(self, user_obj, perm_list, obj=None):
         if user_obj.is_anonymous():
+            return False
+        if not user_obj.is_active:
             return False
         all_permissions = self.get_all_permissions(user_obj, obj=obj)
         return all(perm in all_permissions for perm in perm_list)
@@ -103,6 +109,10 @@ class DjangoRBACBackend(object):
     def has_module_perms(self, user_obj, package_name):
         if user_obj.is_anonymous():
             return False
+        if not user_obj.is_active:
+            return False
+        if user_obj.is_superuser:
+            return True
         if not hasattr(user_obj, '_rbac_perms_cache'):
             self.get_all_permissions(user_obj)
         return package_name in user_obj._rbac_perms_cache
@@ -110,6 +120,8 @@ class DjangoRBACBackend(object):
     def has_perm_any(self, user_obj, perm_or_perms):
         '''Return True if user has any perm on any object'''
         if user_obj.is_anonymous():
+            return False
+        if not user_obj.is_active:
             return False
         if user_obj.is_superuser:
             return True
@@ -139,6 +151,8 @@ class DjangoRBACBackend(object):
            a content type or locally for all objects of an organizational unit.
         '''
         if user_obj.is_anonymous():
+            return False
+        if not user_obj.is_active:
             return False
         if user_obj.is_superuser:
            return True
@@ -187,6 +201,10 @@ class DjangoRBACBackend(object):
     def has_ou_perm(self, user_obj, perm, ou):
         if user_obj.is_anonymous():
             return False
+        if not user_obj.is_active:
+            return False
+        if user_obj.is_superuser:
+            return True
         if self.has_perm(user_obj, perm):
             return True
         return perm in user_obj._rbac_perms_cache.get('ou.%s' % ou.pk, ())
