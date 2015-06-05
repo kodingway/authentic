@@ -1,8 +1,10 @@
 {% load i18n %}
-<h3>{% trans "Account creation" %}</h3>
-<p>
-{% blocktrans %}
-To continue your account creation on {{ site }} please <a href="{{ registration_url }}">click here</a>
-{% endblocktrans %}
-</p>
-<p>{% blocktrans %}This link is valid for {{ expiration_days }} days.{% endblocktrans %}</p>
+<html>
+  <body style="width: 90ex">
+    <p>{% blocktrans %}You created a new account on {{ site }}. to
+    activate your account, please <a href="{{ registration_url }}">click
+      here</a>{% endblocktrans %}
+    </p>
+    <p>{% blocktrans %}This link link is valid for {{ expiration_days }} days.{% endblocktrans %}</>
+  </body>
+</html>
