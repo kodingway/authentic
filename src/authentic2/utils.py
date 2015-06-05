@@ -441,21 +441,29 @@ def get_fields_and_labels(*args):
                 fields.append(field)
     return fields, labels
 
-def send_templated_mail(user_or_email, template_name, ctx, with_html=True,
+def send_templated_mail(user_or_email, template_names, ctx, with_html=True,
         from_email=None, **kwargs):
     '''Send mail to an user by using templates:
        - <template_name>_subject.txt for the subject
        - <template_name>_body.txt for the plain text body
        - <template_name>_body.html for the HTML body
     '''
+    if isinstance(template_names, basestring):
+        template_names = [template_names]
     if hasattr(user_or_email, 'email'):
         user_or_email = user_or_email.email
-    subject = render_to_string(template_name + '_subject.txt', ctx).strip()
-    body = render_to_string(template_name + '_body.txt', ctx)
+    subject_template_names = [template_name + '_subject.txt'
+                             for template_name in template_names]
+    subject = render_to_string(subject_template_names, ctx).strip()
+    body_template_names = [template_name + '_body.txt'
+                             for template_name in template_names]
+    body = render_to_string(body_template_names, ctx)
     html_body = None
     if with_html:
+        html_body_template_names = [template_name + '_body.html'
+                                 for template_name in template_names]
         try:
-            html_body = render_to_string(template_name + '_body.html', ctx)
+            html_body = render_to_string(html_body_template_names, ctx)
         except TemplateDoesNotExist:
             html_body = None
     send_mail(subject, body,
