@@ -23,6 +23,8 @@ from django.utils.translation import ugettext as _
 from django.shortcuts import resolve_url
 from django.template.loader import render_to_string, TemplateDoesNotExist
 from django.core.mail import send_mail
+from django.core import signing
+from django.core.urlresolvers import reverse
 
 try:
     from django.core.exceptions import FieldDoesNotExist
@@ -502,3 +504,31 @@ def get_registration_url(request):
                         include=(constants.NONCE_FIELD_NAME,))
     return make_url('registration_register',
                     params={REDIRECT_FIELD_NAME: next_url})
+
+def send_registration_mail(request, email, template_names, next_url=None,
+                           ctx=None, **kwargs):
+    '''Send a registration mail to an user. All given kwargs will be used
+       to completed the user model.
+
+       Can raise an smtplib.SMTPException
+    '''
+    if isinstance(template_names, basestring):
+        template_names = [template_names]
+
+    # signed token
+    data = kwargs.copy()
+    data['email'] = email
+    data[REDIRECT_FIELD_NAME] = next_url
+    registration_token = signing.dumps(data)
+    activate_url = request.build_absolute_uri(reverse('registration_activate',
+                           kwargs={'registration_token': registration_token}))
+    # ctx for rendering the templates
+    ctx = ctx.copy()
+    ctx.update({
+        'registration_url': activate_url,
+        'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
+        'email': email,
+        'request': request,
+        'site': request.get_host()
+    })
+    send_templated_mail(email, template_names, ctx)
