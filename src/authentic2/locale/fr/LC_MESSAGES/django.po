@@ -916,7 +916,7 @@ msgstr "Mot de passe réinitialisé avec succés"
 #: authentic2/templates/registration/password_reset_form.html:5
 #: authentic2/templates/registration/password_reset_form.html:10
 msgid "Resetting password"
-msgstr "Ré-initialisation le mot de passe"
+msgstr "Ré-initialiser le mot de passe"
 
 #: authentic2/templates/registration/password_reset_confirm.html:21
 msgid "Password reset failed"
