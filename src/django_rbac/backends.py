@@ -183,3 +183,10 @@ class DjangoRBACBackend(object):
             return qs.none()
         else:
             return qs.filter(query)
+
+    def has_ou_perm(self, user_obj, perm, ou):
+        if user_obj.is_anonymous():
+            return False
+        if self.has_perm(user_obj, perm):
+            return True
+        return perm in user_obj._rbac_perms_cache.get('ou.%s' % ou.pk, ())

@@ -378,6 +378,13 @@ class PermissionMixin(models.Model):
                     return True
         return False
 
+    def has_ou_perm(self, perm, ou):
+        for backend in auth.get_backends():
+            if hasattr(backend, "has_ou_perm"):
+                if backend.has_ou_perm(self, perm, ou):
+                    return True
+        return False
+
 ADMIN_OP = Operation(name=_('Management'), slug='admin')
 CHANGE_OP = Operation(name=_('Change'), slug='change')
 DELETE_OP = Operation(name=_('Delete'), slug='delete')
