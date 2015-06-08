@@ -17,28 +17,28 @@
 
       <ul class="apps">
         {% if perms.any.a2_rbac.view_organizationalunit %}
-          <li id="organizational-units">
+          <li class="icon-organizational-units">
             <a href="{% url "a2-manager-ous" %}">
               {% trans "Organizational units management" %}
             </a>
           </li>
         {% endif %}
         {% if perms.any.custom_user.view_user %}
-	  <li id="users">
+          <li class="icon-users">
             <a href="{% url "a2-manager-users" %}">
               {% trans "User management" %}
             </a>
           </li>
         {% endif %}
         {% if perms.any.a2_rbac.view_role %}
-          <li id="roles">
+          <li class="icon-roles">
             <a href="{% url "a2-manager-roles" %}">
               {% trans "Roles management" %}
             </a>
           </li>
         {% endif %}
         {% if perms.any.authentic2.view_service %}
-          <li id="services">
+          <li class="icon-services">
             <a href="{% url "a2-manager-services" %}">
               {% trans "Services management" %}
             </a>
