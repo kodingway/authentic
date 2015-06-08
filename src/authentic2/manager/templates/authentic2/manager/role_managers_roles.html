@@ -1,7 +1,7 @@
 {% extends "authentic2/manager/role_common.html" %}
 {% load i18n staticfiles django_tables2 %}
 
-{% block more-user-links %}
+{% block breadcrumb %}
   {{ block.super }}
   <a href="{% url "a2-manager-role-members" pk=role.pk %}">{{ role }}</a>
   <a href="#">{% trans "Manager roles" %}</a>

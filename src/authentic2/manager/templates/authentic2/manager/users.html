@@ -16,7 +16,7 @@
    {% endif %}
 {% endblock %}
 
-{% block more-user-links %}
+{% block breadcrumb %}
   {{ block.super }}
   <a href="{% url 'a2-manager-users' %}">{% trans 'User management' %}</a>
 {% endblock %}

@@ -33,7 +33,7 @@
 
 {% block homepage-title %}{% trans 'Homepage' as default_homepage_title %}{% firstof manager_homepage_title default_homepage_title %}{% endblock %}
 
-{% block more-user-links %}
+{% block breadcrumb %}
   {{ block.super }}
   {% if not manager_homepage_url %}
     <a href="{% url 'a2-manager-homepage' %}">{% trans 'Identity and access management' %}</a>

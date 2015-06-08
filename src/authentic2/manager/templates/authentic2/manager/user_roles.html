@@ -1,7 +1,7 @@
 {% extends "authentic2/manager/sidebar.html" %}
 {% load i18n staticfiles django_tables2 %}
 
-{% block more-user-links %}
+{% block breadcrumb %}
   {{ block.super }}
   <a href="{% url 'a2-manager-users' %}">{% trans 'User management' %}</a>
   <a href="{% url 'a2-manager-user-edit' pk=object.pk %}">{{ object.get_full_name }}</a>

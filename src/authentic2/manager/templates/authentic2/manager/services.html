@@ -3,7 +3,7 @@
 
 {% block title %}{{ block.super }} - {% trans "Services management" %}{% endblock %}
 
-{% block more-user-links %}
+{% block breadcrumb %}
   {{ block.super }}
   <a href="{% url 'a2-manager-services' %}">{% trans 'Services management' %}</a>
 {% endblock %}

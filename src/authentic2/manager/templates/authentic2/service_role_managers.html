@@ -1,7 +1,7 @@
 {% extends "authentic2/manager/service.html" %}
 {% load i18n staticfiles django_tables2 %}
 
-{% block more-user-links %}
+{% block breadcrumb %}
   {{ block.super }}
   <a href="{% url 'a2-manager-service-role-members' service_pk=view.kwargs.service_pk pk=object.pk %}">{{ object.name }}</a>
   <a href="#">{% trans "Managers" %}</a>

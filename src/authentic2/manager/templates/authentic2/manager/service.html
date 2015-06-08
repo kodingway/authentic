@@ -1,7 +1,7 @@
 {% extends "authentic2/manager/services.html" %}
 {% load i18n staticfiles django_tables2 %}
 
-{% block more-user-links %}
+{% block breadcrumb %}
   {{ block.super }}
   <a href="{% url 'a2-manager-service' service_pk=view.kwargs.service_pk %}">{{ view.service.name }}</a>
 {% endblock %}
