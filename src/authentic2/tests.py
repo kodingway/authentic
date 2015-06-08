@@ -704,3 +704,31 @@ class APITest(TestCase):
         self.assertEqual(last_user.email, email)
         self.assertEqual(last_user.ou.slug, self.ou.slug)
         self.assertTrue(last_user.check_password(password))
+
+    def test_register_reguser2_wrong_ou(self):
+        from django.contrib.auth import get_user_model
+        from rest_framework import test
+        from rest_framework import status
+        User = get_user_model()
+        user_count = User.objects.count()
+        client = test.APIClient()
+        password = '12XYab'
+        username = 'john.doe'
+        email = 'john.doe@example.com'
+        return_url = 'http://sp.org/register/'
+        payload = {
+            'email': email,
+            'username': username,
+            'ou': 'default',
+            'password': password,
+            'return_url': return_url,
+        }
+        outbox_level = len(mail.outbox)
+        cred = base64.b64encode('%s:%s' % (self.reguser2.username.encode('utf-8'), 'password'))
+        client.credentials(HTTP_AUTHORIZATION='Basic %s' % cred)
+        response = client.post(reverse('a2-api-register'),
+                               content_type='application/json',
+                               data=json.dumps(payload))
+        self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('errors', response.data)
+
