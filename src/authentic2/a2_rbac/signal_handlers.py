@@ -23,7 +23,7 @@ def create_default_ou(app_config, verbosity=2, interactive=True,
             return
         # Create a default OU if none exists currently
         default_ou, created = OrganizationalUnit.objects.get_or_create(
-            slug='defaut',
+            slug='default',
             defaults={
                 'default': True,
                 'name': _('Default organizational unit'),
