@@ -1,7 +1,7 @@
 import logging
 
 from django.conf import settings
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.contrib.auth import login as django_login, logout, REDIRECT_FIELD_NAME
@@ -13,6 +13,9 @@ from django.forms import CharField
 
 from authentic2.utils import get_form_class, redirect, make_url, get_fields_and_labels
 from authentic2.a2_rbac.utils import get_default_ou
+
+from django_rbac.utils import get_ou_model
+
 from .. import models, app_settings, compat, cbv, views, forms, validators
 from .forms import RegistrationCompletionForm
 
@@ -111,9 +114,14 @@ class RegistrationCompletionView(CreateView):
     def get_form_kwargs(self, **kwargs):
         '''Initialize mail from token'''
         kwargs = super(RegistrationCompletionView, self).get_form_kwargs(**kwargs)
+        if 'ou' in self.token:
+            OU = get_ou_model()
+            ou = get_object_or_404(OU, id=self.token['ou'])
+        else:
+            ou = get_default_ou()
         kwargs['instance'] = get_user_model()(
             email=self.email,
-            ou=get_default_ou())
+            ou=ou)
         return kwargs
 
     def get_context_data(self, **kwargs):
