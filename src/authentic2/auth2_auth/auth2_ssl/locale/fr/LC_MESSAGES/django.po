@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-27 23:38+0200\n"
+"POT-Creation-Date: 2015-06-08 17:59+0200\n"
 "PO-Revision-Date: 2013-07-23 17:41+0200\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -78,12 +78,12 @@ msgid "SSL Client Authentication failed. Your client certificate is not valid."
 msgstr ""
 "Echec de l'authentification cliente SSL. Votre certificat n'est pas valide."
 
-#: authentic2/auth2_auth/auth2_ssl/views.py:57
-#: authentic2/auth2_auth/auth2_ssl/views.py:74
-#: authentic2/auth2_auth/auth2_ssl/views.py:122
+#: authentic2/auth2_auth/auth2_ssl/views.py:56
+#: authentic2/auth2_auth/auth2_ssl/views.py:73
+#: authentic2/auth2_auth/auth2_ssl/views.py:121
 msgid "SSL Client Authentication failed. Internal server error."
 msgstr "Echec de l'authentification SSL. Erreur interne du serveur."
 
-#: authentic2/auth2_auth/auth2_ssl/views.py:147
+#: authentic2/auth2_auth/auth2_ssl/views.py:146
 msgid "Certificate deleted."
 msgstr "Certificat supprimé."

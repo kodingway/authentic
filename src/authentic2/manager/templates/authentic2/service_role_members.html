@@ -10,7 +10,7 @@
   {% if view.can_change and not object.admin_scope_ct_id %}
     <a href="{% url "a2-manager-service-role-managers" pk=object.pk %}">{% trans "Managers" %}</a>
   {% endif %}
-  <a href="{% url "a2-manager-service-role-children" pk=object.pk %}">{% trans "Childrenroles" %}</a>
+  <a href="{% url "a2-manager-service-role-children" pk=object.pk %}">{% trans "Children roles" %}</a>
 {% endblock %}
 
 

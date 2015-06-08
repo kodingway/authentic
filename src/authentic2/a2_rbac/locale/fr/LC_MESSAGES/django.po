@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-rbac\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-27 23:38+0200\n"
+"POT-Creation-Date: 2015-06-08 17:59+0200\n"
 "PO-Revision-Date: 2015-05-13 15:21+0200\n"
 "Last-Translator: Benjamin Dauvergner <bdauvergne@entrouvert.com>\n"
 "Language: \n"
@@ -16,47 +16,47 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: authentic2/a2_rbac/admin.py:58 authentic2/a2_rbac/models.py:136
+#: authentic2/a2_rbac/admin.py:58 authentic2/a2_rbac/models.py:140
 msgid "name"
 msgstr "nom"
 
-#: authentic2/a2_rbac/management.py:39
+#: authentic2/a2_rbac/management.py:54
 msgid "Manager of services"
 msgstr "Administrateur des applications"
 
-#: authentic2/a2_rbac/management.py:40
+#: authentic2/a2_rbac/management.py:55
 #, python-brace-format
 msgid "Services - {ou}"
 msgstr "Applications - {ou}"
 
-#: authentic2/a2_rbac/management.py:43
+#: authentic2/a2_rbac/management.py:58
 msgid "Manager of roles"
 msgstr "Administrateur des rôles"
 
-#: authentic2/a2_rbac/management.py:44
+#: authentic2/a2_rbac/management.py:59
 #, python-brace-format
 msgid "Roles - {ou}"
 msgstr "Rôles - {ou}"
 
-#: authentic2/a2_rbac/management.py:47
+#: authentic2/a2_rbac/management.py:62
 msgid "Manager of organizational units"
 msgstr "Administrateur des entités"
 
-#: authentic2/a2_rbac/management.py:48
+#: authentic2/a2_rbac/management.py:63
 #, python-brace-format
 msgid "Organizational unit - {ou}"
 msgstr "Entités - {ou}"
 
-#: authentic2/a2_rbac/management.py:51
+#: authentic2/a2_rbac/management.py:66
 msgid "Manager of users"
 msgstr "Administrateur des utilisateurs"
 
-#: authentic2/a2_rbac/management.py:52
+#: authentic2/a2_rbac/management.py:67
 #, python-brace-format
 msgid "Users - {ou}"
 msgstr "Utilisateurs - {ou}"
 
-#: authentic2/a2_rbac/models.py:20 authentic2/a2_rbac/signal_handlers.py:27
+#: authentic2/a2_rbac/models.py:20 authentic2/a2_rbac/signal_handlers.py:29
 msgid "Default organizational unit"
 msgstr "Entité par défaut"
 
@@ -73,6 +73,8 @@ msgid ""
 "You cannot unset this organizational unit as the default, but you can set "
 "another one as the default."
 msgstr ""
+"Vous ne pouvez pas enlever le drapeau défaut de cette entité, mais vous "
+"pouvez le poser sur une autre entité."
 
 #: authentic2/a2_rbac/models.py:50
 #, python-brace-format
@@ -108,42 +110,46 @@ msgstr "identifiant externe"
 msgid "Managers of role \"{role}\""
 msgstr "Administrateur du rôle « {role} »"
 
-#: authentic2/a2_rbac/models.py:98
+#: authentic2/a2_rbac/models.py:97
+msgid "Slug starting with _ are reserved."
+msgstr "Les codes courts commençant par le caractère _ sont réservés."
+
+#: authentic2/a2_rbac/models.py:102
 msgid "This slug is not unique over this organizational unit."
 msgstr "Ce code n'est pas unique pour cette entité."
 
-#: authentic2/a2_rbac/models.py:103
+#: authentic2/a2_rbac/models.py:107
 msgid "This name is not unique over this organizational unit."
 msgstr "Ce nom n'est pas unique pour cette entité."
 
-#: authentic2/a2_rbac/models.py:115 authentic2/a2_rbac/models.py:132
+#: authentic2/a2_rbac/models.py:119 authentic2/a2_rbac/models.py:136
 msgid "role"
 msgstr "rôle"
 
-#: authentic2/a2_rbac/models.py:116
+#: authentic2/a2_rbac/models.py:120
 msgid "roles"
 msgstr "rôles"
 
-#: authentic2/a2_rbac/models.py:122
+#: authentic2/a2_rbac/models.py:126
 msgid "role parenting relation"
 msgstr "relation de parenté entre rôles"
 
-#: authentic2/a2_rbac/models.py:123
+#: authentic2/a2_rbac/models.py:127
 msgid "role parenting relations"
 msgstr "relations de parenté entre rôles"
 
-#: authentic2/a2_rbac/models.py:128
+#: authentic2/a2_rbac/models.py:132
 msgid "string"
 msgstr "chaîne"
 
-#: authentic2/a2_rbac/models.py:140
+#: authentic2/a2_rbac/models.py:144
 msgid "kind"
 msgstr "type"
 
-#: authentic2/a2_rbac/models.py:142
+#: authentic2/a2_rbac/models.py:146
 msgid "value"
 msgstr "valeur"
 
-#: authentic2/a2_rbac/models.py:146
+#: authentic2/a2_rbac/models.py:150
 msgid "role attributes"
 msgstr "attributs de rôle"

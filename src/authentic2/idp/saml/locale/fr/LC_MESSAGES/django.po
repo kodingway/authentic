@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-27 23:38+0200\n"
+"POT-Creation-Date: 2015-06-08 17:59+0200\n"
 "PO-Revision-Date: 2014-11-21 11:43+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -59,27 +59,27 @@ msgstr "continnue_sso: erreur au rechargement de l'objet login"
 msgid "continue_sso: unknown provider %s"
 msgstr "continue_sso: fournisseur %s inconnu"
 
-#: authentic2/idp/saml/saml2_endpoints.py:770
+#: authentic2/idp/saml/saml2_endpoints.py:767
 #, python-format
 msgid "Provider %s is unknown"
 msgstr "Le fournisseur %s est inconnu"
 
-#: authentic2/idp/saml/saml2_endpoints.py:774
+#: authentic2/idp/saml/saml2_endpoints.py:771
 msgid "No service provider policy defined"
 msgstr "Pas de politique de fournisseur de service définie"
 
-#: authentic2/idp/saml/saml2_endpoints.py:944
-#: authentic2/idp/saml/saml2_endpoints.py:1119
-#: authentic2/idp/saml/saml2_endpoints.py:1131
-#: authentic2/idp/saml/saml2_endpoints.py:1355
-#: authentic2/idp/saml/saml2_endpoints.py:1389
-#: authentic2/idp/saml/saml2_endpoints.py:1437
-#: authentic2/idp/saml/saml2_endpoints.py:1448
+#: authentic2/idp/saml/saml2_endpoints.py:941
+#: authentic2/idp/saml/saml2_endpoints.py:1116
+#: authentic2/idp/saml/saml2_endpoints.py:1128
+#: authentic2/idp/saml/saml2_endpoints.py:1352
+#: authentic2/idp/saml/saml2_endpoints.py:1386
+#: authentic2/idp/saml/saml2_endpoints.py:1434
+#: authentic2/idp/saml/saml2_endpoints.py:1445
 #, python-format
 msgid "You are being redirected to \"%s\""
 msgstr "Vous allez être redirigé sur \"%s\""
 
-#: authentic2/idp/saml/saml2_endpoints.py:1440
+#: authentic2/idp/saml/saml2_endpoints.py:1437
 msgid "Invalid logout request"
 msgstr "Requête de déconnexion invalide"
 
