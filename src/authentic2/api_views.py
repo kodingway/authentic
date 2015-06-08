@@ -40,6 +40,18 @@ class RegistrationSerializer(serializers.Serializer):
         required=False)
     return_url = serializers.URLField()
 
+    def validate(self, data):
+        request = self.context.get('request')
+        if request:
+            perm = 'custom_user.add_user'
+            if data['ou']:
+                authorized = request.user.has_ou_perm(perm, data['ou'])
+            else:
+                authorized = request.user.has_perm(perm)
+            if not authorized:
+                raise serializers.ValidationError('you are not authorized to '
+                                                  'create users in this ou')
+        return data
 
 class RpcMixin(object):
     def post(self, request, format=None):
@@ -81,14 +93,6 @@ class Register(BaseRpcView):
         token = utils.get_hex_uuid()[:16]
         final_return_url = utils.make_url(validated_data['return_url'],
                                           params={'token': token})
-        perm = 'custom_user.add_user'
-        if validated_data['ou']:
-            authorized = request.user.has_ou_perm(perm, validated_data['ou'])
-        else:
-            authorized = request.user.has_perm(perm)
-        if not authorized:
-            raise PermissionDenied('you are not authorized to created users '
-                                   'in this ou')
 
         registration_template = ['authentic2/activation_email']
         if validated_data['ou']:
