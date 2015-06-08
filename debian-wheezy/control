@@ -16,7 +16,9 @@ Depends: ${misc:Depends}, ${python:Depends},
     python-django-admin-tools (>=0.5.2),
     python-lasso, python-dnspython,
     python-django-select2 (>= 4.3.0),
-    python-gadjo, python-django-tables2 (>= 1.0.0), python-django-import-export (>= 0.2.7)
+    python-gadjo, python-django-tables2 (>= 1.0.0), python-django-import-export (>= 0.2.7),
+    python-djangorestframework (>= 3.1),
+    python-markdown
 Provides: ${python:Provides}
 Recommends: python-openid, python-ldap
 Suggests: python-raven
