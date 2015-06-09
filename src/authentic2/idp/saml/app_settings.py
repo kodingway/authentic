@@ -50,6 +50,7 @@ gmsgaiMCgYB/nrTk89Fp7050VKCNnIt1mHAcO9cBwDV8qrJ5O3rIVmrg1T6vn0aY
 wRiVcNacaP+BivkrMjr4BlsUM6yH4MOBsNhLURiiCL+tLJV7U0DWlCse/doWij4U
 TKX6tp6oI+7MIJE6ySZ0cBqOiydAkBePZhu57j6ToBkTa0dbHjn1WA==
 -----END RSA PRIVATE KEY-----''',
+            ADD_CERTIFICATE_TO_KEY_INFO=True,
     )
 
     def __init__(self, prefix):

@@ -28,6 +28,7 @@ from authentic2.saml import saml2utils
 
 from authentic2.http_utils import get_url
 from authentic2.decorators import RequestCache
+from authentic2.idp.saml import app_settings
 from .. import nonce
 
 AUTHENTIC_STATUS_CODE_NS = "http://authentic.entrouvert.org/status_code/"
@@ -104,7 +105,8 @@ def create_saml2_server(request, metadata, idp_map=None, sp_map=None, options={}
     '''Create a lasso Server object for using with a profile'''
     server = lasso.Server.newFromBuffers(get_saml2_metadata(request, metadata,
         idp_map=idp_map, sp_map=sp_map, options=options),
-        options.get('private_key'))
+        options.get('private_key'),
+        certificate_content=options.get('key') if app_settings.ADD_CERTIFICATE_TO_KEY_INFO else None)
     if not server:
         raise Exception('Cannot create LassoServer object')
     return server
