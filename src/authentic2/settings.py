@@ -261,6 +261,11 @@ MIGRATION_MODULES = {
 if django.VERSION >= (1,8):
     MIGRATION_MODULES['auth'] = 'authentic2.auth_migrations_18'
 
+# Django REST Framework
+REST_FRAMEWORK = {
+    'NON_FIELD_ERRORS_KEY': '__all__',
+}
+
 #
 # Load configuration file
 #
