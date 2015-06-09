@@ -827,3 +827,45 @@ class APITest(TestCase):
         self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('errors', response.data)
 
+    def test_password_change(self):
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        user1 = User(username='john.doe', email='john.doe@example.com',
+                     ou=self.ou)
+        user1.set_password('password')
+        user1.save()
+        user2 = User(username='john.doe2', email='john.doe@example.com',
+                     ou=self.ou)
+        user2.set_password('password')
+        user2.save()
+        client = test.APIClient()
+        payload = {
+            'email': 'none@example.com',
+            'ou': self.ou.slug,
+            'old_password': 'password',
+            'new_password': 'password2',
+        }
+        client.credentials(HTTP_AUTHORIZATION='Basic %s' % self.reguser2_cred)
+        response = client.post(reverse('a2-api-password-change'),
+                               content_type='application/json',
+                               data=json.dumps(payload))
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('errors', response.data)
+        payload = {
+            'email': 'john.doe@example.com',
+            'ou': self.ou.slug,
+            'old_password': 'password',
+            'new_password': 'password2',
+        }
+        response = client.post(reverse('a2-api-password-change'),
+                               content_type='application/json',
+                               data=json.dumps(payload))
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('errors', response.data)
+        user2.delete()
+        response = client.post(reverse('a2-api-password-change'),
+                               content_type='application/json',
+                               data=json.dumps(payload))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(User.objects.get(username='john.doe')
+                        .check_password('password2'))

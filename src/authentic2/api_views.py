@@ -2,6 +2,8 @@
 import smtplib
 
 from django.db import models
+from django.contrib.auth import get_user_model
+from django.core.exceptions import MultipleObjectsReturned
 
 from django_rbac.utils import get_ou_model
 
@@ -134,3 +136,41 @@ class Register(BaseRpcView):
         return response, response_status
 
 register = Register.as_view()
+
+class PasswordChangeSerializer(serializers.Serializer):
+    '''Register RPC payload'''
+    email = serializers.EmailField()
+    ou = serializers.SlugRelatedField(
+        queryset=get_ou_model().objects.all(),
+        slug_field='slug',
+        required=False, allow_null=True)
+    old_password = serializers.CharField(
+        required=True, allow_null=True)
+    new_password = serializers.CharField(
+        required=True, allow_null=True)
+
+    def validate(self, data):
+        User = get_user_model()
+        qs = User.objects.filter(email=data['email'])
+        if data['ou']:
+            qs = qs.filter(ou=data['ou'])
+        try:
+            self.user = qs.get()
+        except User.DoesNotExist:
+            raise serializers.ValidationError('no user found')
+        except MultipleObjectsReturned:
+            raise serializers.ValidationError('more than one user have this email')
+        if not self.user.check_password(data['old_password']):
+            raise serializers.ValidationError('old_password is invalid')
+        return data
+
+
+class PasswordChange(BaseRpcView):
+    serializer_class = PasswordChangeSerializer
+
+    def rpc(self, request, serializer):
+        serializer.user.set_password(serializer.validated_data['new_password'])
+        serializer.user.save()
+        return {'result': 1}, status.HTTP_200_OK
+
+password_change = PasswordChange.as_view()
