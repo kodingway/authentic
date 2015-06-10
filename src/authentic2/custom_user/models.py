@@ -128,9 +128,3 @@ class User(AbstractBaseUser, PermissionMixin):
 
     def natural_key(self):
         return (self.uuid,)
-
-# Alter default from AbstractBaseUser to comply with Django 1.8
-# we should stop depending on this asbtract class one day
-User._meta.get_field('last_login').null = True
-User._meta.get_field('last_login').blank = True
-User._meta.get_field('last_login').default = NOT_PROVIDED
