@@ -711,7 +711,6 @@ class AttributeKindsTest(TestCase):
         unicode(AttributeKindForm().as_p())
 
 
-@override_settings(A2_REQUIRED_FIELDS=['username'])
 class APITest(TestCase):
     def setUp(self):
         User = get_user_model()
@@ -756,6 +755,7 @@ class APITest(TestCase):
     def test_register_reguser3(self):
         self.register_with_user(self.reguser3)
 
+    @override_settings(A2_REQUIRED_FIELDS=['username'])
     def register_with_user(self, user):
         from django.contrib.auth import get_user_model
         from rest_framework import test
