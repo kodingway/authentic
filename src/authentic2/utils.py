@@ -222,7 +222,7 @@ def make_url(to, args=(), kwargs={}, keep_params=False, params=None,
             else:
                 url_params.appendlist(key, value)
     if url_params:
-        url += '?%s' % url_params.urlencode()
+        url += '?%s' % url_params.urlencode(safe='/')
     if fragment:
         url += '#%s' % fragment
     return url
