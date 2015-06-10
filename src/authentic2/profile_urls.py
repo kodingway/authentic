@@ -3,7 +3,7 @@ from django.contrib.auth import views as auth_views, REDIRECT_FIELD_NAME
 from django.core.urlresolvers import reverse
 
 from authentic2.utils import get_form_class
-from . import app_settings, decorators
+from . import app_settings, decorators, profile_views
 
 SET_PASSWORD_FORM_CLASS = get_form_class(
         app_settings.A2_REGISTRATION_SET_PASSWORD_FORM_CLASS)
@@ -39,19 +39,15 @@ urlpatterns = patterns('authentic2.views',
     url(r'^password/change/done/$',
         auth_views.password_change_done,
         name='password_change_done'),
+
+    # Password reset
     url(r'^password/reset/confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
-        auth_views.password_reset_confirm,
-        {'set_password_form': SET_PASSWORD_FORM_CLASS},
+        profile_views.password_reset_confirm,
         name='password_reset_confirm'),
     url(r'^password/reset/$',
-        auth_views.password_reset,
+        profile_views.password_reset,
         name='password_reset'),
-    url(r'^password/reset/complete/$',
-        auth_views.password_reset_complete,
-        name='password_reset_complete'),
-    url(r'^password/reset/done/$',
-        auth_views.password_reset_done,
-        name='password_reset_done'),
+
     # Legacy 
     url(r'^password/change/$',
         password_change_view,
