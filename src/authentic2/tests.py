@@ -745,18 +745,20 @@ class APITest(TestCase):
                                             is_superuser=True)
         self.reguser3.set_password('password')
         self.reguser3.save()
+        cred = '%s:%s' % (self.reguser3.username.encode('utf-8'), 'password')
+        self.reguser3_cred = base64.b64encode(cred)
 
     def test_register_reguser1(self):
-        self.register_with_user(self.reguser1)
+        self.register_with_user(self.reguser1, self.reguser1_cred)
 
     def test_register_reguser2(self):
-        self.register_with_user(self.reguser2)
+        self.register_with_user(self.reguser2, self.reguser2_cred)
 
     def test_register_reguser3(self):
-        self.register_with_user(self.reguser3)
+        self.register_with_user(self.reguser3, self.reguser3_cred)
 
     @override_settings(A2_REQUIRED_FIELDS=['username'])
-    def register_with_user(self, user):
+    def register_with_user(self, user, cred):
         from django.contrib.auth import get_user_model
         from rest_framework import test
         from rest_framework import status
@@ -775,7 +777,7 @@ class APITest(TestCase):
             'return_url': return_url,
         }
         outbox_level = len(mail.outbox)
-        client.credentials(HTTP_AUTHORIZATION='Basic %s' % self.reguser1_cred)
+        client.credentials(HTTP_AUTHORIZATION='Basic %s' % cred)
         response = client.post(reverse('a2-api-register'),
                                content_type='application/json',
                                data=json.dumps(payload))
