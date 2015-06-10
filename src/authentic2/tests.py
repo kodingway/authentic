@@ -15,6 +15,7 @@ from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.core.serializers.json import DjangoJSONEncoder
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
+from django.utils.translation import ugettext as _
 
 from rest_framework import test
 from rest_framework import status
@@ -871,3 +872,53 @@ class APITest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(User.objects.get(username='john.doe')
                         .check_password('password2'))
+
+
+class PasswordResetTest(Authentic2TestCase):
+    def setUp(self):
+        User = get_user_model()
+        user = User(username='john.doe', email='john.doe@example.com')
+        user.set_password('password')
+        user.save()
+        user.last_login = user.date_joined
+        self.user = user
+
+    def test_password_reset(self):
+        client = Client()
+        login_url = utils.make_url('auth_login',
+                                   params={
+                                       'next': 'http://www.entrouvert.com/'})
+        response = client.get(login_url)
+        password_reset_url = utils.make_url(
+            'password_reset',
+            params={'next': 'http://testserver' + login_url})
+        self.assertContains(response, password_reset_url)
+        response = client.get(password_reset_url)
+        form = get_response_form(response)
+        self.assertEquals(form.fields.keys(), ['email'])
+        outbox_level = len(mail.outbox)
+        response = client.post(password_reset_url, {'email': 'wtf@example.com'})
+        self.assertRedirects(response, 'http://testserver' + login_url)
+        self.assertEqual(len(mail.outbox), outbox_level)
+        response = client.post(password_reset_url, {'email': self.user.email})
+        self.assertRedirects(response, 'http://testserver' + login_url)
+        self.assertEqual(len(mail.outbox), outbox_level+1)
+        reset_mail = mail.outbox[-1]
+        m = re.search('https?://[^\n ]*', reset_mail.body)
+        self.assertNotEqual(m, None)
+        reset_url = m.group()
+        response = client.get(reset_url)
+        form = get_response_form(response)
+        self.assertEquals(set(form.fields.keys()),
+                          set(['new_password1', 'new_password2']))
+        response = client.post(reset_url, {'new_password1': 'newpassword',
+                                                'new_password2': 'newpassword'})
+        # password do not follow default policy
+        self.assertContains(response, 'errorlist')
+        response = client.post(reset_url, {'new_password1': 'newPassword1',
+                                                'new_password2': 'newpassword'})
+        # password do not match
+        self.assertContains(response, 'errorlist')
+        response = client.post(reset_url, {'new_password1': 'newPassword1',
+                                                'new_password2': 'newPassword1'})
+        self.assertRedirects(response, 'http://testserver' + login_url)
