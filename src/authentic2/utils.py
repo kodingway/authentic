@@ -11,7 +11,7 @@ from importlib import import_module
 
 import django
 from django.conf import settings
-from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
+from django.http import HttpResponseRedirect
 from django.core.exceptions import ImproperlyConfigured
 from django.core import urlresolvers
 from django.http.request import QueryDict
@@ -230,17 +230,17 @@ def make_url(to, args=(), kwargs={}, keep_params=False, params=None,
 # improvement over django.shortcuts.redirect
 
 def redirect(request, to, args=(), kwargs={}, keep_params=False, params=None,
-        append=None, include=None, exclude=None, permanent=False, fragment=None):
+             append=None, include=None, exclude=None, permanent=False,
+             fragment=None, status=302):
     '''Build a redirect response to an absolute or relative URL, eventually
        adding params from the request or new, see make_url().
     '''
-    url = make_url(to, args=args, kwargs=kwargs, keep_params=keep_params, params=params,
-            append=append, request=request, include=include, exclude=exclude, fragment=fragment)
+    url = make_url(to, args=args, kwargs=kwargs, keep_params=keep_params,
+                   params=params, append=append, request=request,
+                   include=include, exclude=exclude, fragment=fragment)
     if permanent:
-        redirect_class = HttpResponsePermanentRedirect
-    else:
-        redirect_class = HttpResponseRedirect
-    return redirect_class(url)
+        status = 301
+    return HttpResponseRedirect(url, status=status)
 
 def redirect_to_login(request, login_url='auth_login', keep_params=True,
         include=(REDIRECT_FIELD_NAME, constants.NONCE_FIELD_NAME),
