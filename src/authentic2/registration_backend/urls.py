@@ -7,12 +7,6 @@ from django.contrib.auth.decorators import login_required
 from .views import RegistrationView, registration_completion, DeleteView
 
 urlpatterns = patterns('',
-    url(r'^activate/expired/$',
-        TemplateView.as_view(template_name='registration/activation_expired.html'),
-        name='registration_activation_expired'),
-    url(r'^activate/failed/$',
-        TemplateView.as_view(template_name='registration/activation_failed.html'),
-        name='registration_activation_failed'),
     url(r'^activate/(?P<registration_token>[\w:-]+)/$',
 	registration_completion, name='registration_activate'),
     url(r'^register/$',

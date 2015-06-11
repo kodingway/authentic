@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-08 17:59+0200\n"
+"POT-Creation-Date: 2015-06-11 14:17+0200\n"
 "PO-Revision-Date: 2015-02-26 17:53+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -507,7 +507,15 @@ msgstr ""
 msgid "New password"
 msgstr "Nouveau mot de passe"
 
-#: authentic2/registration_backend/views.py:186
+#: authentic2/registration_backend/views.py:32
+msgid "Your activation key is expired"
+msgstr "Votre clé d'activation a expiré"
+
+#: authentic2/registration_backend/views.py:35
+msgid "Activation failed"
+msgstr "Échec à l'activation du compte"
+
+#: authentic2/registration_backend/views.py:188
 msgid ""
 "Your account has been scheduled for deletion. You cannot use it anymore."
 msgstr ""
@@ -848,8 +856,6 @@ msgid "Change email on %(domain)s"
 msgstr "Changer l'adresse de courriel sur %(domain)s"
 
 #: authentic2/templates/registration/activate.html:5
-#: authentic2/templates/registration/activation_expired.html:9
-#: authentic2/templates/registration/activation_failed.html:9
 msgid "Account activation"
 msgstr "Activer le compte sur"
 
@@ -858,7 +864,6 @@ msgid "Account successfully activated"
 msgstr "Activation du compte réussie"
 
 #: authentic2/templates/registration/activate.html:18
-#: authentic2/templates/registration/activation_failed.html:5
 msgid "Account activation failed"
 msgstr "Échec à l'activation du compte"
 
@@ -874,18 +879,6 @@ msgstr "Activation du compte"
 #, python-format
 msgid "Link is valid for %(expiration_days)s days."
 msgstr "Ce lien est valide pendant %(expiration_days)s jours."
-
-#: authentic2/templates/registration/activation_expired.html:5
-msgid "Account activation expired"
-msgstr "Activation expirée"
-
-#: authentic2/templates/registration/activation_expired.html:10
-msgid "Your activation key is expired"
-msgstr "Votre clé d'activation a expiré"
-
-#: authentic2/templates/registration/activation_failed.html:10
-msgid "Activation failed"
-msgstr "Échec à l'activation du compte"
 
 #: authentic2/templates/registration/delete_account.html:5
 msgid "Delete account"

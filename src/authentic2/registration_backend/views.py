@@ -29,9 +29,11 @@ def valid_token(method):
             request.token = signing.loads(kwargs['registration_token'],
                                                 max_age=settings.ACCOUNT_ACTIVATION_DAYS*3600*24)
         except signing.SignatureExpired:
-            return redirect(request, 'registration_activation_expired')
+            messages.warning(request, _('Your activation key is expired'))
+            return redirect(request, 'registration_register')
         except signing.BadSignature:
-            return redirect(request, 'registration_activation_failed')
+            messages.warning(request, _('Activation failed'))
+            return redirect(request, 'registration_register')
         return method(request, *args, **kwargs)
     return f
 
@@ -59,7 +61,7 @@ class RegistrationCompletionView(CreateView):
 
     def dispatch(self, request, *args, **kwargs):
         self.token = request.token
-        self.email = request.token['email'] 
+        self.email = request.token['email']
         self.users = User.objects.filter(email__iexact=self.email) \
             .order_by('date_joined')
         self.email_is_unique = app_settings.A2_EMAIL_IS_UNIQUE \
