@@ -38,8 +38,9 @@ def get_attributes(instance, ctx):
     if not user or not service:
         return
     ctx = ctx.copy()
-    roles = Role.objects.filter(service=service) \
-        .for_user(user).prefetch_related('attributes')
+    roles = Role.objects.for_user(user) \
+        .filter(service=service) \
+        .prefetch_related('attributes')
     for service_role in roles:
         for service_role_attribute in service_role.attributes.all():
             name = service_role_attribute.name
