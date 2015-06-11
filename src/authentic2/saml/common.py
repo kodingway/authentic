@@ -115,7 +115,7 @@ def get_saml2_post_response(request):
     '''Extract the SAMLRequest field from the POST'''
     msg = request.POST.get(lasso.SAML2_FIELD_RESPONSE, '')
     assert msg is not None, 'no message received'
-    logger.debug('%r: %r', lasso.SAML2_FIELD_RESPONSE, msg)
+    logger.debug('%s: %s', lasso.SAML2_FIELD_RESPONSE, msg)
     return msg
 
 def get_saml2_post_request(request):
@@ -168,7 +168,7 @@ def return_saml2(request, profile, field_name, title = ''):
     logger.debug('profile.msgBody: %r', profile.msgBody)
     logger.debug('profile.msgUrl: %r', profile.msgUrl)
     logger.debug('profile.msgRelayState: %r', profile.msgRelayState)
-    logger.debug('field_name: %r', field_name)
+    logger.debug('field_name: %s', field_name)
     if profile.msgBody:
         if profile.msgUrl:
             return render_to_response('saml/post_form.html',{
@@ -284,9 +284,8 @@ def load_session(request, login, session_key = None,
     try:
         q = LibertySessionDump.objects.get(django_session_key=session_key,
                 kind=kind)
-        logger.debug('load_session: session dump found %s' %q.session_dump.encode('utf8'))
+        logger.debug('load_session: session dump found %s', q.session_dump)
         login.setSessionFromDump(q.session_dump.encode('utf8'))
-        logger.debug('load_session: set session from dump done %s' %login.session.dump())
     except ObjectDoesNotExist:
         pass
 
@@ -308,11 +307,9 @@ def delete_session(request, session_key=None):
     '''Delete all liberty sessions for a django session'''
     if not session_key:
         session_key = request.session.session_key
-    try:
-        LibertySessionDump.objects.\
-            filter(django_session_key = session_key).delete()
-    except Exception, e:
-        logger.error('delete_session: Exception %s' % str(e))
+    sessions = LibertySessionDump.objects.filter(
+        django_session_key=session_key)
+    sessions.delete()
 
 def save_manage(request, manage):
     if not request or not manage:
@@ -327,7 +324,7 @@ def get_manage_dump(request):
     return d
 
 def retrieve_metadata_and_create(request, provider_id, sp_or_idp):
-    logger.debug('trying to load %s from wkl' % provider_id)
+    logger.debug('trying to load %s from wkl', provider_id)
     if not provider_id.startswith('http'):
         logger.debug('not an http url, failing')
         return None
@@ -336,27 +333,28 @@ def retrieve_metadata_and_create(request, provider_id, sp_or_idp):
         metadata = get_url(provider_id)
     except Exception, e:
         logging.error('SAML metadata autoload: failure to retrieve metadata '
-                'for entity id %r: %s' % (provider_id, e))
+                      'for entity id %s: %s', provider_id, e)
         return None
-    logger.debug('loaded %d bytes' % len(metadata))
+    logger.debug('loaded %d bytes', len(metadata))
     try:
         metadata = unicode(metadata, 'utf8')
     except:
-        logging.error('SAML metadata autoload: retrieved metadata \
-for entity id %r is not UTF-8' % provider_id)
+        logging.error('SAML metadata autoload: retrieved metadata for entity '
+                      'id %s is not UTF-8', provider_id)
         return None
     p = LibertyProvider(metadata=metadata)
     try:
         p.full_clean(exclude=['entity_id','protocol_conformance'])
     except ValidationError, e:
-        logging.error('SAML metadata autoload: retrieved metadata \
-for entity id %r are invalid, %s' % (provider_id, e.args))
+        logging.error('SAML metadata autoload: retrieved metadata for entity '
+                      'id %s are invalid, %s', provider_id, e.args)
         return None
     except:
-        logging.exception('SAML metadata autoload: retrieved metadata validation raised an unknown exception')
+        logging.exception('SAML metadata autoload: retrieved metadata '
+                          'validation raised an unknown exception')
         return None
     p.save()
-    logger.debug('%s saved' % p)
+    logger.debug('%s saved', p)
     if sp_or_idp == 'sp':
         s = LibertyServiceProvider(liberty_provider=p, enabled=True)
         s.save()
@@ -410,7 +408,7 @@ def load_provider(request, entity_id, server=None, sp_or_idp='sp',
                     liberty_provider.metadata.encode('utf8'))
     else:
         raise Exception('unsupported option sp_or_idp = %r' % sp_or_idp)
-    logger.debug('loaded provider %r', entity_id)
+    logger.debug('loaded provider %s', entity_id)
     return liberty_provider
 
 # Federation management
@@ -422,7 +420,7 @@ def add_federation(user, login=None, name_id=None, provider_id=None):
         kwargs['idp'] = LibertyProvider.objects.get(entity_id=provider_id).identity_provider
     fed = LibertyFederation(user=user, **kwargs)
     fed.save()
-    logger.debug('federation %r linked to user %r', fed.name_id_content, user)
+    logger.debug('federation %s linked to user %s', fed.name_id_content, user)
     return fed
 
 def lookup_federation_by_name_identifier(name_id=None, profile=None):
@@ -530,7 +528,7 @@ def remove_liberty_session_sp(request, session_key=None):
         LibertySessionSP.objects.\
             filter(django_session_key=session_key).delete()
     except Exception, e:
-        logger.error('remove_liberty_session_sp: Exception %s' % str(e))
+        logger.error('remove_liberty_session_sp: Exception %s', e)
 
 def get_provider_of_active_session(request):
     if not request:
@@ -567,22 +565,22 @@ def soap_call(url, msg, client_cert = None):
         host, query = urllib.splithost(url[6:])
         conn = httplib.HTTPSConnection(host,
                 key_file = client_cert, cert_file = client_cert)
-    logger.debug('host %s' % host)
-    logger.debug('query %s' % query)
-    logger.debug('msg %s' % msg)
+    logger.debug('host %r', host)
+    logger.debug('query %r', query)
+    logger.debug('msg %r', msg)
     try:
         conn.request('POST', query, msg, {'Content-Type': 'text/xml'})
         response = conn.getresponse()
     except Exception, err:
         logging.error('SOAP error (on %s): %s' % (url, err))
         raise SOAPException(url, err)
-    logger.debug('response %s' % str(response))
+    logger.debug('response %r', response)
     try:
         data = response.read()
     except Exception, err:
         logging.error('SOAP error (on %s): %s' % (url, err))
         raise SOAPException(url, err)
-    logger.debug('data %s' % str(data))
+    logger.debug('data %r', data)
     conn.close()
     if response.status not in (200, 204): # 204 ok for federation termination
         logging.warning('SOAP error (%s) (on %s)' % (response.status, url))
