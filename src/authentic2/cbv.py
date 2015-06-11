@@ -3,6 +3,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 from django.utils.decorators import method_decorator
 from django.forms import Form
 from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.conf import settings
 
 from . import utils
 
@@ -28,7 +29,13 @@ class ValidateCSRFMixin(object):
         return super(ValidateCSRFMixin, self).form_valid(*args, **kwargs)
 
 
-class NextURLViewMixin(object):
+class RedirectToNextURLViewMixin(object):
+    def get_success_url(self):
+        if REDIRECT_FIELD_NAME in self.request.GET:
+            return self.request.GET[REDIRECT_FIELD_NAME]
+        return settings.LOGIN_REDIRECT_URL
+
+class NextURLViewMixin(RedirectToNextURLViewMixin):
     '''Make a view handle a next parameter, if it's not present it is
        automatically generated from the Referrer or from the value
        returned by the method get_next_url_default().
@@ -51,6 +58,3 @@ class NextURLViewMixin(object):
                                   status=303)
         return super(NextURLViewMixin, self).dispatch(request, *args,
                                                       **kwargs)
-
-    def get_success_url(self):
-        return self.request.GET[REDIRECT_FIELD_NAME]
