@@ -15,6 +15,9 @@ from . import tables, views, resources, forms
 
 
 class RolesMixin(object):
+    service_roles = False
+    admin_roles = False
+
     def get_queryset(self):
         qs = super(RolesMixin, self).get_queryset()
         qs = qs.select_related('ou')
@@ -26,9 +29,13 @@ class RolesMixin(object):
             .values_list('id', flat=True)
         # only non role-admin roles, they are accessed through the
         # RoleManager views
-        return qs.filter(Q(admin_scope_ct__isnull=True) |
-                         Q(admin_scope_ct=permission_ct,
-                           admin_scope_id__in=permission_qs), service__isnull=True)
+        if not self.admin_roles:
+            qs = qs.filter(Q(admin_scope_ct__isnull=True) |
+                           Q(admin_scope_ct=permission_ct,
+                             admin_scope_id__in=permission_qs))
+        if not self.service_roles:
+            qs = qs.filter(service__isnull=True)
+        return qs
 
 
 class RolesView(RolesMixin, views.BaseTableView):

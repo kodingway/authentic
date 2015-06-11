@@ -46,6 +46,8 @@ edit = ServiceEditView.as_view()
 
 
 class ServiceRoleMixin(object):
+    service_roles = True
+
     def dispatch(self, request, *args, **kwargs):
         self.service = get_object_or_404(Service, pk=kwargs['service_pk'])
         return super(ServiceRoleMixin, self).dispatch(request, *args, **kwargs)
