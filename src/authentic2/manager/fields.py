@@ -125,6 +125,7 @@ class ChooseRoleField(SecurityCheckMixin, SplitSearchTermMixin,
     queryset = get_role_model().objects.filter(admin_scope_ct__isnull=True)
     search_fields = [
         'name__icontains',
+        'service__name__icontains',
     ]
 
 
@@ -150,4 +151,5 @@ class ChooseUserRoleField(SecurityCheckMixin, SplitSearchTermMixin,
     queryset = get_role_model().objects
     search_fields = [
         'name__icontains',
+        'service__name__icontains',
     ]
