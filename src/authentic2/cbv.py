@@ -35,6 +35,7 @@ class RedirectToNextURLViewMixin(object):
             return self.request.GET[REDIRECT_FIELD_NAME]
         return settings.LOGIN_REDIRECT_URL
 
+
 class NextURLViewMixin(RedirectToNextURLViewMixin):
     '''Make a view handle a next parameter, if it's not present it is
        automatically generated from the Referrer or from the value
@@ -58,3 +59,10 @@ class NextURLViewMixin(RedirectToNextURLViewMixin):
                                   status=303)
         return super(NextURLViewMixin, self).dispatch(request, *args,
                                                       **kwargs)
+
+
+class TemplateNamesMixin(object):
+    def get_template_names(self):
+        if hasattr(self, 'template_names'):
+            return self.template_names
+        return super(TemplateNamesMixin, self).get_template_names()
