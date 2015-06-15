@@ -61,6 +61,10 @@ def get_sources():
     '''
     for path in app_settings.ATTRIBUTE_BACKENDS:
         yield utils.import_module_or_class(path)
+    for plugin in plugins.get_plugins():
+        if hasattr(plugin, 'get_attribute_backends'):
+            for path in plugin.get_attribute_backends():
+                yield utils.import_module_or_class(path)
 
 @to_list
 def get_attribute_names(ctx):
