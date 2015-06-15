@@ -341,7 +341,7 @@ def form_add_error(form, msg, safe=False):
         msg = html.mark_safe(msg)
     errors.append(msg)
 
-def get_form_class(form_class):
+def import_class(form_class):
     module, form_class = form_class.rsplit('.', 1)
     module = import_module(module)
     return getattr(module, form_class)
