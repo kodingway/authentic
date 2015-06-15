@@ -1,4 +1,4 @@
-{% load i18n %}{% blocktrans with name=user.get_short_name old_email=user.email %}Hi {{ name }} !
+{% load i18n %}{% autoescape off %}{% blocktrans with name=user.get_short_name old_email=user.email %}Hi {{ name }} !
 
 You asked for changing your email on {{ domain }} from:
 
@@ -14,4 +14,4 @@ To validate this change please click on the following link:
 
 --
 {{ domain }}
-{% endblocktrans %}
+{% endblocktrans %}{% endautoescape %}

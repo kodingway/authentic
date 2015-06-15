@@ -1,1 +1,1 @@
-{% load i18n %}{% blocktrans %}Change email on {{ domain }}{% endblocktrans %}
+{% load i18n %}{% autoescape off %}{% blocktrans %}Change email on {{ domain }}{% endblocktrans %}{% endautoescape %}

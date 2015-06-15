@@ -1,6 +1,6 @@
-{% load i18n %}{% blocktrans %}You created a new account on {{ site }}. to activate your account, please
+{% load i18n %}{% autoescape off %}{% blocktrans %}You created a new account on {{ site }}. to activate your account, please
 click on the following link :{% endblocktrans %}
 
     {{ registration_url }}
 
-{% blocktrans %}This link link is valid for {{ expiration_days }} days.{% endblocktrans %}
+{% blocktrans %}This link link is valid for {{ expiration_days }} days.{% endblocktrans %}{% endautoescape %}

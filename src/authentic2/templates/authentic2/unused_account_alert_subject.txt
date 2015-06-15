@@ -1,1 +1,1 @@
-{% load i18n %}{% blocktrans %}Alert: {{ user }} you have not logged since {{ threshold }}{% endblocktrans %}
+{% load i18n %}{% autoescape off %}{% blocktrans %}Alert: {{ user }} you have not logged since {{ threshold }}{% endblocktrans %}{% endautoescape %}
