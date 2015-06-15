@@ -1,10 +1,9 @@
-from importlib import import_module
 import logging
 
 from django.core.exceptions import ImproperlyConfigured
 
 from ..decorators import to_list
-from .. import app_settings
+from .. import app_settings, plugins, utils
 
 __ALL__ = ['get_attribute_names', 'get_attributes']
 
@@ -61,16 +60,7 @@ def get_sources():
     List all known sources
     '''
     for path in app_settings.ATTRIBUTE_BACKENDS:
-        try:
-            source = import_module(path)
-        except ImportError:
-            try:
-                module, attr = path.rsplit('.', 1)
-                source = import_module(module)
-                source = getattr(source, attr)
-            except (ImportError, AttributeError):
-                raise ImproperlyConfigured('unable to import attribute backend: %r' % path)
-        yield source
+        yield utils.import_module_or_class(path)
 
 @to_list
 def get_attribute_names(ctx):
