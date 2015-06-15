@@ -341,10 +341,16 @@ def form_add_error(form, msg, safe=False):
         msg = html.mark_safe(msg)
     errors.append(msg)
 
-def import_class(form_class):
-    module, form_class = form_class.rsplit('.', 1)
-    module = import_module(module)
-    return getattr(module, form_class)
+def import_module_or_class(path):
+    try:
+        return import_module(path)
+    except ImportError:
+        try:
+            module, attr = path.rsplit('.', 1)
+            source = import_module(module)
+            return getattr(source, attr)
+        except (ImportError, AttributeError):
+            raise ImproperlyConfigured('unable to import class/module path: %r' % path)
 
 def check_referer(request, skip_post=True):
     '''Check that the current referer match current origin.

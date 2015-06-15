@@ -11,7 +11,7 @@ from django.views.generic.base import TemplateView
 from django.contrib.auth import get_user_model
 from django.forms import CharField
 
-from authentic2.utils import import_class, redirect, make_url, get_fields_and_labels
+from authentic2.utils import import_module_or_class, redirect, make_url, get_fields_and_labels
 from authentic2.a2_rbac.utils import get_default_ou
 
 from django_rbac.utils import get_ou_model
@@ -42,7 +42,7 @@ def login(request, user):
     django_login(request, user)
 
 class RegistrationView(cbv.ValidateCSRFMixin, FormView):
-    form_class = import_class(app_settings.A2_REGISTRATION_FORM_CLASS)
+    form_class = import_module_or_class(app_settings.A2_REGISTRATION_FORM_CLASS)
     template_name = 'registration/registration_form.html'
 
     def form_valid(self, form):

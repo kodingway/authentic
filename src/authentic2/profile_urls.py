@@ -2,12 +2,12 @@ from django.conf.urls import patterns, url
 from django.contrib.auth import views as auth_views, REDIRECT_FIELD_NAME
 from django.core.urlresolvers import reverse
 
-from authentic2.utils import import_class
+from authentic2.utils import import_module_or_class
 from . import app_settings, decorators, profile_views
 
-SET_PASSWORD_FORM_CLASS = import_class(
+SET_PASSWORD_FORM_CLASS = import_module_or_class(
         app_settings.A2_REGISTRATION_SET_PASSWORD_FORM_CLASS)
-CHANGE_PASSWORD_FORM_CLASS = import_class(
+CHANGE_PASSWORD_FORM_CLASS = import_module_or_class(
         app_settings.A2_REGISTRATION_CHANGE_PASSWORD_FORM_CLASS)
 
 @decorators.setting_enabled('A2_REGISTRATION_CAN_CHANGE_PASSWORD')
