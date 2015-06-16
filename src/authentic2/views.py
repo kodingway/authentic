@@ -69,11 +69,20 @@ class EditProfile(UpdateView):
     template_name = 'profiles/edit_profile.html'
     success_url = '../'
 
-    def get_form_class(self):
+    @classmethod
+    def can_edit_profile(cls):
+        fields, labels = cls.get_fields()
+        return bool(fields) and app_settings.A2_PROFILE_CAN_EDIT_PROFILE
+
+    @classmethod
+    def get_fields(cls):
         default_fields = list(models.Attribute.objects.filter(user_editable=True).values_list('name', flat=True))
-        fields, labels = utils.get_fields_and_labels(
+        return utils.get_fields_and_labels(
             app_settings.A2_PROFILE_FIELDS,
             default_fields)
+
+    def get_form_class(self):
+        fields, labels = self.get_fields()
         return forms.modelform_factory(compat.get_user_model(),
                 fields=fields, labels=labels)
 
@@ -396,7 +405,7 @@ class ProfileView(TemplateView):
             'frontends_block': blocks,
             'profile': profile,
             'allow_account_deletion': app_settings.A2_REGISTRATION_CAN_DELETE_ACCOUNT,
-            'allow_profile_edit': app_settings.A2_PROFILE_CAN_EDIT_PROFILE,
+            'allow_profile_edit': EditProfile.can_edit_profile(),
             'allow_email_change': app_settings.A2_PROFILE_CAN_CHANGE_EMAIL,
             'federation_management': federation_management,
         })
