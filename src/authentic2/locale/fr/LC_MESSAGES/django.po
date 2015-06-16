@@ -461,7 +461,7 @@ msgstr "obligation de changement de mot de passe"
 
 #: authentic2/models.py:244
 msgid "slug"
-msgstr "code court"
+msgstr "identifiant court"
 
 #: authentic2/models.py:247
 msgid "organizational unit"
@@ -469,7 +469,7 @@ msgstr "entité"
 
 #: authentic2/models.py:261
 msgid "The slug must be unique for this ou"
-msgstr "Le code court doit être unique au sein de cette entité."
+msgstr "L'identifiant court doit être unique au sein de cette entité."
 
 #: authentic2/models.py:266
 msgid "The name must be unique for this ou"

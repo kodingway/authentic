@@ -26,7 +26,7 @@ msgstr "nom"
 
 #: django_rbac/models.py:39 django_rbac/models.py:112
 msgid "slug"
-msgstr "code court"
+msgstr "identifiant court"
 
 #: django_rbac/models.py:41
 msgid "description"

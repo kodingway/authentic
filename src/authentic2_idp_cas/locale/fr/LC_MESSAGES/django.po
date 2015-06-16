@@ -63,7 +63,7 @@ msgstr "applications"
 
 #: authentic2_idp_cas/models.py:65
 msgid "slug"
-msgstr "code court"
+msgstr "identifiant court"
 
 #: authentic2_idp_cas/models.py:69
 msgid "enabled"
