@@ -83,8 +83,8 @@ def modelform_factory(model, **kwargs):
        For the user model also add attribute based fields.
     '''
     form = kwargs.pop('form', None)
-    fields = kwargs.get('fields', [])
-    required = list(kwargs.pop('required', []))
+    fields = kwargs.get('fields') or []
+    required = list(kwargs.pop('required', []) or [])
     d = {}
     # KV attributes are only supported for the user model currently
     modelform = None
