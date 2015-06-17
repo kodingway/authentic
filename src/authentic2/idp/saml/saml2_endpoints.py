@@ -500,10 +500,10 @@ def sso(request):
                 AUTHENTIC_STATUS_CODE_MISSING_DESTINATION)
     # Check NameIDPolicy or force the NameIDPolicy
     name_id_policy = login.request.nameIdPolicy
-    logger.debug('nameID policy is %s' % name_id_policy.dump())
-    if name_id_policy.format and \
+    if name_id_policy and name_id_policy.format and \
             name_id_policy.format != \
                 lasso.SAML2_NAME_IDENTIFIER_FORMAT_UNSPECIFIED:
+        logger.debug('nameID policy is %s' % name_id_policy.dump())
         nid_format = saml2_urn_to_nidformat(name_id_policy.format,
             accepted=policy.accepted_name_id_format)
         logger.debug('nameID format %s' % nid_format)
