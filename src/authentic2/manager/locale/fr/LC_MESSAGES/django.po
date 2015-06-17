@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: authentic2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-17 15:36+0200\n"
-"PO-Revision-Date: 2015-01-29 18:18+0100\n"
+"PO-Revision-Date: 2015-06-17 23:47+0200\n"
 "Last-Translator: Benjamin Dauvergne <bdauvergne@entrouvert.com>\n"
 "Language-Team: French <fr@li.org>\n"
 "Language: \n"
@@ -552,7 +552,7 @@ msgstr "Souhaitez-vous vraiment supprimer \"%s\" ?"
 
 #: authentic2/manager/user_views.py:117
 msgid "You cannot desactivate your own user"
-msgstr "Vous new pouvez pas désactiver votre propre utilisateur."
+msgstr "Vous ne pouvez pas désactiver votre propre utilisateur."
 
 #: authentic2/manager/user_views.py:133
 msgid ""
