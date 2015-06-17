@@ -10,6 +10,7 @@ from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
 from django.core.urlresolvers import reverse
+from django.contrib.messages.views import SuccessMessageMixin
 
 from django_tables2 import SingleTableView, SingleTableMixin
 
@@ -316,7 +317,7 @@ class BaseAddView(TitleMixin, ModelNameMixin, PermissionMixin,
         return reverse(self.success_view_name, kwargs={'pk': self.object.pk})
 
 
-class BaseEditView(TitleMixin, ModelNameMixin, PermissionMixin,
+class BaseEditView(SuccessMessageMixin, TitleMixin, ModelNameMixin, PermissionMixin,
                    AjaxFormViewMixin, ModelFormView, UpdateView):
     template_name = 'authentic2/manager/form.html'
 
