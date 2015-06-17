@@ -140,7 +140,7 @@ do_migrate() {
 
 do_collectstatic() {
     log_action_msg "Collecting static files .."
-    su $USER -p -c "$MANAGE_SCRIPT collectstatic --noinput"
+    su $USER -p -c "$MANAGE_SCRIPT collectstatic -l --noinput"
     log_action_msg ".. done"
 }
 
