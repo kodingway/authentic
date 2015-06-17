@@ -44,8 +44,13 @@ div.role-info h3 {
 .manager-m2m-add-form {
 	margin-top: 2em;
 	margin-bottom: 2em;
+	display: flex;
 }
 
+.manager-m2m-add-form .select2-container {
+	flex-grow: 1;
+	margin: 0 1em;
+}
 
 table.main td.name {
         text-align: left;
