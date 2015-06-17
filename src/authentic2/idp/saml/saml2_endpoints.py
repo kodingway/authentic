@@ -532,7 +532,7 @@ def need_login(request, login, save, nid_format):
     """
     nonce = login.request.id or get_nonce()
     save_key_values(nonce, login.dump(), False, save, nid_format)
-    next_url = reverse(continue_sso)
+    next_url = make_url(continue_sso, params={NONCE_FIELD_NAME: nonce})
     logger.debug('redirect to login page with next url %s', next_url)
     return login_require(request, next_url=next_url,
             params={NONCE_FIELD_NAME: nonce})
