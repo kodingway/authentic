@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-11 14:17+0200\n"
+"POT-Creation-Date: 2015-06-17 15:36+0200\n"
 "PO-Revision-Date: 2015-02-26 17:53+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -483,6 +483,31 @@ msgstr "application"
 msgid "base service models"
 msgstr "applications"
 
+#: authentic2/profile_forms.py:13
+msgid "Email"
+msgstr "Courriel"
+
+#: authentic2/profile_views.py:35
+msgid "Password reset"
+msgstr "obligation de changement de mot de passe"
+
+#: authentic2/profile_views.py:50
+msgid "A mail was sent to you with instructions to reset your password"
+msgstr "Un mail vous a été envoyé avec des instructions pour ré-initialiser "
+"mot de passe."
+
+#: authentic2/profile_views.py:83
+msgid "User not found"
+msgstr "Utilisateur introuvable"
+
+#: authentic2/profile_views.py:87
+msgid "You reset password link is invalid or has expired"
+msgstr "Votre lien de ré-initialisation de mot de passe est inalid ou expiré."
+
+#: authentic2/profile_views.py:97
+msgid "Enter new password"
+msgstr "Entrez un nouveau mot de passe"
+
 #: authentic2/registration_backend/forms.py:37
 #: authentic2/registration_backend/forms.py:113
 msgid ""
@@ -628,7 +653,6 @@ msgstr "Administration"
 #: authentic2/templates/authentic2/login.html:5
 #: authentic2/templates/authentic2/login_password_form.html:6
 #: authentic2/templates/registration/activate.html:14
-#: authentic2/templates/registration/password_reset_complete.html:12
 msgid "Log in"
 msgstr "Connexion"
 
@@ -913,13 +937,7 @@ msgstr "Mot de passe modifié"
 msgid "Submit"
 msgstr "Valider"
 
-#: authentic2/templates/registration/password_reset_complete.html:5
-#: authentic2/templates/registration/password_reset_complete.html:10
-msgid "Password reset successfully"
-msgstr "Mot de passe réinitialisé avec succés"
-
 #: authentic2/templates/registration/password_reset_confirm.html:5
-#: authentic2/templates/registration/password_reset_done.html:5
 #: authentic2/templates/registration/password_reset_form.html:5
 #: authentic2/templates/registration/password_reset_form.html:10
 msgid "Resetting password"
@@ -929,15 +947,18 @@ msgstr "Ré-initialiser le mot de passe"
 msgid "Password reset failed"
 msgstr "Ré-initialistion du mot de passe échouée"
 
-#: authentic2/templates/registration/password_reset_done.html:10
-msgid "Email with password reset instructions has been sent."
-msgstr ""
-"Un courriel avec des instructions pour réinitialiser votre mot de passe "
-"vient de vous être envoyé."
-
 #: authentic2/templates/registration/password_reset_email.html:2
 #, python-format
-msgid "Reset password at %(site_name)s"
+msgid ""
+"You requested reset of your password on %(site_name)s, to proceed please\n"
+"click on the following link"
+msgstr ""
+"Vous avez demandé la ré-initialisation de votre mot de passe sur\n"
+"%(site_name)s, veuillez cliquer sur le lien suivant :"
+
+#: authentic2/templates/registration/password_reset_subject.txt:2
+#, python-format
+msgid "Password reset on %(site_name)s"
 msgstr "Ré-initialiser le mot de passe sur %(site_name)s"
 
 #: authentic2/templates/registration/registration_closed.html:5
@@ -1009,7 +1030,7 @@ msgstr "créez un nouveau compte"
 msgid "Please fill the form to complete your registration"
 msgstr "Veuillez remplir le formulaire afin de finir l'enregistrement"
 
-#: authentic2/utils.py:425
+#: authentic2/utils.py:431
 msgid "The form was out of date, please try again."
 msgstr "Ce formulaire était périmé, veuillez ré-essayer."
 
@@ -1052,7 +1073,7 @@ msgstr ""
 msgid "your password dit not match the regular expession %s"
 msgstr "Votre mot de passe ne valide pas l'expression régulière %s."
 
-#: authentic2/views.py:149
+#: authentic2/views.py:158
 msgid ""
 "Your request for changing your email is received. An email of validation was "
 "sent to you. Please click on the link contained inside."
@@ -1061,44 +1082,44 @@ msgstr ""
 "courriel de validation vous a été envoyé. Veuillez cliquer sur le lien "
 "contenu dans ce courriel."
 
-#: authentic2/views.py:169
+#: authentic2/views.py:178
 #, python-brace-format
 msgid "your request for changing your email for {0} is successful"
 msgstr "Votre demande de changement d'adresse de courriel pour {0} est validée"
 
-#: authentic2/views.py:172
+#: authentic2/views.py:181
 msgid "your request for changing your email is too old, try again"
 msgstr ""
 "Votre demande de changement d'adresse de courriel est trop ancienne, "
 "veuillez réessayez"
 
-#: authentic2/views.py:175
+#: authentic2/views.py:184
 msgid "your request for changing your email is invalid, try again"
 msgstr ""
 "Votre demande de changement d'adresse de courriel est invalide, veuillez "
 "réessayer"
 
-#: authentic2/views.py:178
+#: authentic2/views.py:187
 msgid "your request for changing your email was not on this site, try again"
 msgstr ""
 "Votre demande de changement d'adresse de courriel vient d'un autre site que "
 "celui-ci."
 
-#: authentic2/views.py:181
+#: authentic2/views.py:190
 msgid "your request for changing your email is for an unknown user, try again"
 msgstr ""
 "Votre demande de changement d'adresse de courriel concerne un utilisateur "
 "inconnu."
 
-#: authentic2/views.py:443
+#: authentic2/views.py:452
 msgid "Logging out from all your services"
 msgstr "Déconnexion de toutes vos applications"
 
-#: authentic2/views.py:448
+#: authentic2/views.py:457
 msgid "You have been logged out"
 msgstr "Vous avez été déconnecté."
 
-#: authentic2/views.py:488
+#: authentic2/views.py:497
 msgid "The page is out of date, it was reloaded for you"
 msgstr ""
 "Cette page est périmée car vous vous êtes connecté entre temps; nous l'avons "

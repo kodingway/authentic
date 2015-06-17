@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: authentic2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-08 17:59+0200\n"
+"POT-Creation-Date: 2015-06-17 15:36+0200\n"
 "PO-Revision-Date: 2015-01-29 18:18+0100\n"
 "Last-Translator: Benjamin Dauvergne <bdauvergne@entrouvert.com>\n"
 "Language-Team: French <fr@li.org>\n"
@@ -103,7 +103,7 @@ msgstr ""
 "Vous ne pouvez pas supprimer l'entité par défaut, vous devez d'abord "
 "endéfinir une nouvelle."
 
-#: authentic2/manager/role_views.py:54
+#: authentic2/manager/role_views.py:61
 #: authentic2/manager/templates/authentic2/manager/role_add.html:4
 #: authentic2/manager/templates/authentic2/manager/role_add.html:9
 #: authentic2/manager/templates/authentic2/manager/role_add.html:13
@@ -111,20 +111,20 @@ msgstr ""
 msgid "Add role"
 msgstr "Ajouter un rôle"
 
-#: authentic2/manager/role_views.py:76
+#: authentic2/manager/role_views.py:83
 msgid "Edit role description"
 msgstr "Modifier la description du rôle"
 
-#: authentic2/manager/role_views.py:103
+#: authentic2/manager/role_views.py:110
 msgid "User already in this role."
 msgstr "L'utilisateur a déjà ce rôle."
 
-#: authentic2/manager/role_views.py:110 authentic2/manager/role_views.py:141
-#: authentic2/manager/role_views.py:183 authentic2/manager/user_views.py:232
+#: authentic2/manager/role_views.py:117 authentic2/manager/role_views.py:148
+#: authentic2/manager/role_views.py:190 authentic2/manager/user_views.py:232
 msgid "You are not authorized"
 msgstr "Vous n'êtes pas autorisé."
 
-#: authentic2/manager/role_views.py:134
+#: authentic2/manager/role_views.py:141
 #, python-format
 msgid "Role \"%s\" is already a child of this role."
 msgstr "Le rôle « %s » descend déjà de ce rôle."
@@ -133,36 +133,36 @@ msgstr "Le rôle « %s » descend déjà de ce rôle."
 msgid "Edit service"
 msgstr "Éditer l'application"
 
-#: authentic2/manager/tables.py:25 authentic2/manager/tables.py:51
+#: authentic2/manager/tables.py:26 authentic2/manager/tables.py:52
 msgid "None"
 msgstr "Aucun(e)"
 
-#: authentic2/manager/tables.py:42
+#: authentic2/manager/tables.py:43
 msgid "username"
 msgstr "identifiant"
 
-#: authentic2/manager/tables.py:43
+#: authentic2/manager/tables.py:44
 msgid "Email"
 msgstr "Adresse électronique"
 
-#: authentic2/manager/tables.py:44 authentic2/manager/tables.py:104
+#: authentic2/manager/tables.py:45 authentic2/manager/tables.py:105
 msgid "Direct member"
 msgstr "Attributaire"
 
-#: authentic2/manager/tables.py:58
+#: authentic2/manager/tables.py:59
 msgid "Direct members"
 msgstr "Attributaires"
 
-#: authentic2/manager/tables.py:89 authentic2/manager/tables.py:101
-#: authentic2/manager/tables.py:125
+#: authentic2/manager/tables.py:90 authentic2/manager/tables.py:102
+#: authentic2/manager/tables.py:126
 msgid "name"
 msgstr "identifiant"
 
-#: authentic2/manager/tables.py:92
+#: authentic2/manager/tables.py:93
 msgid "Direct child"
 msgstr "Descendant direct"
 
-#: authentic2/manager/tables.py:107
+#: authentic2/manager/tables.py:108
 msgid "Via"
 msgstr "Via"
 
@@ -227,7 +227,7 @@ msgid "Delete"
 msgstr "Supprimer"
 
 #: authentic2/manager/templates/authentic2/manager/delete.html:19
-#: authentic2/manager/templates/authentic2/manager/form.html:47
+#: authentic2/manager/templates/authentic2/manager/form.html:53
 #: authentic2/manager/templates/authentic2/manager/ou_delete.html:19
 msgid "Cancel"
 msgstr "Annuler"
@@ -236,11 +236,11 @@ msgstr "Annuler"
 msgid "Export"
 msgstr "Exporter"
 
-#: authentic2/manager/templates/authentic2/manager/form.html:48
+#: authentic2/manager/templates/authentic2/manager/form.html:54
 msgid "Save"
 msgstr "Sauvegarder"
 
-#: authentic2/manager/templates/authentic2/manager/form.html:53
+#: authentic2/manager/templates/authentic2/manager/form.html:59
 msgid "Actions"
 msgstr "Actions"
 
@@ -255,7 +255,7 @@ msgstr "Changer le mot de passe"
 #: authentic2/manager/templates/authentic2/manager/homepage.html:22
 #: authentic2/manager/templates/authentic2/manager/ou_common.html:4
 #: authentic2/manager/templates/authentic2/manager/ou_common.html:8
-#: authentic2/manager/views.py:349
+#: authentic2/manager/views.py:350
 msgid "Organizational units management"
 msgstr "Entités"
 
@@ -263,7 +263,7 @@ msgstr "Entités"
 #: authentic2/manager/templates/authentic2/manager/user_edit.html:10
 #: authentic2/manager/templates/authentic2/manager/user_roles.html:6
 #: authentic2/manager/templates/authentic2/manager/users.html:21
-#: authentic2/manager/views.py:355
+#: authentic2/manager/views.py:356
 msgid "User management"
 msgstr "Utilisateurs"
 
@@ -272,7 +272,7 @@ msgstr "Utilisateurs"
 #: authentic2/manager/templates/authentic2/manager/role_common.html:4
 #: authentic2/manager/templates/authentic2/manager/role_common.html:8
 #: authentic2/manager/templates/authentic2/manager/role_edit.html:8
-#: authentic2/manager/views.py:361
+#: authentic2/manager/views.py:362
 msgid "Roles management"
 msgstr "Rôles"
 
@@ -280,7 +280,7 @@ msgstr "Rôles"
 #: authentic2/manager/templates/authentic2/manager/ous.html:4
 #: authentic2/manager/templates/authentic2/manager/services.html:4
 #: authentic2/manager/templates/authentic2/manager/services.html:8
-#: authentic2/manager/views.py:367
+#: authentic2/manager/views.py:368
 msgid "Services management"
 msgstr "Applications"
 
@@ -580,17 +580,17 @@ msgstr "Nouveau mot de passe défini."
 msgid "User {user} has already the role {role}."
 msgstr "L'utilisateur {user} possède déjà le rôle {role}."
 
-#: authentic2/manager/views.py:289
+#: authentic2/manager/views.py:290
 #, python-format
 msgid "Delete %s"
 msgstr "Supprimer l'objet « %s »"
 
-#: authentic2/manager/views.py:313
+#: authentic2/manager/views.py:314
 #, python-format
 msgid "Add %s"
 msgstr "Ajouter l'objet « %s »"
 
-#: authentic2/manager/views.py:324
+#: authentic2/manager/views.py:325
 #, python-format
 msgid "Edit %s"
 msgstr "Éditer l'objet « %s »"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-08 17:59+0200\n"
+"POT-Creation-Date: 2015-06-17 15:36+0200\n"
 "PO-Revision-Date: 2014-11-21 00:08+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -522,67 +522,67 @@ msgstr "dump de session SAML"
 msgid "SAML session dumps"
 msgstr "dumps de session SAML"
 
-#: authentic2/saml/models.py:637
+#: authentic2/saml/models.py:638
 msgid "SAML manage dump"
 msgstr "dump du profil gestion des fédérations SAML"
 
-#: authentic2/saml/models.py:638
+#: authentic2/saml/models.py:639
 msgid "SAML manage dumps"
 msgstr "dumps du profil gestion des fédérations SAML"
 
-#: authentic2/saml/models.py:650
+#: authentic2/saml/models.py:651
 msgid "SAML artifact"
 msgstr "artéfact SAML"
 
-#: authentic2/saml/models.py:651
+#: authentic2/saml/models.py:652
 msgid "SAML artifacts"
 msgstr "artéfacts SAML"
 
-#: authentic2/saml/models.py:717
+#: authentic2/saml/models.py:718
 msgid "SAML federation"
 msgstr "fédérations SAML"
 
-#: authentic2/saml/models.py:718
+#: authentic2/saml/models.py:719
 msgid "SAML federations"
 msgstr "fédérations SAML"
 
-#: authentic2/saml/models.py:732
+#: authentic2/saml/models.py:733
 msgid "Qualifier"
 msgstr ""
 
-#: authentic2/saml/models.py:734
+#: authentic2/saml/models.py:735
 msgid "NameIDFormat"
 msgstr ""
 
-#: authentic2/saml/models.py:736
+#: authentic2/saml/models.py:737
 msgid "NameID"
 msgstr ""
 
-#: authentic2/saml/models.py:738
+#: authentic2/saml/models.py:739
 msgid "SPNameQualifier"
 msgstr ""
 
-#: authentic2/saml/models.py:774
+#: authentic2/saml/models.py:775
 msgid "SAML session"
 msgstr "session SAML"
 
-#: authentic2/saml/models.py:775
+#: authentic2/saml/models.py:776
 msgid "SAML sessions"
 msgstr "sessions SAML"
 
-#: authentic2/saml/models.py:784
+#: authentic2/saml/models.py:785
 msgid "SAML service provider session"
 msgstr "session de fournisseur de service SAML"
 
-#: authentic2/saml/models.py:785
+#: authentic2/saml/models.py:786
 msgid "SAML service provider sessions"
 msgstr "sessions de fournisseur de service SAML"
 
-#: authentic2/saml/models.py:798
+#: authentic2/saml/models.py:799
 msgid "key value association"
 msgstr "association clé valeur"
 
-#: authentic2/saml/models.py:799
+#: authentic2/saml/models.py:800
 msgid "key value associations"
 msgstr "associations clé valeurs"
 
