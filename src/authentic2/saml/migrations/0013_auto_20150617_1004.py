@@ -23,8 +23,4 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunPython(remove_duplicate_session_dump, reverse_code=noop),
-        migrations.AlterUniqueTogether(
-            name='libertysessiondump',
-            unique_together=set([('django_session_key', 'kind')]),
-        ),
     ]
