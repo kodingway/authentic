@@ -500,15 +500,16 @@ def sso(request):
                 AUTHENTIC_STATUS_CODE_MISSING_DESTINATION)
     # Check NameIDPolicy or force the NameIDPolicy
     name_id_policy = login.request.nameIdPolicy
-    logger.debug('nameID policy is %s' % name_id_policy.dump())
-    if name_id_policy.format and \
+    if name_id_policy and \
+            name_id_policy.format and \
             name_id_policy.format != \
                 lasso.SAML2_NAME_IDENTIFIER_FORMAT_UNSPECIFIED:
+        logger.debug('nameID policy is %r', name_id_policy.dump())
         nid_format = saml2_urn_to_nidformat(name_id_policy.format,
             accepted=policy.accepted_name_id_format)
-        logger.debug('nameID format %s' % nid_format)
+        logger.debug('nameID format %s', nid_format)
         default_nid_format = policy.default_name_id_format
-        logger.debug('default nameID format %s' % default_nid_format)
+        logger.debug('default nameID format %s', default_nid_format)
         accepted_nid_format = policy.accepted_name_id_format
         logger.debug('nameID format accepted %s' \
             % str(accepted_nid_format))
@@ -522,7 +523,6 @@ def sso(request):
         logger.debug('no nameID policy format')
         nid_format = policy.default_name_id_format or 'transient'
         logger.debug('set nameID policy format %s' % nid_format)
-        name_id_policy.format = nidformat_to_saml2_urn(nid_format)
     return sso_after_process_request(request, login, nid_format=nid_format)
 
 
@@ -686,15 +686,15 @@ def sso_after_process_request(request, login, consent_obtained=False,
     if is_transient_user(request.user):
         logger.debug('the user is transient')
         transient_user = True
-    if transient_user and login.request.nameIdPolicy.format == \
-            lasso.SAML2_NAME_IDENTIFIER_FORMAT_PERSISTENT:
+    if transient_user and nid_format == 'persistent':
         logger.info("access denied, the user is "
             "transient and the sp ask for persistent")
         set_saml2_response_responder_status_code(login.response,
                 lasso.SAML2_STATUS_CODE_REQUEST_DENIED)
         return finish_sso(request, login)
     # If the sp does not allow create, reject
-    if transient_user and login.request.nameIdPolicy.allowCreate == 'false':
+    if transient_user and login.request.nameIdPolicy and \
+            login.request.nameIdPolicy.allowCreate == 'false':
         logger.info("access denied, we created a "
             "transient user and allow creation is not authorized by the SP")
         set_saml2_response_responder_status_code(login.response,
@@ -703,8 +703,7 @@ def sso_after_process_request(request, login, consent_obtained=False,
 
     #Do not ask consent for federation if a transient nameID is provided
     transient = False
-    if login.request.nameIdPolicy.format == \
-            lasso.SAML2_NAME_IDENTIFIER_FORMAT_TRANSIENT:
+    if nid_format == 'transient':
         transient = True
 
     attributes = {}

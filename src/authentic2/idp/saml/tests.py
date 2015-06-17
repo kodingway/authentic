@@ -13,6 +13,8 @@ from django.utils.translation import gettext as _
 from authentic2.tests import Authentic2TestCase
 from authentic2.saml import models as saml_models
 from authentic2.a2_rbac.models import Role, OrganizationalUnit
+from authentic2.utils import make_url
+from authentic2.constants import NONCE_FIELD_NAME
 
 try:
     import lasso
@@ -34,7 +36,6 @@ class SamlBaseTestCase(Authentic2TestCase):
    <SingleLogoutService
      Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
      Location="https://files.entrouvert.org/mellon/logout" />
-   <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
    <AssertionConsumerService
      index="0"
      isDefault="true"
@@ -69,7 +70,7 @@ class SamlBaseTestCase(Authentic2TestCase):
         server.addProviderFromBuffer(lasso.PROVIDER_ROLE_IDP, idp_meta)
         return server
 
-    def setUp(self):
+    def setup(self, default_name_id_format='persistent'):
         self.base_url = 'https://sp.example.com'
         self.name = 'Test SP'
         self.slug = 'test-sp'
@@ -103,8 +104,9 @@ class SamlBaseTestCase(Authentic2TestCase):
                 name='Default',
                 enabled=True,
                 authn_request_signed=False,
-                default_name_id_format='persistent',
-                accepted_name_id_format=['persistent'])
+                default_name_id_format=default_name_id_format,
+                accepted_name_id_format=['email', 'persistent', 'transient',
+                                         'username'])
         self.admin_role = Role.objects.create(
             name='Administrator',
             slug='administrator',
@@ -139,7 +141,8 @@ class SamlBaseTestCase(Authentic2TestCase):
             force_authn=None,
             is_passive=None,
             sp_name_qualifier=None,
-            sign=False):
+            sign=False,
+            name_id_policy=True):
         server = self.get_server()
         login = lasso.Login(server)
         if not sign:
@@ -159,6 +162,8 @@ class SamlBaseTestCase(Authentic2TestCase):
             policy.spNameQualifier = sp_name_qualifier
         if relay_state is not None:
             login.msgRelayState = relay_state
+        if not name_id_policy:
+            request.nameIdPolicy = None
         login.buildAuthnRequestMsg()
         if method == lasso.HTTP_METHOD_REDIRECT:
             self.assertIsNone(login.msgBody, 'body should be None with '
@@ -170,7 +175,7 @@ class SamlBaseTestCase(Authentic2TestCase):
         url_parsed = urlparse.urlparse(login.msgUrl)
         self.assertEqual(url_parsed.path, reverse('a2-idp-saml-sso'),
                          'msgUrl should target the sso endpoint')
-        return login.msgUrl, login.msgBody
+        return login.msgUrl, login.msgBody, request.id
 
     def parse_authn_response(self, saml_response):
         server = self.get_server()
@@ -182,13 +187,31 @@ class SamlBaseTestCase(Authentic2TestCase):
 
 class SamlSSOTestCase(SamlBaseTestCase):
     def test_sso_login_redirect(self):
+        self.do_test_sso(dict(allow_create=True,
+                              format=lasso.SAML2_NAME_IDENTIFIER_FORMAT_PERSISTENT))
+
+    def test_sso_cancel_redirect(self):
+        self.do_test_sso(dict(allow_create=True), cancel=True)
+
+    def test_sso_no_name_id_policy_redirect(self):
+        self.do_test_sso(dict(allow_create=True, name_id_policy=False),
+                         check_federation=False, default_name_id_format='email')
+
+    def do_test_sso(self, make_authn_request_kwargs={}, check_federation=True,
+                    cancel=False, default_name_id_format='persistent'):
+        self.setup(default_name_id_format=default_name_id_format)
         client = Client()
         # Launch an AuthnRequest
-        url, body = self.make_authn_request(allow_create=True)
+        url, body, request_id = self.make_authn_request(
+            **make_authn_request_kwargs)
         response = client.get(url)
         self.assertRedirectsComplex(response, reverse('auth_login'), **{
             'nonce': '*',
-            REDIRECT_FIELD_NAME: reverse('a2-idp-saml-continue'),
+            REDIRECT_FIELD_NAME: make_url('a2-idp-saml-continue',
+                                          params={
+                                              NONCE_FIELD_NAME: request_id
+                                          }
+                                         ),
         })
         nonce = urlparse.parse_qs(
             urlparse.urlparse(
@@ -200,146 +223,101 @@ class SamlSSOTestCase(SamlBaseTestCase):
         self.assertInHTML(u'<input type="submit" name="cancel" '
                           'value="%s"/>' % _('Cancel'), response.content,
                           count=1)
-        response = client.post(url, {
-            'username': self.email,
-            'password': self.password,
-            'login-password-submit': 1,
-        })
-        self.assertRedirectsComplex(
-            response, reverse('a2-idp-saml-continue'), nonce=nonce)
-        response = client.get(response['Location'])
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response['Content-type'].split(';')[0], 'text/html')
-        doc = parse(StringIO.StringIO(response.content)).getroot()
-        self.assertEqual(len(doc.forms), 1, msg='the number of forms is not 1')
-        self.assertEqual(
-            doc.forms[0].get('action'), '%s/sso/POST' % self.base_url)
-        self.assertIn('SAMLResponse', doc.forms[0].fields)
-        saml_response = doc.forms[0].fields['SAMLResponse']
-        try:
-            base64.b64decode(saml_response)
-        except TypeError:
-            self.fail('SAMLResponse is not base64 encoded: %s' % saml_response)
-        login = self.parse_authn_response(saml_response)
-        assertion = login.assertion
-        federation = saml_models.LibertyFederation.objects.get()
-        assertion_xml = assertion.exportToXml()
-        namespaces = {
-            'saml': lasso.SAML2_ASSERTION_HREF,
-        }
-        constraints = (
-            ('/saml:Assertion/saml:Subject/saml:NameID',
-                federation.name_id_content),
-            ('/saml:Assertion/saml:Subject/saml:NameID/@Format',
-                lasso.SAML2_NAME_IDENTIFIER_FORMAT_PERSISTENT),
-            ('/saml:Assertion/saml:Subject/saml:NameID/@SPNameQualifier',
-                '%s/' % self.base_url),
-
-            ("/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='first-name']/"
-                "@NameFormat", lasso.SAML2_ATTRIBUTE_NAME_FORMAT_BASIC),
-            ("/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='first-name']/"
-                "@FriendlyName", 'First name'),
-            ("/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='first-name']/"
-                "saml:AttributeValue", 'John'),
-
-            ("/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='last-name']/"
-                "@NameFormat", lasso.SAML2_ATTRIBUTE_NAME_FORMAT_BASIC),
-            ("/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='last-name']/"
-                "@FriendlyName", 'Last name'),
-            ("/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='last-name']/"
-                "saml:AttributeValue", 'Doe'),
-
-            ("/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='superuser']/"
-                "@NameFormat", lasso.SAML2_ATTRIBUTE_NAME_FORMAT_BASIC),
-            ("/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='superuser']/"
-                "@FriendlyName", 'Superuser status'),
-            ("/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='superuser']/"
-                "saml:AttributeValue", 'true'),
-        )
-        self.assertXPathConstraints(assertion_xml, constraints, namespaces)
-
-    def test_sso_cancel_redirect(self):
-        client = Client()
-        # Launch an AuthnRequest
-        url, body = self.make_authn_request(allow_create=True)
-        response = client.get(url)
-        self.assertRedirectsComplex(response, reverse('auth_login'), **{
-                'nonce': '*',
-                REDIRECT_FIELD_NAME: reverse('a2-idp-saml-continue'),
-        })
-        nonce = urlparse.parse_qs(urlparse.urlparse(response['Location']).query)['nonce'][0]
-        url = response['Location']
-        response = client.get(url)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response['Content-Type'].split(';')[0], 'text/html')
-        self.assertInHTML(u'<input type="submit" name="cancel" value="%s"/>' % _('Cancel'), response.content, count=1)
-        response = client.post(url, {
-                'cancel': 1,
-        })
-        self.assertRedirectsComplex(response, reverse('a2-idp-saml-continue'), cancel='*', nonce=nonce)
-        response = client.get(response['Location'])
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response['Content-type'].split(';')[0], 'text/html')
-        doc = parse(StringIO.StringIO(response.content)).getroot()
-        self.assertEqual(len(doc.forms), 1, msg='the number of forms is not 1')
-        self.assertEqual(doc.forms[0].get('action'), '%s/sso/POST' % self.base_url)
-        self.assertIn('SAMLResponse', doc.forms[0].fields)
-        saml_response = doc.forms[0].fields['SAMLResponse']
-        try:
-            base64.b64decode(saml_response)
-        except TypeError:
-            self.fail('SAMLResponse is not base64 encoded: %s' % saml_response)
-        with self.assertRaises(lasso.ProfileRequestDeniedError):
-            assertion = self.parse_authn_response(saml_response)
-
-    def test_sso_login_redirect_attributes(self):
-        client = Client()
-        # Launch an AuthnRequest
-        url, body = self.make_authn_request(allow_create=True)
-        response = client.get(url)
-        self.assertRedirectsComplex(response, reverse('auth_login'), **{
-                'nonce': '*',
-                REDIRECT_FIELD_NAME: reverse('a2-idp-saml-continue'),
-        })
-        nonce = urlparse.parse_qs(urlparse.urlparse(response['Location']).query)['nonce'][0]
-        url = response['Location']
-        response = client.get(url)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response['Content-Type'].split(';')[0], 'text/html')
-        self.assertInHTML(u'<input type="submit" name="cancel" value="%s"/>' % _('Cancel'), response.content, count=1)
-        response = client.post(url, {
+        if cancel:
+            response = client.post(url, {
+                    'cancel': 1,
+            })
+            self.assertRedirectsComplex(response,
+                                        reverse('a2-idp-saml-continue'),
+                                        cancel='*', nonce=nonce)
+            response = client.get(response['Location'])
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response['Content-type'].split(';')[0],
+                             'text/html')
+            doc = parse(StringIO.StringIO(response.content)).getroot()
+            self.assertEqual(len(doc.forms), 1,
+                             msg='the number of forms is not 1')
+            self.assertEqual(doc.forms[0].get('action'),
+                             '%s/sso/POST' % self.base_url)
+            self.assertIn('SAMLResponse', doc.forms[0].fields)
+            saml_response = doc.forms[0].fields['SAMLResponse']
+            try:
+                base64.b64decode(saml_response)
+            except TypeError:
+                self.fail('SAMLResponse is not base64 encoded: %s'
+                          % saml_response)
+            with self.assertRaises(lasso.ProfileRequestDeniedError):
+                assertion = self.parse_authn_response(saml_response)
+        else:
+            response = client.post(url, {
                 'username': self.email,
                 'password': self.password,
                 'login-password-submit': 1,
-        })
-        self.assertRedirectsComplex(response, reverse('a2-idp-saml-continue'), nonce=nonce)
-        response = client.get(response['Location'])
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response['Content-type'].split(';')[0], 'text/html')
-        doc = parse(StringIO.StringIO(response.content)).getroot()
-        self.assertEqual(len(doc.forms), 1, msg='the number of forms is not 1')
-        self.assertEqual(doc.forms[0].get('action'), '%s/sso/POST' % self.base_url)
-        self.assertIn('SAMLResponse', doc.forms[0].fields)
-        saml_response = doc.forms[0].fields['SAMLResponse']
-        try:
-            base64.b64decode(saml_response)
-        except TypeError:
-            self.fail('SAMLResponse is not base64 encoded: %s' % saml_response)
-        login = self.parse_authn_response(saml_response)
-        assertion = login.assertion
-        federation = saml_models.LibertyFederation.objects.get()
-        assertion_xml = assertion.exportToXml()
-        def lasso_elt(elt):
-            return '{%s}%s' % (lasso.SAML2_ASSERTION_HREF, elt)
-        namespaces = {
-            'saml': lasso.SAML2_ASSERTION_HREF,
-        }
-        constraints = (
-            ('/saml:Assertion/saml:Subject/saml:NameID',
-                federation.name_id_content),
-            ('/saml:Assertion/saml:Subject/saml:NameID/@Format',
-                lasso.SAML2_NAME_IDENTIFIER_FORMAT_PERSISTENT),
-            ('/saml:Assertion/saml:Subject/saml:NameID/@SPNameQualifier',
-                '%s/' % self.base_url),
-        )
-        self.assertXPathConstraints(assertion_xml, constraints, namespaces)
+            })
+            self.assertRedirectsComplex(
+                response, reverse('a2-idp-saml-continue'), nonce=nonce)
+            response = client.get(response['Location'])
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response['Content-type'].split(';')[0], 'text/html')
+            doc = parse(StringIO.StringIO(response.content)).getroot()
+            self.assertEqual(len(doc.forms), 1, msg='the number of forms is not 1')
+            self.assertEqual(
+                doc.forms[0].get('action'), '%s/sso/POST' % self.base_url)
+            self.assertIn('SAMLResponse', doc.forms[0].fields)
+            saml_response = doc.forms[0].fields['SAMLResponse']
+            try:
+                base64.b64decode(saml_response)
+            except TypeError:
+                self.fail('SAMLResponse is not base64 encoded: %s' % saml_response)
+            login = self.parse_authn_response(saml_response)
+            assertion = login.assertion
+            assertion_xml = assertion.exportToXml()
+            namespaces = {
+                'saml': lasso.SAML2_ASSERTION_HREF,
+            }
+            constraints = ()
+            if check_federation:
+                format = make_authn_request_kwargs.get('format')
+                if  format == lasso.SAML2_NAME_IDENTIFIER_FORMAT_PERSISTENT:
+                    federation = saml_models.LibertyFederation.objects.get()
+                    constraints += (
+                        ('/saml:Assertion/saml:Subject/saml:NameID',
+                            federation.name_id_content),
+                        ('/saml:Assertion/saml:Subject/saml:NameID/@Format',
+                            lasso.SAML2_NAME_IDENTIFIER_FORMAT_PERSISTENT),
+                        ('/saml:Assertion/saml:Subject/saml:NameID/@SPNameQualifier',
+                            '%s/' % self.base_url),
+
+                    )
+                elif format == lasso.SAML2_NAME_IDENTIFIER_FORMAT_EMAIL or \
+                   (not format and default_name_id_format == 'email'):
+                    constraints += (
+                        ('/saml:Assertion/saml:Subject/saml:NameID',
+                            self.email),
+                        ('/saml:Assertion/saml:Subject/saml:NameID/@Format',
+                            lasso.SAML2_NAME_IDENTIFIER_FORMAT_EMAIL),
+                    )
+            constraints += (
+                ("/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='first-name']/"
+                    "@NameFormat", lasso.SAML2_ATTRIBUTE_NAME_FORMAT_BASIC),
+                ("/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='first-name']/"
+                    "@FriendlyName", 'First name'),
+                ("/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='first-name']/"
+                    "saml:AttributeValue", 'John'),
+
+                ("/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='last-name']/"
+                    "@NameFormat", lasso.SAML2_ATTRIBUTE_NAME_FORMAT_BASIC),
+                ("/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='last-name']/"
+                    "@FriendlyName", 'Last name'),
+                ("/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='last-name']/"
+                    "saml:AttributeValue", 'Doe'),
+
+                ("/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='superuser']/"
+                    "@NameFormat", lasso.SAML2_ATTRIBUTE_NAME_FORMAT_BASIC),
+                ("/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='superuser']/"
+                    "@FriendlyName", 'Superuser status'),
+                ("/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='superuser']/"
+                    "saml:AttributeValue", 'true'),
+            )
+            self.assertXPathConstraints(assertion_xml, constraints, namespaces)
+
