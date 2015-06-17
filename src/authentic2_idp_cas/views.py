@@ -81,9 +81,9 @@ class CasMixin(object):
         '''
         nonce = st.ticket_id
         next_url = make_url('a2-idp-cas-continue', params={
-            SERVICE_PARAM: st.service_url})
+            SERVICE_PARAM: st.service_url, NONCE_FIELD_NAME: nonce})
         return login_require(request, next_url=next_url,
-                params={'nonce': nonce})
+                params={NONCE_FIELD_NAME: nonce})
 
 
 class LoginView(CasMixin, View):
