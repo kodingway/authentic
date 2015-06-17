@@ -622,6 +622,7 @@ class LibertySessionDump(models.Model):
     class Meta:
         verbose_name = _('SAML session dump')
         verbose_name_plural = _('SAML session dumps')
+        unique_together = (('django_session_key', 'kind'),)
 
 class LibertyManageDump(models.Model):
     '''Store lasso manage dump
