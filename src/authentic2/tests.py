@@ -891,17 +891,19 @@ class PasswordResetTest(Authentic2TestCase):
         response = client.get(login_url)
         password_reset_url = utils.make_url(
             'password_reset',
-            params={'next': 'http://testserver' + login_url})
+            params={'next': 'http://www.entrouvert.com/'})
         self.assertContains(response, password_reset_url)
         response = client.get(password_reset_url)
         form = get_response_form(response)
         self.assertEquals(form.fields.keys(), ['email'])
         outbox_level = len(mail.outbox)
         response = client.post(password_reset_url, {'email': 'wtf@example.com'})
-        self.assertRedirects(response, 'http://testserver' + login_url)
+        self.assertRedirects(response, 'http://www.entrouvert.com/',
+                             fetch_redirect_response=False)
         self.assertEqual(len(mail.outbox), outbox_level)
         response = client.post(password_reset_url, {'email': self.user.email})
-        self.assertRedirects(response, 'http://testserver' + login_url)
+        self.assertRedirects(response, 'http://www.entrouvert.com/',
+                             fetch_redirect_response=False)
         self.assertEqual(len(mail.outbox), outbox_level+1)
         reset_mail = mail.outbox[-1]
         m = re.search('https?://[^\n ]*', reset_mail.body)

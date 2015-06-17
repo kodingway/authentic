@@ -9,7 +9,7 @@ from authentic2.compat import get_user_model
 from authentic2.tests import Authentic2TestCase
 from .models import Ticket, Service, Attribute
 from . import constants
-from authentic2.constants import AUTHENTICATION_EVENTS_SESSION_KEY
+from authentic2.constants import AUTHENTICATION_EVENTS_SESSION_KEY, NONCE_FIELD_NAME
 from authentic2.a2_rbac.utils import get_default_ou
 
 CAS_NAMESPACES = {
@@ -92,8 +92,9 @@ class CasTests(Authentic2TestCase):
         next_url_query = urlparse.parse_qs(next_url_query)
         self.assertEquals(next_url, '/idp/cas/continue/')
         self.assertEquals(set(next_url_query.keys()),
-                set([constants.SERVICE_PARAM]))
+                set([constants.SERVICE_PARAM, NONCE_FIELD_NAME]))
         self.assertEquals(next_url_query[constants.SERVICE_PARAM], [self.URL])
+        self.assertEquals(next_url_query[NONCE_FIELD_NAME], [ticket.ticket_id])
         response = self.client.post(location, {'login-password-submit': '',
             'username': self.LOGIN, 'password': self.PASSWORD}, follow=False)
         self.assertIn(AUTHENTICATION_EVENTS_SESSION_KEY, self.client.session)
@@ -136,8 +137,9 @@ class CasTests(Authentic2TestCase):
         next_url_query = urlparse.parse_qs(next_url_query)
         self.assertEquals(next_url, '/idp/cas/continue/')
         self.assertEquals(set(next_url_query.keys()),
-                set([constants.SERVICE_PARAM]))
+                set([constants.SERVICE_PARAM, NONCE_FIELD_NAME]))
         self.assertEquals(next_url_query[constants.SERVICE_PARAM], [self.URL])
+        self.assertEquals(next_url_query[NONCE_FIELD_NAME], [ticket.ticket_id])
         response = self.client.post(location, {'login-password-submit': '',
             'username': self.LOGIN, 'password': self.PASSWORD}, follow=False)
         self.assertIn(AUTHENTICATION_EVENTS_SESSION_KEY, self.client.session)
@@ -186,8 +188,9 @@ class CasTests(Authentic2TestCase):
         next_url_query = urlparse.parse_qs(next_url_query)
         self.assertEquals(next_url, '/idp/cas/continue/')
         self.assertEquals(set(next_url_query.keys()),
-                set([constants.SERVICE_PARAM]))
+                set([constants.SERVICE_PARAM, NONCE_FIELD_NAME]))
         self.assertEquals(next_url_query[constants.SERVICE_PARAM], [self.URL])
+        self.assertEquals(next_url_query[NONCE_FIELD_NAME], [ticket.ticket_id])
         response = self.client.post(location, {'login-password-submit': '',
             'username': self.LOGIN, 'password': self.PASSWORD}, follow=False)
         self.assertIn(AUTHENTICATION_EVENTS_SESSION_KEY, self.client.session)
@@ -234,8 +237,9 @@ class CasTests(Authentic2TestCase):
         next_url_query = urlparse.parse_qs(next_url_query)
         self.assertEquals(next_url, '/idp/cas/continue/')
         self.assertEquals(set(next_url_query.keys()),
-                set([constants.SERVICE_PARAM]))
+                set([constants.SERVICE_PARAM, NONCE_FIELD_NAME]))
         self.assertEquals(next_url_query[constants.SERVICE_PARAM], [self.URL])
+        self.assertEquals(next_url_query[NONCE_FIELD_NAME], [ticket.ticket_id])
         response = self.client.post(location, {'login-password-submit': '',
             'username': self.LOGIN, 'password': self.PASSWORD}, follow=False)
         self.assertIn(AUTHENTICATION_EVENTS_SESSION_KEY, self.client.session)
@@ -285,8 +289,9 @@ class CasTests(Authentic2TestCase):
         next_url_query = urlparse.parse_qs(next_url_query)
         self.assertEquals(next_url, '/idp/cas/continue/')
         self.assertEquals(set(next_url_query.keys()),
-                set([constants.SERVICE_PARAM]))
+                set([constants.SERVICE_PARAM, NONCE_FIELD_NAME]))
         self.assertEquals(next_url_query[constants.SERVICE_PARAM], [self.URL])
+        self.assertEquals(next_url_query[NONCE_FIELD_NAME], [ticket.ticket_id])
         response = self.client.post(location, {'login-password-submit': '',
             'username': self.LOGIN, 'password': self.PASSWORD}, follow=False)
         self.assertIn(AUTHENTICATION_EVENTS_SESSION_KEY, self.client.session)
