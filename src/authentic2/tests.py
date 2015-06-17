@@ -885,24 +885,25 @@ class PasswordResetTest(Authentic2TestCase):
 
     def test_password_reset(self):
         client = Client()
+        ENTROUVERT_COM = 'http://www.entrouvert.com/'
         login_url = utils.make_url('auth_login',
                                    params={
-                                       'next': 'http://www.entrouvert.com/'})
+                                       'next': ENTROUVERT_COM})
         response = client.get(login_url)
         password_reset_url = utils.make_url(
             'password_reset',
-            params={'next': 'http://www.entrouvert.com/'})
+            params={'next': ENTROUVERT_COM})
         self.assertContains(response, password_reset_url)
         response = client.get(password_reset_url)
         form = get_response_form(response)
         self.assertEquals(form.fields.keys(), ['email'])
         outbox_level = len(mail.outbox)
         response = client.post(password_reset_url, {'email': 'wtf@example.com'})
-        self.assertRedirects(response, 'http://www.entrouvert.com/',
+        self.assertRedirects(response, ENTROUVERT_COM,
                              fetch_redirect_response=False)
         self.assertEqual(len(mail.outbox), outbox_level)
         response = client.post(password_reset_url, {'email': self.user.email})
-        self.assertRedirects(response, 'http://www.entrouvert.com/',
+        self.assertRedirects(response, ENTROUVERT_COM,
                              fetch_redirect_response=False)
         self.assertEqual(len(mail.outbox), outbox_level+1)
         reset_mail = mail.outbox[-1]
@@ -923,4 +924,4 @@ class PasswordResetTest(Authentic2TestCase):
         self.assertContains(response, 'errorlist')
         response = client.post(reset_url, {'new_password1': 'newPassword1',
                                                 'new_password2': 'newPassword1'})
-        self.assertRedirects(response, 'http://testserver' + login_url)
+        self.assertRedirects(response, ENTROUVERT_COM)
