@@ -2,6 +2,9 @@
 {% load i18n %}
 
 {% block messages %}
+  {% if not request.is_ajax %}
+    {{ block.super }}
+  {% endif %}
 {% endblock %}
 
 {% block page_title %}{{ title }}{% endblock %}
@@ -13,13 +16,15 @@
     class="{{ form.css_class }}" method="post">
     <div class="form-inner-container{% if other_actions %} with-actions{% endif %}">
       {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-                {{ message }}
-            </li>
-            {% endfor %}
-        </ul>
+        {% if request.is_ajax %}
+          <ul class="messages">
+              {% for message in messages %}
+              <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                  {{ message }}
+              </li>
+              {% endfor %}
+          </ul>
+        {% endif %}
       {% endif %}
       {% csrf_token %}
       {% block beforeform %}
