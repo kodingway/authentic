@@ -104,7 +104,7 @@ class PasswordResetConfirmView(cbv.RedirectToNextURLViewMixin, FormView):
         return kwargs
 
     def form_valid(self, form):
-        super(PasswordResetConfirmView, self).form_valid(form)
+        form.save()
         self.user.backend = 'authentic2.backends.models_backend.ModelBackend'
         return utils.login(self.request, self.user, 'email')
 
