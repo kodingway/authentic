@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-17 15:36+0200\n"
+"POT-Creation-Date: 2015-06-18 12:44+0200\n"
 "PO-Revision-Date: 2015-02-26 17:53+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -79,7 +79,7 @@ msgid ""
 "form</a>."
 msgstr ""
 
-#: authentic2/admin.py:206 authentic2/registration_backend/forms.py:85
+#: authentic2/admin.py:206 authentic2/registration_backend/forms.py:86
 msgid "The two password fields didn't match."
 msgstr "Les deux champs mot de passe ne correspondent pas."
 
@@ -493,8 +493,9 @@ msgstr "obligation de changement de mot de passe"
 
 #: authentic2/profile_views.py:50
 msgid "A mail was sent to you with instructions to reset your password"
-msgstr "Un mail vous a été envoyé avec des instructions pour ré-initialiser "
-"votre mot de passe."
+msgstr ""
+"Un mail vous a été envoyé avec des instructions pour ré-initialiser votre "
+"mot de passe."
 
 #: authentic2/profile_views.py:83
 msgid "User not found"
@@ -509,7 +510,7 @@ msgid "Enter new password"
 msgstr "Entrez un nouveau mot de passe"
 
 #: authentic2/registration_backend/forms.py:37
-#: authentic2/registration_backend/forms.py:113
+#: authentic2/registration_backend/forms.py:114
 msgid ""
 "This email address is already in use. Please supply a different email "
 "address."
@@ -517,18 +518,18 @@ msgstr ""
 "Cette adresse de courriel est déjà utilisée. Utilisez s'il vous plait une "
 "autre adresse de courriel."
 
-#: authentic2/registration_backend/forms.py:74
+#: authentic2/registration_backend/forms.py:75
 msgid "Password (again)"
 msgstr "Mot de passe (encore une fois)"
 
-#: authentic2/registration_backend/forms.py:99
+#: authentic2/registration_backend/forms.py:100
 msgid "This username is already in use. Please supply a different username."
 msgstr ""
 "Cet identifiant est déjà utilisé. Utilisez s'il vous plait un autre "
 "identifiant."
 
-#: authentic2/registration_backend/forms.py:146
-#: authentic2/registration_backend/forms.py:153
+#: authentic2/registration_backend/forms.py:147
+#: authentic2/registration_backend/forms.py:155
 msgid "New password"
 msgstr "Nouveau mot de passe"
 
@@ -1034,44 +1035,68 @@ msgstr "Veuillez remplir le formulaire afin de finir l'enregistrement"
 msgid "The form was out of date, please try again."
 msgstr "Ce formulaire était périmé, veuillez ré-essayer."
 
-#: authentic2/validators.py:45
+#: authentic2/validators.py:47
 msgid "Enter a valid email address."
 msgstr "Entrez une adresse de courriel valide."
 
-#: authentic2/validators.py:51
+#: authentic2/validators.py:53
 msgid "Email domain is invalid"
 msgstr "Le domaine de l'adresse de courriel est invalide."
 
-#: authentic2/validators.py:67
+#: authentic2/validators.py:69
 msgid "Invalid email address."
 msgstr "Adresse de courriel invalide."
 
-#: authentic2/validators.py:75
+#: authentic2/validators.py:77
 msgid "Nonexistent domain."
 msgstr "Domaine inexistant."
 
-#: authentic2/validators.py:77
+#: authentic2/validators.py:79
 msgid "Nonexistent email address."
 msgstr "Adresse de courriel inexistante."
 
-#: authentic2/validators.py:92
+#: authentic2/validators.py:95
 #, python-format
 msgid "password must contain at least %d characters"
 msgstr "Le mot de passe doit contenir au moins %d caractères."
 
-#: authentic2/validators.py:101
+#: authentic2/validators.py:104
 #, python-format
 msgid ""
 "password must contain characters from at least %d classes among: lowercase "
 "letters, uppercase letters, digits, and punctuations"
 msgstr ""
 "Le mot de passe doit contenir des caractères d'au moins %d types parmi: "
-"minuscules, majuscules, chiffres et ponctuations"
+"minuscules, majuscules, chiffres et ponctuations."
 
-#: authentic2/validators.py:107
+#: authentic2/validators.py:110
 #, python-format
 msgid "your password dit not match the regular expession %s"
 msgstr "Votre mot de passe ne valide pas l'expression régulière %s."
+
+#: authentic2/validators.py:124
+#, python-format
+msgid "Your password must contain at least %(min_length)d characters."
+msgstr "Le mot de passe doit contenir au moins %(min_length)d caractères."
+
+#: authentic2/validators.py:126
+#, python-format
+msgid ""
+"Your password must contain characters from at least %(min_classes)d classes "
+"among: lowercase letters, uppercase letters, digits, and punctuations"
+msgstr ""
+"Le mot de passe doit contenir des caractères d'au moins %(min_classes)d "
+"types parmi: minuscules, majuscules, chiffres et ponctuations."
+
+#: authentic2/validators.py:131
+#, python-format
+msgid ""
+"Your password must match the regular expression: %(regexp)s, please change "
+"this message using the A2_PASSWORD_POLICY_REGEX_ERROR_MSG setting."
+msgstr ""
+"Votre mot de passe ne valide pas l'expression régulière %(regexp)s. Veuillez "
+"changer ce message en modifiant le paramètre "
+"A2_PASSWORD_POLICY_REGEX_ERROR_MSG."
 
 #: authentic2/views.py:158
 msgid ""
