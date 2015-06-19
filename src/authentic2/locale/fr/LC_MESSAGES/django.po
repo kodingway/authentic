@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-19 10:57+0200\n"
+"POT-Creation-Date: 2015-06-19 12:09+0200\n"
 "PO-Revision-Date: 2015-02-26 17:53+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -89,7 +89,7 @@ msgstr "Confirmation du mot de passe"
 
 #: authentic2/admin.py:213
 msgid "Enter the same password as above, for verification."
-msgstr ""
+msgstr "Entrez le même mot de passe qu'au dessus, pour validation."
 
 #: authentic2/admin.py:246
 msgid "Personal info"
@@ -106,6 +106,19 @@ msgstr "Dates importantes"
 #: authentic2/admin.py:275
 msgid "Attributes"
 msgstr "Attributs"
+
+#: authentic2/api_views.py:55
+msgid "you are not authorized to create users in this ou"
+msgstr "Vous n'êtes pas autorisé à vous inscrire dans cette entité."
+
+#: authentic2/api_views.py:63 authentic2/api_views.py:72
+#: authentic2/tests.py:828 authentic2/tests.py:853
+msgid "You already have an account"
+msgstr "Vous avez déjà un compte."
+
+#: authentic2/api_views.py:67 authentic2/tests.py:840
+msgid "Username is required in this ou"
+msgstr "L'identifiant est requis dans cette entité."
 
 #: authentic2/app_settings.py:115
 msgid "Required. At most 30 characters. Letters, digits, and @/./+/-/_ only."
@@ -153,15 +166,15 @@ msgstr "Identifiant de l'utilisateur"
 
 #: authentic2/attributes_ng/sources/django_user.py:30
 msgid "Role slugs"
-msgstr ""
+msgstr "Identifiants courts du rôle"
 
 #: authentic2/attributes_ng/sources/django_user.py:31
 msgid "Role names"
-msgstr ""
+msgstr "Noms des rôles"
 
 #: authentic2/attributes_ng/sources/django_user.py:32
 msgid "Role UUIDs"
-msgstr ""
+msgstr "Identifiants uniques des rôles"
 
 #: authentic2/attributes_ng/sources/service_roles.py:28
 msgid "role attribute"
@@ -203,7 +216,7 @@ msgstr "Utilisateurs et groupes"
 
 #: authentic2/dashboard.py:54
 msgid "Access control"
-msgstr ""
+msgstr "Contrôle d'accès"
 
 #: authentic2/dashboard.py:62
 msgid "Debug"
@@ -239,7 +252,7 @@ msgstr "Mot de passe incorrect."
 
 #: authentic2/forms.py:46
 msgid "A user with that username already exists."
-msgstr ""
+msgstr "Un utilisateur avec cet identidiant existe déjà."
 
 #: authentic2/hashers.py:82 authentic2/hashers.py:112
 msgid "algorithm"
