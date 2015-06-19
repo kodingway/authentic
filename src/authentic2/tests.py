@@ -720,7 +720,8 @@ class APITest(TestCase):
 
         ct_user = ContentType.objects.get_for_model(User)
 
-        self.ou = OU.objects.create(slug='ou', name='OU')
+        self.ou = OU.objects.create(slug='ou', name='OU', email_is_unique=True,
+                                    username_is_unique=True)
         self.reguser1 = User.objects.create(username='reguser1')
         self.reguser1.set_password('password')
         self.reguser1.save()
@@ -809,6 +810,47 @@ class APITest(TestCase):
         self.assertEqual(last_user.email, email)
         self.assertEqual(last_user.ou.slug, self.ou.slug)
         self.assertTrue(last_user.check_password(password))
+
+        # Test email is unique
+        client = test.APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Basic %s' % cred)
+        payload = {
+            'email': email,
+            'username': username+'1',
+            'ou': self.ou.slug,
+            'password': password,
+            'return_url': return_url,
+        }
+        response = client.post(reverse('a2-api-register'),
+                               content_type='application/json',
+                               data=json.dumps(payload))
+        self.assertEqual(response.data['errors']['__all__'],
+                         [_('You already have an account')])
+        # Username is required
+        payload = {
+            'email': '1' + email,
+            'ou': self.ou.slug,
+            'password': password,
+            'return_url': return_url,
+        }
+        response = client.post(reverse('a2-api-register'),
+                               content_type='application/json',
+                               data=json.dumps(payload))
+        self.assertEqual(response.data['errors']['__all__'],
+                         [_('Username is required in this ou')])
+        # Test username is unique
+        payload = {
+            'email': '1' + email,
+            'username': username,
+            'ou': self.ou.slug,
+            'password': password,
+            'return_url': return_url,
+        }
+        response = client.post(reverse('a2-api-register'),
+                               content_type='application/json',
+                               data=json.dumps(payload))
+        self.assertEqual(response.data['errors']['__all__'],
+                         [_('You already have an account')])
 
     def test_register_reguser2_wrong_ou(self):
         client = test.APIClient()

@@ -4,6 +4,7 @@ import smtplib
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.exceptions import MultipleObjectsReturned
+from django.utils.translation import ugettext as _
 
 from django_rbac.utils import get_ou_model
 
@@ -51,8 +52,24 @@ class RegistrationSerializer(serializers.Serializer):
             else:
                 authorized = request.user.has_perm(perm)
             if not authorized:
-                raise serializers.ValidationError('you are not authorized to '
-                                                  'create users in this ou')
+                raise serializers.ValidationError(_('you are not authorized '
+                                                    'to create users in '
+                                                    'this ou'))
+        User = get_user_model()
+        if data['ou'] and data['ou'].email_is_unique and \
+                User.objects.filter(ou=data['ou'],
+                                   email=data['email']).exists():
+            raise serializers.ValidationError(
+                _('You already have an account'))
+        if data['ou'] and data['ou'].username_is_unique and not \
+                'username' in data:
+            raise serializers.ValidationError(
+                _('Username is required in this ou'))
+        if data['ou'] and data['ou'].username_is_unique and \
+               User.objects.filter(ou=data['ou'],
+                                   username=data['username']).exists():
+            raise serializers.ValidationError(
+                _('You already have an account'))
         return data
 
 class RpcMixin(object):
