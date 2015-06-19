@@ -16,6 +16,14 @@ from . import managers, fields
 
 
 class OrganizationalUnit(OrganizationalUnitAbstractBase):
+    username_is_unique = models.BooleanField(
+        blank=True,
+        default=False,
+        verbose_name=_('Username is unique'))
+    email_is_unique = models.BooleanField(
+        blank=True,
+        default=False,
+        verbose_name=_('Email is unique'))
     default = fields.UniqueBooleanField(
         verbose_name=_('Default organizational unit'))
 
