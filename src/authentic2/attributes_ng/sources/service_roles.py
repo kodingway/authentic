@@ -36,7 +36,7 @@ def get_attributes(instance, ctx):
     user = ctx.get('user')
     service = ctx.get('service')
     if not user or not service:
-        return
+        return ctx
     ctx = ctx.copy()
     roles = Role.objects.for_user(user) \
         .filter(service=service) \
