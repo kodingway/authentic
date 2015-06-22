@@ -16,9 +16,10 @@ class Authentic2RBACConfig(AppConfig):
             signal_handlers.update_rbac_on_ou_save,
             sender=models.OrganizationalUnit)
         # keep service role and service ou field in sync
-        post_save.connect(
-            signal_handlers.update_service_role_ou,
-            sender=Service)
+        for subclass in Service.__subclasses__():
+            post_save.connect(
+                signal_handlers.update_service_role_ou,
+                sender=subclass)
         post_migrate.connect(
             signal_handlers.create_default_ou,
             sender=self)
