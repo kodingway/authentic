@@ -101,7 +101,7 @@ class RoleChildrenTable(tables.Table):
 class UserRolesTable(tables.Table):
     name = tables.Column(accessor='__unicode__', verbose_name=_('name'))
     ou = tables.Column()
-    service = tables.Column(order_by='servicerole__service')
+    service = tables.Column(order_by='service')
     member = tables.BooleanColumn(verbose_name=_('Direct member'))
     via = tables.TemplateColumn(
         '''{% for rel in row.record.child_relation.all %}{{ rel.child }} {% if not forloop.last %}, {% endif %}{% endfor %}''',
