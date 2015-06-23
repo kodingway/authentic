@@ -1,5 +1,7 @@
 from django.utils.translation import ugettext_lazy as _
 
+from django_rbac.utils import get_role_model
+
 from ...models import Attribute, AttributeValue
 
 from ...decorators import to_list
@@ -51,7 +53,9 @@ def get_attributes(instance, ctx):
     if user.username:
         ctx['django_user_domain'] = user.username.rsplit('@', 1)[1] if '@' in user.username else ''
         ctx['django_user_identifier'] = user.username.rsplit('@', 1)[0] if '@' in user.username else ''
-    ctx['a2_role_slugs'] = [role.slug for role in user.roles.all()]
-    ctx['a2_role_names'] = [role.name for role in user.roles.all()]
-    ctx['a2_role_uuids'] = [role.uuid for role in user.roles.all()]
+    Role = get_role_model()
+    roles = Role.objects.for_user(user)
+    ctx['a2_role_slugs'] = roles.values_list('slug', flat=True)
+    ctx['a2_role_names'] = roles.values_list('name', flat=True)
+    ctx['a2_role_uuids'] = roles.values_list('uuid', flat=True)
     return ctx
