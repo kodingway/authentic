@@ -3,6 +3,7 @@ from django.utils.safestring import mark_safe
 from django.contrib.auth.models import Group
 
 import django_tables2 as tables
+from django_tables2.utils import A
 
 from django_rbac.utils import get_role_model, get_permission_model, \
     get_ou_model
@@ -12,7 +13,9 @@ from authentic2.compat import get_user_model
 
 
 class UserTable(tables.Table):
-    uuid = tables.Column()
+    uuid = tables.LinkColumn(
+        viewname='a2-manager-user-edit',
+        kwargs={'pk': A('pk')})
     ou = tables.Column()
     username = tables.Column()
     email = tables.Column()
@@ -21,42 +24,30 @@ class UserTable(tables.Table):
     class Meta:
         model = get_user_model()
         attrs = {'class': 'main', 'id': 'user-table'}
-        fields = ('ou', 'uuid', 'username', 'email', 'first_name',
+        fields = ('uuid', 'ou', 'username', 'email', 'first_name',
                   'last_name', 'is_active')
         empty_text = _('None')
 
 
 class RoleMembersTable(UserTable):
-    uuid = tables.Column()
-    username = tables.TemplateColumn(
-        '''{% load i18n %}
-{% with perm=perms.custom_user.change_user %}
-  <a rel="popup"
-    {% if not perm %}
-      class="disabled"
-      title="{% trans "You are not permitted to edit users" %}"
-    {% endif %}
-    href="{% url "a2-manager-user-edit" pk=record.pk %}">
-    {{ record.username }}
-  </a>
-{% endwith %}''',
-        verbose_name=_('username'))
-    email = tables.Column(verbose_name=mark_safe(_('Email')))
-    direct = tables.BooleanColumn(verbose_name=_('Direct member'))
+    uuid = tables.LinkColumn(
+        viewname='a2-manager-user-edit',
+        kwargs={'pk': A('pk')})
+    direct = tables.BooleanColumn(verbose_name=_('Direct member'),
+                                  orderable=False)
 
-    class Meta:
-        model = get_user_model()
-        attrs = {'class': 'main', 'id': 'user-table'}
-        fields = ('uuid', 'username', 'email', 'first_name', 'last_name',
-                  'is_active')
-        empty_text = _('None')
+    class Meta(UserTable.Meta):
+        pass
 
 
 class RoleTable(tables.Table):
-    name = tables.Column()
+    name = tables.LinkColumn(viewname='a2-manager-role-members',
+                             kwargs={'pk': A('pk')},
+                             accessor='__unicode__', verbose_name=_('name'))
     ou = tables.Column()
     service = tables.Column()
-    member_count = tables.Column(verbose_name=_('Direct members'))
+    member_count = tables.Column(verbose_name=_('Direct members'),
+                                 orderable=False)
 
     class Meta:
         models = get_role_model()
@@ -87,7 +78,9 @@ class OUTable(tables.Table):
 
 
 class RoleChildrenTable(tables.Table):
-    name = tables.Column(accessor='__unicode__', verbose_name=_('name'))
+    name = tables.LinkColumn(viewname='a2-manager-role-members',
+                             kwargs={'pk': A('pk')},
+                             accessor='__unicode__', verbose_name=_('name'))
     ou = tables.Column()
     service = tables.Column(order_by='servicerole__service')
     is_direct = tables.BooleanColumn(verbose_name=_('Direct child'))
@@ -99,7 +92,9 @@ class RoleChildrenTable(tables.Table):
 
 
 class UserRolesTable(tables.Table):
-    name = tables.Column(accessor='__unicode__', verbose_name=_('name'))
+    name = tables.LinkColumn(viewname='a2-manager-role-members',
+                             kwargs={'pk': A('pk')},
+                             accessor='__unicode__', verbose_name=_('name'))
     ou = tables.Column()
     service = tables.Column(order_by='service')
     member = tables.BooleanColumn(verbose_name=_('Direct member'))
