@@ -15,7 +15,7 @@ from . import tables, views, resources, forms
 
 
 class RolesMixin(object):
-    service_roles = False
+    service_roles = True
     admin_roles = False
 
     def get_queryset(self):
