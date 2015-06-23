@@ -14,9 +14,12 @@ div.content {
 	margin-bottom: 2em;
 }
 
+#sidebar input {
+	max-width: calc(100% - 20px);
+}
+
 #sidebar button {
-       width: calc(100% - 10px);
-       margin-left: 10px;
+       width: 100%;
 }
 
 
@@ -196,9 +199,6 @@ a.disabled {
 form table tr th {
         text-align: right;
 }
-div.buttons, form p label {
-  margin-left: 10px;
-}
 form p input, form p select, form p textarea {
   width: calc(100% - 28px);
 }
@@ -232,9 +232,8 @@ form p select{
     display: inline;
     font-size: 0.99em;
     height: calc(1em + 17px);
-    margin-left: 10px;
     padding: 5px 8px;
-    width: calc(100% - 10px);
+    width: 100%;
 }
 
 #id_generate_password_p label, #id_reset_password_at_next_login_p label,
