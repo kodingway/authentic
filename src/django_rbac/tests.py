@@ -113,7 +113,7 @@ class RoleTestCase(TestCase):
                 list(Role.objects.for_user(user).order_by('pk')),
                 list(Role.objects.order_by('pk')))
         t = time.time()-b
-        self.assertLess(float(t)/1000, 0.05)
+        self.assertLess(float(t)/1000, 0.1)
         b = time.time()
 
     def test_rbac_backend(self):
