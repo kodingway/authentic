@@ -90,14 +90,6 @@ class GroupsField(SecurityCheckMixin, SplitSearchTermMixin,
     ]
 
 
-class RolesField(SecurityCheckMixin, SplitSearchTermMixin,
-                 AutoModelSelect2MultipleField):
-    queryset = get_role_model().objects
-    search_fields = [
-        'name__icontains',
-    ]
-
-
 class PermissionChoices(SecurityCheckMixin, SplitSearchTermMixin,
                         AutoModelSelect2MultipleField):
     queryset = Permission.objects
