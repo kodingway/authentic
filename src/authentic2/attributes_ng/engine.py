@@ -48,7 +48,7 @@ def topological_sort(source_and_instances, ctx, raise_on_unsortable=False):
                 for source, instance in unsorted:
                     dependencies = set(source.get_dependencies(instance, ctx))
                     sorted_list.append((source, instance))
-                    logger.error('missing dependencies for instance %r of %r: %s',
+                    logger.debug('missing dependencies for instance %r of %r: %s',
                             instance, source,
                             list(dependencies-variables))
                 break
