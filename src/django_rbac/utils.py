@@ -75,7 +75,6 @@ def get_objects_with_permission(user, operation_slug, model):
     else:
         return model.objects.none()
 
-@GlobalCache
 def get_operation(operation_tpl):
     from . import models
     operation, created = models.Operation.objects.get_or_create(
