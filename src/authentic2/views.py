@@ -159,6 +159,8 @@ class EmailChangeView(FormView):
                   'is received. An email of validation '
                   'was sent to you. Please click on the '
                   'link contained inside.'))
+        logging.getLogger(__name__).info('email change request by %s',
+                                         self.request.user)
         return super(EmailChangeView, self).form_valid(form)
 
 email_change = decorators.setting_enabled('A2_PROFILE_CAN_CHANGE_EMAIL')(
@@ -173,10 +175,14 @@ class EmailChangeVerifyView(TemplateView):
                 user_pk = token['user_pk']
                 email = token['email']
                 user = User.objects.get(pk=user_pk)
+                old_email = user.email
                 user.email = email
                 user.save()
                 messages.info(request, _('your request for changing your email for {0} '
                     'is successful').format(email))
+                logging.getLogger(__name__).info('user %s changed its email '
+                                                 'from %s to %s', user,
+                                                 old_email, email)
             except signing.SignatureExpired:
                 messages.error(request, _('your request for changing your email is too '
                     'old, try again'))
