@@ -811,11 +811,11 @@ class APITest(TestCase):
         self.assertEqual(last_user.ou.slug, self.ou.slug)
         self.assertTrue(last_user.check_password(password))
 
-        # Test email is unique
+        # Test email is unique with case change
         client = test.APIClient()
         client.credentials(HTTP_AUTHORIZATION='Basic %s' % cred)
         payload = {
-            'email': email,
+            'email': email.upper(),
             'username': username+'1',
             'ou': self.ou.slug,
             'password': password,

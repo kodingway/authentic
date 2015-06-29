@@ -58,7 +58,7 @@ class RegistrationSerializer(serializers.Serializer):
         User = get_user_model()
         if data['ou'] and data['ou'].email_is_unique and \
                 User.objects.filter(ou=data['ou'],
-                                   email=data['email']).exists():
+                                   email__iexact=data['email']).exists():
             raise serializers.ValidationError(
                 _('You already have an account'))
         if data['ou'] and data['ou'].username_is_unique and not \
