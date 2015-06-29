@@ -1,3 +1,5 @@
+import logging
+
 from django.views.generic import FormView
 from django.contrib import messages
 from django.contrib.auth import get_user_model
@@ -69,7 +71,7 @@ class PasswordResetConfirmView(cbv.RedirectToNextURLViewMixin, FormView):
     def dispatch(self, request, *args, **kwargs):
         validlink = True
         uidb64 = kwargs['uidb64']
-        token = kwargs['token']
+        self.token = token = kwargs['token']
 
         UserModel = get_user_model()
         # checked by URLconf
@@ -106,6 +108,9 @@ class PasswordResetConfirmView(cbv.RedirectToNextURLViewMixin, FormView):
     def form_valid(self, form):
         form.save()
         self.user.backend = 'authentic2.backends.models_backend.ModelBackend'
+        logging.getLogger(__name__).info('user %s resetted its password with '
+                                         'token %s...', self.user,
+                                         self.token[:9])
         return utils.login(self.request, self.user, 'email')
 
 password_reset_confirm = PasswordResetConfirmView.as_view()
