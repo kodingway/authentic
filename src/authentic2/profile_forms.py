@@ -1,3 +1,5 @@
+import logging
+
 from django import forms
 from django.utils.translation import ugettext as _
 from django.utils.http import urlsafe_base64_encode
@@ -21,6 +23,8 @@ class PasswordResetForm(forms.Form):
         user.
         """
         from django.core.mail import send_mail
+
+        logger = logging.getLogger(__name__)
         UserModel = get_user_model()
         email = self.cleaned_data["email"]
         active_users = UserModel._default_manager.filter(
@@ -57,3 +61,5 @@ class PasswordResetForm(forms.Form):
                                                      c)
             send_mail(subject, email, from_email, [user.email],
                       html_message=html_email)
+            logger.info('password reset requests for %s, email sent to %s '
+                        'with token %s...', user, user.email, c['token'][:9])
