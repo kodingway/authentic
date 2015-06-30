@@ -187,7 +187,7 @@ def field_names(list_of_field_name_and_titles):
             yield t[0]
 
 def make_url(to, args=(), kwargs={}, keep_params=False, params=None,
-        append=None, request=None, include=None, exclude=None, fragment=None):
+        append=None, request=None, include=None, exclude=None, fragment=None, absolute=False):
     '''Build an URL from a relative or absolute path, a model instance, a view
        name or view function.
 
@@ -225,6 +225,11 @@ def make_url(to, args=(), kwargs={}, keep_params=False, params=None,
         url += '?%s' % url_params.urlencode(safe='/')
     if fragment:
         url += '#%s' % fragment
+    if absolute:
+        if request:
+            url = request.build_absolute_uri(url)
+        else:
+            raise TypeError('make_url() absolute cannot be used without request')
     return url
 
 # improvement over django.shortcuts.redirect
