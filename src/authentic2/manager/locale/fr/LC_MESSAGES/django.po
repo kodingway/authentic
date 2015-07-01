@@ -469,11 +469,11 @@ msgstr "Rôle « %(name)s »"
 #: authentic2/manager/templates/authentic2/manager/user_roles.html:8
 #: authentic2/manager/templates/authentic2/manager/user_roles.html:12
 msgid "Roles"
-msgstr ""
+msgstr "Rôles"
 
 #: authentic2/manager/templates/authentic2/manager/service.html:26
 msgid "Slug"
-msgstr ""
+msgstr "Code court"
 
 #: authentic2/manager/templates/authentic2/manager/service.html:29
 msgid "Edit"
