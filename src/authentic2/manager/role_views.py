@@ -199,7 +199,7 @@ class RoleMembersExportView(views.ExportMixin, RoleMembersView):
     def get_data(self):
         return self.get_table_data()
 
-members_export = RoleMembersView.as_view()
+members_export = RoleMembersExportView.as_view()
 
 
 class RoleManagerViewMixin(RoleViewMixin):
