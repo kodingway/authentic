@@ -106,7 +106,7 @@ class RoleTestCase(TestCase):
             self.assertTrue(
                 models.Operation.objects.has_perm(user, 'admin', User))
         t = time.time()-b
-        self.assertTrue(float(t)/1000 < 0.008)
+        self.assertLess(float(t)/1000, 0.008)
         b = time.time()
         for i in range(1000):
             self.assertEquals(
