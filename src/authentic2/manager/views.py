@@ -245,8 +245,11 @@ class ExportMixin(object):
         }
         if export_format not in content_types:
             raise Http404('unknown format')
-        response = HttpResponse(getattr(self.get_dataset(), export_format),
-                                content_type=content_types[export_format])
+        content = getattr(self.get_dataset(), export_format)
+        content_type = content_types[export_format]
+        if export_format == 'html':
+            content = '<!DOCTYPE html><html><head><meta charset="utf-8"/></head><body>%s</body></html>' % content
+        response = HttpResponse(content, content_type=content_type)
         filename = '%s%s.%s' % (self.get_export_prefix(), now().isoformat(),
                                 export_format)
         response['Content-Disposition'] = 'attachment; filename="%s"' \
