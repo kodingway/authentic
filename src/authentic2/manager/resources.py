@@ -6,18 +6,7 @@ from authentic2.compat import get_user_model
 from authentic2.a2_rbac.models import Role
 
 
-class UserResource(ModelResource):
-    class Meta:
-        model = get_user_model()
-        exclude = ('password', 'user_permissions')
-        widgets = {
-            'roles': {
-                'field': 'name',
-            }
-        }
-
-
-class UserListWidget(Widget):
+class ListWidget(Widget):
     def clean(self, value):
         raise NotImplementedError
 
@@ -25,9 +14,30 @@ class UserListWidget(Widget):
         return u', '.join(map(unicode, value.all()))
 
 
+class UserResource(ModelResource):
+    roles = Field(attribute='roles_and_parents', widget=ListWidget())
+
+    class Meta:
+        model = get_user_model()
+        exclude = ('password', 'user_permissions', 'is_staff',
+                   'is_superuser', 'groups')
+        export_order = ('ou', 'uuid', 'id', 'username', 'email',
+                        'first_name', 'last_name', 'last_login',
+                        'date_joined', 'roles')
+        widgets = {
+            'roles': {
+                'field': 'name',
+            },
+            'ou': {
+                'field': 'name',
+            }
+        }
+
+
 class RoleResource(ModelResource):
-    members = Field(attribute='members', widget=UserListWidget())
+    members = Field(attribute='members', widget=ListWidget())
 
     class Meta:
         model = Role
-        fields = ('name', 'members')
+        fields = ('name', 'slug', 'members')
+        export_order = fields
