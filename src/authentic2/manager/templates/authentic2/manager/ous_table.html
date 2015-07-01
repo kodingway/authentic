@@ -2,16 +2,18 @@
 
 {% load i18n %}
 
-{% if perms.a2_rbac.delete_organizationalunit %}
-  {% block table.head.last.column %}
+{% block table.head.last.column %}
+  {% if perms.a2_rbac.delete_organizationalunit %}
     <th></th>
-  {% endblock %}
-  {% block table.tbody.last.column %}
+  {% endif %}
+{% endblock %}
+{% block table.tbody.last.column %}
+  {% if perms.a2_rbac.delete_organizationalunit %}
     {% if row.record.default %}
     <td><a class="icon-remove-sign disabled" 
            title="{% trans "You cannot delete the default organizational unit, you must first set another default organiational unit." %}"></a></td>
     {% else %}
        <td><a class="icon-remove-sign" rel="popup" href="{% url "a2-manager-ou-delete" pk=row.record.pk %}"></a></td>
     {% endif %}
-  {% endblock %}
-{% endif %}
+  {% endif %}
+{% endblock %}

@@ -64,6 +64,7 @@ class PermissionTable(tables.Table):
         model = get_permission_model()
         attrs = {'class': 'main', 'id': 'role-table'}
         fields = ('operation', 'scope', 'target')
+        empty_text = _('None')
 
 
 class OUTable(tables.Table):
@@ -75,6 +76,7 @@ class OUTable(tables.Table):
         model = get_ou_model()
         attrs = {'class': 'main', 'id': 'ou-table'}
         fields = ('name', 'slug')
+        empty_text = _('None')
 
 
 class RoleChildrenTable(tables.Table):
@@ -89,6 +91,7 @@ class RoleChildrenTable(tables.Table):
         models = get_role_model()
         attrs = {'class': 'main', 'id': 'role-table'}
         fields = ('name', 'ou', 'service')
+        empty_text = _('None')
 
 
 class UserRolesTable(tables.Table):
@@ -106,6 +109,7 @@ class UserRolesTable(tables.Table):
         models = get_role_model()
         attrs = {'class': 'main', 'id': 'role-table'}
         fields = ('name', 'ou', 'service')
+        empty_text = _('None')
 
 
 class ServiceTable(tables.Table):
@@ -116,6 +120,7 @@ class ServiceTable(tables.Table):
     class Meta:
         models = Service
         attrs = {'class': 'main', 'id': 'service-table'}
+        empty_text = _('None')
 
 class ServiceRolesTable(tables.Table):
     name = tables.Column(accessor='__unicode__', verbose_name=_('name'))
@@ -124,3 +129,4 @@ class ServiceRolesTable(tables.Table):
         models = get_role_model()
         attrs = {'class': 'main', 'id': 'service-role-table'}
         fields = ('name',)
+        empty_text = _('None')
