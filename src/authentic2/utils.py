@@ -18,6 +18,7 @@ from django.http.request import QueryDict
 from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login
 from django import forms
 from django.forms.util import ErrorList
+from django.forms.utils import to_current_timezone
 from django.utils import html, http
 from django.utils.translation import ugettext as _
 from django.shortcuts import resolve_url
@@ -25,6 +26,7 @@ from django.template.loader import render_to_string, TemplateDoesNotExist
 from django.core.mail import send_mail
 from django.core import signing
 from django.core.urlresolvers import reverse
+from django.utils.formats import localize
 
 try:
     from django.core.exceptions import FieldDoesNotExist
@@ -298,7 +300,10 @@ def find_authentication_event(request, nonce):
 def login(request, user, how, **kwargs):
     '''Login a user model, record the authentication event and redirect to next
        URL or settings.LOGIN_REDIRECT_URL.'''
+    last_login = user.last_login
     auth_login(request, user)
+    if 'last_login' not in request.session:
+        request.session['last_login'] = localize(to_current_timezone(last_login), True)
     record_authentication_event(request, how)
     return continue_to_next_url(request, **kwargs)
 

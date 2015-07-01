@@ -26,7 +26,7 @@
         {% if request.user.is_authenticated %}
         <div id="user">
           {% block user %}
-            <p>
+            <p title="{% blocktrans with last_login=request.session.last_login %}Last login {{ last_login }}{% endblocktrans %}">
               {% blocktrans with request.user.get_full_name as username %}Hello {{ username }}.{% endblocktrans %}
                 <a id="logout" href="{% url 'auth_logout' %}">{% trans "Logout" %}</a>
             </p>
