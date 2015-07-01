@@ -12,6 +12,9 @@ from .utils import to_list, to_iter
 
 TRANSIENT_USER_TYPES = []
 
+class CacheUnusable(RuntimeError):
+    pass
+
 def is_transient_user(user):
     return isinstance(user, tuple(TRANSIENT_USER_TYPES))
 
@@ -129,18 +132,21 @@ class CacheDecoratorBase(object):
     def __call__(self, func):
         @wraps(func)
         def f(*args, **kwargs):
-            now = time.time()
-            key = self.key(*args, **kwargs)
-            value, tstamp = self.get(key)
-            if tstamp is not None:
-                if self.timeout is None or \
-                   tstamp + self.timeout > now:
-                       return value
-                if hasattr(self, 'delete'):
-                    self.delete(key, (key, tstamp))
-            value = func(*args, **kwargs)
-            self.set(key, (value, now))
-            return value
+            try:
+                now = time.time()
+                key = self.key(*args, **kwargs)
+                value, tstamp = self.get(key)
+                if tstamp is not None:
+                    if self.timeout is None or \
+                       tstamp + self.timeout > now:
+                           return value
+                    if hasattr(self, 'delete'):
+                        self.delete(key, (key, tstamp))
+                value = func(*args, **kwargs)
+                self.set(key, (value, now))
+                return value
+            except CacheUnusable: # fallback when cache cannot be used
+                return func(*args, **kwargs)
         return f
 
     def key(self, *args, **kwargs):
@@ -150,6 +156,10 @@ class CacheDecoratorBase(object):
             request = middleware.StoreRequestMiddleware.get_request()
             if request:
                 parts.append(request.get_host())
+            else: 
+                # if we cannot determine the hostname it's better to ignore the
+                # cache
+                raise CacheUnusable
         for arg in args:
             parts.append(unicode(arg))
         for kw, arg in sorted(kwargs.iteritems(), key=lambda x: x[0]):
