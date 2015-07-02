@@ -166,7 +166,7 @@ class ViewRestrictionMiddleware(object):
             messages.warning(request, _('You must change your password to continue'))
         return utils.redirect_and_come_back(request, view)
 
-class XForwardedForMiddleware():
+class XForwardedForMiddleware(object):
     '''Copy the first address from X-Forwarded-For header to the REMOTE_ADDR meta.
 
        This middleware should only be used if you are sure the header cannot be
