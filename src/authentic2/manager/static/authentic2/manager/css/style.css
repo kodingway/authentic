@@ -48,6 +48,7 @@ div.role-info h3 {
 	margin-top: 2em;
 	margin-bottom: 2em;
 	display: flex;
+	align-items: baseline;
 }
 
 .manager-m2m-add-form .select2-container {
