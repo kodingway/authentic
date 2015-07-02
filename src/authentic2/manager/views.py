@@ -319,6 +319,9 @@ class BaseAddView(TitleMixin, ModelNameMixin, PermissionMixin,
     template_name = 'authentic2/manager/form.html'
     success_view_name = None
 
+    def authorize(self, *args, **kwargs):
+        return self.can_add
+
     def get_title(self):
         return _('Add %s') % self.get_model_name()
 
@@ -329,6 +332,9 @@ class BaseAddView(TitleMixin, ModelNameMixin, PermissionMixin,
 class BaseEditView(SuccessMessageMixin, TitleMixin, ModelNameMixin, PermissionMixin,
                    AjaxFormViewMixin, ModelFormView, UpdateView):
     template_name = 'authentic2/manager/form.html'
+
+    def authorize(self, *args, **kwargs):
+        return self.can_change
 
     def get_title(self):
         return self.title or _('Edit %s') % self.get_model_name()
