@@ -58,6 +58,7 @@ class RoleAddView(views.PassRequestToFormMixin, views.BaseAddView):
     template_name = 'authentic2/manager/role_add.html'
     model = get_role_model()
     form_class = forms.RoleEditForm
+    fields = ['name', 'slug', 'description', 'ou']
     title = _('Add role')
     success_view_name = 'a2-manager-role-members'
 
@@ -79,14 +80,9 @@ class RoleViewMixin(RolesMixin):
 
 class RoleEditView(RoleViewMixin, views.BaseEditView):
     template_name = 'authentic2/manager/role_edit.html'
-    fields = ['name', 'slug', 'description']
+    fields = ['name', 'slug', 'description', 'ou']
     title = _('Edit role description')
     form_class = forms.RoleEditForm
-
-    def post(self, request, *args, **kwargs):
-        if not self.can_change:
-            raise PermissionDenied
-        return super(RoleEditView, self).get(request, *args, **kwargs)
 
 edit = RoleEditView.as_view()
 
