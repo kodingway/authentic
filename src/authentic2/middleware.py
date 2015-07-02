@@ -1,3 +1,4 @@
+import urlparse
 import logging
 import datetime
 import random
@@ -10,6 +11,7 @@ except ImportError:
 from django.conf import settings
 from django.contrib import messages
 from django.utils.translation import ugettext as _
+from django.shortcuts import render
 
 from . import app_settings, utils, plugins
 
@@ -173,3 +175,22 @@ class XForwardedForMiddleware():
         if 'HTTP_X_FORWARDED_FOR' in request.META:
             request.META['REMOTE_ADDR'] = request.META['HTTP_X_FORWARDED_FOR'].split(",")[0].strip()
             return None
+
+class DisplayMessageBeforeRedirectMiddleware(object):
+    def process_response(self, request, response):
+        if response.status_code not in (302, 307):
+            return response
+        if not messages.get_messages(request):
+            return response
+        url = response['Location']
+        if not url:
+            return response
+        parsed_url = urlparse.urlparse(url)
+        if not parsed_url.scheme and not parsed_url.netloc:
+            return response
+        parsed_request_url = urlparse.urlparse(request.build_absolute_uri())
+        if (parsed_request_url.scheme == parsed_url.scheme or not parsed_url.scheme) and \
+                (parsed_request_url.netloc == parsed_url.netloc):
+            return response
+        return render(request, 'authentic2/display_message_and_continue.html',
+                      {'url': url})

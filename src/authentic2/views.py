@@ -502,3 +502,10 @@ logged_in = never_cache(LoggedInView.as_view())
 def csrf_failure_view(request, reason=""):
     messages.warning(request, _('The page is out of date, it was reloaded for you'))
     return HttpResponseRedirect(request.get_full_path())
+
+def test_redirect(request):
+    next_url = request.GET.get(REDIRECT_FIELD_NAME, settings.LOGIN_REDIRECT_URL)
+    messages.info(request, 'Une info')
+    messages.warning(request, 'Un warning')
+    messages.error(request, 'Une erreur')
+    return HttpResponseRedirect(next_url)

@@ -2,14 +2,17 @@ from django.conf.urls import patterns, url, include
 from django.conf import settings
 from django.contrib import admin
 
-from . import app_settings, plugins
+from . import app_settings, plugins, views
 
 admin.autodiscover()
 
 handler500 = 'authentic2.views.server_error'
 
-urlpatterns = patterns('authentic2.views', url(r'^$', 'homepage',
-    name='auth_homepage'))
+urlpatterns = patterns(
+    'authentic2.views',
+    url(r'^$', 'homepage', name='auth_homepage'),
+    url(r'test_redirect/$', views.test_redirect),
+)
 
 not_homepage_patterns = patterns('authentic2.views',
     url(r'^login/$', 'login', name='auth_login'),
