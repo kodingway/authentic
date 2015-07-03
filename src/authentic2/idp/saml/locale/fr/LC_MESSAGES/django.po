@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-19 12:09+0200\n"
+"POT-Creation-Date: 2015-07-03 11:31+0200\n"
 "PO-Revision-Date: 2014-11-21 11:43+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -59,27 +59,27 @@ msgstr "continnue_sso: erreur au rechargement de l'objet login"
 msgid "continue_sso: unknown provider %s"
 msgstr "continue_sso: fournisseur %s inconnu"
 
-#: authentic2/idp/saml/saml2_endpoints.py:767
+#: authentic2/idp/saml/saml2_endpoints.py:766
 #, python-format
 msgid "Provider %s is unknown"
 msgstr "Le fournisseur %s est inconnu"
 
-#: authentic2/idp/saml/saml2_endpoints.py:771
+#: authentic2/idp/saml/saml2_endpoints.py:770
 msgid "No service provider policy defined"
 msgstr "Pas de politique de fournisseur de service définie"
 
-#: authentic2/idp/saml/saml2_endpoints.py:941
-#: authentic2/idp/saml/saml2_endpoints.py:1116
-#: authentic2/idp/saml/saml2_endpoints.py:1128
-#: authentic2/idp/saml/saml2_endpoints.py:1352
-#: authentic2/idp/saml/saml2_endpoints.py:1386
-#: authentic2/idp/saml/saml2_endpoints.py:1434
-#: authentic2/idp/saml/saml2_endpoints.py:1445
+#: authentic2/idp/saml/saml2_endpoints.py:940
+#: authentic2/idp/saml/saml2_endpoints.py:1115
+#: authentic2/idp/saml/saml2_endpoints.py:1127
+#: authentic2/idp/saml/saml2_endpoints.py:1351
+#: authentic2/idp/saml/saml2_endpoints.py:1385
+#: authentic2/idp/saml/saml2_endpoints.py:1433
+#: authentic2/idp/saml/saml2_endpoints.py:1444
 #, python-format
 msgid "You are being redirected to \"%s\""
 msgstr "Vous allez être redirigé sur \"%s\""
 
-#: authentic2/idp/saml/saml2_endpoints.py:1437
+#: authentic2/idp/saml/saml2_endpoints.py:1436
 msgid "Invalid logout request"
 msgstr "Requête de déconnexion invalide"
 
@@ -102,8 +102,7 @@ msgstr ""
 "\"\">réessayer</a>.\n"
 "   "
 
-#: authentic2/idp/saml/tests.py:201 authentic2/idp/saml/tests.py:275
-#: authentic2/idp/saml/tests.py:309
+#: authentic2/idp/saml/tests.py:224
 msgid "Cancel"
 msgstr "Annuler"
 

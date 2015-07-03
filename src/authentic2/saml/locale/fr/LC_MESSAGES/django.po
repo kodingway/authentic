@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-19 12:09+0200\n"
+"POT-Creation-Date: 2015-07-03 11:31+0200\n"
 "PO-Revision-Date: 2014-11-21 00:08+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -81,7 +81,14 @@ msgstr "Au moins un tag XML EntityDescriptor est nécessaire"
 msgid "missing IDPSSODescriptor or SPSSODescriptor tags"
 msgstr "Au moins un tag XML IDPSSODescriptor ou SPSSODescriptor est nécessaire"
 
-#: authentic2/saml/management/commands/sync-metadata.py:140
+#: authentic2/saml/management/commands/sync-metadata.py:122
+#: authentic2/saml/management/commands/sync-metadata.py:216
+#, python-format
+msgid "Created new attribute %(name)s for %(provider)s"
+msgstr ""
+"Création d'un nouvel attribut %(name)s pour le fournisseur %(provider)s"
+
+#: authentic2/saml/management/commands/sync-metadata.py:206
 #, python-format
 msgid ""
 "Unable to find an LDAP definition for attribute %(name)s on %(provider)s"
@@ -89,34 +96,28 @@ msgstr ""
 "Impossible de trouver une définition LDAP pour l'attribut %(name)s du "
 "fournisseur %(provider)s"
 
-#: authentic2/saml/management/commands/sync-metadata.py:154
-#, python-format
-msgid "Created new attribute %(name)s for %(provider)s"
-msgstr ""
-"Création d'un nouvel attribut %(name)s pour le fournisseur %(provider)s"
-
-#: authentic2/saml/management/commands/sync-metadata.py:286
+#: authentic2/saml/management/commands/sync-metadata.py:353
 #, python-format
 msgid "SAML2 service provider options policy with name %s not found"
 msgstr ""
 "La politique de fournisseur de service SAML nommée « %s » est introuvable"
 
-#: authentic2/saml/management/commands/sync-metadata.py:301
+#: authentic2/saml/management/commands/sync-metadata.py:368
 #, python-format
 msgid "SAML2 identity provider options policy with name %s not found"
 msgstr ""
 "La politique de fournisseur d'identité SAML nommée « %s » est introuvable"
 
-#: authentic2/saml/management/commands/sync-metadata.py:305
+#: authentic2/saml/management/commands/sync-metadata.py:372
 msgid "No SAML2 identity provider options policy provided"
 msgstr "Aucune politique de fournisseur d'identité SAML fournie"
 
-#: authentic2/saml/management/commands/sync-metadata.py:321
+#: authentic2/saml/management/commands/sync-metadata.py:388
 #, python-format
 msgid "Failed to load entity descriptor for %s"
 msgstr "Échec du chargement des descripteurs d'entité pour %s"
 
-#: authentic2/saml/management/commands/sync-metadata.py:334
+#: authentic2/saml/management/commands/sync-metadata.py:401
 #, python-format
 msgid "Deleted obsolete provider %s"
 msgstr "Suppression du fournisseur obsolète %s"
