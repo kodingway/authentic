@@ -6,6 +6,7 @@ from django_rbac.utils import get_role_model, get_ou_model, \
     get_permission_model
 
 from ..utils import get_fk_model
+from . import utils
 
 
 def update_ou_admin_roles(ou):
@@ -32,6 +33,8 @@ def update_ou_admin_roles(ou):
             update_slug=True,
             update_name=True)
         ou_ct_admin_role.add_child(admin_role)
+        if MANAGED_CT[key].get('must_view_user'):
+            ou_ct_admin_role.permissions.add(utils.get_view_user_perm(ou))
 
 
 def update_ous_admin_roles():
@@ -60,6 +63,7 @@ MANAGED_CT = {
     ('a2_rbac', 'role'): {
         'name': _('Manager of roles'),
         'scoped_name': _('Roles - {ou}'),
+        'must_view_user': True,
     },
     ('a2_rbac', 'organizationalunit'): {
         'name': _('Manager of organizational units'),
@@ -78,6 +82,7 @@ def update_content_types_roles():
     '''
     cts = ContentType.objects.all()
     Role = get_role_model()
+    view_user_perm = utils.get_view_user_perm()
 
     for ct in cts:
         ct_tuple = (ct.app_label.lower(), ct.model.lower())
@@ -86,5 +91,7 @@ def update_content_types_roles():
         # General admin role
         name = MANAGED_CT[ct_tuple]['name']
         slug = '_a2-' + slugify(name)
-        Role.objects.get_admin_role(instance=ct, name=name, slug=slug,
-                                    update_name=True)
+        admin_role = Role.objects.get_admin_role(instance=ct, name=name,
+                                                 slug=slug, update_name=True)
+        if MANAGED_CT[ct_tuple].get('must_view_user'):
+            ct_admin_role.permissions.add(utils.get_view_user_perm())

@@ -93,10 +93,15 @@ class Role(RoleAbstractBase):
         db_index=True)
 
     def get_admin_role(self, ou=None):
-        return self.__class__.objects.get_admin_role(
+        from . import utils
+        admin_role = self.__class__.objects.get_admin_role(
             self, ou=self.ou,
-            name=_('Managers of role "{role}"').format(role=unicode(self)),
-            slug='_a2-managers-of-role-{role}'.format(role=slugify(unicode(self))))
+            name=_('Managers of role "{role}"').format(
+                role=unicode(self)),
+            slug='_a2-managers-of-role-{role}'.format(
+                role=slugify(unicode(self))),
+            permissions=(utils.get_view_user_perm(),))
+        return admin_role
 
     def clean(self):
         super(Role, self).clean()
