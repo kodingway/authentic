@@ -93,6 +93,7 @@ class RoleMembersView(RoleViewMixin, views.BaseSubTableView):
     form_class = forms.ChooseUserForm
     success_url = '.'
     search_form_class = forms.UserSearchForm
+    permissions = ['a2_rbac.view_role']
 
     def get_table_queryset(self):
         return self.object.all_members()
@@ -122,6 +123,7 @@ class RoleChildrenView(RoleViewMixin, views.BaseSubTableView):
     form_class = forms.ChooseRoleForm
     search_form_class = forms.RoleSearchForm
     success_url = '.'
+    permissions = ['a2_rbac.view_role']
 
     def get_table_queryset(self):
         return self.object.children(include_self=False, annotate=True)
@@ -164,6 +166,7 @@ class RolePermissionsView(RoleViewMixin, views.BaseSubTableView):
     table_class = tables.PermissionTable
     form_class = forms.ChoosePermissionForm
     success_url = '.'
+    permissions = ['a2_rbac.view_role']
 
     def get_table_queryset(self):
         return self.object.permissions.all()
@@ -191,6 +194,7 @@ permissions = RolePermissionsView.as_view()
 
 class RoleMembersExportView(views.ExportMixin, RoleMembersView):
     resource_class = resources.UserResource
+    permissions = ['a2_rbac.view_role']
 
     def get_data(self):
         return self.get_table_data()

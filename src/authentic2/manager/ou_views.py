@@ -11,6 +11,7 @@ class OrganizationalUnitView(views.BaseTableView):
     model = get_ou_model()
     table_class = tables.OUTable
     search_form_class = forms.NameSearchForm
+    permissions = ['a2_rbac.view_organizationalunit']
 
 listing = OrganizationalUnitView.as_view()
 

@@ -11,6 +11,7 @@ class ServicesView(views.BaseTableView):
     template_name = 'authentic2/manager/services.html'
     table_class = tables.ServiceTable
     search_form_class = forms.NameSearchForm
+    permissions = ['authentic2.view_service']
 
 listing = ServicesView.as_view()
 
@@ -21,6 +22,7 @@ class ServiceView(views.SimpleSubTableView):
     pk_url_kwarg = 'service_pk'
     template_name = 'authentic2/manager/service.html'
     table_class = tables.ServiceRolesTable
+    permissions = ['authentic2.view_service']
 
     def get_table_queryset(self):
         return self.object.roles.all()
@@ -60,6 +62,7 @@ class ServiceRoleMixin(object):
 class ServiceRoleMembersView(ServiceRoleMixin,
                              role_views.RoleMembersView):
     template_name = 'authentic2/manager/service_role_members.html'
+    permissions = ['authentic2.view_service']
 
 role_members = ServiceRoleMembersView.as_view()
 
@@ -67,6 +70,7 @@ role_members = ServiceRoleMembersView.as_view()
 class ServiceRoleChildrenView(ServiceRoleMixin,
                               role_views.RoleChildrenView):
     template_name = 'authentic2/manager/service_role_children.html'
+    permissions = ['authentic2.view_service']
 
 role_children = ServiceRoleChildrenView.as_view()
 
@@ -74,6 +78,7 @@ role_children = ServiceRoleChildrenView.as_view()
 class ServiceRoleManagersView(ServiceRoleMixin,
                               role_views.RoleManagersView):
     template_name = 'authentic2/manager/service_role_managers.html'
+    permissions = ['authentic2.view_service']
 
 role_managers = ServiceRoleManagersView.as_view()
 
@@ -81,5 +86,6 @@ role_managers = ServiceRoleManagersView.as_view()
 class ServiceRoleManagerRolesView(ServiceRoleMixin,
                                   role_views.RoleManagersRolesView):
     template_name = 'authentic2/manager/service_role_managers_roles.html'
+    permissions = ['authentic2.view_service']
 
 role_managers_roles = ServiceRoleManagerRolesView.as_view()
