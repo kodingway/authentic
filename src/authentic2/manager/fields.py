@@ -112,7 +112,15 @@ class PermissionChoices(SecurityCheckMixin, SplitSearchTermMixin,
         return instance.name
 
 
-class ChooseRoleField(SecurityCheckMixin, SplitSearchTermMixin,
+class RoleLabelMixin(object):
+    def label_from_instance(self, obj):
+        label = unicode(obj)
+        if obj.service:
+            label = label + ' - ' + unicode(obj.service)
+        return label
+
+
+class ChooseRoleField(RoleLabelMixin, SecurityCheckMixin, SplitSearchTermMixin,
                       AutoModelSelect2Field):
     queryset = get_role_model().objects.filter(admin_scope_ct__isnull=True)
     search_fields = [
@@ -137,7 +145,7 @@ class ChooseServiceField(SecurityCheckMixin, SplitSearchTermMixin,
     ]
 
 
-class ChooseUserRoleField(SecurityCheckMixin, SplitSearchTermMixin,
+class ChooseUserRoleField(RoleLabelMixin, SecurityCheckMixin, SplitSearchTermMixin,
                       AutoModelSelect2Field):
     operations = ['change']
     queryset = get_role_model().objects
