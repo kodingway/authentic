@@ -639,7 +639,7 @@ msgstr "Serveur de gestion d'identité versatile"
 #: authentic2/templates/authentic2/base.html:29
 #, python-format
 msgid "Last login %(last_login)s"
-msgstr "Date de dernière connexion: %(login_date)s"
+msgstr "Date de dernière connexion: %(last_login)s"
 
 #: authentic2/templates/authentic2/base.html:30
 #, python-format
