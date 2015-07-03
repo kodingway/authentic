@@ -665,7 +665,7 @@ class CacheTests(TestCase):
         values = set()
         for x in range(10):
             values.add(g())
-        self.assertEquals(len(values), 1)
+        self.assertEquals(len(values), 10)
         # null timeout, no cache
         h = GlobalCache(timeout=0)(f)
         self.assertNotEquals(h(), h())
