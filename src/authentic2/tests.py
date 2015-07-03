@@ -16,6 +16,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext as _
+from django.utils.html import format_html
 
 from rest_framework import test
 from rest_framework import status
@@ -654,7 +655,13 @@ class CacheTests(TestCase):
         self.assertNotEquals(f(), f())
 
         # with cache the same value will come back
-        g = GlobalCache(f)
+        g = GlobalCache(f, hostname_vary=False)
+        values = set()
+        for x in range(10):
+            values.add(g())
+        self.assertEquals(len(values), 1)
+        # with and hostname vary 10 values will come back
+        g = GlobalCache(f, hostname_vary=True)
         values = set()
         for x in range(10):
             values.add(g())
@@ -940,13 +947,32 @@ class PasswordResetTest(Authentic2TestCase):
         form = get_response_form(response)
         self.assertEquals(form.fields.keys(), ['email'])
         outbox_level = len(mail.outbox)
+        # Test that we do not allow detecting registered emails.
         response = client.post(password_reset_url, {'email': 'wtf@example.com'})
-        self.assertRedirects(response, ENTROUVERT_COM,
-                             fetch_redirect_response=False)
+        self.assertContains(
+            response,
+            format_html(
+                u'<li class="info">{}</li>',
+                _('A mail was sent to you with instructions to reset your '
+                  'password')))
+        self.assertContains(
+            response, format_html(u'<a href="{}">{}</a>',
+                                  ENTROUVERT_COM,
+                                  _('Continue')),
+            html=True)
         self.assertEqual(len(mail.outbox), outbox_level)
         response = client.post(password_reset_url, {'email': self.user.email})
-        self.assertRedirects(response, ENTROUVERT_COM,
-                             fetch_redirect_response=False)
+        self.assertContains(
+            response,
+            format_html(
+                u'<li class="info">{}</li>',
+                _('A mail was sent to you with instructions to reset your '
+                  'password')))
+        self.assertContains(
+            response, format_html(u'<a href="{}">{}</a>',
+                                  ENTROUVERT_COM,
+                                  _('Continue')),
+            html=True)
         self.assertEqual(len(mail.outbox), outbox_level+1)
         reset_mail = mail.outbox[-1]
         m = re.search('https?://[^\n ]*', reset_mail.body)
