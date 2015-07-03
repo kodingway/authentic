@@ -295,6 +295,9 @@ class BaseDeleteView(TitleMixin, ModelNameMixin, PermissionMixin,
                      AjaxFormViewMixin, DeleteView):
     template_name = 'authentic2/manager/delete.html'
 
+    def authorize(self, *args, **kwargs):
+        return self.can_delete
+
     def get_title(self):
         return _('Delete %s') % self.get_model_name()
 
