@@ -2,7 +2,8 @@ from django.utils.translation import ugettext as _
 from django.utils.text import slugify
 from django.contrib.contenttypes.models import ContentType
 
-from django_rbac.utils import get_role_model, get_ou_model
+from django_rbac.utils import get_role_model, get_ou_model, \
+    get_permission_model
 
 from ..utils import get_fk_model
 
@@ -38,10 +39,12 @@ def update_ous_admin_roles():
        they give general administrative rights to all mamanged content types
        scoped to the given organizational unit.
     '''
+    Permission = get_permission_model()
     OU = get_ou_model()
     ou_all = OU.objects.all()
     ou_ids = ou_all.values_list('id', flat=True)
-    ou_ids_with_perm = Permission.objects.filter(operation__slug='admin',
+    ou_ids_with_perm = Permission.objects.filter(
+        operation__slug='admin',
         target_ct=ContentType.objects.get_for_model(OU)) \
         .values_list('target_id', flat=True)
 
