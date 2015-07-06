@@ -13,14 +13,14 @@ from authentic2.models import Attribute, PasswordReset
 
 from .views import BaseTableView, BaseAddView, PassRequestToFormMixin, \
     BaseEditView, ActionMixin, OtherActionsMixin, Action, ExportMixin, \
-    BaseSubTableView
+    BaseSubTableView, HideOUColumnMixin
 from .tables import UserTable, UserRolesTable
 from .forms import UserSearchForm, UserAddForm, UserEditForm, \
     UserChangePasswordForm, ChooseUserRoleForm, NameSearchForm
 from .resources import UserResource
 
 
-class UsersView(BaseTableView):
+class UsersView(HideOUColumnMixin, BaseTableView):
     template_name = 'authentic2/manager/users.html'
     model = get_user_model()
     table_class = UserTable
@@ -202,7 +202,7 @@ class UserChangePasswordView(BaseEditView):
 user_change_password = UserChangePasswordView.as_view()
 
 
-class UserRolesView(BaseSubTableView):
+class UserRolesView(HideOUColumnMixin, BaseSubTableView):
     model = get_user_model()
     template_name = 'authentic2/manager/user_roles.html'
     table_class = UserRolesTable 

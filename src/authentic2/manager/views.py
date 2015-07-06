@@ -14,6 +14,8 @@ from django.contrib.messages.views import SuccessMessageMixin
 
 from django_tables2 import SingleTableView, SingleTableMixin
 
+from django_rbac.utils import get_ou_model
+
 from authentic2.forms import modelform_factory
 from authentic2.utils import redirect
 
@@ -394,3 +396,10 @@ def menu_json(request):
             break
     response.write(json_str)
     return response
+
+class HideOUColumnMixin(object):
+    def get_table(self, **kwargs):
+        OU = get_ou_model()
+        if OU.objects.count() < 2:
+            kwargs['exclude'] = ['ou']
+        return super(HideOUColumnMixin, self).get_table(**kwargs)

@@ -38,7 +38,7 @@ class RolesMixin(object):
         return qs
 
 
-class RolesView(RolesMixin, views.BaseTableView):
+class RolesView(views.HideOUColumnMixin, RolesMixin, views.BaseTableView):
     template_name = 'authentic2/manager/roles.html'
     model = get_role_model()
     table_class = tables.RoleTable
@@ -87,7 +87,7 @@ class RoleEditView(RoleViewMixin, views.BaseEditView):
 edit = RoleEditView.as_view()
 
 
-class RoleMembersView(RoleViewMixin, views.BaseSubTableView):
+class RoleMembersView(views.HideOUColumnMixin, RoleViewMixin, views.BaseSubTableView):
     template_name = 'authentic2/manager/role_members.html'
     table_class = tables.RoleMembersTable
     form_class = forms.ChooseUserForm
@@ -117,7 +117,7 @@ class RoleMembersView(RoleViewMixin, views.BaseSubTableView):
 members = RoleMembersView.as_view()
 
 
-class RoleChildrenView(RoleViewMixin, views.BaseSubTableView):
+class RoleChildrenView(views.HideOUColumnMixin, RoleViewMixin, views.BaseSubTableView):
     template_name = 'authentic2/manager/role_children.html'
     table_class = tables.RoleChildrenTable
     form_class = forms.ChooseRoleForm

@@ -51,6 +51,11 @@ class LimitQuerysetFormMixin(object):
                     perm = '%s.view_%s' % (app_label, model_name)
                 qs = request.user.filter_by_perm(perm, qs)
                 field.queryset = qs
+                assert qs.exists(), 'user as now view permissions on model %s' % qs.model
+                if qs.count() == 1:
+                    field.initial = qs.get().pk
+                    field.widget.attrs['disabled'] = 'disabled'
+                    field.widget.attrs['readonly'] = 'readonly'
 
 
 class ChooseUserForm(CssClass, forms.Form):
@@ -91,9 +96,7 @@ class UserEditForm(LimitQuerysetFormMixin, CssClass, BaseUserForm):
     def __init__(self, *args, **kwargs):
         super(UserEditForm, self).__init__(*args, **kwargs)
         if 'ou' in self.fields:
-            self.fields['ou'] = forms.ModelChoiceField(
-                queryset=self.fields['ou'].queryset,
-                required=True, label=_('Organizational unit'))
+            self.fields['ou'].required = True
 
     def clean(self):
         if not self.cleaned_data.get('username') and \
@@ -235,8 +238,14 @@ class ServiceRoleSearchForm(CssClass, PrefixFormMixin, forms.Form):
             qs = qs.filter(name__icontains=self.cleaned_data['text'])
         return qs
 
+class HideOUFieldMixin(object):
+    def __init__(self, *args, **kwargs):
+        super(HideOUFieldMixin, self).__init__(*args, **kwargs)
+        OU = get_ou_model()
+        if OU.objects.count() < 2:
+            del self.fields['ou']
 
-class RoleSearchForm(ServiceRoleSearchForm):
+class RoleSearchForm(HideOUFieldMixin, ServiceRoleSearchForm):
     ou = forms.ModelChoiceField(queryset=get_ou_model().objects,
                                 required=False, label=_('Organizational unit'))
     service = forms.ModelChoiceField(
@@ -253,7 +262,7 @@ class RoleSearchForm(ServiceRoleSearchForm):
         return qs
 
 
-class UserSearchForm(CssClass, PrefixFormMixin, forms.Form):
+class UserSearchForm(HideOUFieldMixin, CssClass, PrefixFormMixin, forms.Form):
     prefix = 'search'
 
     text = forms.CharField(
