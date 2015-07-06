@@ -87,6 +87,9 @@ TKX6tp6oI+7MIJE6ySZ0cBqOiydAkBePZhu57j6ToBkTa0dbHjn1WA==
                    self._setting('IDP_SAML2_AUTHN_CONTEXT_FROM_SESSION',
                        self.__DEFAULTS['AUTHN_CONTEXT_FROM_SESSION']))
 
+    def is_default(self, name):
+        return getattr(self, name) == self.__DEFAULTS[name]
+
     def __getattr__(self, name):
         if name not in self.__DEFAULTS:
             raise AttributeError(name)
