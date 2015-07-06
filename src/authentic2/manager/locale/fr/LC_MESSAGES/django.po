@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: authentic2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-03 11:31+0200\n"
+"POT-Creation-Date: 2015-07-06 16:10+0200\n"
 "PO-Revision-Date: 2015-06-17 23:47+0200\n"
 "Last-Translator: Benjamin Dauvergne <bdauvergne@entrouvert.com>\n"
 "Language-Team: French <fr@li.org>\n"
@@ -94,7 +94,7 @@ msgstr "Nom"
 msgid "Service"
 msgstr "Application"
 
-#: authentic2/manager/ou_views.py:46
+#: authentic2/manager/ou_views.py:47
 #: authentic2/manager/templates/authentic2/manager/ous_table.html:14
 msgid ""
 "You cannot delete the default organizational unit, you must first set "
@@ -115,21 +115,21 @@ msgstr "Ajouter un rôle"
 msgid "Edit role description"
 msgstr "Modifier la description du rôle"
 
-#: authentic2/manager/role_views.py:106
+#: authentic2/manager/role_views.py:107
 msgid "User already in this role."
 msgstr "L'utilisateur a déjà ce rôle."
 
-#: authentic2/manager/role_views.py:113 authentic2/manager/role_views.py:144
-#: authentic2/manager/role_views.py:186 authentic2/manager/user_views.py:232
+#: authentic2/manager/role_views.py:114 authentic2/manager/role_views.py:146
+#: authentic2/manager/role_views.py:189 authentic2/manager/user_views.py:232
 msgid "You are not authorized"
 msgstr "Vous n'êtes pas autorisé."
 
-#: authentic2/manager/role_views.py:137
+#: authentic2/manager/role_views.py:139
 #, python-format
 msgid "Role \"%s\" is already a child of this role."
 msgstr "Le rôle « %s » descend déjà de ce rôle."
 
-#: authentic2/manager/service_views.py:40
+#: authentic2/manager/service_views.py:42
 msgid "Edit service"
 msgstr "Éditer l'application"
 
@@ -250,7 +250,7 @@ msgstr "Changer le mot de passe"
 #: authentic2/manager/templates/authentic2/manager/homepage.html:22
 #: authentic2/manager/templates/authentic2/manager/ou_common.html:4
 #: authentic2/manager/templates/authentic2/manager/ou_common.html:8
-#: authentic2/manager/views.py:365
+#: authentic2/manager/views.py:368
 msgid "Organizational units management"
 msgstr "Entités"
 
@@ -258,7 +258,7 @@ msgstr "Entités"
 #: authentic2/manager/templates/authentic2/manager/user_edit.html:10
 #: authentic2/manager/templates/authentic2/manager/user_roles.html:6
 #: authentic2/manager/templates/authentic2/manager/users.html:21
-#: authentic2/manager/views.py:371
+#: authentic2/manager/views.py:374
 msgid "User management"
 msgstr "Utilisateurs"
 
@@ -267,7 +267,7 @@ msgstr "Utilisateurs"
 #: authentic2/manager/templates/authentic2/manager/role_common.html:4
 #: authentic2/manager/templates/authentic2/manager/role_common.html:8
 #: authentic2/manager/templates/authentic2/manager/role_edit.html:8
-#: authentic2/manager/views.py:377
+#: authentic2/manager/views.py:380
 msgid "Roles management"
 msgstr "Rôles"
 
@@ -275,7 +275,7 @@ msgstr "Rôles"
 #: authentic2/manager/templates/authentic2/manager/ous.html:4
 #: authentic2/manager/templates/authentic2/manager/services.html:4
 #: authentic2/manager/templates/authentic2/manager/services.html:8
-#: authentic2/manager/views.py:383
+#: authentic2/manager/views.py:386
 msgid "Services management"
 msgstr "Applications"
 
@@ -575,17 +575,17 @@ msgstr "Nouveau mot de passe défini."
 msgid "User {user} has already the role {role}."
 msgstr "L'utilisateur {user} possède déjà le rôle {role}."
 
-#: authentic2/manager/views.py:299
+#: authentic2/manager/views.py:302
 #, python-format
 msgid "Delete %s"
 msgstr "Supprimer l'objet « %s »"
 
-#: authentic2/manager/views.py:326
+#: authentic2/manager/views.py:329
 #, python-format
 msgid "Add %s"
 msgstr "Ajouter l'objet « %s »"
 
-#: authentic2/manager/views.py:340
+#: authentic2/manager/views.py:343
 #, python-format
 msgid "Edit %s"
 msgstr "Éditer l'objet « %s »"

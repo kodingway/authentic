@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-03 11:31+0200\n"
+"POT-Creation-Date: 2015-07-06 16:10+0200\n"
 "PO-Revision-Date: 2015-02-26 17:53+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -112,11 +112,11 @@ msgid "you are not authorized to create users in this ou"
 msgstr "Vous n'êtes pas autorisé à vous inscrire dans cette entité."
 
 #: authentic2/api_views.py:63 authentic2/api_views.py:72
-#: authentic2/tests.py:828 authentic2/tests.py:853
+#: authentic2/tests.py:835 authentic2/tests.py:860
 msgid "You already have an account"
 msgstr "Vous avez déjà un compte."
 
-#: authentic2/api_views.py:67 authentic2/tests.py:840
+#: authentic2/api_views.py:67 authentic2/tests.py:847
 msgid "Username is required in this ou"
 msgstr "L'identifiant est requis dans cette entité."
 
@@ -504,7 +504,8 @@ msgstr "Courriel"
 msgid "Password reset"
 msgstr "obligation de changement de mot de passe"
 
-#: authentic2/profile_views.py:52
+#: authentic2/profile_views.py:52 authentic2/tests.py:956
+#: authentic2/tests.py:969
 msgid "A mail was sent to you with instructions to reset your password"
 msgstr ""
 "Un mail vous a été envoyé avec des instructions pour ré-initialiser votre "
@@ -654,6 +655,7 @@ msgstr "Déconnexion"
 
 #: authentic2/templates/authentic2/display_message_and_continue.html:5
 #: authentic2/templates/authentic2/logout_confirm.html:19
+#: authentic2/tests.py:961 authentic2/tests.py:974
 msgid "Continue"
 msgstr "Continuer"
 
