@@ -191,7 +191,7 @@ def defer_update_transitive_closure():
     try:
         yield
     except:
-        pass
+        raise
     else:
         if RoleParentingManager.tls.CLOSURE_UPDATED:
             utils.get_role_parenting_model().objects.update_transitive_closure()
