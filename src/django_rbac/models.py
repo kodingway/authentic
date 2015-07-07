@@ -183,7 +183,7 @@ class RoleAbstractBase(AbstractOrganizationalUnitScopedBase, AbstractBase):
         related_name='roles')
     permissions = models.ManyToManyField(
         to=utils.get_permission_model_name(),
-        related_name='role',
+        related_name='roles',
         blank=True)
 
     admin_perms = GenericRelation(utils.get_permission_model_name(),

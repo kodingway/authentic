@@ -82,7 +82,7 @@ class PermissionQueryset(query.QuerySet):
         '''
         Role = utils.get_role_model()
         roles = Role.objects.for_user(user=user)
-        return self.filter(role=roles)
+        return self.filter(roles=roles)
 
 PermissionManager = PermissionManagerBase.from_queryset(PermissionQueryset)
 
