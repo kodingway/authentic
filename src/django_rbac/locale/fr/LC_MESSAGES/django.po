@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-rbac\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-06 16:10+0200\n"
+"POT-Creation-Date: 2015-07-07 16:54+0200\n"
 "PO-Revision-Date: 2015-05-13 15:21+0200\n"
 "Last-Translator: Benjamin Dauvergner <bdauvergne@entrouvert.com>\n"
 "Language: \n"
@@ -45,74 +45,79 @@ msgstr "entités"
 msgid "operation"
 msgstr "opération"
 
-#: django_rbac/models.py:174
+#: django_rbac/models.py:163
+#, python-brace-format
+msgid " (scope \"{0}\")"
+msgstr ""
+
+#: django_rbac/models.py:177
 msgid "permission"
 msgstr ""
 
-#: django_rbac/models.py:175
+#: django_rbac/models.py:178
 msgid "permissions"
 msgstr ""
 
-#: django_rbac/models.py:248
+#: django_rbac/models.py:251
 msgid "role"
 msgstr "rôle"
 
-#: django_rbac/models.py:249
+#: django_rbac/models.py:252
 msgid "roles"
 msgstr "rôles"
 
-#: django_rbac/models.py:281
+#: django_rbac/models.py:284
 msgid "role parenting relation"
 msgstr "relation de parenté entre rôles"
 
-#: django_rbac/models.py:282
+#: django_rbac/models.py:285
 msgid "role parenting relations"
 msgstr "relations de parenté entre rôles"
 
-#: django_rbac/models.py:292
+#: django_rbac/models.py:295
 msgid "superuser status"
 msgstr ""
 
-#: django_rbac/models.py:293
+#: django_rbac/models.py:296
 msgid ""
 "Designates that this user has all permissions without explicitly assigning "
 "them."
 msgstr ""
 
-#: django_rbac/models.py:297
+#: django_rbac/models.py:300
 msgid "groups"
 msgstr "groupes"
 
-#: django_rbac/models.py:299
+#: django_rbac/models.py:302
 msgid ""
 "The groups this user belongs to. A user will get all permissions granted to "
 "each of his/her group."
 msgstr ""
 
-#: django_rbac/models.py:304
+#: django_rbac/models.py:307
 msgid "user permissions"
 msgstr "permissions de l'utilisateur"
 
-#: django_rbac/models.py:305
+#: django_rbac/models.py:308
 msgid "Specific permissions for this user."
 msgstr "Permission spécifiques pour cet utilisateur."
 
-#: django_rbac/models.py:388
+#: django_rbac/models.py:391
 msgid "Management"
 msgstr "Administration"
 
-#: django_rbac/models.py:389
+#: django_rbac/models.py:392
 msgid "Change"
 msgstr "Modification"
 
-#: django_rbac/models.py:390
+#: django_rbac/models.py:393
 msgid "Delete"
 msgstr "Suppression"
 
-#: django_rbac/models.py:391
+#: django_rbac/models.py:394
 msgid "Add"
 msgstr "Ajout"
 
-#: django_rbac/models.py:392
+#: django_rbac/models.py:395
 msgid "View"
 msgstr "Visualisation"

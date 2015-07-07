@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: authentic2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-06 16:10+0200\n"
+"POT-Creation-Date: 2015-07-07 16:53+0200\n"
 "PO-Revision-Date: 2015-06-17 23:47+0200\n"
 "Last-Translator: Benjamin Dauvergne <bdauvergne@entrouvert.com>\n"
 "Language-Team: French <fr@li.org>\n"
@@ -17,80 +17,79 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: authentic2/manager/forms.py:57
+#: authentic2/manager/forms.py:62
 msgid "Add an user"
 msgstr "Ajouter un utilisateur"
 
-#: authentic2/manager/forms.py:62 authentic2/manager/forms.py:67
+#: authentic2/manager/forms.py:67 authentic2/manager/forms.py:72
 msgid "Add a role"
 msgstr "Ajouter un rôle"
 
-#: authentic2/manager/forms.py:73
+#: authentic2/manager/forms.py:78
 msgid "Operation"
 msgstr "Opération"
 
-#: authentic2/manager/forms.py:76 authentic2/manager/forms.py:96
-#: authentic2/manager/forms.py:241 authentic2/manager/forms.py:264
-#: authentic2/manager/forms.py:297
+#: authentic2/manager/forms.py:81 authentic2/manager/forms.py:250
+#: authentic2/manager/forms.py:273 authentic2/manager/forms.py:306
 #: authentic2/manager/templates/authentic2/manager/service.html:21
 msgid "Organizational unit"
 msgstr "Entité"
 
-#: authentic2/manager/forms.py:80
+#: authentic2/manager/forms.py:85
 msgid "Target object"
 msgstr "Objet ciblé"
 
-#: authentic2/manager/forms.py:102 authentic2/manager/forms.py:205
+#: authentic2/manager/forms.py:105 authentic2/manager/forms.py:208
 msgid "You must set a username or an email."
 msgstr "Vous devez au moins définir soit un identifiant soit un courriel."
 
-#: authentic2/manager/forms.py:112
+#: authentic2/manager/forms.py:115
 msgid "The two password fields didn't match."
 msgstr "Les deux champs mot de passe ne correspondent pas."
 
-#: authentic2/manager/forms.py:131
+#: authentic2/manager/forms.py:134
 msgid "You must choose password generation or type a new  one"
 msgstr ""
 "Vous devez choisir entre la génération d'un mot de passe ou en définir un "
 "nouveau."
 
-#: authentic2/manager/forms.py:138
+#: authentic2/manager/forms.py:141
 msgid "User does not have a mail, we cannot send the informations to him."
 msgstr ""
 "L'utilisateur n'a pas de courriel, nous ne pouvons donc pas envoyer lui "
 "envoyer les informations."
 
-#: authentic2/manager/forms.py:168
+#: authentic2/manager/forms.py:171
 msgid "Generate new password"
 msgstr "Générer un mot de passe"
 
-#: authentic2/manager/forms.py:171
+#: authentic2/manager/forms.py:174
 msgid "Password"
 msgstr "Mot de passe"
 
-#: authentic2/manager/forms.py:175
+#: authentic2/manager/forms.py:178
 msgid "Confirmation"
 msgstr "Confirmation"
 
-#: authentic2/manager/forms.py:177
+#: authentic2/manager/forms.py:180
 msgid "Enter the same password as above, for verification."
 msgstr "Entrez le même mot de passe qu'au dessus, pour validation."
 
-#: authentic2/manager/forms.py:181
+#: authentic2/manager/forms.py:184
 msgid "Send informations to user"
 msgstr "Envoyer les informations à l'utilisateur"
 
-#: authentic2/manager/forms.py:197
+#: authentic2/manager/forms.py:200
 msgid "Ask for password reset on next login"
 msgstr "Doit changer de mot de passe à la prochaine connexion"
 
-#: authentic2/manager/forms.py:230 authentic2/manager/forms.py:260
-#: authentic2/manager/forms.py:286
+#: authentic2/manager/forms.py:233 authentic2/manager/forms.py:269
+#: authentic2/manager/forms.py:295
 #: authentic2/manager/templates/authentic2/manager/service.html:24
 msgid "Name"
 msgstr "Nom"
 
-#: authentic2/manager/forms.py:244
+#: authentic2/manager/forms.py:253
 msgid "Service"
 msgstr "Application"
 
@@ -250,7 +249,7 @@ msgstr "Changer le mot de passe"
 #: authentic2/manager/templates/authentic2/manager/homepage.html:22
 #: authentic2/manager/templates/authentic2/manager/ou_common.html:4
 #: authentic2/manager/templates/authentic2/manager/ou_common.html:8
-#: authentic2/manager/views.py:368
+#: authentic2/manager/views.py:370
 msgid "Organizational units management"
 msgstr "Entités"
 
@@ -258,7 +257,7 @@ msgstr "Entités"
 #: authentic2/manager/templates/authentic2/manager/user_edit.html:10
 #: authentic2/manager/templates/authentic2/manager/user_roles.html:6
 #: authentic2/manager/templates/authentic2/manager/users.html:21
-#: authentic2/manager/views.py:374
+#: authentic2/manager/views.py:376
 msgid "User management"
 msgstr "Utilisateurs"
 
@@ -267,7 +266,7 @@ msgstr "Utilisateurs"
 #: authentic2/manager/templates/authentic2/manager/role_common.html:4
 #: authentic2/manager/templates/authentic2/manager/role_common.html:8
 #: authentic2/manager/templates/authentic2/manager/role_edit.html:8
-#: authentic2/manager/views.py:380
+#: authentic2/manager/views.py:382
 msgid "Roles management"
 msgstr "Rôles"
 
@@ -275,7 +274,7 @@ msgstr "Rôles"
 #: authentic2/manager/templates/authentic2/manager/ous.html:4
 #: authentic2/manager/templates/authentic2/manager/services.html:4
 #: authentic2/manager/templates/authentic2/manager/services.html:8
-#: authentic2/manager/views.py:386
+#: authentic2/manager/views.py:388
 msgid "Services management"
 msgstr "Applications"
 
@@ -575,17 +574,17 @@ msgstr "Nouveau mot de passe défini."
 msgid "User {user} has already the role {role}."
 msgstr "L'utilisateur {user} possède déjà le rôle {role}."
 
-#: authentic2/manager/views.py:302
+#: authentic2/manager/views.py:304
 #, python-format
 msgid "Delete %s"
 msgstr "Supprimer l'objet « %s »"
 
-#: authentic2/manager/views.py:329
+#: authentic2/manager/views.py:331
 #, python-format
 msgid "Add %s"
 msgstr "Ajouter l'objet « %s »"
 
-#: authentic2/manager/views.py:343
+#: authentic2/manager/views.py:345
 #, python-format
 msgid "Edit %s"
 msgstr "Éditer l'objet « %s »"
