@@ -12,13 +12,11 @@ User = get_user_model()
 
 class A2RBACTestCase(TestCase):
     def test_update_rbac(self):
-        # 4 content types managers and 1 global manager
-        self.assertEquals(Role.objects.count(), 5)
-        for p in Permission.objects.all():
-            print p
-        # 4 global permissions, 4 role administration permissions and 1 user
-        # view permission (for the role administrator)
-        self.assertEquals(Permission.objects.count(), 10)
+        # 3 content types managers and 1 global manager
+        self.assertEquals(Role.objects.count(), 4)
+        # 3 content type global permissions, 4 role administration permissions
+        # and 1 user view permission (for the role administrator)
+        self.assertEquals(Permission.objects.count(), 8)
 
     def test_delete_role(self):
         rcount = Role.objects.count()

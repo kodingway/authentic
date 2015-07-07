@@ -80,10 +80,6 @@ def update_ous_admin_roles():
         update_ou_admin_roles(ou)
 
 MANAGED_CT = {
-    ('authentic2', 'service'): {
-        'name': _('Manager of services'),
-        'scoped_name': _('Services - {ou}'),
-    },
     ('a2_rbac', 'role'): {
         'name': _('Manager of roles'),
         'scoped_name': _('Roles - {ou}'),
