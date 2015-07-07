@@ -1,3 +1,4 @@
+import pickle
 from contextlib import contextmanager
 import time
 from functools import wraps
@@ -216,6 +217,31 @@ class DjangoCache(SimpleDictionnaryCacheMixin, CacheDecoratorBase):
     def delete(self, key, value):
         if self.get(key) == value:
             self.delete(key)
+
+
+class PickleCacheMixin(object):
+    def set(self, key, value):
+        value, tstamp = value
+        value = pickle.dumps(value)
+        super(PickleCacheMixin, self).set(key, (value, tstamp))
+
+    def get(self, key):
+        value = super(PickleCacheMixin, self).get(key)
+        if value[0] is not None:
+            value = (pickle.loads(value[0]), value[1])
+        return value
+
+
+class SessionCache(PickleCacheMixin, SimpleDictionnaryCacheMixin,
+                   CacheDecoratorBase):
+    @property
+    def cache(self):
+        request = middleware.StoreRequestMiddleware.get_request()
+        if not request:
+            return {}
+        # create a cache dictionary on the request
+        return request.session.setdefault(self.__class__.__name__, {})
+
 
 @contextmanager
 def errorcollector(error_dict):
