@@ -651,6 +651,8 @@ class CacheTests(TestCase):
 
         def f():
             return random.random()
+        def f2(a, b):
+            return a
         # few chances the same value comme two times in a row
         self.assertNotEquals(f(), f())
 
@@ -669,6 +671,13 @@ class CacheTests(TestCase):
         # null timeout, no cache
         h = GlobalCache(timeout=0)(f)
         self.assertNotEquals(h(), h())
+        # vary on second arg
+        i = GlobalCache(hostname_vary=False, args=(1,))(f2)
+        for a in range(1, 10):
+            self.assertEquals(i(a, 1), 1)
+        for a in range(2, 10):
+            self.assertEquals(i(a, a), a)
+
 
     def test_django_cache(self):
         client = Client()

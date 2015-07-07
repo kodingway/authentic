@@ -119,9 +119,12 @@ class CacheDecoratorBase(object):
             return cls(**kwargs)(args[0])
         return super(CacheDecoratorBase, cls).__new__(cls, *args, **kwargs)
 
-    def __init__(self, timeout=None, hostname_vary=True):
+    def __init__(self, timeout=None, hostname_vary=True, args=None,
+                 kwargs=None):
         self.timeout = timeout
         self.hostname_vary = hostname_vary
+        self.args = args
+        self.kwargs = kwargs
 
     def set(self, key, value):
         raise NotImplementedError
@@ -160,9 +163,14 @@ class CacheDecoratorBase(object):
                 # if we cannot determine the hostname it's better to ignore the
                 # cache
                 raise CacheUnusable
-        for arg in args:
+        for i, arg in enumerate(args):
+            if self.args and i not in self.args:
+                continue
             parts.append(unicode(arg))
+
         for kw, arg in sorted(kwargs.iteritems(), key=lambda x: x[0]):
+            if self.kwargs in kw not in self.kwargs:
+                continue
             parts.append(u'%s-%s' % (unicode(kw), unicode(arg)))
         return u'|'.join(parts)
 
