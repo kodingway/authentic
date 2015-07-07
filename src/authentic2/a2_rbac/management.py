@@ -55,15 +55,26 @@ def update_ous_admin_roles():
        they give general administrative rights to all mamanged content types
        scoped to the given organizational unit.
     '''
+    Role = get_role_model()
     Permission = get_permission_model()
     OU = get_ou_model()
     ou_all = OU.objects.all()
     ou_ids = ou_all.values_list('id', flat=True)
-    ou_ids_with_perm = Permission.objects.filter(
-        operation__slug='admin',
-        target_ct=ContentType.objects.get_for_model(OU)) \
-        .values_list('target_id', flat=True)
-
+    perm_ids_with_role = Role.objects.filter(
+        admin_scope_ct=ContentType.objects.get_for_model(Permission)
+        ).values_list('admin_scope_id')
+    ou_admin_perms = Permission.objects.filter(
+        operation__slug='view',
+        target_ct=ContentType.objects.get_for_model(OU), id__in=perm_ids_with_role)
+    ou_ids_with_perm = ou_admin_perms.values_list('target_id', flat=True)
+    if ou_all.count() < 2:
+        # If there is no ou or less than two, only generate global management
+        # roles
+        Role.objects.filter(slug__startswith='_a2', ou__isnull=False).delete()
+        Role.objects.filter(slug__startswith='_a2',
+                            permissions=ou_admin_perms).delete()
+        Permission.objects.filter(roles__isnull=True).delete()
+        return
     for ou in OU.objects.filter(id__in=set(ou_ids)-set(ou_ids_with_perm)):
         update_ou_admin_roles(ou)
 

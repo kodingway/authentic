@@ -49,8 +49,16 @@ def post_migrate_update_rbac(app_config, verbosity=2, interactive=True,
                 update_ous_admin_roles()
 
 
-def update_rbac_on_ou_save(sender, instance, created, raw, **kwargs):
-    update_ou_admin_roles(instance)
+def update_rbac_on_ou_post_save(sender, instance, created, raw, **kwargs):
+    if get_ou_model().objects.count() == 2 and created:
+        print 'updating all'
+        update_ous_admin_roles()
+    else:
+        update_ou_admin_roles(instance)
+
+def update_rbac_on_ou_post_delete(sender, instance, **kwargs):
+    if get_ou_model().objects.count() == 1:
+        update_ous_admin_roles()
 
 def update_rbac_on_save(sender, instance, created, raw, **kwargs):
     update_rbac()

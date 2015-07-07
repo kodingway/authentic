@@ -7,13 +7,17 @@ class Authentic2RBACConfig(AppConfig):
 
     def ready(self):
         from . import signal_handlers, models
-        from django.db.models.signals import post_save, post_migrate
+        from django.db.models.signals import post_save, post_migrate, pre_save, \
+            post_delete
         from django.contrib.contenttypes.models import ContentType
         from authentic2.models import Service
 
         # update rbac on save to contenttype, ou and roles
         post_save.connect(
-            signal_handlers.update_rbac_on_ou_save,
+            signal_handlers.update_rbac_on_ou_post_save,
+            sender=models.OrganizationalUnit)
+        post_delete.connect(
+            signal_handlers.update_rbac_on_ou_post_delete,
             sender=models.OrganizationalUnit)
         # keep service role and service ou field in sync
         for subclass in Service.__subclasses__():
