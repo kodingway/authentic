@@ -6,12 +6,17 @@ from django_rbac.utils import get_role_model, get_ou_model, \
     get_permission_model
 
 from ..utils import get_fk_model
-from . import utils
+from . import utils, app_settings
 
 
 def update_ou_admin_roles(ou):
     Role = get_role_model()
-    admin_role = ou.get_admin_role()
+
+    if app_settings.MANAGED_CONTENT_TYPES == ():
+        Role.objects.filter(slug='a2-managers-of-{ou.slug}'.format(ou=ou)) \
+            .delete()
+    else:
+        ou_admin_role = ou.get_admin_role()
 
     for key in MANAGED_CT:
         ct = ContentType.objects.get_by_natural_key(key[0], key[1])
@@ -25,14 +30,22 @@ def update_ou_admin_roles(ou):
         scoped_name = MANAGED_CT[key]['scoped_name']
         name = scoped_name.format(ou=ou)
         ou_slug = slug + '-' + ou.slug
-        ou_ct_admin_role = Role.objects.get_admin_role(
-            instance=ct,
-            ou=ou,
-            name=name,
-            slug=ou_slug,
-            update_slug=True,
-            update_name=True)
-        ou_ct_admin_role.add_child(admin_role)
+        if app_settings.MANAGED_CONTENT_TYPES == ():
+            Role.objects.filter(slug=ou_slug, ou=ou).delete()
+            continue
+        else:
+            ou_ct_admin_role = Role.objects.get_admin_role(
+                instance=ct,
+                ou=ou,
+                name=name,
+                slug=ou_slug,
+                update_slug=True,
+                update_name=True)
+        if not app_settings.MANAGED_CONTENT_TYPES or \
+               key in app_settings.MANAGED_CONTENT_TYPES:
+            ou_ct_admin_role.add_child(ou_admin_role)
+        else:
+            ou_ct_admin_role.remove_child(ou_admin_role)
         if MANAGED_CT[key].get('must_view_user'):
             ou_ct_admin_role.permissions.add(utils.get_view_user_perm(ou))
 
@@ -53,7 +66,6 @@ def update_ous_admin_roles():
 
     for ou in OU.objects.filter(id__in=set(ou_ids)-set(ou_ids_with_perm)):
         update_ou_admin_roles(ou)
-        print 'Administrative roles of', ou, 'updated.'
 
 MANAGED_CT = {
     ('authentic2', 'service'): {
@@ -83,6 +95,18 @@ def update_content_types_roles():
     cts = ContentType.objects.all()
     Role = get_role_model()
     view_user_perm = utils.get_view_user_perm()
+    slug='_a2-manager'
+    if app_settings.MANAGED_CONTENT_TYPES == ():
+        Role.objects.filter(slug=slug).delete()
+    else:
+        admin_role, created = Role.objects.get_or_create(
+            slug=slug,
+            defaults=dict(
+                name=_('Manager')))
+        admin_role.add_self_administration()
+        if not created and admin_role.name != _('Manager'):
+            admin_role.name = _('Manager')
+            admin_role.save()
 
     for ct in cts:
         ct_tuple = (ct.app_label.lower(), ct.model.lower())
@@ -91,7 +115,13 @@ def update_content_types_roles():
         # General admin role
         name = MANAGED_CT[ct_tuple]['name']
         slug = '_a2-' + slugify(name)
-        admin_role = Role.objects.get_admin_role(instance=ct, name=name,
-                                                 slug=slug, update_name=True)
+        if not app_settings.MANAGED_CONTENT_TYPES is None and key not in \
+                app_settings.MANAGED_CONTENT_TYPES:
+            Role.objects.filter(slug=slug).delete()
+            continue
+        ct_admin_role = Role.objects.get_admin_role(instance=ct, name=name,
+                                                    slug=slug,
+                                                    update_name=True)
         if MANAGED_CT[ct_tuple].get('must_view_user'):
             ct_admin_role.permissions.add(utils.get_view_user_perm())
+        ct_admin_role.add_child(admin_role)

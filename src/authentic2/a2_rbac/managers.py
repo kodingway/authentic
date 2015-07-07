@@ -26,11 +26,7 @@ class RoleManager(BaseRoleManager):
         admin_role = self.get_mirror_role(perm, name, slug, ou=ou,
                                           update_name=update_name,
                                           update_slug=update_slug)
-        self_perm, created = Permission.objects.get_or_create(
-            operation=op,
-            target_ct=ContentType.objects.get_for_model(admin_role),
-            target_id=admin_role.pk,
-            **kwargs)
+        self_perm = admin_role.add_self_administration()
         permissions = set(permissions)
         permissions.add(perm)
         permissions.add(self_perm)

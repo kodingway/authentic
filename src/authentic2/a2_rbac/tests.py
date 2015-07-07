@@ -12,8 +12,8 @@ User = get_user_model()
 
 class A2RBACTestCase(TestCase):
     def test_update_rbac(self):
-        self.assertEquals(Role.objects.count(), 8)
-        self.assertEquals(Permission.objects.count(), 16)
+        self.assertEquals(Role.objects.count(), 9)
+        self.assertEquals(Permission.objects.count(), 19)
 
     def test_delete_role(self):
         rcount = Role.objects.count()
@@ -32,7 +32,7 @@ class A2RBACTestCase(TestCase):
             admin_scope_ct=ContentType.objects.get_for_model(admin_perm),
             admin_scope_id=admin_perm.pk)
         admin_admin_perm = Permission.objects.by_target(admin_role) \
-            .get(operation__slug='admin')
+            .get(operation__slug='change')
         self.assertEquals(Permission.objects.count(), pcount+2)
         new_role.delete()
         with self.assertRaises(Permission.DoesNotExist):
