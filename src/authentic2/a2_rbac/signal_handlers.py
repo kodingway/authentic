@@ -8,10 +8,6 @@ from ..utils import get_fk_model
 from django_rbac.utils import get_ou_model, get_role_model
 from django_rbac.managers import defer_update_transitive_closure
 
-from .management import update_ou_admin_roles, update_ous_admin_roles, \
-    update_content_types_roles
-
-
 def create_default_ou(app_config, verbosity=2, interactive=True,
                       using=DEFAULT_DB_ALIAS, **kwargs):
     if not router.allow_migrate(using, get_ou_model()):
@@ -40,6 +36,10 @@ def create_default_ou(app_config, verbosity=2, interactive=True,
 def post_migrate_update_rbac(app_config, verbosity=2, interactive=True,
                              using=DEFAULT_DB_ALIAS, **kwargs):
     # be sure new objects names are localized using the default locale
+    from .management import update_ou_admin_roles, update_ous_admin_roles, \
+        update_content_types_roles
+
+
     if not router.allow_migrate(using, get_role_model()):
         return
     with override(settings.LANGUAGE_CODE):
@@ -50,18 +50,18 @@ def post_migrate_update_rbac(app_config, verbosity=2, interactive=True,
 
 
 def update_rbac_on_ou_post_save(sender, instance, created, raw, **kwargs):
-    if get_ou_model().objects.count() == 2 and created:
-        print 'updating all'
+    from .management import update_ou_admin_roles, update_ous_admin_roles, \
+        update_content_types_roles
+    if get_ou_model().objects.count() < 3 and created:
         update_ous_admin_roles()
     else:
         update_ou_admin_roles(instance)
 
 def update_rbac_on_ou_post_delete(sender, instance, **kwargs):
-    if get_ou_model().objects.count() == 1:
+    from .management import update_ou_admin_roles, update_ous_admin_roles, \
+        update_content_types_roles
+    if get_ou_model().objects.count() < 2:
         update_ous_admin_roles()
-
-def update_rbac_on_save(sender, instance, created, raw, **kwargs):
-    update_rbac()
 
 
 def update_service_role_ou(sender, instance, created, raw, **kwargs):

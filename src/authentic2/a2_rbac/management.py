@@ -1,12 +1,14 @@
 from django.utils.translation import ugettext_lazy as _
 from django.utils.text import slugify
 from django.contrib.contenttypes.models import ContentType
+from django.db.models.signals import post_migrate
+from django.apps import apps
 
 from django_rbac.utils import get_role_model, get_ou_model, \
     get_permission_model
 
 from ..utils import get_fk_model
-from . import utils, app_settings
+from . import utils, app_settings, signal_handlers
 
 
 def update_ou_admin_roles(ou):
@@ -48,7 +50,6 @@ def update_ou_admin_roles(ou):
             ou_ct_admin_role.remove_child(ou_admin_role)
         if MANAGED_CT[key].get('must_view_user'):
             ou_ct_admin_role.permissions.add(utils.get_view_user_perm(ou))
-
 
 def update_ous_admin_roles():
     '''Create general admin roles linked to all organizational units,
@@ -136,3 +137,7 @@ def update_content_types_roles():
         if MANAGED_CT[ct_tuple].get('must_view_user'):
             ct_admin_role.permissions.add(utils.get_view_user_perm())
         ct_admin_role.add_child(admin_role)
+
+post_migrate.connect(
+    signal_handlers.post_migrate_update_rbac,
+    sender=apps.get_app_config('a2_rbac'))
