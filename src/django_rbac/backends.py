@@ -64,9 +64,15 @@ class DjangoRBACBackend(object):
                     key = '%s.%s' % (permission.target_ct_id, permission.target_id)
                 slug = permission.operation.slug
                 perms = [str('%s.%s_%s' % (app_label, slug, model))]
-                if slug == 'admin':
-                    for other_slug in ['change', 'delete', 'add', 'view']:
-                        perms.append(str('%s.%s_%s' % (app_label, other_slug, model)))
+                perm_hierarchy = {
+                    'admin': ['change', 'delete', 'add', 'view'],
+                    'change': ['view'],
+                    'delete': ['view'],
+                    'add': ['view'],
+                }
+                if slug in perm_hierarchy:
+                    for other_perm in perm_hierarchy[slug]:
+                        perms.append(str('%s.%s_%s' % (app_label, other_perm, model)))
                 permissions = user_obj._rbac_perms_cache.setdefault(key, set())
                 permissions.update(perms)
                 # optimization for has_module_perms
