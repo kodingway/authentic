@@ -155,10 +155,13 @@ class PermissionAbstractBase(models.Model):
         ct_ct = ContentType.objects.get_for_model(ContentType)
         if ct == ct_ct:
             target = ContentType.objects.get_for_id(self.target_id)
-            return u'{0} / {1}'.format(self.operation, target)
+            s = u'{0} / {1}'.format(self.operation, target)
         else:
-            return u'{0} / {1} / {2}'.format(self.operation, ct,
-                                             self.target)
+            s = u'{0} / {1} / {2}'.format(self.operation, ct,
+                                          self.target)
+        if self.ou:
+            s += _(u' (scope "{0}")').format(self.ou)
+        return s
 
     class Meta:
         abstract = True
