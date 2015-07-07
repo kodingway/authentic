@@ -1,4 +1,4 @@
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from django.utils.text import slugify
 from django.contrib.contenttypes.models import ContentType
 
@@ -25,9 +25,9 @@ def update_ou_admin_roles(ou):
         # do not create scoped admin roles if the model is not scopable
         if not ou_model:
             continue
-        name = MANAGED_CT[key]['name']
+        name = unicode(MANAGED_CT[key]['name'])
         slug = '_a2-' + slugify(name)
-        scoped_name = MANAGED_CT[key]['scoped_name']
+        scoped_name = unicode(MANAGED_CT[key]['scoped_name'])
         name = scoped_name.format(ou=ou)
         ou_slug = slug + '-' + ou.slug
         if app_settings.MANAGED_CONTENT_TYPES == ():
@@ -124,7 +124,7 @@ def update_content_types_roles():
         if ct_tuple not in MANAGED_CT:
             continue
         # General admin role
-        name = MANAGED_CT[ct_tuple]['name']
+        name = unicode(MANAGED_CT[ct_tuple]['name'])
         slug = '_a2-' + slugify(name)
         if not app_settings.MANAGED_CONTENT_TYPES is None and key not in \
                 app_settings.MANAGED_CONTENT_TYPES:
