@@ -18,6 +18,7 @@ from django_rbac.utils import get_ou_model
 
 from authentic2.forms import modelform_factory
 from authentic2.utils import redirect
+from authentic2.decorators import json
 
 from . import app_settings
 
@@ -362,8 +363,8 @@ class HomepageView(PermissionMixin, TemplateView):
 homepage = HomepageView.as_view()
 
 
+@json
 def menu_json(request):
-    response = HttpResponse(content_type='application/json')
     menu_entries = []
     if request.user.has_perm_any('a2_rbac.view_organizationalunit'):
         menu_entries.append({
@@ -389,13 +390,8 @@ def menu_json(request):
             'slug': 'services',
             'url': request.build_absolute_uri(reverse('a2-manager-services'))
             })
-    json_str = json.dumps(menu_entries)
-    for variable in ('jsonpCallback', 'callback'):
-        if variable in request.GET:
-            json_str = '%s(%s);' % (request.GET[variable], json_str)
-            break
-    response.write(json_str)
-    return response
+    return menu_entries
+
 
 class HideOUColumnMixin(object):
     def get_table(self, **kwargs):
