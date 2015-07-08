@@ -5,6 +5,8 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.exceptions import MultipleObjectsReturned
 from django.utils.translation import ugettext as _
+from django.views.decorators.vary import vary_on_headers
+from django.views.decorators.cache import cache_control
 
 from django_rbac.utils import get_ou_model
 
@@ -14,7 +16,7 @@ from rest_framework.response import Response
 from rest_framework import authentication, permissions, status
 from rest_framework.exceptions import PermissionDenied
 
-from . import utils
+from . import utils, decorators
 
 
 class HasUserAddPermission(permissions.BasePermission):
@@ -191,3 +193,12 @@ class PasswordChange(BaseRpcView):
         return {'result': 1}, status.HTTP_200_OK
 
 password_change = PasswordChange.as_view()
+
+
+@vary_on_headers('Cookie', 'Origin', 'Referer')
+@cache_control(private=True, max_age=60)
+@decorators.json
+def user(request):
+    if request.user.is_anonymous():
+        return {}
+    return request.user.to_json()

@@ -277,3 +277,15 @@ class Service(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def to_json(self, user=None):
+        if user:
+            roles = user.roles_and_parents().filter(service=self)
+        else:
+            roles = self.roles.all()
+        return {
+            'name': self.name,
+            'slug': self.slug,
+            'ou': unicode(self.ou) if self.ou else None,
+            'roles': [role.to_json() for role in roles],
+        }

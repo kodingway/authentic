@@ -147,6 +147,15 @@ class Role(RoleAbstractBase):
         verbose_name_plural = _('roles')
         ordering = ('ou', 'service', 'name',)
 
+    def to_json(self):
+        return {
+            'uuid': self.uuid,
+            'name': self.name,
+            'slug': self.slug,
+            'is_admin': bool(self.admin_scope_ct and self.admin_scope_id),
+            'is_service': bool(self.service),
+        }
+
 
 class RoleParenting(RoleParentingAbstractBase):
     class Meta:

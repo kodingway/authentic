@@ -13,6 +13,7 @@ from django_rbac.utils import get_role_parenting_model
 
 from authentic2 import utils, validators, app_settings
 from authentic2.decorators import errorcollector
+from authentic2.models import Service, AttributeValue
 
 from .managers import UserManager
 
@@ -128,3 +129,20 @@ class User(AbstractBaseUser, PermissionMixin):
 
     def natural_key(self):
         return (self.uuid,)
+
+    def to_json(self):
+        d = {}
+        for av in AttributeValue.objects.with_owner(self):
+            d[str(av.attribute.name)] = av.to_python()
+        d.update({
+            'uuid': self.uuid,
+            'username': self.username,
+            'email': self.email,
+            'ou': unicode(self.ou) if self.ou else None,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'is_superuser': self.is_superuser,
+            'roles': [role.to_json() for role in self.roles_and_parents().filter(service__isnull=True)],
+            'services': [service.to_json(user=self) for service in Service.objects.all()],
+        })
+        return d
