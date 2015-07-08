@@ -1,11 +1,13 @@
 import pickle
+import re
+from json import dumps as json_dumps
 from contextlib import contextmanager
 import time
 from functools import wraps
 
 from django.contrib.auth.decorators import login_required
 from django.views.debug import technical_404_response
-from django.http import Http404
+from django.http import Http404, HttpResponseForbidden, HttpResponse, HttpResponseBadRequest
 from django.core.cache import cache as django_cache
 
 from . import utils, app_settings, middleware
@@ -249,3 +251,36 @@ def errorcollector(error_dict):
         yield
     except ValidationError, e:
         e.update_error_dict(error_dict)
+
+
+def json(func):
+    '''Convert view to a JSON or JSON web-service supporting CORS'''
+    from . import cors
+    @wraps(func)
+    def f(request, *args, **kwargs):
+        # 1. check origin
+        origin = request.META.get('HTTP_ORIGIN')
+        if origin is None:
+            origin = request.META.get('HTTP_REFERER')
+            if origin:
+                origin = cors.make_origin(origin)
+        if not cors.check_origin(request, origin):
+            return HttpResponseForbidden('bad origin')
+        # 2. build response
+        result = func(request, *args, **kwargs)
+        json_str = json_dumps(result)
+        response = HttpResponse(content_type='application/json')
+        for variable in ('jsonpCallback', 'callback'):
+            if variable in request.GET:
+                identifier = request.GET[variable]
+                if not re.match(r'^[$a-zA-Z_][0-9a-zA-Z_$]*$', identifier):
+                    return HttpResponseBadRequest('invalid JSONP callback name')
+                json_str = '%s(%s);' % (identifier, json_str)
+                break
+        else:
+            response['Access-Control-Allow-Origin'] = origin
+            response['Access-Control-Allow-Credentials'] = 'true'
+            response['Access-Control-Allow-Headers'] = 'x-requested-with'
+        response.write(json_str)
+        return response
+    return f

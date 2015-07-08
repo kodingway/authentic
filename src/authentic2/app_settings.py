@@ -157,6 +157,7 @@ default_settings = dict(
             'time until next try after a login failure'),
     A2_VERIFY_SSL=Setting(default=True, definition='Verify SSL certificate in HTTP requests'),
     A2_ATTRIBUTE_KIND_TITLE_CHOICES=Setting(default=(), definition='Choices for the title attribute kind'),
+    A2_CORS_WHITELIST=Setting(default=(), definition='List of origin URL to whitelist, must be scheme://netloc[:port]'),
 )
 
 app_settings = AppSettings(default_settings)

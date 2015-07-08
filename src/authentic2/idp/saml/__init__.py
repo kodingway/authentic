@@ -32,6 +32,16 @@ class Plugin(object):
     def get_idp_backends(self):
         return ['authentic2.idp.saml.backend.SamlBackend']
 
+    def check_origin(self, request, origin):
+        from authentic2.cors import make_origin
+        from authentic2.saml.models import LibertySession
+        for session in LibertySession.objects.filter(
+                django_session_key=request.session.session_key):
+            provider_origin = make_origin(session.provider_id)
+            if origin == provider_origin:
+                return True
+
+
 from django.apps import AppConfig
 class SAML2IdPConfig(AppConfig):
     name = 'authentic2.idp.saml'
