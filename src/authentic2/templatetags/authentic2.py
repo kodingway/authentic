@@ -33,5 +33,7 @@ class AddToBlock(template.Node):
 
 @register.simple_tag(takes_context=True)
 def renderblock(context, block_name):
-    output = u'\n'.join(context['add_to_blocks'][block_name])
-    return output
+    if 'add_to_blocks' in context and block_name in context['add_to_blocks']:
+        return u'\n'.join(context['add_to_blocks'][block_name])
+    else:
+        return ''
