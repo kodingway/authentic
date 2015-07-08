@@ -18,7 +18,7 @@ from django_rbac.utils import get_ou_model
 
 from authentic2.forms import modelform_factory
 from authentic2.utils import redirect
-from authentic2.decorators import json
+from authentic2.decorators import json as json_view
 
 from . import app_settings
 
@@ -363,7 +363,7 @@ class HomepageView(PermissionMixin, TemplateView):
 homepage = HomepageView.as_view()
 
 
-@json
+@json_view
 def menu_json(request):
     menu_entries = []
     if request.user.has_perm_any('a2_rbac.view_organizationalunit'):
