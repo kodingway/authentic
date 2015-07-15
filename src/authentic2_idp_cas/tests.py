@@ -65,20 +65,20 @@ class CasTests(Authentic2TestCase):
 
     def test_login_failure(self):
         client = Client()
-        response = client.get('/idp/cas/login/')
+        response = client.get('/idp/cas/login')
         self.assertEqual(response.status_code, 400)
         self.assertIn('no service', response.content)
-        response = client.get('/idp/cas/login/', {constants.SERVICE_PARAM: 'http://google.com/'})
+        response = client.get('/idp/cas/login', {constants.SERVICE_PARAM: 'http://google.com/'})
         self.assertRedirectsComplex(response, 'http://google.com/')
-        response = client.get('/idp/cas/login/', {constants.SERVICE_PARAM: self.URL,
+        response = client.get('/idp/cas/login', {constants.SERVICE_PARAM: self.URL,
             constants.RENEW_PARAM: '', constants.GATEWAY_PARAM: ''})
         self.assertRedirectsComplex(response, self.URL)
-        response = client.get('/idp/cas/login/', {constants.SERVICE_PARAM: self.URL,
+        response = client.get('/idp/cas/login', {constants.SERVICE_PARAM: self.URL,
             constants.GATEWAY_PARAM: ''})
         self.assertRedirectsComplex(response, self.URL)
 
     def test_login_validate(self):
-        response = self.client.get('/idp/cas/login/', {constants.SERVICE_PARAM: self.URL})
+        response = self.client.get('/idp/cas/login', {constants.SERVICE_PARAM: self.URL})
         self.assertEquals(response.status_code, 302)
         ticket = Ticket.objects.get()
         location = response['Location']
@@ -113,7 +113,7 @@ class CasTests(Authentic2TestCase):
         # to prevent use of the user session
         client = Client()
         ticket_id = urlparse.parse_qs(response.url.split('?')[1])[constants.TICKET_PARAM][0]
-        response = client.get('/idp/cas/validate/', {constants.TICKET_PARAM:
+        response = client.get('/idp/cas/validate', {constants.TICKET_PARAM:
             ticket_id, constants.SERVICE_PARAM: self.URL})
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response['content-type'], 'text/plain')
@@ -158,7 +158,7 @@ class CasTests(Authentic2TestCase):
         # to prevent use of the user session
         client = Client()
         ticket_id = urlparse.parse_qs(response.url.split('?')[1])[constants.TICKET_PARAM][0]
-        response = client.get('/idp/cas/serviceValidate/', {constants.TICKET_PARAM:
+        response = client.get('/idp/cas/serviceValidate', {constants.TICKET_PARAM:
             ticket_id, constants.SERVICE_PARAM: self.URL})
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response['content-type'], 'text/xml')
@@ -174,7 +174,7 @@ class CasTests(Authentic2TestCase):
             Ticket.objects.get()
 
     def test_login_service_validate_without_renew_failure(self):
-        response = self.client.get('/idp/cas/login/', {constants.SERVICE_PARAM: self.URL})
+        response = self.client.get('/idp/cas/login', {constants.SERVICE_PARAM: self.URL})
         self.assertEquals(response.status_code, 302)
         ticket = Ticket.objects.get()
         location = response['Location']
@@ -209,7 +209,7 @@ class CasTests(Authentic2TestCase):
         # to prevent use of the user session
         client = Client()
         ticket_id = urlparse.parse_qs(response.url.split('?')[1])[constants.TICKET_PARAM][0]
-        response = client.get('/idp/cas/serviceValidate/', {constants.TICKET_PARAM:
+        response = client.get('/idp/cas/serviceValidate', {constants.TICKET_PARAM:
             ticket_id, constants.SERVICE_PARAM: self.URL, constants.RENEW_PARAM: ''})
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response['content-type'], 'text/xml')
@@ -223,7 +223,7 @@ class CasTests(Authentic2TestCase):
             Ticket.objects.get()
 
     def test_login_proxy_validate_on_service_ticket(self):
-        response = self.client.get('/idp/cas/login/', {constants.SERVICE_PARAM: self.URL})
+        response = self.client.get('/idp/cas/login', {constants.SERVICE_PARAM: self.URL})
         self.assertEquals(response.status_code, 302)
         ticket = Ticket.objects.get()
         location = response['Location']
@@ -258,7 +258,7 @@ class CasTests(Authentic2TestCase):
         # to prevent use of the user session
         client = Client()
         ticket_id = urlparse.parse_qs(response.url.split('?')[1])[constants.TICKET_PARAM][0]
-        response = client.get('/idp/cas/proxyValidate/', {constants.TICKET_PARAM:
+        response = client.get('/idp/cas/proxyValidate', {constants.TICKET_PARAM:
             ticket_id, constants.SERVICE_PARAM: self.URL})
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response['content-type'], 'text/xml')
@@ -275,7 +275,7 @@ class CasTests(Authentic2TestCase):
 
     @override_settings(A2_IDP_CAS_CHECK_PGT_URL=False)
     def test_proxy(self):
-        response = self.client.get('/idp/cas/login/', {constants.SERVICE_PARAM: self.URL})
+        response = self.client.get('/idp/cas/login', {constants.SERVICE_PARAM: self.URL})
         self.assertEquals(response.status_code, 302)
         ticket = Ticket.objects.get()
         location = response['Location']
@@ -310,7 +310,7 @@ class CasTests(Authentic2TestCase):
         # to prevent use of the user session
         client = Client()
         ticket_id = urlparse.parse_qs(response.url.split('?')[1])[constants.TICKET_PARAM][0]
-        response = client.get('/idp/cas/serviceValidate/', {constants.TICKET_PARAM:
+        response = client.get('/idp/cas/serviceValidate', {constants.TICKET_PARAM:
             ticket_id, constants.SERVICE_PARAM: self.URL, constants.PGT_URL_PARAM: self.PGT_URL})
         for key in client.session.iterkeys():
             if key.startswith(constants.PGT_IOU_PREFIX):
@@ -340,7 +340,7 @@ class CasTests(Authentic2TestCase):
         # Try to get a proxy ticket for service 2
         # it should fail since no proxy authorization exists
         client = Client()
-        response = client.get('/idp/cas/proxy/', {
+        response = client.get('/idp/cas/proxy', {
             constants.PGT_PARAM: pgt,
             constants.TARGET_SERVICE_PARAM: self.SERVICE2_URL
         })
@@ -352,7 +352,7 @@ class CasTests(Authentic2TestCase):
         # Set proxy authorization
         self.service2.proxy.add(self.service)
         # Try again !
-        response = client.get('/idp/cas/proxy/', {
+        response = client.get('/idp/cas/proxy', {
             constants.PGT_PARAM: pgt,
             constants.TARGET_SERVICE_PARAM: self.SERVICE2_URL
         })
@@ -369,7 +369,7 @@ class CasTests(Authentic2TestCase):
         self.assertXPathConstraints(response, constraints, CAS_NAMESPACES)
         # Now service2 try to resolve the proxy ticket
         client = Client()
-        response = client.get('/idp/cas/proxyValidate/', {
+        response = client.get('/idp/cas/proxyValidate', {
             constants.TICKET_PARAM: pt.ticket_id,
             constants.SERVICE_PARAM: self.SERVICE2_URL})
         self.assertEquals(response.status_code, 200)
@@ -386,7 +386,7 @@ class CasTests(Authentic2TestCase):
             Ticket.objects.get(ticket_id=pt.ticket_id)
         # Check invalidation of PGT when session is closed
         self.client.logout()
-        response = client.get('/idp/cas/proxy/', {
+        response = client.get('/idp/cas/proxy', {
             constants.PGT_PARAM: pgt,
             constants.TARGET_SERVICE_PARAM: self.SERVICE2_URL
         })
