@@ -51,11 +51,7 @@ class LimitQuerysetFormMixin(object):
                     perm = '%s.view_%s' % (app_label, model_name)
                 qs = request.user.filter_by_perm(perm, qs)
                 field.queryset = qs
-                assert qs.exists(), 'user as now view permissions on model %s' % qs.model
-                if qs.count() == 1:
-                    field.initial = qs.get().pk
-                    field.widget.attrs['disabled'] = 'disabled'
-                    field.widget.attrs['readonly'] = 'readonly'
+                assert qs.exists(), 'user has no view permissions on model %s' % qs.model
 
 
 class ChooseUserForm(CssClass, forms.Form):
@@ -94,9 +90,16 @@ class UserEditForm(LimitQuerysetFormMixin, CssClass, BaseUserForm):
     form_id = "id_user_edit_form"
 
     def __init__(self, *args, **kwargs):
+        request = kwargs.get('request')
         super(UserEditForm, self).__init__(*args, **kwargs)
-        if 'ou' in self.fields:
-            self.fields['ou'].required = True
+        if 'ou' in self.fields and not (request and request.user.is_superuser):
+            field = self.fields['ou']
+            field.required = True
+            count = field.queryset.count()
+            if count == 1:
+                field.initial = field.queryset.get().pk
+            if count < 2:
+                field.widget.attrs['readonly'] = 'readonly'
 
     def clean(self):
         if not self.cleaned_data.get('username') and \
