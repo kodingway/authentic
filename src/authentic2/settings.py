@@ -1,3 +1,4 @@
+import logging
 import logging.config
 # Load default from Django
 from django.conf.global_settings import *
@@ -5,7 +6,7 @@ import os
 
 import django
 
-from . import plugins
+from . import plugins, logger
 
 BASE_DIR = os.path.dirname(__file__)
 
@@ -16,7 +17,7 @@ BASE_DIR = os.path.dirname(__file__)
 SECRET_KEY = 'please-change-me-with-a-very-long-random-string'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 DEBUG_DB = False
 TEMPLATE_DEBUG = True
 MEDIA = 'media'
@@ -240,8 +241,8 @@ LOGGING = {
         # even when debugging seeing SQL queries is too much, activate it
         # explicitly using DEBUG_DB
         'django.db': {
-                'level': 'INFO',
                 'handlers': ['console_db'],
+                'level': logger.SettingsLogLevel('INFO', debug_setting='DEBUG_DB'),
                 'propagate': False,
         },
         # django_select2 outputs debug message at level INFO
@@ -250,7 +251,7 @@ LOGGING = {
         },
         '': {
                 'handlers': ['console'],
-                'level': 'INFO',
+                'level': logger.SettingsLogLevel('INFO'),
         },
     },
 }
@@ -274,10 +275,4 @@ REST_FRAMEWORK = {
 
 if 'AUTHENTIC2_SETTINGS_FILE' in os.environ:
     execfile(os.environ['AUTHENTIC2_SETTINGS_FILE'])
-
-# Post local config setting
-if DEBUG:
-    LOGGING['loggers']['']['level'] = 'DEBUG'
-if DEBUG_DB:
-    LOGGING['loggers']['django.db']['level'] = 'DEBUG'
 logging.config.dictConfig(LOGGING)

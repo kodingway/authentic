@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 import sys
+import authentic2.logger
 
 if __name__ == "__main__":
     config_file = False
