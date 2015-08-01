@@ -81,13 +81,15 @@ class User(AbstractBaseUser, PermissionMixin):
         return self.username or self.email or self.get_full_name() or self.uuid
 
     def roles_and_parents(self):
-        qs1 = self.roles.all().extra(select={'member': 'a2_rbac_role_members.id is not null'})
+        qs1 = self.roles.all()
         qs2 = qs1.model.objects.filter(child_relation__child=qs1)
         qs = (qs1 | qs2).order_by('name').distinct()
         RoleParenting = get_role_parenting_model()
         rp_qs = RoleParenting.objects.filter(child=qs1)
         qs = qs.prefetch_related(models.Prefetch(
             'child_relation', queryset=rp_qs), 'child_relation__parent')
+        qs = qs.prefetch_related(models.Prefetch(
+            'members', queryset=self.__class__.objects.filter(pk=self.pk), to_attr='member'))
         return qs
 
     def __unicode__(self):
