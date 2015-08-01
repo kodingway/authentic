@@ -14,21 +14,19 @@ see :ref:`install-lasso-ref`.
 
 The other Authentic 2 dependencies are:
 
-- Django<1.6
-- south>=0.8.4
-- requests
-- django-model-utils
-- django-registration>=1
-- django-debug-toolbar>=1.2,<1.3
-- --allow-external django-admin-tools
-- --allow-unverified django-admin-tools
-- django-admin-tools>=0.5.1
-- dnspython
-- django-select2
-- django-tables2
-- gadjo
-- django-import-export
-- django-sekizai
+- Django>=1.7.6,<1.9
+- requests>=2.
+- django-model-utils>=2
+- django-admin-tools>=0.5.2
+- dnspython>=1.12
+- django-select2>=4.3.0
+- django-tables2>=1.0
+- gadjo>=0.6
+- django-import-export>=0.2.7
+- djangorestframework>=3.1
+- six>=1.9
+- Markdown>=2.5
+- python-ldap
 
 Install Authentic 2:
 

@@ -1,0 +1,14 @@
+django                  python-django
+requests                python-requests
+django-model-utils      python-django-model-utils
+dnspython               python-dnspython
+django-select2          python-django-select2
+django-tables           python-django-tables2
+gadjo                   python-gadjo
+XStatic                 python-xstatic
+XStatic_Font_Awesome    python-xstatic-font-awesome
+XStatic_jQuery          python-xstatic-jquery
+XStatic_jquery_ui       python-xstatic-jquery-ui
+django-import-export    python-django-import-export
+django-sekizai          python-django-sekizai
+six                     python-six

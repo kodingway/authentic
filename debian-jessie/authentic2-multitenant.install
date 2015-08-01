@@ -1,0 +1,3 @@
+debian/multitenant/authentic2-multitenant-manage /usr/bin
+debian/multitenant/config.py                     /etc/authentic2-multitenant
+debian/multitenant/debian_config.py              /usr/lib/authentic2-multitenant

@@ -1,0 +1,5 @@
+debian/conf/authentic.conf            /etc/authentic2
+debian/conf/nginx-example.conf        /etc/authentic2
+debian/sql/db.conf                    /usr/share/authentic2/templates
+debian/authentic2-ctl                 /usr/bin
+debian/debian_config.py               /usr/share/authentic2
