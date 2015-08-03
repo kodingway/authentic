@@ -43,7 +43,7 @@ class RoleMembersTable(UserTable):
 class RoleTable(tables.Table):
     name = tables.LinkColumn(viewname='a2-manager-role-members',
                              kwargs={'pk': A('pk')},
-                             accessor='__unicode__', verbose_name=_('name'))
+                             accessor='name', verbose_name=_('name'))
     ou = tables.Column()
     service = tables.Column()
     member_count = tables.Column(verbose_name=_('Direct members'),
@@ -82,7 +82,7 @@ class OUTable(tables.Table):
 class RoleChildrenTable(tables.Table):
     name = tables.LinkColumn(viewname='a2-manager-role-members',
                              kwargs={'pk': A('pk')},
-                             accessor='__unicode__', verbose_name=_('name'))
+                             accessor='name', verbose_name=_('name'))
     ou = tables.Column()
     service = tables.Column(order_by='servicerole__service')
     is_direct = tables.BooleanColumn(verbose_name=_('Direct child'))
@@ -97,7 +97,7 @@ class RoleChildrenTable(tables.Table):
 class UserRolesTable(tables.Table):
     name = tables.LinkColumn(viewname='a2-manager-role-members',
                              kwargs={'pk': A('pk')},
-                             accessor='__unicode__', verbose_name=_('name'))
+                             accessor='name', verbose_name=_('name'))
     ou = tables.Column()
     service = tables.Column(order_by='service')
     member = tables.BooleanColumn(verbose_name=_('Direct member'))
@@ -123,7 +123,7 @@ class ServiceTable(tables.Table):
         empty_text = _('None')
 
 class ServiceRolesTable(tables.Table):
-    name = tables.Column(accessor='__unicode__', verbose_name=_('name'))
+    name = tables.Column(accessor='name', verbose_name=_('name'))
 
     class Meta:
         models = get_role_model()
