@@ -836,6 +836,221 @@ class APITest(TestCase):
         self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('errors', response.data)
 
+    @override_settings(A2_REQUIRED_FIELDS=['username'])
+    def test_email_is_unique_double_registration(self):
+        from django.contrib.auth import get_user_model
+        from rest_framework import test
+        from rest_framework import status
+
+        user = self.reguser3
+        cred = self.reguser3_cred
+        User = get_user_model()
+        user_count = User.objects.count()
+        client = test.APIClient()
+        password = '12XYab'
+        username = 'john.doe'
+        email = 'john.doe@example.com'
+        return_url = 'http://sp.org/register/'
+        payload = {
+            'email': email,
+            'username': username,
+            'ou': self.ou.slug,
+            'password': password,
+            'return_url': return_url,
+        }
+        outbox_level = len(mail.outbox)
+        client.credentials(HTTP_AUTHORIZATION='Basic %s' % cred)
+        response = client.post(reverse('a2-api-register'),
+                               content_type='application/json',
+                               data=json.dumps(payload))
+        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
+        self.assertIn('result', response.data)
+        self.assertEqual(response.data['result'], 1)
+        self.assertIn('token', response.data)
+        token = response.data['token']
+        self.assertIn('request', response.data)
+        self.assertEqual(response.data['request'], payload)
+        self.assertEqual(len(mail.outbox), outbox_level+1)
+        outbox_level = len(mail.outbox)
+
+        # Second registration
+        response2 = client.post(reverse('a2-api-register'),
+                               content_type='application/json',
+                               data=json.dumps(payload))
+        self.assertEqual(response2.status_code, status.HTTP_202_ACCEPTED)
+        self.assertIn('result', response2.data)
+        self.assertEqual(response2.data['result'], 1)
+        self.assertIn('token', response2.data)
+        token2 = response2.data['token']
+        self.assertIn('request', response2.data)
+        self.assertEqual(response2.data['request'], payload)
+        self.assertEqual(len(mail.outbox), outbox_level+1)
+
+        # User side - user click on first email
+        client = Client()
+        activation_mail = mail.outbox[-2]
+        m = re.search('https?://[^\n ]*', activation_mail.body)
+        self.assertNotEqual(m, None)
+        activation_url = m.group()
+        response = client.get(activation_url)
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.assertEqual(response['Location'],
+                         utils.make_url(return_url, params={'token': token}))
+        self.assertEqual(User.objects.count(), user_count+1)
+        response = client.get(reverse('auth_homepage'))
+        self.assertContains(response, username)
+        last_user = User.objects.order_by('id').last()
+        self.assertEqual(last_user.username, username)
+        self.assertEqual(last_user.email, email)
+        self.assertEqual(last_user.ou.slug, self.ou.slug)
+        self.assertTrue(last_user.check_password(password))
+
+        # User click on second email
+        client = Client()
+        activation_mail = mail.outbox[-1]
+        m = re.search('https?://[^\n ]*', activation_mail.body)
+        self.assertNotEqual(m, None)
+        activation_url = m.group()
+        response = client.get(activation_url)
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.assertEqual(response['Location'],
+                         utils.make_url(return_url, params={'token': token2}))
+        self.assertEqual(User.objects.count(), user_count+1)
+        response = client.get(reverse('auth_homepage'))
+        self.assertContains(response, username)
+        last_user2 = User.objects.order_by('id').last()
+        self.assertEqual(User.objects.filter(email=payload['email']).count(), 1)
+        self.assertEqual(last_user.id, last_user2.id)
+        self.assertEqual(last_user2.username, username)
+        self.assertEqual(last_user2.email, email)
+        self.assertEqual(last_user2.ou.slug, self.ou.slug)
+        self.assertTrue(last_user2.check_password(password))
+
+        # Test email is unique with case change
+        client = test.APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Basic %s' % cred)
+        payload = {
+            'email': email.upper(),
+            'username': username+'1',
+            'ou': self.ou.slug,
+            'password': password,
+            'return_url': return_url,
+        }
+        response = client.post(reverse('a2-api-register'),
+                               content_type='application/json',
+                               data=json.dumps(payload))
+        self.assertEqual(response.data['errors']['__all__'],
+                         [_('You already have an account')])
+        # Username is required
+        payload = {
+            'email': '1' + email,
+            'ou': self.ou.slug,
+            'password': password,
+            'return_url': return_url,
+        }
+        response = client.post(reverse('a2-api-register'),
+                               content_type='application/json',
+                               data=json.dumps(payload))
+        self.assertEqual(response.data['errors']['__all__'],
+                         [_('Username is required in this ou')])
+        # Test username is unique
+        payload = {
+            'email': '1' + email,
+            'username': username,
+            'ou': self.ou.slug,
+            'password': password,
+            'return_url': return_url,
+        }
+        response = client.post(reverse('a2-api-register'),
+                               content_type='application/json',
+                               data=json.dumps(payload))
+        self.assertEqual(response.data['errors']['__all__'],
+                         [_('You already have an account')])
+
+    @override_settings(A2_REQUIRED_FIELDS=['username'])
+    def test_email_username_is_unique_double_registration(self):
+        from django.contrib.auth import get_user_model
+        from rest_framework import test
+        from rest_framework import status
+
+        user = self.reguser3
+        cred = self.reguser3_cred
+        User = get_user_model()
+        user_count = User.objects.count()
+        client = test.APIClient()
+        password = '12XYab'
+        username = 'john.doe'
+        email = 'john.doe@example.com'
+        return_url = 'http://sp.org/register/'
+        payload = {
+            'email': email,
+            'username': username,
+            'ou': self.ou.slug,
+            'password': password,
+            'return_url': return_url,
+        }
+        outbox_level = len(mail.outbox)
+        client.credentials(HTTP_AUTHORIZATION='Basic %s' % cred)
+        response = client.post(reverse('a2-api-register'),
+                               content_type='application/json',
+                               data=json.dumps(payload))
+        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
+        self.assertIn('result', response.data)
+        self.assertEqual(response.data['result'], 1)
+        self.assertIn('token', response.data)
+        token = response.data['token']
+        self.assertIn('request', response.data)
+        self.assertEqual(response.data['request'], payload)
+        self.assertEqual(len(mail.outbox), outbox_level+1)
+        outbox_level = len(mail.outbox)
+
+        # Second registration
+        payload['email'] = 'john.doe2@example.com'
+        response2 = client.post(reverse('a2-api-register'),
+                               content_type='application/json',
+                               data=json.dumps(payload))
+        self.assertEqual(response2.status_code, status.HTTP_202_ACCEPTED)
+        self.assertIn('result', response2.data)
+        self.assertEqual(response2.data['result'], 1)
+        self.assertIn('token', response2.data)
+        token2 = response2.data['token']
+        self.assertIn('request', response2.data)
+        self.assertEqual(response2.data['request'], payload)
+        self.assertEqual(len(mail.outbox), outbox_level+1)
+
+        # User side - user click on first email
+        client = Client()
+        activation_mail = mail.outbox[-2]
+        m = re.search('https?://[^\n ]*', activation_mail.body)
+        self.assertNotEqual(m, None)
+        activation_url = m.group()
+        response = client.get(activation_url)
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.assertEqual(response['Location'],
+                         utils.make_url(return_url, params={'token': token}))
+        self.assertEqual(User.objects.count(), user_count+1)
+        response = client.get(reverse('auth_homepage'))
+        self.assertContains(response, username)
+        last_user = User.objects.order_by('id').last()
+        self.assertEqual(last_user.username, username)
+        self.assertEqual(last_user.email, email)
+        self.assertEqual(last_user.ou.slug, self.ou.slug)
+        self.assertTrue(last_user.check_password(password))
+
+        # User click on second email
+        client = Client()
+        activation_mail = mail.outbox[-1]
+        m = re.search('https?://[^\n ]*', activation_mail.body)
+        self.assertNotEqual(m, None)
+        activation_url = m.group()
+        response = client.get(activation_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, 200)
+        self.assertFormError(
+            response, 'form', 'username',
+            _('This username is already in use. Please supply a different '
+             'username.'))
+
     def test_password_change(self):
         from django.contrib.auth import get_user_model
         User = get_user_model()

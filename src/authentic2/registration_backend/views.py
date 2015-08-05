@@ -18,6 +18,7 @@ from django_rbac.utils import get_ou_model
 
 from .. import models, app_settings, compat, cbv, views, forms, validators
 from .forms import RegistrationCompletionForm
+from authentic2.a2_rbac.models import OrganizationalUnit
 
 logger = logging.getLogger(__name__)
 
@@ -62,10 +63,16 @@ class RegistrationCompletionView(CreateView):
     def dispatch(self, request, *args, **kwargs):
         self.token = request.token
         self.email = request.token['email']
+        if 'ou' in self.token:
+            self.ou = OrganizationalUnit.objects.get(pk=self.token['ou'])
+        else:
+            self.ou = None
         self.users = User.objects.filter(email__iexact=self.email) \
             .order_by('date_joined')
         self.email_is_unique = app_settings.A2_EMAIL_IS_UNIQUE \
             or app_settings.A2_REGISTRATION_EMAIL_IS_UNIQUE
+        if self.ou:
+            self.email_is_unique |= self.ou.email_is_unique
         self.init_fields_labels_and_help_texts()
         return super(RegistrationCompletionView, self) \
             .dispatch(request, *args, **kwargs)
@@ -155,6 +162,7 @@ class RegistrationCompletionView(CreateView):
                 user = form.save()
                 login(request, user)
                 return redirect(request, self.get_success_url())
+            self.get_form = lambda *args, **kwargs: form
         return super(RegistrationCompletionView, self).get(request, *args,
                                                            **kwargs)
 

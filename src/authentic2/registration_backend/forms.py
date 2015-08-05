@@ -17,6 +17,7 @@ from django.core.urlresolvers import reverse
 from django.core.validators import RegexValidator
 
 from .. import app_settings, compat, forms, utils, validators, models
+from authentic2.a2_rbac.models import OrganizationalUnit
 
 User = compat.get_user_model()
 
@@ -90,7 +91,11 @@ class RegistrationCompletionForm(forms.BaseUserForm):
     def clean_username(self):
         if self.cleaned_data.get('username'):
             username = self.cleaned_data['username']
-            if app_settings.A2_REGISTRATION_USERNAME_IS_UNIQUE:
+            username_is_unique = app_settings.A2_REGISTRATION_USERNAME_IS_UNIQUE
+            if 'ou' in self.data:
+                ou = OrganizationalUnit.objects.get(pk=self.data['ou'])
+                username_is_unique |= ou.username_is_unique
+            if username_is_unique:
                 User = get_user_model()
                 try:
                     User.objects.get(username=username)
