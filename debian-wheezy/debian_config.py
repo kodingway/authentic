@@ -11,6 +11,7 @@ DEBUG = False
 STATIC_ROOT = '/var/lib/authentic2/collectstatic/'
 STATICFILES_DIRS = ('/var/lib/authentic2/static',) + STATICFILES_DIRS
 TEMPLATE_DIRS = ('/var/lib/authentic2/templates',) + TEMPLATE_DIRS
+LOCALE_PATHS = ('/var/lib/authentic2/locale',) + LOCALE_PATHS
 
 ADMINS = (('root', 'root@localhost'),)
 
