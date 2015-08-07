@@ -33,7 +33,7 @@ class OrganizationalUnit(OrganizationalUnitAbstractBase):
     class Meta:
         verbose_name = _('organizational unit')
         verbose_name_plural = _('organizational units')
-        ordering = ('name',)
+        ordering = ('default', 'name',)
         unique_together = (
             ('name',),
             ('slug',),
