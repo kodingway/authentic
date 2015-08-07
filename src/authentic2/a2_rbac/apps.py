@@ -24,6 +24,9 @@ class Authentic2RBACConfig(AppConfig):
             post_save.connect(
                 signal_handlers.update_service_role_ou,
                 sender=subclass)
+        post_save.connect(
+            signal_handlers.update_service_role_ou,
+            sender=Service)
         post_migrate.connect(
             signal_handlers.create_default_ou,
             sender=self)
