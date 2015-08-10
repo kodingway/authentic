@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-01 10:09+0200\n"
+"POT-Creation-Date: 2015-09-17 16:13+0200\n"
 "PO-Revision-Date: 2015-02-26 17:53+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -109,7 +109,7 @@ msgstr "Attributs"
 
 #: authentic2/api_views.py:57
 msgid "you are not authorized to create users in this ou"
-msgstr "Vous n'êtes pas autorisé à vous inscrire dans cette entité."
+msgstr "Vous n'êtes pas autorisé à vous inscrire dans cette collectivité."
 
 #: authentic2/api_views.py:65 authentic2/api_views.py:74
 #: authentic2/tests/test_all.py:792 authentic2/tests/test_all.py:817
@@ -120,7 +120,7 @@ msgstr "Vous avez déjà un compte."
 #: authentic2/api_views.py:69 authentic2/tests/test_all.py:804
 #: authentic2/tests/test_all.py:955
 msgid "Username is required in this ou"
-msgstr "L'identifiant est requis dans cette entité."
+msgstr "L'identifiant est requis dans cette collectivité."
 
 #: authentic2/app_settings.py:115
 msgid "Required. At most 30 characters. Letters, digits, and @/./+/-/_ only."
@@ -412,7 +412,7 @@ msgstr "identifiants de fédération"
 
 #: authentic2/models.py:138
 msgid "label"
-msgstr "label"
+msgstr "libellé"
 
 #: authentic2/models.py:140
 msgid "description"
@@ -480,15 +480,15 @@ msgstr "identifiant court"
 
 #: authentic2/models.py:247
 msgid "organizational unit"
-msgstr "entité"
+msgstr "collectivité"
 
 #: authentic2/models.py:261
 msgid "The slug must be unique for this ou"
-msgstr "L'identifiant court doit être unique au sein de cette entité."
+msgstr "L'identifiant court doit être unique au sein de cette collectivité."
 
 #: authentic2/models.py:266
 msgid "The name must be unique for this ou"
-msgstr "Le nom doit être unique au sein de cette entité."
+msgstr "Le nom doit être unique au sein de cette collectivité."
 
 #: authentic2/models.py:272
 msgid "base service model"
@@ -642,7 +642,6 @@ msgstr "Serveur de gestion d'identité versatile"
 
 #: authentic2/templates/authentic2/base.html:29
 #, python-format
-#| msgid "Last login %(last_login)s"
 msgid "Last login %(LAST_LOGIN)s"
 msgstr "Date de dernière connexion: %(LAST_LOGIN)s"
 
@@ -1195,8 +1194,13 @@ msgstr "Déconnexion de toutes vos applications"
 msgid "You have been logged out"
 msgstr "Vous avez été déconnecté."
 
-#: authentic2/views.py:503
+#: authentic2/views.py:499
 msgid "The page is out of date, it was reloaded for you"
 msgstr ""
 "Cette page est périmée car vous vous êtes connecté entre temps; nous l'avons "
 "rechargé pour vous."
+
+#, fuzzy
+#~| msgid "Authentic Mailing List"
+#~ msgid "Authentic2 Plugin Template"
+#~ msgstr "List de diffusion sur Authentic"

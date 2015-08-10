@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-rbac\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-01 10:09+0200\n"
+"POT-Creation-Date: 2015-09-17 16:13+0200\n"
 "PO-Revision-Date: 2015-05-13 15:21+0200\n"
 "Last-Translator: Benjamin Dauvergner <bdauvergne@entrouvert.com>\n"
 "Language: \n"
@@ -20,35 +20,35 @@ msgstr ""
 msgid "name"
 msgstr "nom"
 
-#: authentic2/a2_rbac/management.py:84
+#: authentic2/a2_rbac/management.py:85
 msgid "Manager of roles"
 msgstr "Administrateur des rôles"
 
-#: authentic2/a2_rbac/management.py:85
+#: authentic2/a2_rbac/management.py:86
 #, python-brace-format
 msgid "Roles - {ou}"
 msgstr "Rôles - {ou}"
 
-#: authentic2/a2_rbac/management.py:89
+#: authentic2/a2_rbac/management.py:90
 msgid "Manager of organizational units"
 msgstr "Administrateur des entités"
 
-#: authentic2/a2_rbac/management.py:90
+#: authentic2/a2_rbac/management.py:91
 #, python-brace-format
 msgid "Organizational unit - {ou}"
 msgstr "Entités - {ou}"
 
-#: authentic2/a2_rbac/management.py:93
+#: authentic2/a2_rbac/management.py:94
 msgid "Manager of users"
 msgstr "Administrateur des utilisateurs"
 
-#: authentic2/a2_rbac/management.py:94
+#: authentic2/a2_rbac/management.py:95
 #, python-brace-format
 msgid "Users - {ou}"
 msgstr "Utilisateurs - {ou}"
 
-#: authentic2/a2_rbac/management.py:113 authentic2/a2_rbac/management.py:115
-#: authentic2/a2_rbac/management.py:116
+#: authentic2/a2_rbac/management.py:115 authentic2/a2_rbac/management.py:117
+#: authentic2/a2_rbac/management.py:118
 msgid "Manager"
 msgstr "Administrateur"
 
@@ -62,11 +62,11 @@ msgstr "Le courriel doit être unique"
 
 #: authentic2/a2_rbac/models.py:31 authentic2/a2_rbac/signal_handlers.py:25
 msgid "Default organizational unit"
-msgstr "Entité par défaut"
+msgstr "Collectivité par défaut"
 
 #: authentic2/a2_rbac/models.py:34
 msgid "organizational unit"
-msgstr "entité"
+msgstr "collectivité"
 
 #: authentic2/a2_rbac/models.py:35
 msgid "organizational units"
@@ -77,13 +77,13 @@ msgid ""
 "You cannot unset this organizational unit as the default, but you can set "
 "another one as the default."
 msgstr ""
-"Vous ne pouvez pas enlever le drapeau défaut de cette entité, mais vous "
-"pouvez le poser sur une autre entité."
+"Vous ne pouvez pas enlever le drapeau défaut de cette collectivité, mais "
+"vous pouvez le poser sur une autre collectivité."
 
 #: authentic2/a2_rbac/models.py:61
 #, python-brace-format
 msgid "Managers of \"{ou}\""
-msgstr "Administrateur de l'entité « {ou} »"
+msgstr "Administrateur de la collectivité « {ou} »"
 
 #: authentic2/a2_rbac/models.py:70
 msgid "permission"
@@ -120,11 +120,11 @@ msgstr "Les codes courts commençant par le caractère _ sont réservés."
 
 #: authentic2/a2_rbac/models.py:118
 msgid "This slug is not unique over this organizational unit."
-msgstr "Ce code n'est pas unique pour cette entité."
+msgstr "Ce code n'est pas unique pour cette collectivité."
 
 #: authentic2/a2_rbac/models.py:123
 msgid "This name is not unique over this organizational unit."
-msgstr "Ce nom n'est pas unique pour cette entité."
+msgstr "Ce nom n'est pas unique pour cette collectivité."
 
 #: authentic2/a2_rbac/models.py:146 authentic2/a2_rbac/models.py:172
 msgid "role"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: authentic2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-01 10:09+0200\n"
+"POT-Creation-Date: 2015-09-17 16:13+0200\n"
 "PO-Revision-Date: 2015-05-04 15:36+0200\n"
 "Last-Translator: Benjamin Dauvergn <bdauvergne@entrouvert.com>\n"
 "Language-Team: French <fr@li.org>\n"
@@ -62,7 +62,7 @@ msgstr "date d'inscription"
 
 #: authentic2/custom_user/models.py:42
 msgid "organizational unit"
-msgstr "entité"
+msgstr "collectivité"
 
 #: authentic2/custom_user/models.py:56
 msgid "user"
