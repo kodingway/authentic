@@ -252,17 +252,11 @@ class HideOUFieldMixin(object):
 class RoleSearchForm(HideOUFieldMixin, ServiceRoleSearchForm):
     ou = forms.ModelChoiceField(queryset=get_ou_model().objects,
                                 required=False, label=_('Organizational unit'))
-    service = forms.ModelChoiceField(
-        queryset=Service.objects,
-        label=_('Service'),
-        required=False)
 
     def filter(self, qs):
         qs = super(RoleSearchForm, self).filter(qs)
         if self.cleaned_data.get('ou'):
             qs = qs.filter(ou=self.cleaned_data['ou'])
-        if self.cleaned_data.get('service'):
-            qs = qs.filter(service=self.cleaned_data['service'])
         return qs
 
 
