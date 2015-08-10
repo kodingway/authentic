@@ -46,7 +46,7 @@ class RoleMembersTable(UserTable):
 class RoleTable(tables.Table):
     name = tables.LinkColumn(viewname='a2-manager-role-members',
                              kwargs={'pk': A('pk')},
-                             accessor='name', verbose_name=_('name'))
+                             accessor='name', verbose_name=_('label'))
     ou = tables.Column()
     service = tables.Column()
     member_count = tables.Column(verbose_name=_('Direct members'),
