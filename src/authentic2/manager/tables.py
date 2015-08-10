@@ -13,8 +13,11 @@ from authentic2.compat import get_user_model
 
 
 class UserTable(tables.Table):
-    uuid = tables.LinkColumn(
+    link = tables.LinkColumn(
         viewname='a2-manager-user-edit',
+        verbose_name=_('label'),
+        accessor='get_full_name',
+        order_by=('first_name', 'last_name', 'email', 'username'),
         kwargs={'pk': A('pk')})
     ou = tables.Column()
     username = tables.Column()
