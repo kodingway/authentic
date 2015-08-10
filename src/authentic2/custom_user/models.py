@@ -58,6 +58,7 @@ class User(AbstractBaseUser, PermissionMixin):
         permissions = (
             ('view_user', 'can see available users'),
         )
+        ordering = ('first_name', 'last_name', 'email', 'username')
 
     def get_full_name(self):
         """
