@@ -16,7 +16,7 @@ class A2RBACTestCase(TestCase):
         self.assertEquals(Role.objects.count(), 4)
         # 3 content type global permissions, 4 role administration permissions
         # and 1 user view permission (for the role administrator)
-        self.assertEquals(Permission.objects.count(), 8)
+        self.assertEquals(Permission.objects.count(), 9)
 
     def test_delete_role(self):
         rcount = Role.objects.count()
