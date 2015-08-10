@@ -5,10 +5,12 @@ from django.contrib.auth import get_user_model
 
 
 def filter_user(qs, search):
-    return qs.filter(Q(username__icontains=search)
-            | Q(first_name__icontains=search)
-            | Q(last_name__icontains=search)
-            | Q(email__icontains=search))
+    terms = search.split()
+    queries = [ Q(username__icontains=term)
+            | Q(first_name__icontains=term)
+            | Q(last_name__icontains=term)
+            | Q(email__icontains=term) for term in terms]
+    return get_user_model().objects.filter(reduce(Q.__and__, queries))
 
 def get_users(search=None):
     User = get_user_model()
