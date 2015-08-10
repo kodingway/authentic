@@ -1,6 +1,56 @@
-(function() {
-    var $ = jQuery;
+(function($, window, undefined) {
+    $.fn.values = function(data) {
+        var els = this.find(':input').get();
+
+        if(arguments.length === 0) {
+            // return all data
+            data = {};
+
+            $.each(els, function() {
+                if (this.name && !this.disabled && (this.checked
+                                || /select|textarea/i.test(this.nodeName)
+                                || /text|hidden|password/i.test(this.type))) {
+                    if(data[this.name] == undefined){
+                        data[this.name] = [];
+                    }
+                    data[this.name].push($(this).val());
+                }
+            });
+            return data;
+        } else {
+            $.each(els, function() {
+                if (this.name && data[this.name]) {
+                    var names = data[this.name];
+                    var $this = $(this);
+                    if(Object.prototype.toString.call(names) !== '[object Array]'){
+                        names = [names]; //backwards compat to old version of this code
+                    }
+                    if(this.type == 'checkbox' || this.type == 'radio') {
+                        var val = $this.val();
+                        var found = false;
+                        for(var i = 0; i < names.length; i++){
+                            if(names[i] == val){
+                                found = true;
+                                break;
+                            }
+                        }
+                        $this.attr("checked", found);
+                    } else {
+                        $this.val(names[0]);
+                    }
+                }
+            });
+            return this;
+        }
+    };
     $(function() {
+        /* Copied from http://stackoverflow.com/questions/1489486/jquery-plugin-to-serialize-a-form-and-also-restore-populate-the-form/1490431#1490431
+         * by mkoryak
+         * jQuery.values: get or set all of the name/value pairs from child input controls
+         * @argument data {array} If included, will populate all child controls.
+         * @returns element if data was provided, or array of values if not
+        */
+
         /* search inputs behaviours */
         $('#search-input').change(function () {
           var params = $.url().param();
@@ -18,38 +68,47 @@
           window.location = href;
         });
 
-        /* role/user table refresh */
-        function update_table(href, cb) {
-          $.get(href, function (response_text) {
+        /* content column update */
+        function update_content(href, state, push) {
+          /* make the back button work */
+          if (push) {
+              window.history.pushState(state, window.document.tile, href);
+          }
+          url = window.location.href;
+          $.get(url, function (response_text) {
             var $response = $(response_text);
-            var $content = $response.find('.table-container');
-            if (! $content.length) {
-                $content = $response.find('table');
-            }
-            var $container = $('.table-container');
-            if (! $container.length) {
-              $container = $('table');
-            }
+            var $content = $response.find('#content .content');
+            var $container = $('#content .content');
             $container.replaceWith($content);
-            if (cb != undefined) {
-              cb();
-            }
+            $(window.document).trigger('manager:update-content');
           });
         }
+        window.update_content = update_content;
+
+        /* document popstate  */
+        $(window).on('popstate', function (e) {
+            var state = e.originalEvent.state;
+            if (state != undefined) {
+                if ('form' in state) {
+                   $(state.form).values(state.values);
+                }
+            }
+            update_content(window.document.location);
+            return true;
+        });
+
         /* paginator ajax loading */
-        $('.content').on('click', '.paginator a', function () {
+        $(document).on('click', '.paginator a', function () {
           var href = $(this).attr('href');
           var title = $(this).text();
-          update_table(href, function () {
-            history.pushState(null, 'page ' + title, href);
-          });
+          update_content(href, undefined, true);
           return false;
         });
         /* dialog load handler */
         $(document).on('gadjo:dialog-loaded', function (e, form) {
           $('.messages', form).delay(3000*(1+$('.messages li', form).length)).fadeOut('slow');
           if ($('.table-container').length) {
-            update_table(location.href);
+            update_content(location.href);
           }
         });
         /* user deletion */
@@ -68,7 +127,7 @@
             'action': 'remove'}
           post_content[pk_arg] = pk
           $.post('', post_content, function () {
-              update_table(window.location.href);
+              update_content(window.location.href);
           });
           return false;
         });
@@ -120,5 +179,22 @@
                 $slug.val(URLify($target.val()));
             }
         });
+        var timer;
+        $('#search-form').on('input propertychange change', 'input,select', function (e) {
+          var $form = $('#search-form');
+          window.clearTimeout(timer);
+          timer = window.setTimeout(function () {
+            var query = $form.serialize();
+            if (window.location.href.split('?')[1] == query) {
+                return;
+            };
+            update_content('?' + query, {'form': '#search-form', 'values': $form.values()}, true);
+          }, 600);
+
+        });
+        if ($('#search-form').length) {
+            window.history.replaceState({'form': '#search-form', 'values': $('#search-form').values()}, window.document.title, window.location.href)
+        }
+        $(window.document).trigger('manager:update-content');
     });
-})()
+})(jQuery, window)

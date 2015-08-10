@@ -1,3 +1,4 @@
+from django.db import models
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
@@ -14,13 +15,16 @@ from django.views.generic import View
 from authentic2.constants import SWITCH_USER_SESSION_KEY
 from authentic2.models import Attribute, PasswordReset
 from authentic2.utils import switch_user
+from authentic2.a2_rbac.utils import get_default_ou
+from django_rbac.utils import get_role_model, get_role_parenting_model
+
 
 from .views import BaseTableView, BaseAddView, PassRequestToFormMixin, \
     BaseEditView, ActionMixin, OtherActionsMixin, Action, ExportMixin, \
     BaseSubTableView, HideOUColumnMixin
-from .tables import UserTable, UserRolesTable
+from .tables import UserTable, UserRolesTable, OuUserRolesTable
 from .forms import UserSearchForm, UserAddForm, UserEditForm, \
-    UserChangePasswordForm, ChooseUserRoleForm, NameSearchForm
+    UserChangePasswordForm, ChooseUserRoleForm, RoleSearchForm
 from .resources import UserResource
 
 
@@ -189,6 +193,11 @@ class UserEditView(PassRequestToFormMixin, OtherActionsMixin,
         email_message = EmailMultiAlternatives(subject, body, to=[to_email])
         email_message.send()
 
+    def get_context_data(self, **kwargs):
+        ctx = super(UserEditView, self).get_context_data(**kwargs)
+        ctx['default_ou'] = get_default_ou
+        return ctx
+
 user_edit = UserEditView.as_view()
 
 
@@ -223,14 +232,56 @@ user_change_password = UserChangePasswordView.as_view()
 
 class UserRolesView(HideOUColumnMixin, BaseSubTableView):
     model = get_user_model()
-    template_name = 'authentic2/manager/user_roles.html'
-    table_class = UserRolesTable 
     form_class = ChooseUserRoleForm
-    search_form_class = NameSearchForm
+    search_form_class = RoleSearchForm
     success_url = '.'
 
+    @property
+    def template_name(self):
+        if self.is_ou_specified():
+            return 'authentic2/manager/user_ou_roles.html'
+        else:
+            return 'authentic2/manager/user_roles.html'
+
+    @property
+    def table_pagination(self):
+        if self.is_ou_specified():
+            return False
+        return None
+
+    @property
+    def table_class(self):
+        if self.is_ou_specified():
+            return OuUserRolesTable
+        else:
+            return UserRolesTable
+
+    def is_ou_specified(self):
+        return self.search_form.is_valid() \
+            and self.search_form.cleaned_data.get('ou')
+
     def get_table_queryset(self):
-        return self.object.roles_and_parents()
+        if self.is_ou_specified():
+            roles = self.object.roles.all()
+            User = get_user_model()
+            Role = get_role_model()
+            RoleParenting = get_role_parenting_model()
+            rp_qs = RoleParenting.objects.filter(child=roles)
+            qs = Role.objects.all()
+            qs = qs.prefetch_related(models.Prefetch(
+                'child_relation', queryset=rp_qs, to_attr='via'))
+            qs = qs.prefetch_related(models.Prefetch(
+                'members', queryset=User.objects.filter(pk=self.object.pk),
+                to_attr='member'))
+            qs2 = self.request.user.filter_by_perm('a2_rbac.change_role', qs)
+            managable_ids = map(str, qs2.values_list('pk', flat=True))
+            qs = qs.extra(select={'has_perm': 'a2_rbac_role.id in (%s)' % ', '.join(managable_ids)})
+            return qs
+        else:
+            return self.object.roles_and_parents()
+
+    def dispatch(self, request, *args, **kwargs):
+        return super(UserRolesView, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         user = self.object
@@ -241,8 +292,8 @@ class UserRolesView(HideOUColumnMixin, BaseSubTableView):
                 if user.roles.filter(pk=role.pk):
                     messages.warning(
                         self.request,
-                        _('User {user} has already the role {role}.') \
-                            .format(user=user, role=role))
+                        _('User {user} has already the role {role}.')
+                        .format(user=user, role=role))
                 else:
                     user.roles.add(role)
             elif action == 'remove':

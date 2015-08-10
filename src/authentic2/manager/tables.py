@@ -96,22 +96,39 @@ class RoleChildrenTable(tables.Table):
         empty_text = _('None')
 
 
-class UserRolesTable(tables.Table):
+class OuUserRolesTable(tables.Table):
     name = tables.LinkColumn(viewname='a2-manager-role-members',
                              kwargs={'pk': A('pk')},
-                             accessor='name', verbose_name=_('name'))
-    ou = tables.Column()
-    service = tables.Column(order_by='service')
-    member = tables.BooleanColumn(verbose_name=_('Direct member'))
+                             accessor='name', verbose_name=_('label'))
     via = tables.TemplateColumn(
-        '''{% for rel in row.record.child_relation.all %}{{ rel.child }} {% if not forloop.last %}, {% endif %}{% endfor %}''',
-        verbose_name=_('Via'))
+        '''{% for rel in row.record.via %}{{ rel.child }} {% if not forloop.last %}, {% endif %}{% endfor %}''',
+        verbose_name=_('Inherited from'))
+    member = tables.TemplateColumn('''{% load i18n %}<input class="role-member{% if not row.record.member and row.record.via %} indeterminate{% endif %}" name='role-{{ row.record.pk }}' type='checkbox' {% if row.record.member %}checked{% endif %} {% if not row.record.has_perm %}disabled title="{% trans "You are not authorized to manage this role" %}"{% endif %}/>''',
+                                  verbose_name=_('Member'))
+
 
     class Meta:
         models = get_role_model()
         attrs = {'class': 'main', 'id': 'role-table'}
-        fields = ('name', 'ou', 'service')
         empty_text = _('None')
+        order_by = ('name',)
+
+
+class UserRolesTable(tables.Table):
+    name = tables.LinkColumn(viewname='a2-manager-role-members',
+                             kwargs={'pk': A('pk')},
+                             accessor='name', verbose_name=_('label'))
+    ou = tables.Column()
+    via = tables.TemplateColumn(
+        '''{% if not row.record.member %}{% for rel in row.record.child_relation.all %}{{ rel.child }} {% if not forloop.last %}, {% endif %}{% endfor %}{% endif %}''',
+        verbose_name=_('Inherited from'))
+
+    class Meta:
+        models = get_role_model()
+        attrs = {'class': 'main', 'id': 'role-table'}
+        fields = ('name', 'ou')
+        empty_text = _('None')
+        order_by = ('name', 'ou')
 
 
 class ServiceTable(tables.Table):

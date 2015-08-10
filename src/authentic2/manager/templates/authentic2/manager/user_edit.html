@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block appbar %}
-  <a href="{% url "a2-manager-user-roles" pk=object.pk %}">{% trans "Roles" %}</a>
+  <a href="{% url "a2-manager-user-roles" pk=object.pk %}?search-ou={% firstof object.ou.pk default_ou.pk %}">{% trans "Roles" %}</a>
 {% endblock %}
 
 {% block beforeform %}

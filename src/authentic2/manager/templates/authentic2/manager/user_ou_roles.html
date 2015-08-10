@@ -1,0 +1,61 @@
+{% extends "authentic2/manager/sidebar.html" %}
+{% load i18n staticfiles django_tables2 %}
+
+{% block breadcrumb %}
+  {{ block.super }}
+  <a href="{% url 'a2-manager-users' %}">{% trans 'User management' %}</a>
+  <a href="{% url 'a2-manager-user-edit' pk=object.pk %}">{{ object.get_full_name }}</a>
+  <a href="#">{% trans "Roles" %}</a>
+{% endblock %}
+
+{% block page_title %}
+{% trans "Roles" %}
+{% endblock %}
+
+{% block extrascripts %}
+  {{ block.super }}
+  <script>
+  (function ($, window, undefined) {
+    function fix_underterminate() {
+      $('.indeterminate').each(function (i, elem) {
+         elem.indeterminate = true;
+      })
+    }
+    $(document).on('manager:update-content', function () {
+      fix_underterminate();
+    });
+    $(function () {
+      $('body').on('click', 'input.role-member', function (e) {
+        e.stopPropagation();
+      });
+      $('body').on('change', 'input.role-member', function (e) {
+        var $target = $(e.target);
+        var pk = e.target.name.split('-')[1];
+        data = {
+          'csrfmiddlewaretoken': window.csrf_token,
+          'role': pk,
+          'action': ($target.is(':checked') && 'add') || 'remove',
+        };
+        console.log(data);
+        var $overlay = $('<div class="waiting"/>');
+        $('body')[0].appendChild($overlay[0]);
+        $.post(window.location.href, data).done(function () {
+          window.update_content(window.location.href);
+          $('body')[0].removeChild($overlay[0]);
+
+        });
+      });
+    })
+  })(jQuery, window, undefined);
+  </script>
+{% endblock %}
+
+{% block sidebar %}
+  {% include "authentic2/manager/search_form.html" %}
+{% endblock %}
+
+{% block main %}
+ {% with row_link=1 url_name="a2-manager-role-members" %}
+   {% render_table table "authentic2/manager/table.html" %}
+ {% endwith %}
+{% endblock %}
