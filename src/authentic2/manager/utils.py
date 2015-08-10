@@ -19,6 +19,23 @@ def get_users(search=None):
         qs = filter_user(qs, search)
     return qs
 
+def label_from_user(user):
+    labels = []
+    if user.first_name or user.last_name:
+        labels.append(user.first_name)
+        if user.first_name and user.last_name:
+            labels.append(u' ')
+        labels.append(user.last_name)
+    if user.email and user.email not in labels:
+        if labels:
+            labels.append(u' - ')
+        labels.append(user.email)
+    if user.username and user.username not in labels:
+        if labels:
+            labels.append(u' - ')
+        labels.append(user.username)
+    return u''.join(labels)
+
 def search_user(term):
     User = get_user_model()
-    return [(u.id, u.get_full_name()) for u in filter_user(User.objects.all(), term)[:10]]
+    return [(u.id, label_from_user(u)) for u in filter_user(User.objects.all(), term)[:10]]
