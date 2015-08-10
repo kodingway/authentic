@@ -22,7 +22,6 @@ class UserTable(tables.Table):
     ou = tables.Column()
     username = tables.Column()
     email = tables.Column()
-    date_joined = tables.DateTimeColumn()
 
     class Meta:
         model = get_user_model()
