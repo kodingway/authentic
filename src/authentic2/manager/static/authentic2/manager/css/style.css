@@ -56,7 +56,8 @@ div.role-info h3 {
 	margin: 0 1em;
 }
 
-table.main td.name {
+table.main td.name, #user-table .link, #user-table .username, #user-table
+.email, #user-table .first_name, #user-table .last_name, #user-table .ou {
         text-align: left;
 }
 table.feeds td.url {
