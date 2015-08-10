@@ -13,13 +13,7 @@
 {% endblock %}
 
 {% block sidebar %}
-   <div id="search-form">
-     <h3>{% trans "Search" %}</h3>
-     <form method="get">
-       {{ search_form.as_p }}
-       <button>{% trans "Search" %}</button>
-     </form>
-   </div>
+  {% include "authentic2/manager/search_form.html" %}
 {% endblock %}
 
 {% block main %}

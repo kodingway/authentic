@@ -17,6 +17,10 @@
   {{ choose_user_form.media }}
 {% endblock %}
 
+{% block sidebar %}
+   {% include "authentic2/manager/search_form.html" %}
+{% endblock %}
+
 {% block main %}
  {% with row_link=1 url_name="a2-manager-role-members" %}
    {% render_table table "authentic2/manager/user_roles_table.html" %}
