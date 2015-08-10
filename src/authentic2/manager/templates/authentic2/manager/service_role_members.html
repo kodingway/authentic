@@ -18,12 +18,6 @@
   <a href="{% url "a2-manager-service-role-children" service_pk=view.kwargs.service_pk pk=object.pk %}">{% trans "Children roles" %}</a>
 {% endblock %}
 
-
-{% block extra_scripts %}
-  {{ block.super }}
-  {{ form.media }}
-{% endblock %}
-
 {% block sidebar %}
    {% include "authentic2/manager/search_form.html" %}
 {% endblock %}
