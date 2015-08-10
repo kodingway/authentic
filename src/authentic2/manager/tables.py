@@ -19,15 +19,15 @@ class UserTable(tables.Table):
         accessor='get_full_name',
         order_by=('first_name', 'last_name', 'email', 'username'),
         kwargs={'pk': A('pk')})
-    ou = tables.Column()
     username = tables.Column()
     email = tables.Column()
+    ou = tables.Column()
 
     class Meta:
         model = get_user_model()
         attrs = {'class': 'main', 'id': 'user-table'}
-        fields = ('uuid', 'ou', 'username', 'email', 'first_name',
-                  'last_name', 'is_active')
+        fields = ('link', 'username', 'email', 'first_name',
+                  'last_name', 'is_active', 'ou')
         empty_text = _('None')
 
 
