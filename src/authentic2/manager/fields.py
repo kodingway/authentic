@@ -75,9 +75,6 @@ class ChooseUserField(SecurityCheckMixin, SplitSearchTermMixin,
         'last_name__icontains', 'email__icontains'
     ]
 
-    def label_from_instance(self, instance):
-        return instance.get_full_name()
-
     def get_results(self, request, term, page, context):
         return (NO_ERR_RESP, False, utils.search_user(term))
 
