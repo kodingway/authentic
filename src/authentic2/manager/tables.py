@@ -29,6 +29,7 @@ class UserTable(tables.Table):
         fields = ('link', 'username', 'email', 'first_name',
                   'last_name', 'is_active', 'ou')
         empty_text = _('None')
+        order_by = ('first_name', 'last_name', 'email', 'username')
 
 
 class RoleMembersTable(UserTable):
