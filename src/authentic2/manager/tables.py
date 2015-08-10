@@ -48,7 +48,7 @@ class RoleTable(tables.Table):
                              kwargs={'pk': A('pk')},
                              accessor='name', verbose_name=_('label'))
     ou = tables.Column()
-    member_count = tables.Column(verbose_name=_('Direct members'),
+    member_count = tables.Column(verbose_name=_('Member count'),
                                  orderable=False)
 
     class Meta:
