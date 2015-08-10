@@ -31,6 +31,16 @@ class UsersView(HideOUColumnMixin, BaseTableView):
     permissions = 'custom_user.view_user'
     search_form_class = UserSearchForm
 
+    def is_ou_specified(self):
+        return self.search_form.is_valid() \
+            and self.search_form.cleaned_data.get('ou')
+
+    def get_table(self, **kwargs):
+        table = super(UsersView, self).get_table(**kwargs)
+        if self.is_ou_specified():
+            table.exclude = getattr(table, 'exclude', ()) + ('ou',)
+        return table
+
 users = UsersView.as_view()
 
 
