@@ -48,14 +48,13 @@ class RoleTable(tables.Table):
                              kwargs={'pk': A('pk')},
                              accessor='name', verbose_name=_('label'))
     ou = tables.Column()
-    service = tables.Column()
     member_count = tables.Column(verbose_name=_('Direct members'),
                                  orderable=False)
 
     class Meta:
         models = get_role_model()
         attrs = {'class': 'main', 'id': 'role-table'}
-        fields = ('name', 'ou', 'service', 'member_count')
+        fields = ('name', 'ou', 'member_count')
 
 
 class PermissionTable(tables.Table):
