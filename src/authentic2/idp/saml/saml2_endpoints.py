@@ -1433,7 +1433,7 @@ def slo(request):
             title=_('You are being redirected to "%s"') % provider.name)
     except (lasso.ProfileInvalidMsgError,
         lasso.ProfileMissingIssuerError), e:
-        return error_page(_('Invalid logout request'), logger=logger, warning=True)
+        return error_page(request, _('Invalid logout request'), logger=logger, warning=True)
     session_indexes = logout.request.sessionIndexes
     if len(session_indexes) == 0:
         logger.warning('slo received a request from %s without any \
