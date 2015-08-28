@@ -11,7 +11,9 @@ from django.http import Http404
 from django_rbac.utils import get_role_model, get_permission_model, \
     get_role_parenting_model, get_ou_model
 
-from . import tables, views, resources, forms
+from authentic2.decorators import setting_enabled
+
+from . import tables, views, resources, forms, app_settings
 
 
 class RolesMixin(object):
@@ -77,6 +79,9 @@ export = RolesExportView.as_view()
 class RoleViewMixin(RolesMixin):
     model = get_role_model()
 
+    def get_context_data(self, **kwargs):
+        kwargs['ROLES_SHOW_PERMISSIONS'] = app_settings.ROLES_SHOW_PERMISSIONS
+        return super(RoleViewMixin, self).get_context_data(**kwargs)
 
 class RoleEditView(RoleViewMixin, views.BaseEditView):
     template_name = 'authentic2/manager/role_edit.html'
@@ -190,7 +195,8 @@ class RolePermissionsView(RoleViewMixin, views.BaseSubTableView):
             messages.warning(self.request, _('You are not authorized'))
         return super(RolePermissionsView, self).form_valid(form)
 
-permissions = RolePermissionsView.as_view()
+permissions = setting_enabled('ROLES_SHOW_PERMISSIONS', app_settings)(
+    RolePermissionsView.as_view())
 
 
 class RoleMembersExportView(views.ExportMixin, RoleMembersView):

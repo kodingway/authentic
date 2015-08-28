@@ -6,6 +6,7 @@ class AppSettings(object):
     __DEFAULTS = {
         'HOMEPAGE_URL': None,
         'ROLE_FORM_CLASS': None,
+        'ROLES_SHOW_PERMISSIONS': False,
     }
 
     def __getattr__(self, name):
