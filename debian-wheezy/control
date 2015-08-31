@@ -23,7 +23,8 @@ Depends: ${misc:Depends}, ${python:Depends},
     python-django-import-export (>= 0.2.7),
     python-djangorestframework (>= 3.1),
     python-markdown (>= 2.1),
-    python-ldap (>= 2.4)
+    python-ldap (>= 2.4),
+    python-six (>= 0.8)
 Provides: ${python:Provides}
 Recommends: python-openid, python-ldap
 Suggests: python-raven
