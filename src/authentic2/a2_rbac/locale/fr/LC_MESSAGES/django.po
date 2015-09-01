@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-rbac\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-07 16:53+0200\n"
+"POT-Creation-Date: 2015-09-01 10:09+0200\n"
 "PO-Revision-Date: 2015-05-13 15:21+0200\n"
 "Last-Translator: Benjamin Dauvergner <bdauvergne@entrouvert.com>\n"
 "Language: \n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: authentic2/a2_rbac/admin.py:58 authentic2/a2_rbac/models.py:167
+#: authentic2/a2_rbac/admin.py:59 authentic2/a2_rbac/models.py:176
 msgid "name"
 msgstr "nom"
 
@@ -126,7 +126,7 @@ msgstr "Ce code n'est pas unique pour cette entité."
 msgid "This name is not unique over this organizational unit."
 msgstr "Ce nom n'est pas unique pour cette entité."
 
-#: authentic2/a2_rbac/models.py:146 authentic2/a2_rbac/models.py:163
+#: authentic2/a2_rbac/models.py:146 authentic2/a2_rbac/models.py:172
 msgid "role"
 msgstr "rôle"
 
@@ -134,26 +134,26 @@ msgstr "rôle"
 msgid "roles"
 msgstr "rôles"
 
-#: authentic2/a2_rbac/models.py:153
+#: authentic2/a2_rbac/models.py:162
 msgid "role parenting relation"
 msgstr "relation de parenté entre rôles"
 
-#: authentic2/a2_rbac/models.py:154
+#: authentic2/a2_rbac/models.py:163
 msgid "role parenting relations"
 msgstr "relations de parenté entre rôles"
 
-#: authentic2/a2_rbac/models.py:159
+#: authentic2/a2_rbac/models.py:168
 msgid "string"
 msgstr "chaîne"
 
-#: authentic2/a2_rbac/models.py:171
+#: authentic2/a2_rbac/models.py:180
 msgid "kind"
 msgstr "type"
 
-#: authentic2/a2_rbac/models.py:173
+#: authentic2/a2_rbac/models.py:182
 msgid "value"
 msgstr "valeur"
 
-#: authentic2/a2_rbac/models.py:177
+#: authentic2/a2_rbac/models.py:186
 msgid "role attributes"
 msgstr "attributs de rôle"

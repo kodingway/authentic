@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-07 16:54+0200\n"
+"POT-Creation-Date: 2015-09-01 10:09+0200\n"
 "PO-Revision-Date: 2014-11-21 00:08+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -607,11 +607,11 @@ msgstr[1] "Veuillez corriger les erreurs suivantes."
 msgid "Add %(name)s"
 msgstr "Ajouter %(name)s"
 
-#: authentic2/saml/templates/saml/post_form.html:11
+#: authentic2/saml/templates/saml/post_form.html:10
 msgid "You should be automatically redirected."
 msgstr "Vous devriez être automatiquement redirigé."
 
-#: authentic2/saml/templates/saml/post_form.html:12
+#: authentic2/saml/templates/saml/post_form.html:11
 msgid ""
 "If this page is still visible after a few seconds, press the Send button "
 "below."
@@ -619,6 +619,6 @@ msgstr ""
 "Si cette page est encore visible après quelques secondes, cliquez sur le "
 "bouton Envoyer ci-dessous."
 
-#: authentic2/saml/templates/saml/post_form.html:19
+#: authentic2/saml/templates/saml/post_form.html:18
 msgid "Send"
 msgstr "Envoyer"

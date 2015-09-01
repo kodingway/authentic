@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-07 16:53+0200\n"
+"POT-Creation-Date: 2015-09-01 10:09+0200\n"
 "PO-Revision-Date: 2015-02-26 17:53+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -67,7 +67,7 @@ msgstr ""
 
 #: authentic2/admin.py:172 authentic2/admin.py:209
 #: authentic2/auth_frontends.py:18 authentic2/forms.py:13
-#: authentic2/registration_backend/forms.py:72
+#: authentic2/registration_backend/forms.py:73
 #: authentic2/templates/auth/login_password_profile.html:2
 msgid "Password"
 msgstr "Mot de passe"
@@ -79,7 +79,7 @@ msgid ""
 "form</a>."
 msgstr ""
 
-#: authentic2/admin.py:206 authentic2/registration_backend/forms.py:86
+#: authentic2/admin.py:206 authentic2/registration_backend/forms.py:87
 msgid "The two password fields didn't match."
 msgstr "Les deux champs mot de passe ne correspondent pas."
 
@@ -107,16 +107,18 @@ msgstr "Dates importantes"
 msgid "Attributes"
 msgstr "Attributs"
 
-#: authentic2/api_views.py:55
+#: authentic2/api_views.py:57
 msgid "you are not authorized to create users in this ou"
 msgstr "Vous n'êtes pas autorisé à vous inscrire dans cette entité."
 
-#: authentic2/api_views.py:63 authentic2/api_views.py:72
-#: authentic2/tests.py:835 authentic2/tests.py:860
+#: authentic2/api_views.py:65 authentic2/api_views.py:74
+#: authentic2/tests/test_all.py:792 authentic2/tests/test_all.py:817
+#: authentic2/tests/test_all.py:943 authentic2/tests/test_all.py:968
 msgid "You already have an account"
 msgstr "Vous avez déjà un compte."
 
-#: authentic2/api_views.py:67 authentic2/tests.py:847
+#: authentic2/api_views.py:69 authentic2/tests/test_all.py:804
+#: authentic2/tests/test_all.py:955
 msgid "Username is required in this ou"
 msgstr "L'identifiant est requis dans cette entité."
 
@@ -504,8 +506,8 @@ msgstr "Courriel"
 msgid "Password reset"
 msgstr "obligation de changement de mot de passe"
 
-#: authentic2/profile_views.py:52 authentic2/tests.py:956
-#: authentic2/tests.py:969
+#: authentic2/profile_views.py:52 authentic2/tests/test_all.py:1128
+#: authentic2/tests/test_all.py:1141
 msgid "A mail was sent to you with instructions to reset your password"
 msgstr ""
 "Un mail vous a été envoyé avec des instructions pour ré-initialiser votre "
@@ -523,8 +525,8 @@ msgstr "Votre lien de ré-initialisation de mot de passe est invalid ou expiré.
 msgid "Enter new password"
 msgstr "Entrez un nouveau mot de passe"
 
-#: authentic2/registration_backend/forms.py:37
-#: authentic2/registration_backend/forms.py:114
+#: authentic2/registration_backend/forms.py:38
+#: authentic2/registration_backend/forms.py:119
 msgid ""
 "This email address is already in use. Please supply a different email "
 "address."
@@ -532,30 +534,31 @@ msgstr ""
 "Cette adresse de courriel est déjà utilisée. Utilisez s'il vous plait une "
 "autre adresse de courriel."
 
-#: authentic2/registration_backend/forms.py:75
+#: authentic2/registration_backend/forms.py:76
 msgid "Password (again)"
 msgstr "Mot de passe (encore une fois)"
 
-#: authentic2/registration_backend/forms.py:100
+#: authentic2/registration_backend/forms.py:105
+#: authentic2/tests/test_all.py:1051
 msgid "This username is already in use. Please supply a different username."
 msgstr ""
 "Cet identifiant est déjà utilisé. Utilisez s'il vous plait un autre "
 "identifiant."
 
-#: authentic2/registration_backend/forms.py:147
-#: authentic2/registration_backend/forms.py:155
+#: authentic2/registration_backend/forms.py:152
+#: authentic2/registration_backend/forms.py:160
 msgid "New password"
 msgstr "Nouveau mot de passe"
 
-#: authentic2/registration_backend/views.py:32
+#: authentic2/registration_backend/views.py:33
 msgid "Your activation key is expired"
 msgstr "Votre clé d'activation a expiré"
 
-#: authentic2/registration_backend/views.py:35
+#: authentic2/registration_backend/views.py:36
 msgid "Activation failed"
 msgstr "Échec à l'activation du compte"
 
-#: authentic2/registration_backend/views.py:188
+#: authentic2/registration_backend/views.py:196
 msgid ""
 "Your account has been scheduled for deletion. You cannot use it anymore."
 msgstr ""
@@ -639,8 +642,9 @@ msgstr "Serveur de gestion d'identité versatile"
 
 #: authentic2/templates/authentic2/base.html:29
 #, python-format
-msgid "Last login %(last_login)s"
-msgstr "Date de dernière connexion: %(last_login)s"
+#| msgid "Last login %(last_login)s"
+msgid "Last login %(LAST_LOGIN)s"
+msgstr "Date de dernière connexion: %(LAST_LOGIN)s"
 
 #: authentic2/templates/authentic2/base.html:30
 #, python-format
@@ -655,7 +659,7 @@ msgstr "Déconnexion"
 
 #: authentic2/templates/authentic2/display_message_and_continue.html:5
 #: authentic2/templates/authentic2/logout_confirm.html:19
-#: authentic2/tests.py:961 authentic2/tests.py:974
+#: authentic2/tests/test_all.py:1133 authentic2/tests/test_all.py:1146
 msgid "Continue"
 msgstr "Continuer"
 
@@ -751,7 +755,7 @@ msgid "Notification: %(user)s, your account has been deleted"
 msgstr "Notification: %(user)s, votre compte a été supprimé"
 
 #: authentic2/templates/error.html:8
-#: authentic2/templates/idp/account_management.html:63
+#: authentic2/templates/idp/account_management.html:66
 #: authentic2/templates/registration/logout.html:10
 #: authentic2/templates/registration/registration_complete.html:10
 msgid "Back"
@@ -791,10 +795,14 @@ msgid "Delete profile"
 msgstr "Supprimer votre profil"
 
 #: authentic2/templates/idp/account_management.html:38
+msgid "Switch back"
+msgstr "Me re-connecter avec mon utilisateur d'origine"
+
+#: authentic2/templates/idp/account_management.html:41
 msgid "Credentials"
 msgstr "Moyens d'authentification"
 
-#: authentic2/templates/idp/account_management.html:44
+#: authentic2/templates/idp/account_management.html:47
 msgid "Federation management"
 msgstr "Gestion des liaisons"
 
@@ -1052,9 +1060,31 @@ msgstr "créez un nouveau compte"
 msgid "Please fill the form to complete your registration"
 msgstr "Veuillez remplir le formulaire afin de finir l'enregistrement"
 
-#: authentic2/utils.py:441
+#: authentic2/utils.py:446
 msgid "The form was out of date, please try again."
 msgstr "Ce formulaire était périmé, veuillez ré-essayer."
+
+#: authentic2/utils.py:581
+msgid ""
+"Your user is already switched, go to your account page and come back to your "
+"original user to do it again."
+msgstr ""
+"Vous avez déjà procédé à une reconnexion, veuillez allez sur « Mon compte » "
+"pour vous reconnecter avec votre utilisateur d'origine."
+
+#: authentic2/utils.py:597
+#, python-format
+msgid "Successfully switched to user %s"
+msgstr "Re-connexion avec l'utilisateur « %s » réussie"
+
+#: authentic2/utils.py:613
+#, python-format
+msgid "Successfully switched back to user %s"
+msgstr "Re-connexion avec l'utilisateur « %s » réussie"
+
+#: authentic2/utils.py:617
+msgid "No user to switch back to"
+msgstr ""
 
 #: authentic2/validators.py:47
 msgid "Enter a valid email address."
