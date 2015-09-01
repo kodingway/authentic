@@ -8,8 +8,12 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth import get_user_model
 from django.contrib import messages
 from django.http import HttpResponseRedirect
+from django.views.generic.detail import SingleObjectMixin
+from django.views.generic import View
 
+from authentic2.constants import SWITCH_USER_SESSION_KEY
 from authentic2.models import Attribute, PasswordReset
+from authentic2.utils import switch_user
 
 from .views import BaseTableView, BaseAddView, PassRequestToFormMixin, \
     BaseEditView, ActionMixin, OtherActionsMixin, Action, ExportMixin, \
@@ -104,6 +108,8 @@ class UserEditView(PassRequestToFormMixin, OtherActionsMixin,
                          _('Delete'),
                          _('Do you really want to delete "%s" ?') %
                          self.object.username)
+        if self.request.user.is_superuser:
+            yield Action('switch_user', _('Impersonate this user'))
 
     def action_force_password_change(self, request, *args, **kwargs):
         PasswordReset.objects.get_or_create(user=self.object)
@@ -155,6 +161,9 @@ class UserEditView(PassRequestToFormMixin, OtherActionsMixin,
 
     def action_delete_password_reset(self, request, *args, **kwargs):
         PasswordReset.objects.filter(user=self.object).delete()
+
+    def action_switch_user(self, request, *args, **kwargs):
+        return switch_user(request, self.object)
 
     # Copied from PasswordResetForm implementation
     def send_mail(self, subject_template_name, email_template_name,

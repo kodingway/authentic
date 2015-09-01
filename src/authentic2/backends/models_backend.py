@@ -61,3 +61,9 @@ class ModelBackend(ModelBackend):
                 return user
             else:
                 user_login_failure(user.get_username())
+
+
+class DummyModelBackend(ModelBackend):
+    def authenticate(self, user=None):
+        if user is not None:
+            return user

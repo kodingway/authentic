@@ -3,7 +3,7 @@ from collections import defaultdict
 from pkg_resources import get_distribution
 from django.conf import settings
 
-from . import utils, app_settings
+from . import utils, app_settings, constants
 
 class UserFederations(object):
     '''Provide access to all federations of the current user'''
@@ -41,4 +41,6 @@ def a2_processor(request):
             __AUTHENTIC2_DISTRIBUTION = str(get_distribution('authentic2'))
     variables['AUTHENTIC2_VERSION'] = __AUTHENTIC2_DISTRIBUTION
     variables['add_to_blocks'] = defaultdict(lambda:[])
+    variables['LAST_LOGIN'] = request.session.get(constants.LAST_LOGIN_SESSION_KEY)
+    variables['USER_SWITCHED'] = constants.SWITCH_USER_SESSION_KEY in request.session
     return variables

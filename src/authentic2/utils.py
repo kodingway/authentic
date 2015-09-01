@@ -13,10 +13,11 @@ from importlib import import_module
 import django
 from django.conf import settings
 from django.http import HttpResponseRedirect
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.core import urlresolvers
 from django.http.request import QueryDict
-from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login
+from django.contrib.auth import (REDIRECT_FIELD_NAME, login as auth_login,
+    SESSION_KEY, HASH_SESSION_KEY, BACKEND_SESSION_KEY, authenticate)
 from django import forms
 from django.forms.util import ErrorList
 from django.forms.utils import to_current_timezone
@@ -28,6 +29,8 @@ from django.core.mail import send_mail
 from django.core import signing
 from django.core.urlresolvers import reverse
 from django.utils.formats import localize
+from django.contrib import messages
+from django.utils.functional import empty
 
 try:
     from django.core.exceptions import FieldDoesNotExist
@@ -303,8 +306,9 @@ def login(request, user, how, **kwargs):
        URL or settings.LOGIN_REDIRECT_URL.'''
     last_login = user.last_login
     auth_login(request, user)
-    if 'last_login' not in request.session:
-        request.session['last_login'] = localize(to_current_timezone(last_login), True)
+    if constants.LAST_LOGIN_SESSION_KEY not in request.session:
+        request.session[constants.LAST_LOGIN_SESSION_KEY] = \
+                localize(to_current_timezone(last_login), True)
     record_authentication_event(request, how)
     return continue_to_next_url(request, **kwargs)
 
@@ -567,3 +571,48 @@ def lower_keys(d):
 def to_dict_of_set(d):
     '''Convert a dictionary of sequence into a dictionary of sets'''
     return dict((k, set(v)) for k, v in d.iteritems())
+
+
+def switch_user(request, new_user):
+    '''Switch to another user and remember currently logged in user in the
+       session. Reserved to superusers.'''
+    logger = logging.getLogger(__name__)
+    if constants.SWITCH_USER_SESSION_KEY in request.session:
+        messages.error(request, _('Your user is already switched, go to your '
+                                  'account page and come back to your original '
+                                  'user to do it again.'))
+    else:
+        if not request.user.is_superuser:
+            raise PermissionDenied
+        switched = {}
+        for key in (SESSION_KEY, BACKEND_SESSION_KEY, HASH_SESSION_KEY,
+                    constants.LAST_LOGIN_SESSION_KEY):
+            switched[key] = request.session[key]
+        user = authenticate(user=new_user)
+        auth_login(request, user)
+        request.session[constants.SWITCH_USER_SESSION_KEY] = switched
+        if constants.LAST_LOGIN_SESSION_KEY not in request.session:
+            request.session[constants.LAST_LOGIN_SESSION_KEY] = \
+                    localize(to_current_timezone(new_user.last_login), True)
+        messages.info(request, _('Successfully switched to user %s') %
+                      new_user.get_full_name())
+        logging.info('switched to user %s', new_user)
+        return continue_to_next_url(request)
+
+
+def switch_back(request):
+    '''Switch back to original superuser after a user switch'''
+    logger = logging.getLogger(__name__)
+    if constants.SWITCH_USER_SESSION_KEY in request.session:
+        switched = request.session[constants.SWITCH_USER_SESSION_KEY]
+        for key in switched:
+            request.session[key] = switched[key]
+        del request.session[constants.SWITCH_USER_SESSION_KEY]
+        del request._cached_user
+        request.user._wrapped = empty
+        messages.info(request, _('Successfully switched back to user %s') % 
+                      request.user.get_full_name())
+        logger.info('switched back to user %s', request.user)
+    else:
+        messages.warning(request, _('No user to switch back to'))
+    return continue_to_next_url(request)

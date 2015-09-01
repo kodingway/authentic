@@ -134,6 +134,7 @@ AUTHENTICATION_BACKENDS = (
     'authentic2.backends.ldap_backend.LDAPBackend',
     'authentic2.backends.ldap_backend.LDAPBackendPasswordLost',
     'authentic2.backends.models_backend.ModelBackend',
+    'authentic2.backends.models_backend.DummyModelBackend',
     'django_rbac.backends.DjangoRBACBackend',
 )
 AUTHENTICATION_BACKENDS = plugins.register_plugins_authentication_backends(

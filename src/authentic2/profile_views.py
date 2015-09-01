@@ -114,3 +114,7 @@ class PasswordResetConfirmView(cbv.RedirectToNextURLViewMixin, FormView):
         return utils.login(self.request, self.user, 'email')
 
 password_reset_confirm = PasswordResetConfirmView.as_view()
+
+
+def switch_back(request):
+    return utils.switch_back(request)

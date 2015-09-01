@@ -69,4 +69,5 @@ urlpatterns = patterns('authentic2.views',
     url(r'^password/reset/done/$',
         auth_views.password_reset_done,
         name='auth_password_reset_done'),
+    url(r'^switch-back/$', profile_views.switch_back, name='a2-switch-back'),
 )
