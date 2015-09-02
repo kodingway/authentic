@@ -348,6 +348,10 @@ class PermissionMixin(models.Model):
         object is passed, it checks if the user has all required perms for this
         object.
         """
+        # Active superusers have all permissions.
+        if self.is_active and self.is_superuser:
+            return True
+
         for perm in perm_list:
             if not self.has_perm(perm, obj):
                 return False
@@ -375,6 +379,10 @@ class PermissionMixin(models.Model):
             return qs
 
     def has_perm_any(self, perm_or_perms):
+        # Active superusers have all permissions.
+        if self.is_active and self.is_superuser:
+            return True
+
         for backend in auth.get_backends():
             if hasattr(backend, "has_perm_any"):
                 if backend.has_perm_any(self, perm_or_perms):
@@ -382,6 +390,10 @@ class PermissionMixin(models.Model):
         return False
 
     def has_ou_perm(self, perm, ou):
+        # Active superusers have all permissions.
+        if self.is_active and self.is_superuser:
+            return True
+
         for backend in auth.get_backends():
             if hasattr(backend, "has_ou_perm"):
                 if backend.has_ou_perm(self, perm, ou):
