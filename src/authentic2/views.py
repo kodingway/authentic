@@ -461,13 +461,9 @@ def logout(request, next_url=None, default_next_url='auth_homepage',
     logger.info('logged out')
     auth_logout(request)
     messages.info(request, _('You have been logged out'))
-    if next_url == default_next_url:
-        return utils.redirect(request, next_url)
-    else:
-        # Show intermediate page
-        response = render(request, template, ctx)
-        response.set_cookie('a2_just_logged_out', 1, max_age=60)
-        return response
+    response = utils.redirect(request, next_url)
+    response.set_cookie('a2_just_logged_out', 1, max_age=60)
+    return response
 
 def login_password_profile(request, *args, **kwargs):
     context_instance = kwargs.pop('context_instance', None) or RequestContext(request)
