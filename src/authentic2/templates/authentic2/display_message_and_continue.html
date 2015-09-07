@@ -2,5 +2,12 @@
 {% load i18n %}
 
 {% block content %}
-  <a href="{{ url }}">{% trans "Continue" %}</a>
+  <a id="a2-continue" href="{{ url }}">{% trans "Continue" %}</a>
+  {% if only_info %}
+    <script>
+    window.setTimeout(function () {
+      document.getElementById('a2-continue').click();
+    }, 3000);
+    </script>
+  {% endif %}
 {% endblock %}

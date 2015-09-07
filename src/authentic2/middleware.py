@@ -180,8 +180,15 @@ class DisplayMessageBeforeRedirectMiddleware(object):
     def process_response(self, request, response):
         if response.status_code not in (302, 307):
             return response
-        if not messages.get_messages(request):
+        storage = messages.get_messages(request)
+        if not storage:
             return response
+        # Check if all messages are info
+        only_info = True
+        for message in storage:
+            if message.level != messages.INFO:
+                only_info = False
+        storage.used = False
         url = response['Location']
         if not url:
             return response
@@ -193,4 +200,4 @@ class DisplayMessageBeforeRedirectMiddleware(object):
                 (parsed_request_url.netloc == parsed_url.netloc):
             return response
         return render(request, 'authentic2/display_message_and_continue.html',
-                      {'url': url})
+                      {'url': url, 'only_info': only_info})
