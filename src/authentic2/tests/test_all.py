@@ -1128,7 +1128,7 @@ class PasswordResetTest(Authentic2TestCase):
                 _('A mail was sent to you with instructions to reset your '
                   'password')))
         self.assertContains(
-            response, format_html(u'<a href="{}">{}</a>',
+            response, format_html(u'<a id="a2-continue" href="{}">{}</a>',
                                   ENTROUVERT_COM,
                                   _('Continue')),
             html=True)
@@ -1141,7 +1141,7 @@ class PasswordResetTest(Authentic2TestCase):
                 _('A mail was sent to you with instructions to reset your '
                   'password')))
         self.assertContains(
-            response, format_html(u'<a href="{}">{}</a>',
+            response, format_html(u'<a id="a2-continue" href="{}">{}</a>',
                                   ENTROUVERT_COM,
                                   _('Continue')),
             html=True)
