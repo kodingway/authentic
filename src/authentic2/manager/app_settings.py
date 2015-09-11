@@ -5,6 +5,7 @@ class AppSettings(object):
     __PREFIX = 'A2_MANAGER_'
     __DEFAULTS = {
         'HOMEPAGE_URL': None,
+        'ROLE_FORM_CLASS': None,
     }
 
     def __getattr__(self, name):

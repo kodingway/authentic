@@ -13,8 +13,9 @@ from django_rbac.utils import get_ou_model, get_role_model
 
 from authentic2.forms import BaseUserForm
 from authentic2.models import PasswordReset
+from authentic2.utils import import_module_or_class
 
-from . import fields
+from . import fields, app_settings
 
 
 class CssClass(object):
@@ -304,7 +305,8 @@ class NameSearchForm(CssClass, PrefixFormMixin, forms.Form):
         return qs
 
 
-class RoleEditForm(LimitQuerysetFormMixin, CssClass, forms.ModelForm):
+class RoleEditForm(HideOUFieldMixin, LimitQuerysetFormMixin, CssClass,
+                   forms.ModelForm):
     ou = forms.ModelChoiceField(queryset=get_ou_model().objects,
                                 required=True, label=_('Organizational unit'))
 
@@ -317,3 +319,8 @@ class OUEditForm(CssClass, forms.ModelForm):
     class Meta:
         model = get_ou_model()
         fields = ('name', 'slug', 'default')
+
+def get_role_form_class():
+    if app_settings.ROLE_FORM_CLASS:
+        return import_module_or_class(app_settings.ROLE_FORM_CLASS)
+    return RoleEditForm

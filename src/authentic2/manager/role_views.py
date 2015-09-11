@@ -80,9 +80,10 @@ class RoleViewMixin(RolesMixin):
 
 class RoleEditView(RoleViewMixin, views.BaseEditView):
     template_name = 'authentic2/manager/role_edit.html'
-    fields = ['name', 'slug', 'description', 'ou']
     title = _('Edit role description')
-    form_class = forms.RoleEditForm
+
+    def get_form_class(self):
+        return forms.get_role_form_class()
 
 edit = RoleEditView.as_view()
 
