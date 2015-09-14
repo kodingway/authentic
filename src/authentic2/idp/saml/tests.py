@@ -21,6 +21,8 @@ try:
 except ImportError:
     lasso = None
 
+from . import app_settings
+
 
 @unittest.skipUnless(lasso is not None, 'lasso is not installed')
 @override_settings(A2_IDP_SAML2_ENABLE=True)
@@ -197,6 +199,14 @@ class SamlSSOTestCase(SamlBaseTestCase):
         self.do_test_sso(dict(allow_create=True, name_id_policy=False),
                          check_federation=False, default_name_id_format='email')
 
+    def test_sso_name_id_policy_username(self):
+        self.do_test_sso(dict(allow_create=True, name_id_policy=False),
+                         check_federation=True, default_name_id_format='username')
+
+    def test_sso_name_id_policy_uuid(self):
+        self.do_test_sso(dict(allow_create=True, name_id_policy=False),
+                         check_federation=True, default_name_id_format='uuid')
+
     def do_test_sso(self, make_authn_request_kwargs={}, check_federation=True,
                     cancel=False, default_name_id_format='persistent'):
         self.setup(default_name_id_format=default_name_id_format)
@@ -276,9 +286,21 @@ class SamlSSOTestCase(SamlBaseTestCase):
                 'saml': lasso.SAML2_ASSERTION_HREF,
             }
             constraints = ()
+            # check nameid
             if check_federation:
                 format = make_authn_request_kwargs.get('format')
-                if  format == lasso.SAML2_NAME_IDENTIFIER_FORMAT_PERSISTENT:
+                if not format:
+                    if self.default_sp_options_idp_policy.default_name_id_format == 'username':
+                        self.assertEqual(login.assertion.subject.nameID.format,
+                                         lasso.SAML2_NAME_IDENTIFIER_FORMAT_UNSPECIFIED)
+                        self.assertEqual(login.assertion.subject.nameID.content,
+                                         self.user.username.encode('utf-8'))
+                    elif self.default_sp_options_idp_policy.default_name_id_format == 'uuid':
+                        self.assertEqual(login.assertion.subject.nameID.format,
+                                         lasso.SAML2_NAME_IDENTIFIER_FORMAT_UNSPECIFIED)
+                        self.assertEqual(login.assertion.subject.nameID.content,
+                                         self.user.uuid.encode('utf-8'))
+                elif format == lasso.SAML2_NAME_IDENTIFIER_FORMAT_PERSISTENT:
                     federation = saml_models.LibertyFederation.objects.get()
                     constraints += (
                         ('/saml:Assertion/saml:Subject/saml:NameID',

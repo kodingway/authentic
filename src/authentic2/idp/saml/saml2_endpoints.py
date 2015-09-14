@@ -164,9 +164,10 @@ def fill_assertion(request, saml_request, assertion, provider_id, nid_format):
         assert request.user.email, 'email is required when using the email NameID format'
         assertion.subject.nameID.content = request.user.email
     if nid_format == 'username':
-        username = get_username(request.user)
-        assert username, 'username is required when using the username NameID format'
-        assertion.subject.nameID.content = username
+        assert request.user.username, 'username field is required when using the username NameID format'
+        assertion.subject.nameID.content = request.user.username.encode('utf-8')
+    if nid_format == 'uuid':
+        assertion.subject.nameID.content = request.user.uuid
     if nid_format == 'edupersontargetedid':
         assertion.subject.nameID.format = NAME_ID_FORMATS[nid_format]['samlv2']
         keys = ''.join([get_username(request.user),

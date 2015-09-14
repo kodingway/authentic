@@ -105,6 +105,8 @@ NAME_ID_FORMATS = {
             'samlv2': lasso.SAML2_NAME_IDENTIFIER_FORMAT_EMAIL,},
         'username': { 'caption': _("Username (use with Google Apps)"),
             'samlv2': lasso.SAML2_NAME_IDENTIFIER_FORMAT_UNSPECIFIED,},
+        'uuid': { 'caption': _("UUID"),
+            'samlv2': lasso.SAML2_NAME_IDENTIFIER_FORMAT_UNSPECIFIED,},
         'edupersontargetedid': { 'caption': _("Use eduPersonTargetedID attribute"),
             'samlv2': lasso.SAML2_NAME_IDENTIFIER_FORMAT_PERSISTENT,}
 }
