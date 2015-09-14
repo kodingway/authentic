@@ -324,18 +324,12 @@ def build_assertion(request, login, nid_format='transient', attributes=None):
     ssl = 'HTTPS' in request.environ
     if app_settings.AUTHN_CONTEXT_FROM_SESSION:
         backend = request.session[BACKEND_SESSION_KEY]
-        logger.debug("authentication from session %s" \
-            % backend)
-        if backend in ('django.contrib.auth.backends.ModelBackend',
-                'authentic2.backends.models_backend.ModelBackend',
-                'django_auth_ldap.backend.LDAPBackend'):
-            authn_context = lasso.SAML2_AUTHN_CONTEXT_PASSWORD
+        logger.debug("authentication from session %s", backend)
+        backend = load_backend(backend)
+        if hasattr(backend, 'get_saml2_authn_context'):
+            authn_context = backend.get_saml2_authn_context()
         else:
-            backend = load_backend(backend)
-            if hasattr(backend, 'get_saml2_authn_context'):
-                authn_context = backend.get_saml2_authn_context()
-            else:
-                raise Exception('backend unsupported: ' + backend)
+            raise Exception('backend unsupported: ' + backend)
         if authn_context == lasso.SAML2_AUTHN_CONTEXT_PASSWORD and ssl:
             authn_context = lasso.SAML2_AUTHN_CONTEXT_PASSWORD_PROTECTED_TRANSPORT
     else:

@@ -878,7 +878,7 @@ class LDAPBackend(object):
         return True
 
     def get_saml2_authn_context(self):
-        return lasso.SAML2_AUTHN_CONTEXT_PASSWORD_PROTECTED_TRANSPORT
+        return lasso.SAML2_AUTHN_CONTEXT_PASSWORD
 
     @classmethod
     def get_attribute_names(cls):

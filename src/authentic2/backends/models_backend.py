@@ -62,6 +62,10 @@ class ModelBackend(ModelBackend):
             else:
                 user_login_failure(user.get_username())
 
+    def get_saml2_authn_context(self):
+        import lasso
+        return lasso.SAML2_AUTHN_CONTEXT_PASSWORD
+
 
 class DummyModelBackend(ModelBackend):
     def authenticate(self, user=None):

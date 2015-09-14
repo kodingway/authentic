@@ -34,6 +34,7 @@ def get_plugins(group_name=DEFAULT_GROUP_NAME, use_cache=True, *args, **kwargs):
         try:
             plugin_callable = entrypoint.load()
         except Exception, e:
+            raise
             logger.exception('unable to load entrypoint %s', entrypoint)
             raise PluginError('unable to load entrypoint %s' % entrypoint, e)
         plugins.append(plugin_callable(*args, **kwargs))
