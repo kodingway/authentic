@@ -9,7 +9,6 @@ import django
 from . import plugins, logger
 
 BASE_DIR = os.path.dirname(__file__)
-
 ### Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 
@@ -196,9 +195,6 @@ ADMIN_TOOLS_MENU = 'authentic2.menu.CustomMenu'
 SERIALIZATION_MODULES = {
         'json': 'authentic2.serializers',
 }
-
-# Set Test runner to remove warning about test suite initialized with Django < 1.6
-TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 LOGGING_CONFIG = None
 LOGGING = {
