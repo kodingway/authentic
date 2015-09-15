@@ -48,6 +48,7 @@ class build(_build):
     sub_commands = [('compile_translations', None)] + _build.sub_commands
 
 class eo_sdist(sdist):
+    sub_commands = [('compile_translations', None)] + sdist.sub_commands
 
     def run(self):
         print "creating VERSION file"
