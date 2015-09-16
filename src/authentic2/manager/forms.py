@@ -306,7 +306,7 @@ class RoleEditForm(HideOUFieldMixin, LimitQuerysetFormMixin, CssClass,
 
     class Meta:
         model = get_role_model()
-        fields = ('name', 'slug', 'ou', 'description')
+        fields = ('name', 'ou', 'description')
 
 
 class OUEditForm(CssClass, forms.ModelForm):
