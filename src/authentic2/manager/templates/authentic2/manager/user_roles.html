@@ -3,7 +3,7 @@
 
 {% block breadcrumb %}
   {{ block.super }}
-  <a href="{% url 'a2-manager-users' %}">{% trans 'User management' %}</a>
+  <a href="{% url 'a2-manager-users' %}">{% trans 'Users' %}</a>
   <a href="{% url 'a2-manager-user-edit' pk=object.pk %}">{{ object.get_full_name }}</a>
   <a href="#">{% trans "Roles" %}</a>
 {% endblock %}

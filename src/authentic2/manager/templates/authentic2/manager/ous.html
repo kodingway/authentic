@@ -1,15 +1,19 @@
 {% extends "authentic2/manager/ou_common.html" %}
 {% load i18n staticfiles django_tables2 %}
 
-{% block page-title %}{{ block.super }} - {% trans "Services management" %}{% endblock %}
+{% block page-title %}{{ block.super }} - {% trans "Organizational units" %}{% endblock %}
 
 {% block breadcrumb %}
   {{ block.super }}
 {% endblock %}
 
+{% block page_title %}
+  {% trans "Organizational units" %}
+{% endblock %}
+
 {% block appbar %}
   {{ block.super }}
-  <p><a href="{% url "a2-manager-ou-add" %}" rel="popup">{% blocktrans %}Add {{ model_name }}{% endblocktrans %}</a></p>
+  <a href="{% url "a2-manager-ou-add" %}" rel="popup">{% blocktrans %}Add {{ model_name }}{% endblocktrans %}</a>
 {% endblock %}
 
 {% block sidebar %}

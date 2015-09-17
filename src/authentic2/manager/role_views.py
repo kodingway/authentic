@@ -60,7 +60,6 @@ class RoleAddView(views.PassRequestToFormMixin, views.BaseAddView):
     template_name = 'authentic2/manager/role_add.html'
     model = get_role_model()
     form_class = forms.RoleEditForm
-    fields = ['name', 'slug', 'description', 'ou']
     title = _('Add role')
     success_view_name = 'a2-manager-role-members'
 

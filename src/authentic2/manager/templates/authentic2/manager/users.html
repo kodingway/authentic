@@ -1,9 +1,9 @@
 {% extends "authentic2/manager/sidebar.html" %}
 {% load i18n staticfiles django_tables2 %}
 
-{% block page-title %}{{ block.super }} - {% trans "Users management" %}{% endblock %}
+{% block page-title %}{{ block.super }} - {% trans "Users" %}{% endblock %}
 
-{% block page_title %}{% trans "Users management" %}{% endblock %}
+{% block page_title %}{% trans "Users" %}{% endblock %}
 
 {% block appbar %}
   {{ block.super }}
@@ -18,7 +18,7 @@
 
 {% block breadcrumb %}
   {{ block.super }}
-  <a href="{% url 'a2-manager-users' %}">{% trans 'User management' %}</a>
+  <a href="{% url 'a2-manager-users' %}">{% trans 'Users' %}</a>
 {% endblock %}
 
 {% block sidebar %}
