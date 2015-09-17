@@ -312,9 +312,14 @@ class RoleEditForm(HideOUFieldMixin, LimitQuerysetFormMixin, CssClass,
 
 
 class OUEditForm(CssClass, forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(OUEditForm, self).__init__(*args, **kwargs)
+        self.fields['name'].label = _('label').title()
+
     class Meta:
         model = get_ou_model()
-        fields = ('name', 'slug', 'default')
+        fields = ('name', 'default', 'username_is_unique', 'email_is_unique')
+
 
 def get_role_form_class():
     if app_settings.ROLE_FORM_CLASS:

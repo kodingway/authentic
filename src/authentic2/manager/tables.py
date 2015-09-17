@@ -68,14 +68,13 @@ class PermissionTable(tables.Table):
 
 
 class OUTable(tables.Table):
-    name = tables.Column()
-    slug = tables.Column()
+    name = tables.Column(verbose_name=_('label'))
     default = tables.BooleanColumn()
 
     class Meta:
         model = get_ou_model()
         attrs = {'class': 'main', 'id': 'ou-table'}
-        fields = ('name', 'slug')
+        fields = ('name', 'default')
         empty_text = _('None')
 
 
