@@ -82,7 +82,6 @@ def check_support_saml2(tree):
         return True
     return False
 
-<<<<<<< HEAD
 def text_child(tree, tag, default=''):
     elt = tree.find(tag)
     return elt.text if not elt is None else default
