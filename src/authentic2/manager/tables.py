@@ -26,16 +26,14 @@ class UserTable(tables.Table):
     class Meta:
         model = get_user_model()
         attrs = {'class': 'main', 'id': 'user-table'}
-        fields = ('link', 'username', 'email', 'first_name',
+        fields = ('username', 'email', 'first_name',
                   'last_name', 'is_active', 'ou')
+        sequence = ('link', '...')
         empty_text = _('None')
         order_by = ('first_name', 'last_name', 'email', 'username')
 
 
 class RoleMembersTable(UserTable):
-    uuid = tables.LinkColumn(
-        viewname='a2-manager-user-edit',
-        kwargs={'pk': A('pk')})
     direct = tables.BooleanColumn(verbose_name=_('Direct member'),
                                   orderable=False)
 
