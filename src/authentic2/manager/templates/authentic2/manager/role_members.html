@@ -14,6 +14,8 @@
   {{ block.super }}
   {% if not object.admin_scope_ct_id and view.can_delete %}
     <a rel="popup" href="{% url "a2-manager-role-delete" pk=object.pk %}">{% trans "Delete" %}</a>
+  {% else %}
+    <a class="disabled" title="{% trans "This role is technical, you cannot delete it" %}" href="#">{% trans "Delete" %}</a>
   {% endif %}
   {% if view.can_change and not object.admin_scope_ct_id %}
     <a rel="popup" href="{% url "a2-manager-role-edit" pk=object.pk %}">{% trans "Modify description" %}</a>
@@ -21,8 +23,21 @@
       <a href="{% url "a2-manager-role-permissions" pk=object.pk %}">{% trans "Permissions" %}</a>
     {% endif %}
     <a href="{% url "a2-manager-role-managers" pk=object.pk %}">{% trans "Managers" %}</a>
+  {% else %}
+    {% if not view.can_change %}
+      <a class="disabled" title="{% trans "Permission denied" %}" href="#">{% trans "Modify description" %}</a>
+      {% if ROLES_SHOW_PERMISSIONS %}
+        <a class="disabled" title="{% trans "Permission denied" %}" href="#">{% trans "Permissions" %}</a>
+      {% endif %}
+      <a class="disabled" title="{% trans "Permission denied" %}" href="">{% trans "Managers" %}</a>
+    {% else %}
+      <a class="disabled" title="{% trans "This role is technical, you cannot edit it" %}" href="#">{% trans "Modify description" %}</a>
+      {% if ROLES_SHOW_PERMISSIONS %}
+        <a class="disabled" title="{% trans "This role is technical, you cannot modify its permissions" %}" href="#">{% trans "Permissions" %}</a>
+      {% endif %}
+      <a class="disabled" title="{% trans "This role is technical, you cannot change its managers" %}" href="">{% trans "Managers" %}</a>
+    {% endif %}
   {% endif %}
-  <a href="{% url "a2-manager-role-children" pk=object.pk %}">{% trans "Children roles" %}</a>
 {% endblock %}
 
 
@@ -45,5 +60,38 @@
            <button>{% trans "Add" %}</button>
    </form>
  {% endif %}
+ <h2>{% trans "Inheritance" %}</h2>
+ <div class=role-inheritance">
+   {% trans "Child roles" %}:
+   {% for child in children %}
+     <a href="{% url "a2-manager-role-members" pk=child.pk %}">{{ child }}</a>
+     {% if child.direct %}
+       <a rel="popup" href="{% url "a2-manager-role-remove-child" pk=object.pk child_pk=child.pk %}" class="role-remove icon-minus-sign"></a>
+     {% else %}
+       <a title="{% trans "Indirect child role" %}" class="disabled role-remove icon-minus-sign"></a>
+     {% endif %}
+   {% endfor %}
+  {% if view.can_change %}
+    <a rel="popup" href="{% url "a2-manager-role-add-child" pk=object.pk %}" class="role-add icon-add-sign"></a>
+  {% else %}
+    <a title="{% trans "Permission denied" %}" class="disabled role-add icon-add-sign"></a>
+  {% endif %}
+ </div>
+ <div class="role-inheritance">
+   {% trans "Parent roles" %}:
+   {% for parent in parents %}
+     <a class="role" href="{% url "a2-manager-role-members" pk=parent.pk %}">{{ parent }}</a>
+     {% if parent.direct %}
+       <a rel="popup" href="{% url "a2-manager-role-remove-parent" pk=object.pk parent_pk=parent.pk %}" class="role-remove icon-minus-sign"></a>
+     {% else %}
+       <a title="{% trans "Indirect parent role" %}" class="disabled role-remove icon-minus-sign"></a>
+     {% endif %}
+   {% endfor %}
+   {% if not object.admin_scope_ct_id %}
+     <a rel="popup" href="{% url "a2-manager-role-add-parent" pk=object.pk %}" class="role-add icon-add-sign"></a>
+   {% else %}
+     <a title="{% trans "This role is technical, you cannot modify its permissions." %}" class="disabled role-add icon-add-sign"></a>
+   {% endif %}
+ </div>
 </div>
 {% endblock %}

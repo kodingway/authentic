@@ -1,6 +1,8 @@
 from django.core.exceptions import PermissionDenied
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import ListView
+from django.views.generic import ListView, FormView, TemplateView
+from django.views.generic.edit import FormMixin, DeleteView
+from django.views.generic.detail import SingleObjectMixin
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.query import Q
@@ -12,6 +14,7 @@ from django_rbac.utils import get_role_model, get_permission_model, \
     get_role_parenting_model, get_ou_model
 
 from authentic2.decorators import setting_enabled
+from authentic2.utils import redirect
 
 from . import tables, views, resources, forms, app_settings
 
@@ -118,6 +121,16 @@ class RoleMembersView(views.HideOUColumnMixin, RoleViewMixin, views.BaseSubTable
         else:
             messages.warning(self.request, _('You are not authorized'))
         return super(RoleMembersView, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        ctx = super(RoleMembersView, self).get_context_data(**kwargs)
+        ctx['children'] = views.filter_view(self.request,
+                                            self.object.children(include_self=False,
+                                            annotate=True))
+        ctx['parents'] = views.filter_view(self.request,
+                                           self.object.parents(include_self=False,
+                                           annotate=True))
+        return ctx
 
 members = RoleMembersView.as_view()
 
@@ -233,3 +246,95 @@ class RoleManagersRolesView(RoleManagerViewMixin, RoleChildrenView):
     template_name = 'authentic2/manager/role_managers_roles.html'
 
 managers_roles = RoleManagersRolesView.as_view()
+
+
+class RoleAddChildView(views.TitleMixin, views.PermissionMixin,
+                       SingleObjectMixin, FormView):
+    title = _('Add child role')
+    model = get_role_model()
+    form_class = forms.RoleForm
+    success_url = '..'
+    template_name = 'authentic2/manager/form.html'
+    permissions = 'a2_rbac.change_role'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super(RoleAddChildView, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        self.get_object().add_child(form.cleaned_data['role'])
+        return super(RoleAddChildView, self).form_valid(form)
+
+add_child = RoleAddChildView.as_view()
+
+
+class RoleAddParentView(views.TitleMixin,
+                        SingleObjectMixin, FormView):
+    title = _('Add parent role')
+    model = get_role_model()
+    form_class = forms.RoleForm
+    success_url = '..'
+    template_name = 'authentic2/manager/form.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super(RoleAddParentView, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        if not self.request.user.has_perm('a2_rbac.change_role',
+                                          form.cleaned_data['role']):
+            raise PermissionDenied
+        self.get_object().add_parent(form.cleaned_data['role'])
+        return super(RoleAddParentView, self).form_valid(form)
+
+add_parent = RoleAddParentView.as_view()
+
+
+class RoleRemoveChildView(SingleObjectMixin, views.PermissionMixin,
+                          TemplateView):
+    title = _('Remove child role')
+    model = get_role_model()
+    success_url = '../..'
+    template_name = 'authentic2/manager/role_remove_child.html'
+    permissions = 'a2_rbac.change_role'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.child = self.get_queryset().get(pk=kwargs['child_pk'])
+        return super(RoleRemoveChildView, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        ctx = super(RoleRemoveChildView, self).get_context_data(**kwargs)
+        ctx['child'] = self.child
+        return ctx
+
+    def post(self, request, *args, **kwargs):
+        self.object.remove_child(self.child)
+        return redirect(self.request, self.success_url)
+
+remove_child = RoleRemoveChildView.as_view()
+
+
+class RoleRemoveParentView(SingleObjectMixin, TemplateView):
+    title = _('Remove parent role')
+    model = get_role_model()
+    success_url = '../..'
+    template_name = 'authentic2/manager/role_remove_parent.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.parent = self.get_queryset().get(pk=kwargs['parent_pk'])
+        return super(RoleRemoveParentView, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        ctx = super(RoleRemoveParentView, self).get_context_data(**kwargs)
+        ctx['parent'] = self.parent
+        return ctx
+
+    def post(self, request, *args, **kwargs):
+        if not self.request.user.has_perm('a2_rbac.change_role', self.parent):
+            raise PermissionDenied
+        self.object.remove_parent(self.parent)
+        return redirect(self.request, self.success_url)
+
+remove_parent = RoleRemoveParentView.as_view()
