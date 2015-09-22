@@ -62,7 +62,7 @@
  {% endif %}
  <h2>{% trans "Inheritance" %}</h2>
  <div class=role-inheritance">
-   {% trans "Child roles" %}:
+   {% trans "Child roles:" %}
    {% for child in children %}
      <a href="{% url "a2-manager-role-members" pk=child.pk %}">{{ child }}</a>
      {% if child.direct %}
@@ -78,7 +78,7 @@
   {% endif %}
  </div>
  <div class="role-inheritance">
-   {% trans "Parent roles" %}:
+   {% trans "Parent roles:" %}
    {% for parent in parents %}
      <a class="role" href="{% url "a2-manager-role-members" pk=parent.pk %}">{{ parent }}</a>
      {% if parent.direct %}
