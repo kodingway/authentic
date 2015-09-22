@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import patterns, url, include
 
 from . import api_views
 
@@ -9,4 +9,5 @@ urlpatterns = patterns('',
                            name='a2-api-password-change'),
                        url(r'^user/$', api_views.user,
                            name='a2-api-user'),
+                       url(r'^scim11/', include('authentic2.scim11.urls')),
 )
