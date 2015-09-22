@@ -15,7 +15,7 @@ from authentic2.compat import get_user_model
 class UserTable(tables.Table):
     link = tables.LinkColumn(
         viewname='a2-manager-user-edit',
-        verbose_name=_('label'),
+        verbose_name=_('user'),
         accessor='get_full_name',
         order_by=('first_name', 'last_name', 'email', 'username'),
         kwargs={'pk': A('pk')})
