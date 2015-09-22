@@ -287,6 +287,11 @@ span.errorlist span {
 }
 
 /* role members */
-.role-add { margin-left: 1em; }
-.role-remove { margin-right: 1em; }
+.role-add {
+    margin-left: 1ex; 
+}
+.role-remove {
+    margin-left: 0.5ex;
+    margin-right: 1ex;
+}
 .role-inheritance { margin: 1em 0px; }
