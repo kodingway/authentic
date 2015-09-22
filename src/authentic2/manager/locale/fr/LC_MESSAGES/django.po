@@ -480,16 +480,16 @@ msgid "Inheritance"
 msgstr "Inclusion de rôles"
 
 #: authentic2/manager/templates/authentic2/manager/role_members.html:57
-msgid "Child roles"
-msgstr "Contient les membres des rôles"
+msgid "Child roles:"
+msgstr "Contient les membres des rôles :"
 
 #: authentic2/manager/templates/authentic2/manager/role_members.html:63
 msgid "Indirect child role"
 msgstr "Héritage indirect"
 
 #: authentic2/manager/templates/authentic2/manager/role_members.html:71
-msgid "Parent roles"
-msgstr "Contient les permissions des rôles"
+msgid "Parent roles:"
+msgstr "Contient les permissions des rôles :"
 
 #: authentic2/manager/templates/authentic2/manager/role_members.html:77
 msgid "Indirect parent role"
