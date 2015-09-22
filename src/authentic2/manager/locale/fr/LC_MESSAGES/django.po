@@ -469,11 +469,11 @@ msgstr "Ce rôle est interne, vous ne pouvez pas l'éditer."
 
 #: authentic2/manager/templates/authentic2/manager/role_members.html:29
 msgid "This role is technical, you cannot modify its permissions"
-msgstr "Ce rôle est interne, voue ne pouvez pas en modifier les permissions."
+msgstr "Ce rôle est interne, vous ne pouvez pas en modifier les permissions."
 
 #: authentic2/manager/templates/authentic2/manager/role_members.html:31
 msgid "This role is technical, you cannot change its managers"
-msgstr "Ce rôle est interne, voue ne pouvez pas en changer les gestionnaires."
+msgstr "Ce rôle est interne, vous ne pouvez pas en changer les gestionnaires."
 
 #: authentic2/manager/templates/authentic2/manager/role_members.html:55
 msgid "Inheritance"

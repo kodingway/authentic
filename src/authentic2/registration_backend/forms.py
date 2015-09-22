@@ -127,7 +127,7 @@ class RegistrationCompletionForm(forms.BaseUserForm):
             for name in app_settings.A2_REGISTRATION_GROUPS:
                 group, created = Group.objects.get_or_create(name=name)
                 groups.append(group)
-            new_user.groups = groups
+            user.groups = groups
         return user
 
 class PasswordResetMixin(Form):
