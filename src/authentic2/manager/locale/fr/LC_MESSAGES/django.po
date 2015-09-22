@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: authentic2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-17 16:13+0200\n"
+"POT-Creation-Date: 2015-09-22 09:46+0200\n"
 "PO-Revision-Date: 2015-06-17 23:47+0200\n"
 "Last-Translator: Benjamin Dauvergne <bdauvergne@entrouvert.com>\n"
 "Language-Team: French <fr@li.org>\n"
@@ -90,7 +90,13 @@ msgstr "Doit changer de mot de passe à la prochaine connexion"
 msgid "Name"
 msgstr "Nom"
 
-#: authentic2/manager/ou_views.py:45
+#: authentic2/manager/forms.py:317 authentic2/manager/tables.py:18
+#: authentic2/manager/tables.py:47 authentic2/manager/tables.py:71
+#: authentic2/manager/tables.py:99 authentic2/manager/tables.py:117
+msgid "label"
+msgstr "libellé"
+
+#: authentic2/manager/ou_views.py:46
 #: authentic2/manager/templates/authentic2/manager/ous_table.html:14
 msgid ""
 "You cannot delete the default organizational unit, you must first set "
@@ -145,15 +151,10 @@ msgstr "Supprimer ce rôle comme membre"
 msgid "Edit service"
 msgstr "Éditer l'application"
 
-#: authentic2/manager/tables.py:18 authentic2/manager/tables.py:47
-#: authentic2/manager/tables.py:100 authentic2/manager/tables.py:118
-msgid "label"
-msgstr "libellé"
-
 #: authentic2/manager/tables.py:32 authentic2/manager/tables.py:67
-#: authentic2/manager/tables.py:79 authentic2/manager/tables.py:94
-#: authentic2/manager/tables.py:111 authentic2/manager/tables.py:128
-#: authentic2/manager/tables.py:140 authentic2/manager/tables.py:149
+#: authentic2/manager/tables.py:78 authentic2/manager/tables.py:93
+#: authentic2/manager/tables.py:110 authentic2/manager/tables.py:127
+#: authentic2/manager/tables.py:139 authentic2/manager/tables.py:148
 msgid "None"
 msgstr "Aucun(e)"
 
@@ -165,19 +166,19 @@ msgstr "Membre direct"
 msgid "Member count"
 msgstr "Nombre de membres"
 
-#: authentic2/manager/tables.py:85 authentic2/manager/tables.py:143
+#: authentic2/manager/tables.py:84 authentic2/manager/tables.py:142
 msgid "name"
 msgstr "identifiant"
 
-#: authentic2/manager/tables.py:88
+#: authentic2/manager/tables.py:87
 msgid "Direct child"
 msgstr "Descendant direct"
 
-#: authentic2/manager/tables.py:103 authentic2/manager/tables.py:122
+#: authentic2/manager/tables.py:102 authentic2/manager/tables.py:121
 msgid "Inherited from"
 msgstr "Hérité du(des) rôle(s)"
 
-#: authentic2/manager/tables.py:105
+#: authentic2/manager/tables.py:104
 msgid "Member"
 msgstr "Membre"
 
@@ -375,14 +376,16 @@ msgstr "Rôles descendants"
 
 #: authentic2/manager/templates/authentic2/manager/role_children.html:20
 #: authentic2/manager/templates/authentic2/manager/role_members.html:21
-#: authentic2/manager/templates/authentic2/manager/role_members.html:27
+#: authentic2/manager/templates/authentic2/manager/role_members.html:28
+#: authentic2/manager/templates/authentic2/manager/role_members.html:34
 #: authentic2/manager/templates/authentic2/manager/role_permissions.html:20
 msgid "Modify description"
 msgstr "Modifier la description"
 
 #: authentic2/manager/templates/authentic2/manager/role_children.html:22
 #: authentic2/manager/templates/authentic2/manager/role_members.html:23
-#: authentic2/manager/templates/authentic2/manager/role_members.html:29
+#: authentic2/manager/templates/authentic2/manager/role_members.html:30
+#: authentic2/manager/templates/authentic2/manager/role_members.html:36
 #: authentic2/manager/templates/authentic2/manager/role_permissions.html:7
 msgid "Permissions"
 msgstr "Permissions"
@@ -392,7 +395,8 @@ msgstr "Permissions"
 #: authentic2/manager/templates/authentic2/manager/role_managers.html:11
 #: authentic2/manager/templates/authentic2/manager/role_managers_roles.html:17
 #: authentic2/manager/templates/authentic2/manager/role_members.html:25
-#: authentic2/manager/templates/authentic2/manager/role_members.html:31
+#: authentic2/manager/templates/authentic2/manager/role_members.html:32
+#: authentic2/manager/templates/authentic2/manager/role_members.html:38
 #: authentic2/manager/templates/authentic2/manager/role_permissions.html:21
 #: authentic2/manager/templates/authentic2/manager/service_role_children.html:17
 #: authentic2/manager/templates/authentic2/manager/service_role_managers.html:7
@@ -416,7 +420,7 @@ msgstr "Membres"
 #: authentic2/manager/templates/authentic2/manager/role_children.html:44
 #: authentic2/manager/templates/authentic2/manager/role_managers.html:34
 #: authentic2/manager/templates/authentic2/manager/role_managers_roles.html:36
-#: authentic2/manager/templates/authentic2/manager/role_members.html:52
+#: authentic2/manager/templates/authentic2/manager/role_members.html:60
 #: authentic2/manager/templates/authentic2/manager/role_permissions.html:35
 #: authentic2/manager/templates/authentic2/manager/service_role_children.html:35
 #: authentic2/manager/templates/authentic2/manager/service_role_managers.html:33
@@ -460,38 +464,46 @@ msgid "Manager roles"
 msgstr "Rôles gestionnaires"
 
 #: authentic2/manager/templates/authentic2/manager/role_members.html:18
-msgid "This role is technical, you cannot delete it"
+msgid "This role is technical, you cannot delete it."
 msgstr "Ce rôle est interne, vous ne pouvez pas le supprimer."
 
-#: authentic2/manager/templates/authentic2/manager/role_members.html:27
-msgid "This role is technical, you cannot edit it"
+#: authentic2/manager/templates/authentic2/manager/role_members.html:28
+#: authentic2/manager/templates/authentic2/manager/role_members.html:30
+#: authentic2/manager/templates/authentic2/manager/role_members.html:32
+#: authentic2/manager/templates/authentic2/manager/role_members.html:77
+msgid "Permission denied"
+msgstr "Vous n'êtes pas autorisé."
+
+#: authentic2/manager/templates/authentic2/manager/role_members.html:34
+msgid "This role is technical, you cannot edit it."
 msgstr "Ce rôle est interne, vous ne pouvez pas l'éditer."
 
-#: authentic2/manager/templates/authentic2/manager/role_members.html:29
-msgid "This role is technical, you cannot modify its permissions"
+#: authentic2/manager/templates/authentic2/manager/role_members.html:36
+#: authentic2/manager/templates/authentic2/manager/role_members.html:93
+msgid "This role is technical, you cannot modify its permissions."
 msgstr "Ce rôle est interne, vous ne pouvez pas en modifier les permissions."
 
-#: authentic2/manager/templates/authentic2/manager/role_members.html:31
-msgid "This role is technical, you cannot change its managers"
+#: authentic2/manager/templates/authentic2/manager/role_members.html:38
+msgid "This role is technical, you cannot change its managers."
 msgstr "Ce rôle est interne, vous ne pouvez pas en changer les gestionnaires."
 
-#: authentic2/manager/templates/authentic2/manager/role_members.html:55
+#: authentic2/manager/templates/authentic2/manager/role_members.html:63
 msgid "Inheritance"
 msgstr "Inclusion de rôles"
 
-#: authentic2/manager/templates/authentic2/manager/role_members.html:57
+#: authentic2/manager/templates/authentic2/manager/role_members.html:65
 msgid "Child roles:"
 msgstr "Contient les membres des rôles :"
 
-#: authentic2/manager/templates/authentic2/manager/role_members.html:63
+#: authentic2/manager/templates/authentic2/manager/role_members.html:71
 msgid "Indirect child role"
 msgstr "Héritage indirect"
 
-#: authentic2/manager/templates/authentic2/manager/role_members.html:71
+#: authentic2/manager/templates/authentic2/manager/role_members.html:81
 msgid "Parent roles:"
 msgstr "Contient les permissions des rôles :"
 
-#: authentic2/manager/templates/authentic2/manager/role_members.html:77
+#: authentic2/manager/templates/authentic2/manager/role_members.html:87
 msgid "Indirect parent role"
 msgstr "Héritage indirect"
 
