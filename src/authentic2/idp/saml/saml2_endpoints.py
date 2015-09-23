@@ -113,7 +113,7 @@ def log_assert(func, exception_classes=(AssertionError,)):
         try:
             return func(request, *args, **kwargs)
         except exception_classes, e:
-            return error_redirect(request, e.message)
+            return error_redirect(request, e.message or repr(e))
     return f
 
 #####
