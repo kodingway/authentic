@@ -19,48 +19,22 @@ TENANT_SETTINGS_LOADERS = ('hobo.multitenant.settings_loaders.Authentic',) + TEN
 # Add authentic2 hobo agent
 INSTALLED_APPS = ('hobo.agent.authentic2',) + INSTALLED_APPS
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-    'filters': {
-        'cleaning': {
-            '()':  'authentic2.utils.CleanLogMessage',
-        },
-        'request_context': {
-            '()':  'authentic2.log_filters.RequestContextFilter',
-        },
+LOGGING['filters'].update({
+    'cleaning': {
+        '()':  'authentic2.utils.CleanLogMessage',
     },
-    'formatters': {
-        'syslog': {
-            'format': '%(ip)s %(user)s %(request_id)s %(levelname)s %(name)s.%(funcName)s: %(message)s',
-        },
+    'request_context': {
+        '()':  'authentic2.log_filters.RequestContextFilter',
     },
-    'handlers': {
-        'syslog': {
-            'level': 'DEBUG',
-            'address': '/dev/log',
-            'class': 'logging.handlers.SysLogHandler',
-            'filters': ['cleaning', 'request_context'],
-            'formatter': 'syslog',
-        },
-    },
-    'loggers': {
-        # even when debugging seeing SQL queries is too much, activate it
-        # explicitly using DEBUG_DB
-        'django.db': {
-                'handlers': ['syslog'],
-                'level': 'INFO',
-        },
-        # django_select2 outputs debug message at level INFO
-        'django_select2': {
-                'handlers': ['syslog'],
-                'level': 'WARNING',
-        },
-        '': {
-                'handlers': ['syslog'],
-                'level': 'INFO',
-        },
-    },
+})
+LOGGING['formatters']['syslog'] = {
+    'format': '%(ip)s %(user)s %(request_id)s %(levelname)s %(name)s.%(funcName)s: %(message)s'
+}
+LOGGING['handlers']['syslog']['filters'] = ['cleaning', 'request_context']
+# django_select2 outputs debug message at level INFO
+LOGGING['loggers']['django_select2'] = {
+    'handlers': ['syslog'],
+    'level': 'WARNING',
 }
 
 CONFIG_FILE='/etc/%s/config.py' % PROJECT_NAME
