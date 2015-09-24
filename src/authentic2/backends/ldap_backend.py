@@ -3,6 +3,7 @@ try:
     import ldap.modlist
     import ldap.sasl
     from ldap.filter import filter_format
+    from ldap.dn import escape_dn_chars
 except ImportError:
     ldap = None
 import logging
@@ -118,13 +119,16 @@ _TO_LOWERCASE = ('fname_field', 'lname_field', 'email_field', 'attributes',
 _VALID_CONFIG_KEYS = list(set(_REQUIRED).union(set(_DEFAULTS)))
 
 
-def get_connection(block, credentials=()):
+def get_connections(block, credentials=()):
+    '''Try each replicas, and yield successfull connections'''
     if not block['url']:
         raise ImproperlyConfigured("block['url'] must contain at least one url")
     for url in block['url']:
         for key, value in block['global_ldap_options'].iteritems():
             ldap.set_option(key, value)
         conn = ldap.initialize(url)
+        if block['timeout'] > 0:
+            conn.set_option(ldap.OPT_NETWORK_TIMEOUT, block['timeout'])
         for key, value in block['ldap_options']:
             conn.set_option(key, value)
         conn.set_option(ldap.OPT_REFERRALS, 1 if block['referrals'] else 0)
@@ -155,15 +159,27 @@ def get_connection(block, credentials=()):
         try:
             if credentials:
                 conn.bind_s(*credentials)
+            elif block['bindsasl']:
+                sasl_mech, who, sasl_params = block['bindsasl']
+                handler_class = getattr(ldap.sasl, sasl_mech)
+                auth = handler_class(*sasl_params)
+                conn.sasl_interactive_bind_s(who, auth)
             elif block['binddn'] and block['bindpw']:
                 conn.bind_s(block['binddn'], block['bindpw'])
-            break
+            yield conn
         except ldap.INVALID_CREDENTIALS:
+            log.error('admin bind failed on %s: invalid credentials', url)
             if block['replicas']:
-                return None
-    else:
-        return None
-    return conn
+                break
+        except ldap.INVALID_DN_SYNTAX:
+            log.error('admin bind failed on %s: invalid dn syntax %r', url, who)
+            if block['replicas']:
+                break
+
+def get_connection(block, credentials=()):
+    '''Try to get at least one connection'''
+    for conn in get_connections(block, credentials=credentials):
+        return conn
 
 def ad_encoding(s):
     '''Encode an unicode string for AD consumption as a password'''
@@ -408,35 +424,14 @@ class LDAPBackend(object):
                 return user
 
     def authenticate_block(self, block, username, password):
-        from ldap.dn import escape_dn_chars
-        if block['timeout'] != -1:
-            for opt in ('NETWORK_TIMEOUT', 'TIMELIMIT', 'TIMEOUT'):
-                ldap.set_option(getattr(ldap, 'OPT_%s' % opt), block['timeout'])
         utf8_username = username.encode('utf-8')
         utf8_password = password.encode('utf-8')
 
-        for uri in block['url']:
-            log.debug('try to bind user on %r', uri)
-            conn = ldap.initialize(uri)
-            conn.set_option(ldap.OPT_REFERRALS, 1 if block['referrals'] else 0)
-            if not uri.startswith('ldaps://') and block['use_tls']:
-                try:
-                    conn.start_tls_s()
-                except ldap.TIMEOUT:
-                    log.error('connection to %r timed out', uri)
-                    continue
-                except (ldap.CONNECT_ERROR, ldap.SERVER_DOWN):
-                    log.error('connection to %r failed when activating TLS, did '
-                            'you forget to declare the TLS certificate in '
-                            '/etc/ldap/ldap.conf ? or maybe timeout are not long '
-                            'enough', uri)
-                    continue
+        for conn in get_connections(block):
             authz_ids = []
             user_basedn = block.get('user_basedn') or block['basedn']
 
             try:
-                # if necessary bind as admin
-                self.try_admin_bind(conn, block)
                 if block['user_dn_template']:
                     template = str(block['user_dn_template'])
                     escaped_username = escape_dn_chars(utf8_username)
@@ -446,10 +441,10 @@ class LDAPBackend(object):
                         if block.get('bind_with_username'):
                             authz_ids.append(utf8_username)
                         elif block['user_filter']:
+                            # allow multiple occurences of the username in the filter
+                            user_filter = block['user_filter']
+                            n = len(user_filter.split('%s')) - 1
                             try:
-                                # allow multiple occurences of the username in the filter
-                                user_filter = block['user_filter']
-                                n = len(user_filter.split('%s')) - 1
                                 query = filter_format(user_filter, (utf8_username,) * n)
                             except TypeError, e:
                                 log.error('user_filter syntax error %r: %s',
@@ -570,25 +565,6 @@ class LDAPBackend(object):
                 value = u''
             setattr(user, legacy_attribute, value)
         user.attributes = attributes
-
-    def try_admin_bind(self, conn, block):
-        try:
-            if block['bindsasl']:
-                sasl_mech, who, sasl_params = block['bindsasl']
-                handler_class = getattr(ldap.sasl, sasl_mech)
-                auth = handler_class(*sasl_params)
-                conn.sasl_interactive_bind_s(who, auth)
-            elif block['binddn'] and block['bindpw']:
-                who = block['binddn']
-                conn.simple_bind_s(who, block['bindpw'])
-        except ldap.INVALID_CREDENTIALS:
-            log.error('admin bind failed: invalid credentials (%r, %r)', who,
-                    '*hidden*')
-        except ldap.INVALID_DN_SYNTAX:
-            log.error('admin bind failed: invalid dn syntax %r', who)
-        else:
-            return True
-        return False
 
     def populate_admin_flags_by_group(self, user, block, group_dns):
         '''Attribute admin flags based on groups.
