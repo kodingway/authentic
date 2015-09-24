@@ -103,6 +103,13 @@ _DEFAULTS = {
     'user_can_change_password': True,
     # Use starttls
     'use_tls': True,
+    # Require certificate
+    'require_cert': 'demand',
+    # client and server certificates
+    'cacertfile': '',
+    'cacertdir': '',
+    'certfile': '',
+    'keyfile': '',
     # LDAP library options
     'ldap_options': {
     },
@@ -129,9 +136,20 @@ def get_connections(block, credentials=()):
         conn = ldap.initialize(url)
         if block['timeout'] > 0:
             conn.set_option(ldap.OPT_NETWORK_TIMEOUT, block['timeout'])
+        conn.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, getattr(ldap, 'OPT_X_TLS_' + block['require_cert'].upper()))
+        if block['cacertfile']:
+            conn.set_option(ldap.OPT_X_TLS_CACERTFILE, block['cacertfile'])
+        if block['cacertdir']:
+            conn.set_option(ldap.OPT_X_TLS_CACERTDIR, block['cacertdir'])
+        if block['certfile']:
+            conn.set_option(ldap.OPT_X_TLS_CERTFILE, block['certfile'])
+        if block['keyfile']:
+            conn.set_option(ldap.OPT_X_TLS_CERTFILE, block['keyfile'])
         for key, value in block['ldap_options']:
             conn.set_option(key, value)
         conn.set_option(ldap.OPT_REFERRALS, 1 if block['referrals'] else 0)
+        # allow TLS options to be applied
+        conn.set_option(ldap.OPT_X_TLS_NEWCTX, 0)
         try:
             if not url.startswith('ldaps://') and block['use_tls']:
                 try:
