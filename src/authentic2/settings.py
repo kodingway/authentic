@@ -76,13 +76,8 @@ MIDDLEWARE_CLASSES += (
     'authentic2.middleware.CollectIPMiddleware',
     'authentic2.middleware.StoreRequestMiddleware',
     'authentic2.middleware.ViewRestrictionMiddleware',
+    'authentic2.middleware.OpenedSessionCookieMiddleware',
 )
-
-A2_OPENED_SESSION_COOKIE_DOMAIN = os.environ.get('A2_OPENED_SESSION_COOKIE_DOMAIN')
-if A2_OPENED_SESSION_COOKIE_DOMAIN:
-    MIDDLEWARE_CLASSES += (
-        'authentic2.middleware.OpenedSessionCookieMiddleware',
-    )
 
 MIDDLEWARE_CLASSES = plugins.register_plugins_middleware(MIDDLEWARE_CLASSES)
 

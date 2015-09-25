@@ -100,16 +100,15 @@ class OpenedSessionCookieMiddleware(object):
     def process_response(self, request, response):
         if not app_settings.A2_OPENED_SESSION_COOKIE_DOMAIN:
             return response
+        name = app_settings.A2_OPENED_SESSION_COOKIE_NAME
+        if app_settings.A2_OPENED_SESSION_COOKIE_NAME == 'parent':
+            domain = request.get_host().split('.', 1)[1]
+        else:
+            domain = app_settings.A2_OPENED_SESSION_COOKIE_DOMAIN
         if hasattr(request, 'user') and request.user.is_authenticated():
-            response.set_cookie(
-                    app_settings.A2_OPENED_SESSION_COOKIE_NAME,
-                    value='1',
-                    max_age=None,
-                    domain=app_settings.A2_OPENED_SESSION_COOKIE_DOMAIN)
+            response.set_cookie(name, value='1', max_age=None, domain=domain)
         elif app_settings.A2_OPENED_SESSION_COOKIE_NAME in request.COOKIES:
-            response.delete_cookie(
-                    app_settings.A2_OPENED_SESSION_COOKIE_NAME,
-                    domain=app_settings.A2_OPENED_SESSION_COOKIE_DOMAIN)
+            response.delete_cookie(name, domain=domain)
         return response
 
 class RequestIdMiddleware(object):
