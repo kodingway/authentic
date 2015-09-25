@@ -14,6 +14,7 @@ from django_rbac.utils import get_ou_model, get_role_model
 from authentic2.forms import BaseUserForm
 from authentic2.models import PasswordReset
 from authentic2.utils import import_module_or_class
+from authentic2.a2_rbac.utils import get_default_ou
 
 from . import fields, app_settings
 
@@ -244,12 +245,19 @@ class ServiceRoleSearchForm(CssClass, PrefixFormMixin, forms.Form):
             qs = qs.filter(name__icontains=self.cleaned_data['text'])
         return qs
 
+
 class HideOUFieldMixin(object):
     def __init__(self, *args, **kwargs):
         super(HideOUFieldMixin, self).__init__(*args, **kwargs)
         OU = get_ou_model()
         if OU.objects.count() < 2:
             del self.fields['ou']
+
+    def save(self, *args, **kwargs):
+        if 'ou' not in self.fields:
+            self.instance.ou = get_default_ou()
+        return super(HideOUFieldMixin, self).save(*args, **kwargs)
+
 
 class RoleSearchForm(HideOUFieldMixin, ServiceRoleSearchForm):
     ou = forms.ModelChoiceField(queryset=get_ou_model().objects,
