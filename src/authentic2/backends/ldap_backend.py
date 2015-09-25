@@ -13,6 +13,7 @@ import base64
 import urllib
 import itertools
 import six
+import os
 
 # code originaly copied from by now merely inspired by
 # http://www.amherst.k12.oh.us/django-ldap.html
@@ -32,6 +33,20 @@ from authentic2.compat import get_user_model
 from authentic2.models import UserExternalId
 from authentic2.middleware import StoreRequestMiddleware
 from authentic2.user_login_failure import user_login_failure, user_login_success
+
+DEFAULT_CA_BUNDLE = ''
+
+CA_BUNDLE_PATHS = [
+    '/etc/pki/tls/certs/ca-bundle.crt', # RHEL/Fedora
+    '/etc/ssl/certs/ca-certificates.crt', # Debian
+    '/var/lib/ca-certificates/ca-bundle.pem', # OpenSuse
+]
+
+# Select a system certificate store
+for bundle_path in CA_BUNDLE_PATHS:
+    if os.path.exists(bundle_path):
+        DEFAULT_CA_BUNDLE = bundle_path
+        break
 
 _DEFAULTS = {
     'binddn': None,
@@ -106,7 +121,7 @@ _DEFAULTS = {
     # Require certificate
     'require_cert': 'demand',
     # client and server certificates
-    'cacertfile': '',
+    'cacertfile': DEFAULT_CA_BUNDLE,
     'cacertdir': '',
     'certfile': '',
     'keyfile': '',
