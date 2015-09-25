@@ -62,9 +62,11 @@ listing = RolesView.as_view()
 class RoleAddView(views.PassRequestToFormMixin, views.BaseAddView):
     template_name = 'authentic2/manager/role_add.html'
     model = get_role_model()
-    form_class = forms.RoleEditForm
     title = _('Add role')
     success_view_name = 'a2-manager-role-members'
+
+    def get_form_class(self):
+        return forms.get_role_form_class()
 
 add = RoleAddView.as_view()
 
