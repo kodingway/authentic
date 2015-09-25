@@ -192,10 +192,11 @@ o: orga
 
     def clean(self):
         '''Remove directory'''
-        import os.path # we are maybe in a desctructor, imported module may have vanished
-        if os.path.exists(self.slapd_dir):
-            self.stop()
-            shutil.rmtree(self.slapd_dir, ignore_errors=True)
+        if self.slapd_dir:
+            if os.path.exists(self.slapd_dir):
+                self.stop()
+                shutil.rmtree(self.slapd_dir, ignore_errors=True)
+                self.slapd_dir = None
 
     def __enter__(self):
         return self
