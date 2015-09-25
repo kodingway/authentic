@@ -42,6 +42,7 @@ class compile_translations(Command):
             sys.stderr.write('!!! Please install Django >= 1.4 to build translations')
             print
             print
+            os.chdir(curdir)
 
 
 class build(_build):
