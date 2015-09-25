@@ -55,7 +55,7 @@ def get_attributes(instance, ctx):
         ctx['django_user_identifier'] = user.username.rsplit('@', 1)[0] if '@' in user.username else ''
     Role = get_role_model()
     roles = Role.objects.for_user(user)
-    ctx['user_role_slug'] = roles.values_list('slug', flat=True)
-    ctx['user_role_name'] = roles.values_list('name', flat=True)
-    ctx['user_role_uuid'] = roles.values_list('uuid', flat=True)
+    ctx['a2_role_slugs'] = roles.values_list('slug', flat=True)
+    ctx['a2_role_names'] = roles.values_list('name', flat=True)
+    ctx['a2_role_uuids'] = roles.values_list('uuid', flat=True)
     return ctx
