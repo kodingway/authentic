@@ -101,7 +101,7 @@ class OpenedSessionCookieMiddleware(object):
         if not app_settings.A2_OPENED_SESSION_COOKIE_DOMAIN:
             return response
         name = app_settings.A2_OPENED_SESSION_COOKIE_NAME
-        if app_settings.A2_OPENED_SESSION_COOKIE_NAME == 'parent':
+        if app_settings.A2_OPENED_SESSION_COOKIE_DOMAIN == 'parent':
             domain = request.get_host().split('.', 1)[1]
         else:
             domain = app_settings.A2_OPENED_SESSION_COOKIE_DOMAIN
