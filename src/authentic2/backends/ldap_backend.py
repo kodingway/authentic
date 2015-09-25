@@ -650,7 +650,8 @@ class LDAPBackend(object):
             except ldap.NO_SUCH_OBJECT:
                 pass
             else:
-                group_dns.update(dn for dn, attributes in results)
+                # ignore referrals by checking if bool(dn) is True
+                group_dns.update(dn for dn, attributes in results if dn)
         return group_dns
 
     def populate_user_groups(self, user, dn, conn, block):
@@ -907,6 +908,9 @@ class LDAPBackend(object):
             users = conn.search_s(user_basedn, ldap.SCOPE_SUBTREE, user_filter, [])
             backend = cls()
             for user_dn, data in users:
+                # ignore referrals
+                if not user_dn:
+                    continue
                 attrs = cls.get_ldap_attributes(block, conn, user_dn)
                 username = backend.create_username(block, attrs)
                 user = backend.lookup_existing_user(username, block, attrs)
