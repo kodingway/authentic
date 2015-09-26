@@ -26,6 +26,7 @@ class compile_translations(Command):
         pass
 
     def run(self):
+        curdir = os.getcwd()
         try:
             from django.core.management import call_command
             for dir in ('src/authentic2', 'src/authentic2_idp_openid',
@@ -33,7 +34,6 @@ class compile_translations(Command):
                 for path, dirs, files in os.walk(dir):
                     if 'locale' not in dirs:
                         continue
-                    curdir = os.getcwd()
                     os.chdir(os.path.realpath(path))
                     call_command('compilemessages')
                     os.chdir(curdir)
