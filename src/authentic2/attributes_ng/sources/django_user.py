@@ -34,6 +34,7 @@ def get_attribute_names(instance, ctx):
     yield 'a2_role_uuids', _('Role UUIDs')
     yield 'a2_service_ou_role_slugs', _('Role slugs from same organizational unit as the service')
     yield 'a2_service_ou_role_names', _('Role names from same organizational unit as the service')
+    yield 'a2_service_ou_role_uuids', _('Role uuids from same organizational unit as the service')
 
 def get_dependencies(instance, ctx):
     return ('user',)
@@ -64,4 +65,5 @@ def get_attributes(instance, ctx):
         ou = ctx['service'].ou
         ctx['a2_service_ou_role_slugs'] = roles.filter(ou=ou).values_list('slug', flat=True)
         ctx['a2_service_ou_role_names'] = roles.filter(ou=ou).values_list('name', flat=True)
+        ctx['a2_service_ou_role_uuids'] = roles.filter(ou=ou).values_list('uuid', flat=True)
     return ctx
