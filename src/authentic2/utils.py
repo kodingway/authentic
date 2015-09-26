@@ -424,7 +424,7 @@ def to_iter(func):
 def normalize_attribute_values(values):
     '''Take a list of values or a single one and normalize it'''
     values_set = set()
-    if not isinstance(values, (tuple, list, set)):
+    if isinstance(values, basestring) or not hasattr(values, '__iter__'):
         values = [values]
     for value in values:
         if isinstance(value, bool):
