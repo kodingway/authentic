@@ -34,7 +34,7 @@ recursive-include src/authentic2/manager/locale *.po *.mo
 recursive-include src/authentic2/a2_rbac/locale *.po *.mo
 recursive-include src/django_rbac/locale *.po *.mo
 recursive-include src/authentic2 README  xrds.xml *.txt yadis.xrdf
-recursive-include src/authentic2_provisionning_ldap/tests/ *.ldif
+recursive-include src/authentic2_provisionning_ldap/tests *.ldif
 
 recursive-include samples *
 
