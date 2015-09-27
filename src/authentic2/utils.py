@@ -596,7 +596,7 @@ def switch_user(request, new_user):
                     localize(to_current_timezone(new_user.last_login), True)
         messages.info(request, _('Successfully switched to user %s') %
                       new_user.get_full_name())
-        logging.info('switched to user %s', new_user)
+        logger.info(u'switched to user %s', new_user)
         return continue_to_next_url(request)
 
 
@@ -612,7 +612,7 @@ def switch_back(request):
         request.user._wrapped = empty
         messages.info(request, _('Successfully switched back to user %s') % 
                       request.user.get_full_name())
-        logger.info('switched back to user %s', request.user)
+        logger.info(u'switched back to user %s', request.user)
     else:
         messages.warning(request, _('No user to switch back to'))
     return continue_to_next_url(request)
