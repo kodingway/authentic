@@ -92,6 +92,8 @@ class RegistrationCompletionForm(forms.BaseUserForm):
         if self.cleaned_data.get('username'):
             username = self.cleaned_data['username']
             username_is_unique = app_settings.A2_REGISTRATION_USERNAME_IS_UNIQUE
+            if app_settings.A2_REGISTRATION_REALM:
+                username += '@' + app_settings.A2_REGISTRATION_REALM
             if 'ou' in self.data:
                 ou = OrganizationalUnit.objects.get(pk=self.data['ou'])
                 username_is_unique |= ou.username_is_unique

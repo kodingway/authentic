@@ -292,6 +292,40 @@ class RegistrationTests(TestCase):
         })
         self.assertRedirects(response, '/')
 
+    @override_settings(A2_REGISTRATION_REALM='realm',
+                       A2_REQUIRED_FIELDS=['username'])
+    def test_registration_realm(self):
+        User = get_user_model()
+        next_url = 'http://relying-party.org/'
+        url = utils.make_url('registration_register',
+                             params={REDIRECT_FIELD_NAME: next_url})
+        response = self.client.post(url, {'email': 'testbot@entrouvert.com'})
+        self.assertRedirects(response, reverse('registration_complete'))
+        self.assertEqual(len(mail.outbox), 1)
+        links = re.findall('https?://.*/', mail.outbox[0].body)
+        self.assertIsInstance(links, list) and self.assertIsNot(links, [])
+        link = links[0]
+        response = self.client.post(link, {'username': 'toto',
+                                           'password1': 'T0toto',
+                                           'password2': 'T0toto'})
+        new_user = User.objects.get()
+        self.assertRedirects(response, next_url)
+        self.assertEqual(new_user.username, 'toto@realm')
+        self.assertEqual(new_user.email, 'testbot@entrouvert.com')
+        self.assertTrue(new_user.check_password('T0toto'))
+        self.assertTrue(new_user.is_active)
+        self.assertFalse(new_user.is_staff)
+        self.assertFalse(new_user.is_superuser)
+        self.assertEqual(str(self.client.session['_auth_user_id']),
+                         str(new_user.pk))
+        client = Client()
+        response = client.post('/login/', {
+            'username': 'testbot@entrouvert.com',
+            'password': 'T0toto',
+            'login-password-submit': '1'
+        })
+        self.assertRedirects(response, '/')
+
     @override_settings(A2_REGISTRATION_FORM_USERNAME_REGEX=r'^(ab)+$',
                        A2_REGISTRATION_FORM_USERNAME_LABEL='Identifiant',
                        A2_REGISTRATION_FORM_USERNAME_HELP_TEXT='Bien remplir',
