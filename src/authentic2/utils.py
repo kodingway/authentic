@@ -574,6 +574,16 @@ def get_registration_url(request):
                     params={REDIRECT_FIELD_NAME: next_url})
 
 
+def build_activation_url(request, email, next_url=None, **kwargs):
+    data = kwargs.copy()
+    data['email'] = email
+    data[REDIRECT_FIELD_NAME] = next_url
+    registration_token = signing.dumps(data)
+    activate_url = request.build_absolute_uri(
+        reverse('registration_activate', kwargs={'registration_token': registration_token}))
+    return activate_url
+
+
 def send_registration_mail(request, email, template_names, next_url=None,
                            ctx=None, **kwargs):
     '''Send a registration mail to an user. All given kwargs will be used
@@ -585,12 +595,7 @@ def send_registration_mail(request, email, template_names, next_url=None,
         template_names = [template_names]
 
     # signed token
-    data = kwargs.copy()
-    data['email'] = email
-    data[REDIRECT_FIELD_NAME] = next_url
-    registration_token = signing.dumps(data)
-    activate_url = request.build_absolute_uri(
-        reverse('registration_activate', kwargs={'registration_token': registration_token}))
+    activate_url = build_activation_url(request, email=email, next_url=next_url, **kwargs)
     # ctx for rendering the templates
     ctx = (ctx or {}).copy()
     ctx.update({

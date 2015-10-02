@@ -23,6 +23,7 @@ from rest_framework import status
 from django_rbac.utils import get_role_model, get_ou_model
 
 from authentic2 import hashers, utils, models, attribute_kinds
+from authentic2.custom_user.models import User
 
 from . import Authentic2TestCase, get_response_form
 
@@ -787,8 +788,6 @@ class APITest(TestCase):
         self.assertEqual(response.data['result'], 1)
         self.assertIn('token', response.data)
         token = response.data['token']
-        self.assertIn('request', response.data)
-        self.assertEqual(response.data['request'], payload)
         self.assertEqual(len(mail.outbox), outbox_level+1)
 
         # User side
@@ -903,8 +902,6 @@ class APITest(TestCase):
         self.assertEqual(response.data['result'], 1)
         self.assertIn('token', response.data)
         token = response.data['token']
-        self.assertIn('request', response.data)
-        self.assertEqual(response.data['request'], payload)
         self.assertEqual(len(mail.outbox), outbox_level+1)
         outbox_level = len(mail.outbox)
 
@@ -917,8 +914,6 @@ class APITest(TestCase):
         self.assertEqual(response2.data['result'], 1)
         self.assertIn('token', response2.data)
         token2 = response2.data['token']
-        self.assertIn('request', response2.data)
-        self.assertEqual(response2.data['request'], payload)
         self.assertEqual(len(mail.outbox), outbox_level+1)
 
         # User side - user click on first email
@@ -1034,8 +1029,6 @@ class APITest(TestCase):
         self.assertEqual(response.data['result'], 1)
         self.assertIn('token', response.data)
         token = response.data['token']
-        self.assertIn('request', response.data)
-        self.assertEqual(response.data['request'], payload)
         self.assertEqual(len(mail.outbox), outbox_level+1)
         outbox_level = len(mail.outbox)
 
@@ -1049,8 +1042,6 @@ class APITest(TestCase):
         self.assertEqual(response2.data['result'], 1)
         self.assertIn('token', response2.data)
         token2 = response2.data['token']
-        self.assertIn('request', response2.data)
-        self.assertEqual(response2.data['request'], payload)
         self.assertEqual(len(mail.outbox), outbox_level+1)
 
         # User side - user click on first email
@@ -1128,3 +1119,4 @@ class APITest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(User.objects.get(username='john.doe')
                         .check_password('password2'))
+

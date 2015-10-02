@@ -1,3 +1,5 @@
+import base64
+
 import pytest
 
 from django.core.urlresolvers import reverse
@@ -27,3 +29,7 @@ def login(app, user, path=None, password=None):
         assert response.request.path == reverse('auth_homepage')
     assert '_auth_user_id' in app.session
     return response
+
+def basic_authorization_header(user, password=None):
+    cred = base64.b64encode('%s:%s' % (user.username, password or user.username))
+    return {'Authorization': 'Basic %s' % cred}

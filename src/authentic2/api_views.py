@@ -23,6 +23,7 @@ from rest_framework import permissions, status
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.fields import CreateOnlyDefault
 
+from .custom_user.models import User
 from . import utils, decorators
 from .models import Attribute, PasswordReset
 from .a2_rbac.utils import get_default_ou
@@ -37,7 +38,8 @@ class HasUserAddPermission(permissions.BasePermission):
 
 class RegistrationSerializer(serializers.Serializer):
     '''Register RPC payload'''
-    email = serializers.EmailField()
+    email = serializers.EmailField(
+        required=False, allow_blank=True)
     ou = serializers.SlugRelatedField(
         queryset=get_ou_model().objects.all(),
         slug_field='slug',
@@ -52,13 +54,14 @@ class RegistrationSerializer(serializers.Serializer):
         required=False, allow_null=True)
     no_email_validation = serializers.BooleanField(
         required=False)
-    return_url = serializers.URLField()
+    return_url = serializers.URLField(required=False, allow_blank=True)
 
     def validate(self, data):
         request = self.context.get('request')
+        ou = data.get('ou')
         if request:
             perm = 'custom_user.add_user'
-            if data['ou']:
+            if ou:
                 authorized = request.user.has_ou_perm(perm, data['ou'])
             else:
                 authorized = request.user.has_perm(perm)
@@ -67,16 +70,20 @@ class RegistrationSerializer(serializers.Serializer):
                                                     'to create users in '
                                                     'this ou'))
         User = get_user_model()
-        if data['ou'] and data['ou'].email_is_unique and \
-                User.objects.filter(ou=data['ou'], email__iexact=data['email']).exists():
-            raise serializers.ValidationError(
-                _('You already have an account'))
-        if data['ou'] and data['ou'].username_is_unique and 'username' not in data:
-            raise serializers.ValidationError(
-                _('Username is required in this ou'))
-        if data['ou'] and data['ou'].username_is_unique and \
-                User.objects.filter(ou=data['ou'], username=data['username']).exists():
-            raise serializers.ValidationError(
+        if ou:
+            if ou.email_is_unique and \
+                    User.objects.filter(ou=ou,
+                                       email__iexact=data['email']).exists():
+                raise serializers.ValidationError(
+                    _('You already have an account'))
+            if ou.username_is_unique and not \
+                    'username' in data:
+                raise serializers.ValidationError(
+                    _('Username is required in this ou'))
+            if ou.username_is_unique and \
+                   User.objects.filter(ou=data['ou'],
+                                       username=data['username']).exists():
+                raise serializers.ValidationError(
                 _('You already have an account'))
         return data
 
@@ -115,16 +122,7 @@ class Register(BaseRpcView):
 
     def rpc(self, request, serializer):
         validated_data = serializer.validated_data
-        data = serializer.data
-        email = validated_data['email']
-        token = utils.get_hex_uuid()[:16]
-        final_return_url = utils.make_url(validated_data['return_url'],
-                                          params={'token': token})
-
-        registration_template = ['authentic2/activation_email']
-        if validated_data['ou']:
-            registration_template.insert(0, 'authentic2/activation_email_%s' %
-                                         validated_data['ou'].slug)
+        email = validated_data.get('email')
         registration_data = {}
         for field in ('first_name', 'last_name', 'password', 'username', 'ou'):
             if field in validated_data:
@@ -132,32 +130,78 @@ class Register(BaseRpcView):
                     registration_data[field] = validated_data[field].pk
                 else:
                     registration_data[field] = validated_data[field]
-
         ctx = {
             'registration_data': registration_data,
         }
-        try:
-            utils.send_registration_mail(self.request, email,
-                                         registration_template,
-                                         next_url=final_return_url,
-                                         ctx=ctx,
-                                         **registration_data)
-        except smtplib.SMTPException, e:
-            response = {
-                'result': 0,
-                'errors': {
-                    '__all__': ['Mail sending failed']
-                },
-                'exception': unicode(e),
-            }
-            response_status = status.HTTP_503_SERVICE_UNAVAILABLE
+
+        token = None
+        final_return_url = None
+        if validated_data.get('return_url'):
+            token = utils.get_hex_uuid()[:16]
+            final_return_url = utils.make_url(validated_data['return_url'],
+                                              params={'token': token})
+        if email and not validated_data.get('no_email_validation'):
+
+            registration_template = ['authentic2/activation_email']
+            if validated_data['ou']:
+                registration_template.insert(0, 'authentic2/activation_email_%s' %
+                                             validated_data['ou'].slug)
+
+            try:
+                utils.send_registration_mail(self.request, email,
+                                             registration_template,
+                                             next_url=final_return_url,
+                                             ctx=ctx,
+                                             **registration_data)
+            except smtplib.SMTPException, e:
+                response = {
+                    'result': 0,
+                    'errors': {
+                        '__all__': ['Mail sending failed']
+                    },
+                    'exception': unicode(e),
+                }
+                response_status = status.HTTP_503_SERVICE_UNAVAILABLE
+            else:
+                response = {
+                    'result': 1,
+                }
+                if token:
+                    response['token'] = token
+                response_status = status.HTTP_202_ACCEPTED
         else:
-            response = {
-                'result': 1,
-                'token': token,
-                'request': data,
-            }
-            response_status = status.HTTP_202_ACCEPTED
+            username = validated_data.get('username')
+            first_name = validated_data.get('first_name')
+            last_name = validated_data.get('last_name')
+            password = validated_data.get('password')
+            if not email and \
+               not username and \
+               not (first_name and last_name):
+                response = {
+                    'result': 0,
+                    'errors': {
+                        '__all__': ['You must set at least a username, an email or a first name and a last name']
+                    },
+                }
+                response_status = status.HTTP_400_BAD_REQUEST
+            else:
+                new_user = User(email=email, username=username,
+                                first_name=first_name, last_name=last_name)
+                if password:
+                    new_user.set_password(password)
+                new_user.save()
+                validated_data['uuid'] = new_user.uuid
+                response = {
+                    'result': 1,
+                    'user': validated_data,
+                    'token': token,
+                }
+                if email:
+                    response['validation_url'] = utils.build_activation_url(request, email,
+                                                                            next_url=final_return_url)
+                if token:
+                    response['token'] = token
+                response_status = status.HTTP_201_CREATED
         return response, response_status
 
 register = Register.as_view()

@@ -3,6 +3,7 @@
 import json
 import pytest
 import re
+import urllib
 
 from django.core.urlresolvers import reverse
 from django.contrib.auth import get_user_model
@@ -11,7 +12,7 @@ from django_rbac.utils import get_role_model
 from authentic2.models import Service
 from django.core import mail
 
-from utils import login
+from utils import login, basic_authorization_header
 
 pytestmark = pytest.mark.django_db
 
@@ -21,6 +22,7 @@ def test_api_user_simple(logged_app):
     assert isinstance(resp.json, dict)
     assert 'username' in resp.json
     assert 'username' in resp.json
+
 
 def test_api_user(client):
     # create an user, an ou role, a service and a service role
@@ -277,6 +279,7 @@ def test_api_role_add_member(app, user, role, member):
     else:
         assert resp.json['detail'] == 'User not allowed to change role'
 
+
 def test_api_role_remove_member(app, user, role, member):
     app.authorization = ('Basic', (user.username, user.username))
 
@@ -298,3 +301,57 @@ def test_api_role_remove_member(app, user, role, member):
         assert resp.json['detail'] == 'User successfully removed from role'
     else:
         assert resp.json['detail'] == 'User not allowed to change role'
+
+
+def test_register_no_email_validation(app, admin, django_user_model):
+    User = django_user_model
+    password = '12XYab'
+    username = 'john.doe'
+    email = 'john.doe@example.com'
+    first_name = 'John'
+    last_name = 'Doe'
+    return_url = 'http://sp.example.com/validate/'
+
+    # invalid payload
+    payload = {
+        'last_name': last_name,
+        'return_url': return_url,
+    }
+    headers = basic_authorization_header(admin)
+    assert len(mail.outbox) == 0
+    response = app.post_json(reverse('a2-api-register'), payload, headers=headers, status=400)
+    assert 'errors' in response.json
+    assert response.json['result'] == 0
+    assert response.json['errors'] == {
+        '__all__': ['You must set at least a username, an email or a first name and a last name'],
+    }
+
+    # valid payload
+    payload = {
+        'username': username,
+        'email': email,
+        'first_name': first_name,
+        'last_name': last_name,
+        'password': password,
+        'no_email_validation': True,
+        'return_url': return_url,
+    }
+    assert len(mail.outbox) == 0
+    response = app.post_json(reverse('a2-api-register'), payload, headers=headers)
+    assert len(mail.outbox) == 0
+    assert response.status_code == 201
+    assert response.json['result'] == 1
+    assert response.json['user']['username'] == username
+    assert response.json['user']['email'] == email
+    assert response.json['user']['first_name'] == first_name
+    assert response.json['user']['last_name'] == last_name
+    assert response.json['user']['password'] == password
+    assert response.json['token']
+    assert response.json['validation_url'].startswith('http://localhost:80/accounts/activate/')
+    assert User.objects.count() == 2
+    user = User.objects.latest('id')
+    assert user.username == username
+    assert user.email == email
+    assert user.first_name == first_name
+    assert user.last_name == last_name
+    assert user.check_password(password)
