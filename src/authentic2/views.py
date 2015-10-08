@@ -113,14 +113,6 @@ def su(request, username, redirect_url='/'):
         return http.HttpResponseRedirect('/')
 
 
-class RedirectToHomepageView(RedirectView):
-    permanent = False
-    url = app_settings.A2_HOMEPAGE_URL
-
-
-redirect_to_homepage = RedirectToHomepageView.as_view()
-
-
 class EmailChangeView(FormView):
     form_class = forms.EmailChangeForm
     template_name = 'profiles/email_change.html'
@@ -323,7 +315,7 @@ def service_list(request):
 
 def homepage(request):
     if app_settings.A2_HOMEPAGE_URL:
-        return redirect_to_homepage(request)
+        return utils.redirect(request, app_settings.A2_HOMEPAGE_URL)
     else:
         return _homepage(request)
 
