@@ -3,6 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.text import slugify
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
+from django.core.validators import RegexValidator
 
 from django_rbac.models import RoleAbstractBase, PermissionAbstractBase, \
     OrganizationalUnitAbstractBase, RoleParentingAbstractBase, VIEW_OP, \
@@ -16,6 +17,8 @@ except ImportError:
     from django.contrib.contenttypes.generic import GenericForeignKey
 
 from . import managers, fields
+
+no_undersore_prefix = RegexValidator(r'_.*', inverse_match=True)
 
 
 class OrganizationalUnit(OrganizationalUnitAbstractBase):
