@@ -44,13 +44,14 @@ def update_ou_admin_roles(ou):
                 update_slug=True,
                 update_name=True)
         if not app_settings.MANAGED_CONTENT_TYPES or \
-               key in app_settings.MANAGED_CONTENT_TYPES:
+                key in app_settings.MANAGED_CONTENT_TYPES:
             ou_ct_admin_role.add_child(ou_admin_role)
         else:
             ou_ct_admin_role.remove_child(ou_admin_role)
         if MANAGED_CT[key].get('must_view_user'):
             ou_ct_admin_role.permissions.add(utils.get_view_user_perm(ou))
         ou_ct_admin_role.permissions.add(utils.get_view_ou_perm(ou))
+
 
 def update_ous_admin_roles():
     '''Create general admin roles linked to all organizational units,
@@ -65,8 +66,7 @@ def update_ous_admin_roles():
         # If there is no ou or less than two, only generate global management
         # roles
         Role.objects.filter(slug__startswith='_a2', ou__isnull=False).delete()
-        Role.objects.filter(slug__startswith='_a2',
-                            permissions=ou_admin_perms).delete()
+        Role.objects.filter(slug__startswith='_a2-managers-of-').delete()
         Permission.objects.filter(roles__isnull=True).delete()
         return
     for ou in ou_all:
@@ -97,7 +97,7 @@ def update_content_types_roles():
     Role = get_role_model()
     view_user_perm = utils.get_view_user_perm()
     view_ou_perm = utils.get_view_ou_perm()
-    slug='_a2-manager'
+    slug = '_a2-manager'
     if app_settings.MANAGED_CONTENT_TYPES == ():
         Role.objects.filter(slug=slug).delete()
     else:
@@ -117,7 +117,7 @@ def update_content_types_roles():
         # General admin role
         name = unicode(MANAGED_CT[ct_tuple]['name'])
         slug = '_a2-' + slugify(name)
-        if not app_settings.MANAGED_CONTENT_TYPES is None and key not in \
+        if app_settings.MANAGED_CONTENT_TYPES is not None and ct_tuple not in \
                 app_settings.MANAGED_CONTENT_TYPES:
             Role.objects.filter(slug=slug).delete()
             continue
