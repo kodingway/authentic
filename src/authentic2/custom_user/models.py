@@ -98,6 +98,9 @@ class User(AbstractBaseUser, PermissionMixin):
         short_id = self.uuid[:6]
         return u'%s (%s)' % (human_name, short_id)
 
+    def __repr__(self):
+        return '<User: %r>' % unicode(self)
+
     def clean(self):
         errors = {}
         with errorcollector(errors):
