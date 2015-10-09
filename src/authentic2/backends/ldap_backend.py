@@ -33,6 +33,8 @@ from authentic2.compat import get_user_model
 from authentic2.models import UserExternalId
 from authentic2.middleware import StoreRequestMiddleware
 from authentic2.user_login_failure import user_login_failure, user_login_success
+from django_rbac.utils import get_ou_model
+from authentic2.a2_rbac.utils import get_default_ou
 
 DEFAULT_CA_BUNDLE = ''
 
@@ -132,6 +134,8 @@ _DEFAULTS = {
     },
     # Use Password Modify extended operation
     'use_password_modify': True,
+    # Target OU
+    'ou_slug': '',
 }
 
 _REQUIRED = ('url', 'basedn')
@@ -695,6 +699,23 @@ class LDAPBackend(object):
         self.populate_admin_fields(user, block)
         self.populate_mandatory_groups(user, block)
         self.populate_user_groups(user, dn, conn, block)
+        self.populate_user_ou(user, dn, conn, block, attributes)
+
+    def populate_user_ou(self, user, dn, conn, block, attributes):
+        '''Assign LDAP user to an ou, the default one if ou_slug setting is
+           None'''
+
+        ou_slug = block['ou_slug']
+        OU = get_ou_model()
+        if ou_slug:
+            ou_slug = unicode(ou_slug)
+            try:
+                user.ou = OU.objects.get(slug=ou_slug)
+            except OU.DoesNotExist:
+                raise ImproperlyConfigured('ou_slug value is wrong for ldap %r',
+                                          block['url'])
+        else:
+            user.ou = get_default_ou()
 
     @classmethod
     def attribute_name_from_external_id_tuple(cls, external_id_tuple):
@@ -792,7 +813,7 @@ class LDAPBackend(object):
         User = get_user_model()
         try:
             log.debug('lookup using username %r', username)
-            return LDAPUser.objects.get(**{User.USERNAME_FIELD: username})
+            return LDAPUser.objects.get(username=username)
         except User.DoesNotExist:
             return
 
@@ -825,7 +846,8 @@ class LDAPBackend(object):
         if block['update_username']:
             if user.username != username:
                 old_username = user.username
-                self.save_user(user, username)
+                user.username = username
+                user.save()
                 log_msg = 'updating username from %r to %r'
                 log.debug(log_msg, old_username, user.username)
         # if external_id lookup is used, update it
@@ -874,11 +896,11 @@ class LDAPBackend(object):
         if user:
             log.debug('found existing user %r', user)
         else:
-            user = LDAPUser()
+            user = LDAPUser(username=username)
             user.set_unusable_password()
         user.ldap_init(block, dn, password)
         self.populate_user(user, dn, username, conn, block, attributes)
-        self.save_user(user, username)
+        user.save()
         user.keep_pk = user.pk
         user.pk = 'persistent!{0}'.format(base64.b64encode(pickle.dumps(user)))
         user_login_success(user.get_username())
