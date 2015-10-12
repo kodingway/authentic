@@ -3,6 +3,7 @@ import urlparse
 from django.utils.http import urlquote
 from django.conf import settings
 from django.db import models
+from django.db.models.query import Q
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
 
@@ -278,11 +279,10 @@ class Service(models.Model):
     def __unicode__(self):
         return self.name
 
-    def to_json(self, user=None):
-        if user:
-            roles = user.roles_and_parents().filter(service=self)
-        else:
-            roles = self.roles.all()
+    def to_json(self, roles=None):
+        if not roles:
+            roles = Role.objects.all()
+        roles = roles.filter(Q(service=self)|Q(ou=self.ou, service__isnull=True))
         return {
             'name': self.name,
             'slug': self.slug,

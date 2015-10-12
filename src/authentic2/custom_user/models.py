@@ -151,7 +151,7 @@ class User(AbstractBaseUser, PermissionMixin):
             'first_name': self.first_name,
             'last_name': self.last_name,
             'is_superuser': self.is_superuser,
-            'roles': [role.to_json() for role in self.roles_and_parents().filter(service__isnull=True)],
-            'services': [service.to_json(user=self) for service in Service.objects.all()],
+            'roles': [role.to_json() for role in self.roles_and_parents()],
+            'services': [service.to_json(roles=self.roles_and_parents()) for service in Service.objects.all()],
         })
         return d
