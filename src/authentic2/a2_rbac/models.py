@@ -152,6 +152,9 @@ class Role(RoleAbstractBase):
             'slug': self.slug,
             'is_admin': bool(self.admin_scope_ct and self.admin_scope_id),
             'is_service': bool(self.service),
+            'ou__uuid': self.ou.uuid if self.ou else None,
+            'ou__name': self.ou.name if self.ou else None,
+            'ou__slug': self.ou.slug if self.ou else None,
         }
 
 
