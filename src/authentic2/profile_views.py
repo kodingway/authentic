@@ -108,8 +108,8 @@ class PasswordResetConfirmView(cbv.RedirectToNextURLViewMixin, FormView):
     def form_valid(self, form):
         form.save()
         self.user.backend = 'authentic2.backends.models_backend.ModelBackend'
-        logging.getLogger(__name__).info('user %s resetted its password with '
-                                         'token %s...', self.user,
+        logging.getLogger(__name__).info(u'user %s resetted its password with '
+                                         'token %r...', self.user,
                                          self.token[:9])
         return utils.login(self.request, self.user, 'email')
 

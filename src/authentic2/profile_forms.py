@@ -61,5 +61,5 @@ class PasswordResetForm(forms.Form):
                                                      c)
             send_mail(subject, email, from_email, [user.email],
                       html_message=html_email)
-            logger.info('password reset requests for %s, email sent to %s '
+            logger.info(u'password reset requests for %s, email sent to %s '
                         'with token %s...', user, user.email, c['token'][:9])

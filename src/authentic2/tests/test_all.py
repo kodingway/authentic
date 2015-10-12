@@ -1132,7 +1132,8 @@ class APITest(TestCase):
 class PasswordResetTest(Authentic2TestCase):
     def setUp(self):
         User = get_user_model()
-        user = User(username='john.doe', email='john.doe@example.com')
+        user = User(username='jôhn.doe', first_name=u'Jôhn', last_name='Doe',
+                    email='john.doe@example.com')
         user.set_password('password')
         user.save()
         user.last_login = user.date_joined
