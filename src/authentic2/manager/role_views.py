@@ -250,8 +250,8 @@ class RoleManagersRolesView(RoleManagerViewMixin, RoleChildrenView):
 managers_roles = RoleManagersRolesView.as_view()
 
 
-class RoleAddChildView(views.TitleMixin, views.PermissionMixin,
-                       SingleObjectMixin, FormView):
+class RoleAddChildView(views.AjaxFormViewMixin, views.TitleMixin,
+                       views.PermissionMixin, SingleObjectMixin, FormView):
     title = _('Add child role')
     model = get_role_model()
     form_class = forms.RoleForm
@@ -270,7 +270,7 @@ class RoleAddChildView(views.TitleMixin, views.PermissionMixin,
 add_child = RoleAddChildView.as_view()
 
 
-class RoleAddParentView(views.TitleMixin,
+class RoleAddParentView(views.AjaxFormViewMixin, views.TitleMixin,
                         SingleObjectMixin, FormView):
     title = _('Add parent role')
     model = get_role_model()
@@ -292,8 +292,8 @@ class RoleAddParentView(views.TitleMixin,
 add_parent = RoleAddParentView.as_view()
 
 
-class RoleRemoveChildView(SingleObjectMixin, views.PermissionMixin,
-                          TemplateView):
+class RoleRemoveChildView(views.AjaxFormViewMixin, SingleObjectMixin,
+                          views.PermissionMixin, TemplateView):
     title = _('Remove child role')
     model = get_role_model()
     success_url = '../..'
@@ -317,7 +317,8 @@ class RoleRemoveChildView(SingleObjectMixin, views.PermissionMixin,
 remove_child = RoleRemoveChildView.as_view()
 
 
-class RoleRemoveParentView(SingleObjectMixin, TemplateView):
+class RoleRemoveParentView(views.AjaxFormViewMixin, SingleObjectMixin,
+                           TemplateView):
     title = _('Remove parent role')
     model = get_role_model()
     success_url = '../..'
