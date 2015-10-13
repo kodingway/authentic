@@ -18,20 +18,20 @@
     <a class="disabled" title="{% trans "This role is technical, you cannot delete it." %}" href="#">{% trans "Delete" %}</a>
   {% endif %}
   {% if view.can_change and not object.admin_scope_ct_id %}
-    <a rel="popup" href="{% url "a2-manager-role-edit" pk=object.pk %}">{% trans "Modify description" %}</a>
+    <a rel="popup" href="{% url "a2-manager-role-edit" pk=object.pk %}">{% trans "Edit" %}</a>
     {% if ROLES_SHOW_PERMISSIONS %}
       <a href="{% url "a2-manager-role-permissions" pk=object.pk %}">{% trans "Permissions" %}</a>
     {% endif %}
     <a href="{% url "a2-manager-role-managers" pk=object.pk %}">{% trans "Managers" %}</a>
   {% else %}
     {% if not view.can_change %}
-      <a class="disabled" title="{% trans "Permission denied" %}" href="#">{% trans "Modify description" %}</a>
+      <a class="disabled" title="{% trans "Permission denied" %}" href="#">{% trans "Edit" %}</a>
       {% if ROLES_SHOW_PERMISSIONS %}
         <a class="disabled" title="{% trans "Permission denied" %}" href="#">{% trans "Permissions" %}</a>
       {% endif %}
       <a class="disabled" title="{% trans "Permission denied" %}" href="">{% trans "Managers" %}</a>
     {% else %}
-      <a class="disabled" title="{% trans "This role is technical, you cannot edit it." %}" href="#">{% trans "Modify description" %}</a>
+      <a class="disabled" title="{% trans "This role is technical, you cannot edit it." %}" href="#">{% trans "Edit" %}</a>
       {% if ROLES_SHOW_PERMISSIONS %}
         <a class="disabled" title="{% trans "This role is technical, you cannot modify its permissions." %}" href="#">{% trans "Permissions" %}</a>
       {% endif %}
