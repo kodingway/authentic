@@ -1,13 +1,13 @@
-# French translation of Authentic
+# authentic2 idp saml french l10n
 # Copyright (C) 2014 Entr'ouvert
-# This file is distributed under the same license as the Authentic package.
+# This file is distributed under the same license as the authentic package.
 # Benjamin Dauvergne <bdauvergne@entrouvert.com>, 2014.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-22 09:46+0200\n"
+"POT-Creation-Date: 2015-10-13 20:31+0200\n"
 "PO-Revision-Date: 2014-11-21 11:43+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"

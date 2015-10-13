@@ -1,12 +1,13 @@
+# authentic2 custom_user french l10n
 # Copyright (C) 2015 Entr'ouvert
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the authentic2 package.
 # Benjamin Dauvergne <bdauvergne@entrouvert.com>, 2015.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: authentic2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-22 09:46+0200\n"
+"POT-Creation-Date: 2015-10-13 20:31+0200\n"
 "PO-Revision-Date: 2015-05-04 15:36+0200\n"
 "Last-Translator: Benjamin Dauvergn <bdauvergne@entrouvert.com>\n"
 "Language-Team: French <fr@li.org>\n"
@@ -72,11 +73,11 @@ msgstr "utilisateur"
 msgid "users"
 msgstr "utilisateurs"
 
-#: authentic2/custom_user/models.py:120
+#: authentic2/custom_user/models.py:123
 msgid "This username is already in use. Please supply a different username."
 msgstr "Cet identifiant est déjà utilisé. Veuillez en choisir un autre."
 
-#: authentic2/custom_user/models.py:128
+#: authentic2/custom_user/models.py:131
 msgid ""
 "This email address is already in use. Please supply a different email "
 "address."

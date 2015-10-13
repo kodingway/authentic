@@ -1,4 +1,4 @@
-# French translation of Authentic
+# authentic2 saml french l10n
 # Copyright (C) 2010, 2011 Entr'ouvert
 # This file is distributed under the same license as the Authentic package.
 # Frederic Peters <fpeters@entrouvert.com>, 2010.
@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-22 09:46+0200\n"
+"POT-Creation-Date: 2015-10-13 20:31+0200\n"
 "PO-Revision-Date: 2014-11-21 00:08+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -74,10 +74,8 @@ msgid "missing EntityDescriptor tag"
 msgstr "Au moins un tag XML EntityDescriptor est nécessaire"
 
 #: authentic2/saml/forms.py:38
-#, fuzzy
-#| msgid "missing EntityDescriptor tag"
 msgid "missing SPSSODescriptor tags"
-msgstr "Au moins un tag XML EntityDescriptor est nécessaire"
+msgstr "Au moins un tag XML SPSSODescriptor est nécessaire"
 
 #: authentic2/saml/management/commands/sync-metadata.py:122
 #: authentic2/saml/management/commands/sync-metadata.py:204
@@ -431,161 +429,3 @@ msgstr ""
 #: authentic2/saml/templates/saml/post_form.html:18
 msgid "Send"
 msgstr "Envoyer"
-
-#~ msgid "Your access is denied. At least one attribute does not match."
-#~ msgstr "Accés interdit. Au moins un attribut ne correspond pas."
-
-#~ msgid "missing IDPSSODescriptor or SPSSODescriptor tags"
-#~ msgstr ""
-#~ "Au moins un tag XML IDPSSODescriptor ou SPSSODescriptor est nécessaire"
-
-#~ msgid "SAML2 identity provider options policy with name %s not found"
-#~ msgstr ""
-#~ "La politique de fournisseur d'identité SAML nommée « %s » est introuvable"
-
-#~ msgid "No SAML2 identity provider options policy provided"
-#~ msgstr "Aucune politique de fournisseur d'identité SAML fournie"
-
-#~ msgid "Do not send a nameId Policy"
-#~ msgstr "Ne pas envoyer une nameId Policy"
-
-#~ msgid "Requested NameID format"
-#~ msgstr "Format du NameID demandé"
-
-#~ msgid ""
-#~ "This IdP sends a transient NameID but you want a persistent behaviour for "
-#~ "your SP"
-#~ msgstr ""
-#~ "Cet IdP envoie un nameID transient mais vous souhaitez un comportement "
-#~ "persistent pour ce fournisseur de service"
-
-#~ msgid "Persistent identifier attribute"
-#~ msgstr "Attribut servant d'identifiant persistent"
-
-#~ msgid "Allow IdP to create an identity"
-#~ msgstr "Autoriser l'IdP à créer une identité"
-
-#~ msgid ""
-#~ "Binding for Authnresponse             (taken from metadata by the IdP if "
-#~ "not enabled)"
-#~ msgstr ""
-#~ "Transport pour les réponses d'authentification (extrait des métadonnées "
-#~ "du fournisseur de service si non activé)"
-
-#~ msgid "Binding for the SSO responses"
-#~ msgstr "Binding pour les reponses au SSO"
-
-#~ msgid ""
-#~ "HTTP method for single logout request             (taken from metadata if "
-#~ "not enabled)"
-#~ msgstr ""
-#~ "Transport pour les requêtes de déconnexion (extrait des métadonnées du "
-#~ "fournisseur de service si non activé)"
-
-#~ msgid ""
-#~ "HTTP method for federation termination request             (taken from "
-#~ "metadata if not enabled)"
-#~ msgstr ""
-#~ "Transport pour les requêtes de suppression de fédération (extrait des "
-#~ "métadonnées du fournisseur de service si non activé)"
-
-#~ msgid "HTTP method for the defederation requests"
-#~ msgstr "Méthode HTTP pour les requêtes de défédération"
-
-#~ msgid "Require the user consent be given at account linking"
-#~ msgstr ""
-#~ "Requerir que le consentement utilisateur soit donné lors de la liaison de "
-#~ "compte"
-
-#~ msgid "Force authentication"
-#~ msgstr "Forcer l'authentification"
-
-#~ msgid "Passive authentication"
-#~ msgstr "Authentification sans action de l'utilisateur"
-
-#~ msgid "Want AuthnRequest signed"
-#~ msgstr "Les requêtes d'authentification doivent être signées"
-
-#~ msgid "Behavior with persistent NameID"
-#~ msgstr "Comportement avec un NameID persistent"
-
-#~ msgid "Behavior with transient NameID"
-#~ msgstr "Comportement avec un NameID transient"
-
-#~ msgid "Return URL after a successful authentication"
-#~ msgstr "URL de retour après un authentification valide"
-
-#~ msgid "identity provider options policy"
-#~ msgstr "règlement des options de fournisseur d'identités"
-
-#~ msgid "identity provider options policies"
-#~ msgstr "règlements des options de fournisseur d'identités"
-
-#~ msgid "authorization attribute map"
-#~ msgstr "carte des attributs d'autorisation"
-
-#~ msgid "authorization attribute maps"
-#~ msgstr "cartes des attributs d'autorisation"
-
-#~ msgid "authorization attribute mapping"
-#~ msgstr "correspondance entre attributs d'autorisation"
-
-#~ msgid "authorization attribute mappings"
-#~ msgstr "correspondances entre attributs d'autorisation"
-
-#~ msgid "Default message to display to the user when access is denied"
-#~ msgstr ""
-#~ "Message par défaut à afficher à l'utilisateur quand l'accès lui est refusé"
-
-#~ msgid "You are not authorized to access the service."
-#~ msgstr "Vous n'etes pas autorise à acceder a ce service."
-
-#~ msgid "authorization identity providers policy"
-#~ msgstr "règlement des autorisations pour les fournisseurs d'identité"
-
-#~ msgid "authorization identity providers policies"
-#~ msgstr "règlement des autorisations pour les fournisseurs d'identité"
-
-#~ msgid ""
-#~ "The following attribute policy will apply except if a policy for all "
-#~ "service provider is defined."
-#~ msgstr ""
-#~ "Le règlement sur les attributs qui suit s'appliquera sauf si un "
-#~ "règlementpour tous les fournisseurs de services est défini."
-
-#~ msgid "attribute policy"
-#~ msgstr "règlement sur les attributs"
-
-#~ msgid ""
-#~ "The following options policy will apply except if a policy for all "
-#~ "identity provider is defined."
-#~ msgstr ""
-#~ "Le règlement d'option pour les fournisseurs d'identité qui suit "
-#~ "s'appliquera sauf si un règlement pour tous les fournisseurs d'identité "
-#~ "est défini."
-
-#~ msgid ""
-#~ "The following authorization policy will apply except if a policy for all "
-#~ "identity provider is defined."
-#~ msgstr ""
-#~ "Le règlement des autorisations pour les fournisseurs d'identité qui suit "
-#~ "s'appliquera sauf si un règlement pour tous les fournisseurs d'identité "
-#~ "est défini."
-
-#~ msgid "SAML identity provider"
-#~ msgstr "fournisseur d'identité SAML"
-
-#~ msgid "SAML identity providers"
-#~ msgstr "fournisseurs d'identité SAML"
-
-#~ msgid "SAML manage dump"
-#~ msgstr "dump du profil gestion des fédérations SAML"
-
-#~ msgid "SAML manage dumps"
-#~ msgstr "dumps du profil gestion des fédérations SAML"
-
-#~ msgid "SAML service provider session"
-#~ msgstr "session de fournisseur de service SAML"
-
-#~ msgid "SAML service provider sessions"
-#~ msgstr "sessions de fournisseur de service SAML"

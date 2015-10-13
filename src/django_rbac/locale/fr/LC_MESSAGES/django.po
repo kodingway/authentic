@@ -1,4 +1,4 @@
-# Django RBAC french translation
+# Django RBAC french l10n
 # Copyright (C) 2015 Entr'ouert
 # This file is distributed under the same license as the authentic2 package.
 # Benjamin Dauvergne <bdauvergne@entrouvert.com, 2015.
@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-rbac\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-22 09:46+0200\n"
+"POT-Creation-Date: 2015-10-13 20:31+0200\n"
 "PO-Revision-Date: 2015-05-13 15:21+0200\n"
 "Last-Translator: Benjamin Dauvergner <bdauvergne@entrouvert.com>\n"
 "Language: \n"

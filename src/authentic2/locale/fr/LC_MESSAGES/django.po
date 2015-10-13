@@ -1,5 +1,5 @@
-# French translation of Authentic
-# Copyright (C) 2010, 2011 Entr'ouvert
+# authentic2 french l10n
+# Copyright (C) 2015 Entr'ouvert
 # This file is distributed under the same license as the Authentic package.
 # Frederic Peters <fpeters@entrouvert.com>, 2010.
 #
@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-22 09:46+0200\n"
+"POT-Creation-Date: 2015-10-13 20:31+0200\n"
 "PO-Revision-Date: 2015-02-26 17:53+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -112,13 +112,13 @@ msgid "you are not authorized to create users in this ou"
 msgstr "Vous n'êtes pas autorisé à vous inscrire dans cette collectivité."
 
 #: authentic2/api_views.py:65 authentic2/api_views.py:74
-#: authentic2/tests/test_all.py:792 authentic2/tests/test_all.py:817
-#: authentic2/tests/test_all.py:943 authentic2/tests/test_all.py:968
+#: authentic2/tests/test_all.py:826 authentic2/tests/test_all.py:851
+#: authentic2/tests/test_all.py:977 authentic2/tests/test_all.py:1002
 msgid "You already have an account"
 msgstr "Vous avez déjà un compte."
 
-#: authentic2/api_views.py:69 authentic2/tests/test_all.py:804
-#: authentic2/tests/test_all.py:955
+#: authentic2/api_views.py:69 authentic2/tests/test_all.py:838
+#: authentic2/tests/test_all.py:989
 msgid "Username is required in this ou"
 msgstr "L'identifiant est requis dans cette collectivité."
 
@@ -177,6 +177,18 @@ msgstr "Noms des rôles"
 #: authentic2/attributes_ng/sources/django_user.py:34
 msgid "Role UUIDs"
 msgstr "Identifiants uniques des rôles"
+
+#: authentic2/attributes_ng/sources/django_user.py:35
+msgid "Role slugs from same organizational unit as the service"
+msgstr ""
+
+#: authentic2/attributes_ng/sources/django_user.py:36
+msgid "Role names from same organizational unit as the service"
+msgstr ""
+
+#: authentic2/attributes_ng/sources/django_user.py:37
+msgid "Role uuids from same organizational unit as the service"
+msgstr ""
 
 #: authentic2/attributes_ng/sources/service_roles.py:28
 msgid "role attribute"
@@ -276,7 +288,7 @@ msgstr "condensé"
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
-#: authentic2/middleware.py:166
+#: authentic2/middleware.py:165
 msgid "You must change your password to continue"
 msgstr "Vous devez changer votre mot de passe avant de continuer."
 
@@ -506,8 +518,8 @@ msgstr "Courriel"
 msgid "Password reset"
 msgstr "obligation de changement de mot de passe"
 
-#: authentic2/profile_views.py:52 authentic2/tests/test_all.py:1128
-#: authentic2/tests/test_all.py:1141
+#: authentic2/profile_views.py:52 authentic2/tests/test_all.py:1163
+#: authentic2/tests/test_all.py:1176
 msgid "A mail was sent to you with instructions to reset your password"
 msgstr ""
 "Un mail vous a été envoyé avec des instructions pour ré-initialiser votre "
@@ -526,7 +538,7 @@ msgid "Enter new password"
 msgstr "Entrez un nouveau mot de passe"
 
 #: authentic2/registration_backend/forms.py:38
-#: authentic2/registration_backend/forms.py:119
+#: authentic2/registration_backend/forms.py:121
 msgid ""
 "This email address is already in use. Please supply a different email "
 "address."
@@ -538,15 +550,15 @@ msgstr ""
 msgid "Password (again)"
 msgstr "Mot de passe (encore une fois)"
 
-#: authentic2/registration_backend/forms.py:105
-#: authentic2/tests/test_all.py:1051
+#: authentic2/registration_backend/forms.py:107
+#: authentic2/tests/test_all.py:1085
 msgid "This username is already in use. Please supply a different username."
 msgstr ""
 "Cet identifiant est déjà utilisé. Utilisez s'il vous plait un autre "
 "identifiant."
 
-#: authentic2/registration_backend/forms.py:152
-#: authentic2/registration_backend/forms.py:160
+#: authentic2/registration_backend/forms.py:154
+#: authentic2/registration_backend/forms.py:162
 msgid "New password"
 msgstr "Nouveau mot de passe"
 
@@ -658,7 +670,7 @@ msgstr "Déconnexion"
 
 #: authentic2/templates/authentic2/display_message_and_continue.html:5
 #: authentic2/templates/authentic2/logout_confirm.html:19
-#: authentic2/tests/test_all.py:1133 authentic2/tests/test_all.py:1146
+#: authentic2/tests/test_all.py:1168 authentic2/tests/test_all.py:1181
 msgid "Continue"
 msgstr "Continuer"
 
@@ -1148,7 +1160,7 @@ msgstr ""
 "changer ce message en modifiant le paramètre "
 "A2_PASSWORD_POLICY_REGEX_ERROR_MSG."
 
-#: authentic2/views.py:158
+#: authentic2/views.py:150
 msgid ""
 "Your request for changing your email is received. An email of validation was "
 "sent to you. Please click on the link contained inside."
@@ -1157,50 +1169,45 @@ msgstr ""
 "courriel de validation vous a été envoyé. Veuillez cliquer sur le lien "
 "contenu dans ce courriel."
 
-#: authentic2/views.py:181
+#: authentic2/views.py:173
 #, python-brace-format
 msgid "your request for changing your email for {0} is successful"
 msgstr "Votre demande de changement d'adresse de courriel pour {0} est validée"
 
-#: authentic2/views.py:187
+#: authentic2/views.py:179
 msgid "your request for changing your email is too old, try again"
 msgstr ""
 "Votre demande de changement d'adresse de courriel est trop ancienne, "
 "veuillez réessayez"
 
-#: authentic2/views.py:190
+#: authentic2/views.py:182
 msgid "your request for changing your email is invalid, try again"
 msgstr ""
 "Votre demande de changement d'adresse de courriel est invalide, veuillez "
 "réessayer"
 
-#: authentic2/views.py:193
+#: authentic2/views.py:185
 msgid "your request for changing your email was not on this site, try again"
 msgstr ""
 "Votre demande de changement d'adresse de courriel vient d'un autre site que "
 "celui-ci."
 
-#: authentic2/views.py:196
+#: authentic2/views.py:188
 msgid "your request for changing your email is for an unknown user, try again"
 msgstr ""
 "Votre demande de changement d'adresse de courriel concerne un utilisateur "
 "inconnu."
 
-#: authentic2/views.py:458
+#: authentic2/views.py:450
 msgid "Logging out from all your services"
 msgstr "Déconnexion de toutes vos applications"
 
-#: authentic2/views.py:463
+#: authentic2/views.py:455
 msgid "You have been logged out"
 msgstr "Vous avez été déconnecté."
 
-#: authentic2/views.py:499
+#: authentic2/views.py:491
 msgid "The page is out of date, it was reloaded for you"
 msgstr ""
 "Cette page est périmée car vous vous êtes connecté entre temps; nous l'avons "
 "rechargé pour vous."
-
-#, fuzzy
-#~| msgid "Authentic Mailing List"
-#~ msgid "Authentic2 Plugin Template"
-#~ msgstr "List de diffusion sur Authentic"

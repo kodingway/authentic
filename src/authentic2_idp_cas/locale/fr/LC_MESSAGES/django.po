@@ -1,5 +1,5 @@
-# Authentic2 IdP CAS french translations
-# Copyright (C) 2014 Entr'ouvert
+# authentic2 idp cas french l10n
+# Copyright (C) 2015 Entr'ouvert
 # This file is distributed under the same license as the authentic2 package.
 # Benjamin Dauvergne <bdauvergne@entrouvert.com>, 2015.
 #
@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: authentic2_idp_cas 1.0 \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-22 09:46+0200\n"
+"POT-Creation-Date: 2015-10-13 20:31+0200\n"
 "PO-Revision-Date: 2015-02-27 15:54+0100\n"
 "Last-Translator: Benjamin Dauvergne <bdauvergne@entrouvert.com>\n"
 "Language: fr\n"

@@ -1,5 +1,5 @@
-# French translation of Authentic
-# Copyright (C) 2010, 2011 Entr'ouvert
+# authentic2 idp openid french l10n
+# Copyright (C) 2015 Entr'ouvert
 # This file is distributed under the same license as the Authentic package.
 # Frederic Peters <fpeters@entrouvert.com>, 2010.
 #
@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-22 09:46+0200\n"
+"POT-Creation-Date: 2015-10-13 20:31+0200\n"
 "PO-Revision-Date: 2013-07-23 17:46+0200\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
