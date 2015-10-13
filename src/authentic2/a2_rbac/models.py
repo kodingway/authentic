@@ -18,8 +18,6 @@ except ImportError:
 
 from . import managers, fields
 
-no_undersore_prefix = RegexValidator(r'_.*', inverse_match=True)
-
 
 class OrganizationalUnit(OrganizationalUnitAbstractBase):
     username_is_unique = models.BooleanField(
@@ -111,9 +109,6 @@ class Role(RoleAbstractBase):
 
     def clean(self):
         super(Role, self).clean()
-        if self.slug and self.slug.startswith('_'):
-            raise ValidationError(
-                {'slug': _('Slug starting with _ are reserved.')})
         if not self.service and not self.admin_scope_ct_id:
             if not self.id and self.__class__.objects.filter(
                     slug=self.slug, ou=self.ou):
