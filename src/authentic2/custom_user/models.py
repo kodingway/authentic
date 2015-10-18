@@ -144,7 +144,7 @@ class User(AbstractBaseUser, PermissionMixin):
             'uuid': self.uuid,
             'username': self.username,
             'email': self.email,
-            'ou': self.ou if self.ou else None,
+            'ou': self.ou.name if self.ou else None,
             'ou__uuid': self.ou.uuid if self.ou else None,
             'ou__slug': self.ou.slug if self.ou else None,
             'ou__name': self.ou.name if self.ou else None,
