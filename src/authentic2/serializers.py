@@ -36,6 +36,8 @@ def PreDeserializer(objects, **options):
     for d in objects:
         Model = _get_model(d["model"])
         for vfield in Model._meta.virtual_fields:
+            if not isinstance(vfield, GenericForeignKey):
+                continue
             if not vfield.name in d['fields']:
                 continue
             ct_natural_key, fk_natural_key = d['fields'][vfield.name]
