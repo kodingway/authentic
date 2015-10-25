@@ -99,9 +99,9 @@ class OuUserRolesTable(tables.Table):
                              accessor='name', verbose_name=_('label'))
     via = tables.TemplateColumn(
         '''{% for rel in row.record.via %}{{ rel.child }} {% if not forloop.last %}, {% endif %}{% endfor %}''',
-        verbose_name=_('Inherited from'))
+        verbose_name=_('Inherited from'), orderable=False)
     member = tables.TemplateColumn('''{% load i18n %}<input class="role-member{% if not row.record.member and row.record.via %} indeterminate{% endif %}" name='role-{{ row.record.pk }}' type='checkbox' {% if row.record.member %}checked{% endif %} {% if not row.record.has_perm %}disabled title="{% trans "You are not authorized to manage this role" %}"{% endif %}/>''',
-                                  verbose_name=_('Member'))
+                                  verbose_name=_('Member'), orderable=False)
 
 
     class Meta:
