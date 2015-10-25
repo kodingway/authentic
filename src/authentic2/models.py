@@ -279,6 +279,9 @@ class Service(models.Model):
     def __unicode__(self):
         return self.name
 
+    def __repr__(self):
+        return '<%s %r>' % (self.__class__.__name__, unicode(self))
+
     def to_json(self, roles=None):
         if not roles:
             roles = Role.objects.all()
