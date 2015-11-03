@@ -1,0 +1,5 @@
+#!/bin/sh
+
+authentic2-multitenant-manage tenant_command --all clearsessions
+authentic2-multitenant-manage tenant_command --all cleanupauthentic
+authentic2-multitenant-manage tenant_command --all sync-ldap-users
