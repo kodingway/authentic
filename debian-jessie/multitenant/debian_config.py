@@ -37,6 +37,10 @@ LOGGING['loggers']['django_select2'] = {
     'level': 'WARNING',
 }
 
+# HOBO Skeletons
+
+HOBO_SKELETONS_DIR = os.path.join(VAR_DIR, 'skeletons')
+
 CONFIG_FILE='/etc/%s/config.py' % PROJECT_NAME
 if os.path.exists(CONFIG_FILE):
     execfile(CONFIG_FILE)
