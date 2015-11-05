@@ -922,8 +922,12 @@ class LDAPBackend(object):
 
     @classmethod
     def get_users(cls):
+        logger = logging.getLogger(__name__)
         for block in cls.get_config():
             conn = get_connection(block)
+            if conn is None:
+                logger.warning(u'unable to synchronize with LDAP servers %r', block['url'])
+                continue
             user_basedn = block.get('user_basedn') or block['basedn']
             user_filter = block['user_filter'].replace('%s', '*')
             attrs = block['attributes']
