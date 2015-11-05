@@ -6,7 +6,7 @@ MANAGE="/usr/lib/authentic2/manage.py"
 export AUTHENTIC2_SETTINGS_FILE=/usr/lib/$NAME/debian_config.py
 
 if [ "$(whoami)" != "authentic-multitenant" ]; then
-    if which sudo; then
+    if which sudo >/dev/null; then
       if sudo -v -u authentic-multitenant; then
         sudo -u authentic-multitenant authentic2-multitenant-manage "$@"
         exit $?
