@@ -14,7 +14,6 @@ from rest_framework import serializers
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework import authentication, permissions, status
-from rest_framework.exceptions import PermissionDenied
 
 from . import utils, decorators
 
@@ -59,20 +58,18 @@ class RegistrationSerializer(serializers.Serializer):
                                                     'this ou'))
         User = get_user_model()
         if data['ou'] and data['ou'].email_is_unique and \
-                User.objects.filter(ou=data['ou'],
-                                   email__iexact=data['email']).exists():
+                User.objects.filter(ou=data['ou'], email__iexact=data['email']).exists():
             raise serializers.ValidationError(
                 _('You already have an account'))
-        if data['ou'] and data['ou'].username_is_unique and not \
-                'username' in data:
+        if data['ou'] and data['ou'].username_is_unique and 'username' not in data:
             raise serializers.ValidationError(
                 _('Username is required in this ou'))
         if data['ou'] and data['ou'].username_is_unique and \
-               User.objects.filter(ou=data['ou'],
-                                   username=data['username']).exists():
+                User.objects.filter(ou=data['ou'], username=data['username']).exists():
             raise serializers.ValidationError(
                 _('You already have an account'))
         return data
+
 
 class RpcMixin(object):
     def post(self, request, format=None):
@@ -155,6 +152,7 @@ class Register(BaseRpcView):
         return response, response_status
 
 register = Register.as_view()
+
 
 class PasswordChangeSerializer(serializers.Serializer):
     '''Register RPC payload'''
