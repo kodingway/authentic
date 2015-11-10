@@ -258,26 +258,36 @@ def json(func):
     from . import cors
     @wraps(func)
     def f(request, *args, **kwargs):
+        jsonp = False
+        # Differentiate JSONP from AJAX
+        if request.method == 'GET':
+            for variable in ('jsonpCallback', 'callback'):
+                if variable in request.GET:
+                    identifier = request.GET[variable]
+                    if not re.match(r'^[$a-zA-Z_][0-9a-zA-Z_$]*$', identifier):
+                        return HttpResponseBadRequest('invalid JSONP callback name')
+                    jsonp = True
+                    break
         # 1. check origin
-        origin = request.META.get('HTTP_ORIGIN')
-        if origin is None:
+        if jsonp:
             origin = request.META.get('HTTP_REFERER')
-            if origin:
-                origin = cors.make_origin(origin)
-        if not cors.check_origin(request, origin):
-            return HttpResponseForbidden('bad origin')
+            if not origin:
+                # JSONP is unusable for people without referers
+                return HttpResponseForbidden('missing referrer')
+            origin = cors.make_origin(origin)
+        else:
+            origin = request.META.get('HTTP_ORIGIN')
+        if origin:
+            if not cors.check_origin(request, origin):
+                return HttpResponseForbidden('bad origin')
         # 2. build response
         result = func(request, *args, **kwargs)
         json_str = json_dumps(result)
-        response = HttpResponse(content_type='application/json')
-        for variable in ('jsonpCallback', 'callback'):
-            if variable in request.GET:
-                identifier = request.GET[variable]
-                if not re.match(r'^[$a-zA-Z_][0-9a-zA-Z_$]*$', identifier):
-                    return HttpResponseBadRequest('invalid JSONP callback name')
-                json_str = '%s(%s);' % (identifier, json_str)
-                break
+        if jsonp:
+            response = HttpResponse(content_type='application/javascript')
+            json_str = '%s(%s);' % (identifier, json_str)
         else:
+            response = HttpResponse(content_type='application/json')
             response['Access-Control-Allow-Origin'] = origin
             response['Access-Control-Allow-Credentials'] = 'true'
             response['Access-Control-Allow-Headers'] = 'x-requested-with'
