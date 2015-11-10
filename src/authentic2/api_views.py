@@ -1,4 +1,5 @@
 '''Views for Authentic2 API'''
+import json
 import smtplib
 
 from django.db import models
@@ -11,11 +12,16 @@ from django.views.decorators.cache import cache_control
 from django_rbac.utils import get_ou_model
 
 from rest_framework import serializers
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.routers import SimpleRouter
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
-from rest_framework import authentication, permissions, status
+from rest_framework import permissions, status
+from rest_framework.exceptions import PermissionDenied
 
 from . import utils, decorators
+from .models import Attribute, AttributeValue
+from .a2_rbac.utils import get_default_ou
 
 
 class HasUserAddPermission(permissions.BasePermission):
@@ -83,7 +89,6 @@ class RpcMixin(object):
 
 
 class BaseRpcView(RpcMixin, GenericAPIView):
-    authentication_classes = (authentication.BasicAuthentication,)
     permission_classes = (permissions.IsAuthenticated,
                           HasUserAddPermission)
 
@@ -200,3 +205,124 @@ def user(request):
     if request.user.is_anonymous():
         return {}
     return request.user.to_json()
+
+
+_class_cache = {}
+
+
+def attributes_hash(attributes):
+    attributes = sorted(attributes, key=lambda at: at.name)
+    return hash(tuple((at.name, at.required) for at in attributes))
+
+
+def get_user_class():
+    attributes = Attribute.objects.filter(kind='string')
+    key = 'user-class-%s' % attributes_hash(attributes)
+    if key not in _class_cache:
+        user_class = get_user_model()
+
+        class Meta:
+            proxy = True
+        fields = {
+            'Meta': Meta,
+            '__module__': user_class.__module__,
+        }
+        for at in attributes:
+            def new_property(at):
+                def get_property(self):
+                    try:
+                        return json.loads(
+                            AttributeValue.objects.with_owner(self).get(attribute=at).content)
+                    except AttributeValue.DoesNotExist:
+                        return ''
+
+                def set_property(self, value):
+                    at.set_value(self, value)
+                return property(get_property, set_property)
+            fields[at.name] = new_property(at)
+        _class_cache[key] = type('NewUserClass', (user_class,), fields)
+    return _class_cache[key]
+
+
+class BaseUserSerializer(serializers.ModelSerializer):
+    ou = serializers.SlugRelatedField(
+        queryset=get_ou_model().objects.all(),
+        slug_field='slug',
+        required=False, allow_null=True, default=get_default_ou)
+    date_joined = serializers.DateTimeField(read_only=True)
+    last_login = serializers.DateTimeField(read_only=True)
+
+    def check_perm(self, perm, ou):
+        self.context['view'].check_perm(perm, ou)
+
+    def create(self, validated_data):
+        extra_field = {}
+        for at in Attribute.objects.filter(kind='string'):
+            if at.name in validated_data:
+                extra_field[at.name] = validated_data.pop(at.name)
+        self.check_perm('custom_user.add_user', validated_data.get('ou'))
+        instance = super(BaseUserSerializer, self).create(validated_data)
+        for key, value in extra_field.iteritems():
+            setattr(instance, key, value)
+        if 'password' in validated_data:
+            instance.set_password(validated_data['password'])
+            instance.save()
+        return instance
+
+    def update(self, instance, validated_data):
+        extra_field = {}
+        for at in Attribute.objects.filter(kind='string'):
+            if at.name in validated_data:
+                extra_field[at.name] = validated_data.pop(at.name)
+        # Double check: to move an user from one ou into another you must be administrator of both
+        self.check_perm('custom_user.change_user', instance.ou)
+        self.check_perm('custom_user.change_user', validated_data.get('ou'))
+        super(BaseUserSerializer, self).update(instance, validated_data)
+        for key, value in extra_field.iteritems():
+            setattr(instance, key, value)
+        if 'password' in validated_data:
+            instance.set_password(validated_data['password'])
+            instance.save()
+        return instance
+
+    class Meta:
+        model = get_user_model()
+        exclude = ('date_joined', 'user_permissions', 'groups', 'last_login')
+
+
+class UsersAPI(ModelViewSet):
+    filter_fields = ['username', 'first_name', 'last_name']
+    ordering_fields = ['username', 'first_name', 'last_name']
+
+    def get_serializer_class(self):
+        attributes = Attribute.objects.filter(kind='string')
+        key = 'user-serializer-%s' % attributes_hash(attributes)
+
+        if key not in _class_cache:
+            class Meta(BaseUserSerializer.Meta):
+                model = get_user_class()
+            attrs = {'Meta': Meta}
+            for at in attributes:
+                attrs[at.name] = serializers.CharField(required=at.required, allow_blank=True)
+            _class_cache[key] = type('UserSerializer', (BaseUserSerializer,), attrs)
+        return _class_cache[key]
+
+    def get_queryset(self):
+        User = get_user_class()
+        return self.request.user.filter_by_perm(['custom_user.view_user'], User.objects.all())
+
+    def check_perm(self, perm, ou):
+        if ou:
+            if not self.request.user.has_ou_perm(perm, ou):
+                raise PermissionDenied(u'You do not have permission %s in %s' % (perm, ou))
+        else:
+            if not self.request.user.has_perm(perm):
+                raise PermissionDenied(u'You do not have permission %s' % perm)
+
+    def perform_destroy(self, instance):
+        self.check_perm('custom_user.delete_user', instance.ou)
+        super(UsersAPI, self).perform_destroy(instance)
+
+
+router = SimpleRouter()
+router.register(r'users', UsersAPI, base_name='a2-api-users')

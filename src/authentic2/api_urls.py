@@ -10,3 +10,4 @@ urlpatterns = patterns('',
                        url(r'^user/$', api_views.user,
                            name='a2-api-user'),
 )
+urlpatterns += api_views.router.urls
