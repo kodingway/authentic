@@ -12,13 +12,18 @@ def test_api_user(logged_app):
 def test_api_users_list(app, user):
     app.authorization = ('Basic', (user.username, user.username))
     resp = app.get('/api/users/')
-    assert isinstance(resp.json, list)
+    assert isinstance(resp.json, dict)
+    assert set(['count', 'previous', 'next', 'results']) == set(resp.json.keys())
+    assert resp.json['previous'] is None
+    assert resp.json['next'] is None
     if user.is_superuser:
-        assert len(resp.json) == 5
+        count = 5
     elif user.roles.exists():
-        assert len(resp.json) == 2
+        count = 2
     else:
-        assert len(resp.json) == 0
+        count = 0
+    assert resp.json['count'] == count
+    assert len(resp.json['results']) == count
 
 def test_api_users_create(app, user):
     from django.contrib.auth import get_user_model
