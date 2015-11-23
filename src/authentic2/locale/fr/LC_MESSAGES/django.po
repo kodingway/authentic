@@ -724,7 +724,7 @@ msgstr "Continuer la déconnexion"
 
 #: authentic2/templates/authentic2/logout_confirm.html:13
 msgid "You are going to do a global logout, do you want to continue ?"
-msgstr "Vous avez demandé un déconnexion globale, voulez-vous continuer ?"
+msgstr "Vous avez demandé une déconnexion globale, voulez-vous continuer ?"
 
 #: authentic2/templates/authentic2/unused_account_alert_body.txt:1
 #, python-format
