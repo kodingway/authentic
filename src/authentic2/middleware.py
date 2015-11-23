@@ -176,18 +176,14 @@ class XForwardedForMiddleware(object):
             return None
 
 class DisplayMessageBeforeRedirectMiddleware(object):
+    '''Verify if messages are currently stored and if there is a redirection to another domain, in
+       this case show an intermediate page.
+    '''
     def process_response(self, request, response):
-        if response.status_code not in (302, 307):
+        # Check if response is a redirection
+        if response.status_code not in (301, 302, 303, 307, 308):
             return response
-        storage = messages.get_messages(request)
-        if not storage:
-            return response
-        # Check if all messages are info
-        only_info = True
-        for message in storage:
-            if message.level != messages.INFO:
-                only_info = False
-        storage.used = False
+        # Check if location is to another domain
         url = response['Location']
         if not url:
             return response
@@ -197,6 +193,21 @@ class DisplayMessageBeforeRedirectMiddleware(object):
         parsed_request_url = urlparse.urlparse(request.build_absolute_uri())
         if (parsed_request_url.scheme == parsed_url.scheme or not parsed_url.scheme) and \
                 (parsed_request_url.netloc == parsed_url.netloc):
+            return response
+        # Check if there is some messages to show
+        storage = messages.get_messages(request)
+        if not storage:
+            return response
+        only_info = True
+        some_message = False
+        for message in storage:
+            some_message = True
+            if message.level != messages.INFO:
+                # If there are warnin or error messages, the intermediate page must not redirect
+                # automatically but should ask for an user confirmation
+                only_info = False
+        storage.used = False
+        if not some_message:
             return response
         return render(request, 'authentic2/display_message_and_continue.html',
                       {'url': url, 'only_info': only_info})
