@@ -69,3 +69,44 @@ def test_api_users_create(app, user):
         assert new_user.last_name == resp.json['last_name']
         resp2 = app.get('/api/users/%s/' % resp.json['id'])
         assert resp.json == resp2.json
+
+def test_api_role_add_member(app, user, role, member):
+    app.authorization = ('Basic', (user.username, user.username))
+    payload = {
+        'role_uuid': role.uuid,
+        'role_member': member.uuid
+    }
+
+    if member.username == 'fake' or role.name == 'fake':
+        status = 404
+    elif user.is_superuser or role.members.filter(uuid=member.uuid):
+        status = 201
+    else:
+        status = 403
+
+    resp = app.post_json('/api/roles/{0}/members/{1}/'.format(role.uuid, member.uuid), payload, status=status)
+    if status == 404:
+        pass
+    elif user.is_superuser:
+        assert resp.json['detail'] == 'User successfully added to role'
+    else:
+        assert resp.json['detail'] == 'Vous n\'avez pas la permission d\'effectuer cette action.' or resp.json['detail'] == 'User not allowed to change role'
+
+def test_api_role_remove_member(app, user, role, member):
+    app.authorization = ('Basic', (user.username, user.username))
+
+    if member.username == 'fake' or role.name == 'fake':
+        status = 404
+    elif user.is_superuser or role.members.filter(uuid=member.uuid):
+        status = 200
+    else:
+        status = 403
+
+    resp = app.delete_json('/api/roles/{0}/members/{1}/'.format(role.uuid, member.uuid), status=status)
+  
+    if status == 404:
+        pass
+    elif user.is_superuser:
+        assert resp.json['detail'] == 'User successfully removed from role'
+    else:
+        assert (resp.json['detail'] == 'Vous n\'avez pas la permission d\'effectuer cette action.' or resp.json['detail'] == 'User not allowed to change role')

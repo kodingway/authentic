@@ -8,11 +8,13 @@ from django.core.exceptions import MultipleObjectsReturned
 from django.utils.translation import ugettext as _
 from django.views.decorators.vary import vary_on_headers
 from django.views.decorators.cache import cache_control
+from django.shortcuts import get_object_or_404
 
-from django_rbac.utils import get_ou_model
+from django_rbac.utils import get_ou_model, get_role_model
 
-from rest_framework import serializers
-from rest_framework.viewsets import ModelViewSet
+from rest_framework import serializers, authentication
+from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet, ViewSet
 from rest_framework.routers import SimpleRouter
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
@@ -323,6 +325,34 @@ class UsersAPI(ModelViewSet):
         self.check_perm('custom_user.delete_user', instance.ou)
         super(UsersAPI, self).perform_destroy(instance)
 
-
 router = SimpleRouter()
 router.register(r'users', UsersAPI, base_name='a2-api-users')
+
+class RolesAPI(APIView):
+    authentication_class = (authentication.BasicAuthentication)
+    permission_classes = (permissions.IsAuthenticated, HasUserAddPermission)
+
+    def initial(self, request, *args, **kwargs):
+        super(RolesAPI, self).initial(request, *args, **kwargs)
+        Role = get_role_model()
+        perm = 'a2_rbac.change_role'
+        authorized = request.user.has_perm(perm, obj=Role)
+        if not authorized:
+            raise PermissionDenied(u'User not allowed to change role') 
+
+    def dispatch(self, request, *args, **kwargs):
+        Role = get_role_model()
+        User = get_user_model()
+        self.role = get_object_or_404(Role, uuid=kwargs['role_uuid'])
+        self.member = get_object_or_404(User, uuid=kwargs['member_uuid'])
+        return super(RolesAPI, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.role.members.add(self.member)
+        return Response({'detail': _('User successfully added to role')}, status= status.HTTP_201_CREATED)
+
+    def delete(self, request, *args, **kwargs):
+        self.role.members.remove(self.member)
+        return Response({'detail': _('User successfully removed from role')}, status= status.HTTP_200_OK)
+
+roles = RolesAPI.as_view()
