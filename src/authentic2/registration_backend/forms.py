@@ -12,6 +12,7 @@ from django.contrib.auth.models import BaseUserManager, Group
 from django.contrib.auth import forms as auth_forms, get_user_model, REDIRECT_FIELD_NAME
 from django.core.mail import send_mail
 from django.core import signing
+from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.core.urlresolvers import reverse
 from django.core.validators import RegexValidator
@@ -44,12 +45,13 @@ class RegistrationForm(Form):
         if REDIRECT_FIELD_NAME in request.GET:
             data[REDIRECT_FIELD_NAME] = request.GET[REDIRECT_FIELD_NAME]
         registration_token = signing.dumps(data)
-        ctx_dict = {'registration_url': request.build_absolute_uri(
+        ctx_dict = RequestContext(request)
+        ctx_dict.update({'registration_url': request.build_absolute_uri(
             reverse('registration_activate',
             kwargs={'registration_token': registration_token})),
                     'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
                     'email': data['email'],
-                    'site': request.get_host()}
+                    'site': request.get_host()})
         ctx_dict.update(self.cleaned_data)
 
         subject = render_to_string('registration/activation_email_subject.txt',
