@@ -19,7 +19,7 @@ class PasswordResetView(cbv.NextURLViewMixin, FormView):
         'registration/password_reset_email.html',
     ]
     html_email_template_name = [
-        'authentic2/password_reset_email_body.txt',
+        'authentic2/password_reset_email_body.html',
     ]
     subject_template_name = [
         'authentic2/password_reset_email_subject.txt',

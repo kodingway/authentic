@@ -1,10 +1,12 @@
 import logging
+import urllib
 
 from django import forms
+from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
-from django.template import loader, TemplateDoesNotExist
+from django.template import loader, RequestContext, TemplateDoesNotExist
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.conf import settings
@@ -36,7 +38,8 @@ class PasswordResetForm(forms.Form):
                 continue
             site_name = domain = request.get_host()
 
-            c = {
+            c = RequestContext(request)
+            c.update({
                 'email': user.email,
                 'domain': domain,
                 'site_name': site_name,
@@ -46,7 +49,16 @@ class PasswordResetForm(forms.Form):
                 'protocol': 'https' if use_https else 'http',
                 'request': request,
                 'expiration_days': settings.PASSWORD_RESET_TIMEOUT_DAYS,
-            }
+            })
+
+            c['reset_url'] = request.build_absolute_uri(
+                    reverse('password_reset_confirm', kwargs={
+                        'uidb64': c['uid'],
+                        'token': c['token']}))
+            if 'next' in request.GET:
+                c['reset_url'] += '?' + urllib.urlencode(
+                    {'next': request.GET['next']})
+
             subject = loader.render_to_string(subject_template_name, c)
             # Email subject *must not* contain newlines
             subject = ''.join(subject.splitlines())
