@@ -334,17 +334,15 @@ class RolesAPI(APIView):
 
     def initial(self, request, *args, **kwargs):
         super(RolesAPI, self).initial(request, *args, **kwargs)
-        perm = 'a2_rbac.change_role'
-        authorized = request.user.has_perm(perm, obj=self.role)
-        if not authorized:
-            raise PermissionDenied(u'User not allowed to change role') 
-
-    def dispatch(self, request, *args, **kwargs):
         Role = get_role_model()
         User = get_user_model()
         self.role = get_object_or_404(Role, uuid=kwargs['role_uuid'])
         self.member = get_object_or_404(User, uuid=kwargs['member_uuid'])
-        return super(RolesAPI, self).dispatch(request, *args, **kwargs)
+
+        perm = 'a2_rbac.change_role'
+        authorized = request.user.has_perm(perm, obj=self.role)
+        if not authorized:
+            raise PermissionDenied(u'User not allowed to change role') 
 
     def post(self, request, *args, **kwargs):
         self.role.members.add(self.member)

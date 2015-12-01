@@ -77,7 +77,7 @@ def test_api_role_add_member(app, user, role, member):
         'role_member': member.uuid
     }
 
-    authorized = user.is_superuser or user.has_perm('a2_rbac.change_role', role)
+    authorized = user.has_perm('a2_rbac.change_role', role)
 
     if member.username == 'fake' or role.name == 'fake':
         status = 404
