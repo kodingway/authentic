@@ -88,11 +88,11 @@ def admin_ou2(db, ou2):
 def admin_rando_role(db, role_random, ou_rando):
     user = create_user(username='admin_rando', first_name='admin', last_name='rando',
            email='admin.rando@weird.com', ou=ou_rando)
-    user.roles.add(role_random.get_admin_role())
+    user.roles.add(ou_rando.get_admin_role())
     return user
 
-@pytest.fixture(params=['superuser', 'user_ou1', 'user_ou2', 'admin_ou1', 'admin_ou2', 'admin_rando_role'])
-def user(request, superuser, user_ou1, user_ou2, admin_ou1, admin_ou2, admin_rando_role):
+@pytest.fixture(params=['superuser', 'user_ou1', 'user_ou2', 'admin_ou1', 'admin_ou2', 'admin_rando_role', 'member_rando'])
+def user(request, superuser, user_ou1, user_ou2, admin_ou1, admin_ou2, admin_rando_role, member_rando):
     return locals().get(request.param)
 
 @pytest.fixture
@@ -116,9 +116,9 @@ def role(request, role_random, role_ou1, role_ou2):
     return locals().get(request.param)
 
 @pytest.fixture
-def member_rando(db):
+def member_rando(db, ou_rando):
     return create_user(username='test', first_name='test', last_name='test',
-            email='test@test.org')
+            email='test@test.org', ou=ou_rando)
 
 @pytest.fixture
 def member_fake():

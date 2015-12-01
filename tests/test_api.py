@@ -17,7 +17,7 @@ def test_api_users_list(app, user):
     assert resp.json['previous'] is None
     assert resp.json['next'] is None
     if user.is_superuser:
-        count = 6
+        count = 7
     elif user.roles.exists():
         count = 2
     else:
