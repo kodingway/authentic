@@ -35,6 +35,11 @@ def ou2(db):
     OU = get_ou_model()
     return OU.objects.create(name='OU2', slug='ou2')
 
+@pytest.fixture
+def ou_rando(db):
+    OU = get_ou_model()
+    return OU.objects.create(name='ou_rando', slug='ou_rando')
+
 def create_user(**kwargs):
     User = get_user_model()
     password = kwargs.pop('password', None) or kwargs['username']
@@ -80,9 +85,9 @@ def admin_ou2(db, ou2):
     return user
 
 @pytest.fixture
-def admin_rando_role(db, role_random):
+def admin_rando_role(db, role_random, ou_rando):
     user = create_user(username='admin_rando', first_name='admin', last_name='rando',
-           email='admin.rando@weird.com')
+           email='admin.rando@weird.com', ou=ou_rando)
     user.roles.add(role_random.get_admin_role())
     return user
 
@@ -95,8 +100,8 @@ def logged_app(app, user):
     return utils.login(app, user)
 
 @pytest.fixture
-def role_random(db):
-    return Role.objects.create(name='rando', slug='rando')
+def role_random(db, ou_rando):
+    return Role.objects.create(name='rando', slug='rando',  ou=ou_rando)
 
 @pytest.fixture
 def role_ou1(db, ou1):

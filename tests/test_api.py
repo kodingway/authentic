@@ -17,7 +17,7 @@ def test_api_users_list(app, user):
     assert resp.json['previous'] is None
     assert resp.json['next'] is None
     if user.is_superuser:
-        count = 5
+        count = 6
     elif user.roles.exists():
         count = 2
     else:
@@ -77,9 +77,11 @@ def test_api_role_add_member(app, user, role, member):
         'role_member': member.uuid
     }
 
+    authorized = user.is_superuser or user.has_perm('a2_rbac.change_role', role)
+
     if member.username == 'fake' or role.name == 'fake':
         status = 404
-    elif user.is_superuser or role.members.filter(uuid=member.uuid):
+    elif authorized :
         status = 201
     else:
         status = 403
@@ -87,17 +89,19 @@ def test_api_role_add_member(app, user, role, member):
     resp = app.post_json('/api/roles/{0}/members/{1}/'.format(role.uuid, member.uuid), payload, status=status)
     if status == 404:
         pass
-    elif user.is_superuser:
+    elif authorized :
         assert resp.json['detail'] == 'User successfully added to role'
     else:
-        assert resp.json['detail'] == 'Vous n\'avez pas la permission d\'effectuer cette action.' or resp.json['detail'] == 'User not allowed to change role'
+        assert resp.json['detail'] == 'User not allowed to change role'
 
 def test_api_role_remove_member(app, user, role, member):
     app.authorization = ('Basic', (user.username, user.username))
 
+    authorized = user.is_superuser or user.has_perm('a2_rbac.change_role', role)
+    
     if member.username == 'fake' or role.name == 'fake':
         status = 404
-    elif user.is_superuser or role.members.filter(uuid=member.uuid):
+    elif authorized :
         status = 200
     else:
         status = 403
@@ -106,7 +110,7 @@ def test_api_role_remove_member(app, user, role, member):
   
     if status == 404:
         pass
-    elif user.is_superuser:
+    elif authorized :
         assert resp.json['detail'] == 'User successfully removed from role'
     else:
-        assert (resp.json['detail'] == 'Vous n\'avez pas la permission d\'effectuer cette action.' or resp.json['detail'] == 'User not allowed to change role')
+        assert resp.json['detail'] == 'User not allowed to change role'

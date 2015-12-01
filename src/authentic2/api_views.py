@@ -330,13 +330,12 @@ router.register(r'users', UsersAPI, base_name='a2-api-users')
 
 class RolesAPI(APIView):
     authentication_class = (authentication.BasicAuthentication)
-    permission_classes = (permissions.IsAuthenticated, HasUserAddPermission)
+    permission_classes = (permissions.IsAuthenticated,)
 
     def initial(self, request, *args, **kwargs):
         super(RolesAPI, self).initial(request, *args, **kwargs)
-        Role = get_role_model()
         perm = 'a2_rbac.change_role'
-        authorized = request.user.has_perm(perm, obj=Role)
+        authorized = request.user.has_perm(perm, obj=self.role)
         if not authorized:
             raise PermissionDenied(u'User not allowed to change role') 
 
