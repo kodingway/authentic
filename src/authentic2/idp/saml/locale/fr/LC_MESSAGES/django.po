@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-10-13 20:31+0200\n"
-"PO-Revision-Date: 2014-11-21 11:43+0100\n"
+"PO-Revision-Date: 2015-12-03 21:34+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
 "Language: fr\n"
@@ -85,8 +85,8 @@ msgstr "Requête de déconnexion invalide"
 
 #: authentic2/idp/saml/templates/idp/saml/logout_fragment.html:2
 #, python-format
-msgid "Sending logout to %(name)s...."
-msgstr "Déconnexion avec %(name)s...."
+msgid "Sending logout to %(name)s..."
+msgstr "Déconnexion avec %(name)s..."
 
 #: authentic2/idp/saml/templates/idp/saml/unknown_provider.html:5
 #, python-format

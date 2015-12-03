@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: authentic2_idp_cas 1.0 \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-10-13 20:31+0200\n"
-"PO-Revision-Date: 2015-02-27 15:54+0100\n"
+"PO-Revision-Date: 2015-12-03 21:34+0100\n"
 "Last-Translator: Benjamin Dauvergne <bdauvergne@entrouvert.com>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -115,5 +115,5 @@ msgstr "mandataires"
 
 #: authentic2_idp_cas/templates/authentic2_idp_cas/logout_fragment.html:2
 #, python-format
-msgid "Sending logout to %(name)s...."
-msgstr "Déconnexion de %(name)s...."
+msgid "Sending logout to %(name)s..."
+msgstr "Déconnexion de %(name)s..."
