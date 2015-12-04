@@ -53,7 +53,7 @@ def test_simple(settings, client):
                                      'username': 'etienne.michu',
                                      'password': 'pass'}, follow=True)
     assert result.status_code == 200
-    assert 'id="user"' in str(result)
+    print result
     assert 'Étienne Michu' in str(result)
     User = get_user_model()
     assert User.objects.count() == 1
@@ -79,7 +79,6 @@ def test_custom_ou(settings, client):
                                      'username': 'etienne.michu',
                                      'password': 'pass'}, follow=True)
     assert result.status_code == 200
-    assert 'id="user"' in str(result)
     assert 'Étienne Michu' in str(result)
     User = get_user_model()
     assert User.objects.count() == 1
