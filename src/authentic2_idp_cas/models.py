@@ -92,9 +92,7 @@ class Ticket(models.Model):
     validity    = models.BooleanField(default=False,
             verbose_name=_('valid'))
     service     = models.ForeignKey(Service, verbose_name=_('service'))
-    service_url = models.CharField(max_length=256,
-            verbose_name=_('service URL'),
-             blank=True, default='')
+    service_url = models.TextField(verbose_name=_('service URL'), blank=True, default='')
     user        = models.ForeignKey(compat.user_model_label, max_length=128,
             blank=True, null=True, verbose_name=_('user'))
     creation    = models.DateTimeField(auto_now_add=True,

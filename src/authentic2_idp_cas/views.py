@@ -105,6 +105,8 @@ class LoginView(CasMixin, View):
 
         st = Ticket()
         st.service = model
+        # Limit size of return URL to an acceptable length
+        service = service[:4096]
         st.service_url = service
         st.renew = renew
         self.logger.debug('login request from %r renew: %s gateway: %s',
