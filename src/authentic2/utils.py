@@ -21,6 +21,7 @@ from django.contrib.auth import (REDIRECT_FIELD_NAME, login as auth_login,
 from django import forms
 from django.forms.util import ErrorList
 from django.forms.utils import to_current_timezone
+from django.utils import timezone
 from django.utils import html, http
 from django.utils.translation import ugettext as _
 from django.shortcuts import resolve_url
@@ -616,3 +617,11 @@ def switch_back(request):
     else:
         messages.warning(request, _('No user to switch back to'))
     return continue_to_next_url(request)
+
+def datetime_to_utc(dt):
+    if timezone.is_naive(dt):
+        dt = timezone.make_aware(dt)
+    return dt.astimezone(timezone.utc)
+
+def datetime_to_xs_datetime(dt):
+    return datetime_to_utc(dt).isoformat().split('.')[0] + 'Z'
