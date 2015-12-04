@@ -1,3 +1,4 @@
+import datetime
 import base64
 import unittest
 import StringIO
@@ -21,7 +22,7 @@ try:
 except ImportError:
     lasso = None
 
-from . import app_settings
+from authentic2.idp.saml import app_settings
 
 
 @unittest.skipUnless(lasso is not None, 'lasso is not installed')
@@ -281,6 +282,10 @@ class SamlSSOTestCase(SamlBaseTestCase):
                 self.fail('SAMLResponse is not base64 encoded: %s' % saml_response)
             login = self.parse_authn_response(saml_response)
             assertion = login.assertion
+            session_not_on_or_after = login.assertion.authnStatement[0].sessionNotOnOrAfter
+            assert session_not_on_or_after is not None
+            assert (datetime.datetime.strptime(session_not_on_or_after, '%Y-%m-%dT%H:%M:%SZ') >
+                    datetime.datetime.utcnow())
             assertion_xml = assertion.exportToXml()
             namespaces = {
                 'saml': lasso.SAML2_ASSERTION_HREF,

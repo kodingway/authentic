@@ -73,7 +73,7 @@ from authentic2.constants import NONCE_FIELD_NAME
 from authentic2.idp import signals as idp_signals
 
 from authentic2.utils import (make_url, get_backends as get_idp_backends,
-        get_username, login_require, find_authentication_event)
+        get_username, login_require, find_authentication_event, datetime_to_xs_datetime)
 from authentic2.decorators import is_transient_user
 from authentic2.attributes_ng.engine import get_attributes
 
@@ -359,6 +359,10 @@ def build_assertion(request, login, nid_format='transient'):
             notOnOrAfter.isoformat() + 'Z')
     assertion = login.assertion
     assertion.conditions.notOnOrAfter = notOnOrAfter.isoformat() + 'Z'
+    # Set SessionNotOnOrAfter to expiry date of the current session, so we are sure no session on
+    # service providers can outlive the IdP session.
+    expiry_date = request.session.get_expiry_date()
+    assertion.authnStatement[0].sessionNotOnOrAfter = datetime_to_xs_datetime(expiry_date)
     logger.debug("assertion building in progress %s" \
         % assertion.dump())
     logger.debug("fill assertion")
@@ -395,6 +399,7 @@ def build_assertion(request, login, nid_format='transient'):
     kwargs['user'] = request.user
     logger.info(u'sending nameID %(name_id_format)s: '
         '%(name_id_content)s to %(entity_id)s for user %(user)s' % kwargs)
+
     register_new_saml2_session(request, login)
 
 
