@@ -79,7 +79,6 @@ from authentic2.attributes_ng.engine import get_attributes
 
 from . import app_settings
 
-logger = logging.getLogger('authentic2.idp.saml')
 
 def get_nonce():
     alphabet = string.letters+string.digits
@@ -98,6 +97,7 @@ metadata_map = (
 
 def metadata(request):
     '''Endpoint to retrieve the metadata file'''
+    logger = logging.getLogger(__name__)
     logger.info('return metadata')
     return HttpResponse(get_metadata(request, request.path),
             content_type='text/xml')
@@ -146,6 +146,7 @@ def fill_assertion(request, saml_request, assertion, provider_id, nid_format):
        '''
     assert nid_format in NAME_ID_FORMATS
 
+    logger = logging.getLogger(__name__)
     logger.debug('initializing assertion %r', assertion.id)
     # Use assertion ID as session index
     assertion.authnStatement[0].sessionIndex = assertion.id
@@ -248,6 +249,7 @@ def add_attributes(request, assertion, provider):
     attribute_statement.attribute = [attribute for attribute, values in attributes.itervalues()]
 
 def saml2_add_attribute_values(assertion, attributes):
+    logger = logging.getLogger(__name__)
     if not attributes:
         logger.info("\
             there are no attributes to add")
@@ -312,6 +314,7 @@ def build_assertion(request, login, nid_format='transient'):
     """After a successfully validated authentication request, build an
        authentication assertion
     """
+    logger = logging.getLogger(__name__)
     entity_id = get_entity_id(request, reverse(metadata))
     now = datetime.datetime.utcnow()
     logger.info("building assertion at %s" % str(now))
@@ -411,6 +414,7 @@ def sso(request):
        For SOAP a session must be established previously through the login
        page. No authentication through the SOAP request is supported.
     """
+    logger = logging.getLogger(__name__)
     logger.info("performing sso")
     if request.method == "GET":
         logger.debug('called by GET')
@@ -525,6 +529,7 @@ def need_login(request, login, nid_format):
     """Redirect to the login page with a nonce parameter to verify later that
        the login form was submitted
     """
+    logger = logging.getLogger(__name__)
     nonce = login.request.id or get_nonce()
     save_key_values(nonce, login.dump(), False, nid_format)
     next_url = make_url(continue_sso, params={NONCE_FIELD_NAME: nonce})
@@ -539,6 +544,7 @@ def get_url_with_nonce(request, function, nonce):
 
 
 def need_consent_for_federation(request, login, nid_format):
+    logger = logging.getLogger(__name__)
     nonce = login.request.id or get_nonce()
     save_key_values(nonce, login.dump(), False, nid_format)
     display_name = None
@@ -560,6 +566,7 @@ def need_consent_for_federation(request, login, nid_format):
 
 @never_cache
 def continue_sso(request):
+    logger = logging.getLogger(__name__)
     consent_answer = None
     consent_attribute_answer = None
     if request.method == "GET":
@@ -631,6 +638,7 @@ def sso_after_process_request(request, login, consent_obtained=False,
        user: the user which must be federated, if None, current user is the
        default.
     """
+    logger = logging.getLogger(__name__)
     nonce = login.request.id
     user = user or request.user
     did_auth = find_authentication_event(request, nonce) is not None
@@ -760,6 +768,7 @@ def sso_after_process_request(request, login, consent_obtained=False,
     to obtain or report consent
     '''
 
+    logger = logging.getLogger(__name__)
     logger.debug('the user consent status before process is %s' \
         % str(consent_obtained))
 
@@ -843,6 +852,7 @@ def sso_after_process_request(request, login, consent_obtained=False,
 def return_login_error(request, login, error):
     """Set the first level status code to Responder, the second level to error
     and return the response message for the assertionConsumer"""
+    logger = logging.getLogger(__name__)
     logger.debug('error %s' % error)
     set_saml2_response_responder_status_code(login.response, error)
     return return_login_response(request, login)
@@ -850,6 +860,7 @@ def return_login_error(request, login, error):
 
 def return_login_response(request, login):
     '''Return the AuthnResponse message to the assertion consumer'''
+    logger = logging.getLogger(__name__)
     if login.protocolProfile == lasso.LOGIN_PROTOCOL_PROFILE_BRWS_ART:
         login.buildArtifactMsg(lasso.HTTP_METHOD_ARTIFACT_GET)
         logger.info('sending Artifact to assertionConsumer %r' % login.msgUrl)
@@ -867,6 +878,7 @@ def return_login_response(request, login):
 
 
 def finish_sso(request, login, user=None, return_profile=False):
+    logger = logging.getLogger(__name__)
     logger.info('finishing sso...')
     if user is None:
         logger.debug('user is None')
@@ -880,6 +892,7 @@ def finish_sso(request, login, user=None, return_profile=False):
 
 def save_artifact(request, login):
     '''Remember an artifact message for later retrieving'''
+    logger = logging.getLogger(__name__)
     LibertyArtifact(artifact=login.artifact,
             content=login.artifactMessage.decode('utf-8'),
             provider_id=login.remoteProviderId).save()
@@ -887,6 +900,7 @@ def save_artifact(request, login):
 
 
 def reload_artifact(login):
+    logger = logging.getLogger(__name__)
     try:
         art = LibertyArtifact.objects.get(artifact=login.artifact)
         logger.debug('artifact found')
@@ -904,6 +918,7 @@ def reload_artifact(login):
 def artifact(request):
     '''Resolve a SAMLv2 ArtifactResolve request
     '''
+    logger = logging.getLogger(__name__)
     logger.info('soap call received')
     soap_message = get_soap_message(request)
     logger.debug('soap message %r' % soap_message)
@@ -937,6 +952,7 @@ def artifact(request):
 
 
 def check_delegated_authentication_permission(request):
+    logger = logging.getLogger(__name__)
     logger.info('superuser? %s' \
         % str(request.user.is_superuser()))
     return request.user.is_superuser()
@@ -948,6 +964,7 @@ def check_delegated_authentication_permission(request):
 def idp_sso(request, provider_id=None, return_profile=False):
     '''Initiate an SSO toward provider_id without a prior AuthnRequest
     '''
+    logger = logging.getLogger(__name__)
     User = get_user_model()
     if not provider_id:
         provider_id = request.REQUEST.get('provider_id')
@@ -1010,6 +1027,7 @@ def idp_sso(request, provider_id=None, return_profile=False):
 
 @never_cache
 def finish_slo(request):
+    logger = logging.getLogger(__name__)
     id = request.REQUEST.get('id')
     if not id:
         logger.error('missing id argument')
@@ -1039,6 +1057,7 @@ def finish_slo(request):
 
 
 def return_logout_error(request, logout, error):
+    logger = logging.getLogger(__name__)
     logout.buildResponseMsg()
     set_saml2_response_responder_status_code(logout.response, error)
     # Hack because response is not initialized before
@@ -1052,6 +1071,7 @@ def return_logout_error(request, logout, error):
 
 def process_logout_request(request, message, binding):
     '''Do the first part of processing a logout request'''
+    logger = logging.getLogger(__name__)
     server = create_server(request)
     logout = lasso.Logout(server)
     if not message:
@@ -1095,6 +1115,7 @@ def process_logout_request(request, message, binding):
 
 
 def log_logout_request(logout):
+    logger = logging.getLogger(__name__)
     name_id = nameid2kwargs(logout.request.nameId)
     session_indexes = logout.request.sessionIndexes
     logger.info('slo nameid: %s session_indexes: %s' \
@@ -1102,6 +1123,7 @@ def log_logout_request(logout):
 
 
 def validate_logout_request(request, logout, idp=True):
+    logger = logging.getLogger(__name__)
     if not isinstance(logout.request.nameId, lasso.Saml2NameID):
         logger.error('slo request lacks a NameID')
         return return_logout_error(request, logout,
@@ -1118,6 +1140,7 @@ def validate_logout_request(request, logout, idp=True):
 
 
 def logout_synchronous_other_backends(request, logout, django_sessions_keys):
+    logger = logging.getLogger(__name__)
     backends = get_idp_backends()
     if backends:
         logger.info('backends %s' \
@@ -1141,6 +1164,7 @@ def get_only_last_session(issuer_id, provider_id, name_id, session_indexes):
        Enumerate all emitted assertions for the given session, and for each
        provider only keep the more recent one.
     """
+    logger = logging.getLogger(__name__)
     logger.debug('%s %s' % (name_id.dump(),
         session_indexes))
     lib_session1 = LibertySession.get_for_nameid_and_session_indexes(
@@ -1163,6 +1187,7 @@ def get_only_last_session(issuer_id, provider_id, name_id, session_indexes):
 def build_session_dump(liberty_sessions):
     '''Build a session dump from a list of pairs
        (provider_id,assertion_content)'''
+    logger = logging.getLogger(__name__)
     session = [u'<Session xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns="http://www.entrouvert.org/namespaces/lasso/0.0" Version="2">']
     for liberty_session in liberty_sessions:
         session.append(u'<NidAndSessionIndex ProviderID="{0.provider_id}" '
@@ -1184,6 +1209,7 @@ def build_session_dump(liberty_sessions):
 def set_session_dump_from_liberty_sessions(profile, lib_sessions):
     '''Extract all assertion from a list of lib_sessions, and create a session
     dump from them'''
+    logger = logging.getLogger(__name__)
     logger.debug('lib_sessions %s' \
         % lib_sessions)
     session_dump = build_session_dump(lib_sessions).encode('utf8')
@@ -1196,6 +1222,7 @@ def set_session_dump_from_liberty_sessions(profile, lib_sessions):
 @csrf_exempt
 def slo_soap(request):
     """Endpoint for receiveing saml2:AuthnRequest by SOAP"""
+    logger = logging.getLogger(__name__)
     message = get_soap_message(request)
     if not message:
         logger.error('no message received')
@@ -1313,6 +1340,7 @@ def slo_soap(request):
 def slo(request):
     """Endpoint for receiving SLO by POST, Redirect.
     """
+    logger = logging.getLogger(__name__)
     message = get_saml2_request_message_async_binding(request)
     logout, response = process_logout_request(request, message,
         request.method)
@@ -1421,6 +1449,7 @@ def idp_slo(request, provider_id=None):
     provider_id - entity id of the service provider to log out
     all - if present, logout all sessions by omitting the SessionIndex element
     """
+    logger = logging.getLogger(__name__)
     all = request.REQUEST.get('all')
     next = request.REQUEST.get('next')
 
@@ -1495,6 +1524,7 @@ def idp_slo(request, provider_id=None):
 
 
 def process_logout_response(request, logout, soap_response, next):
+    logger = logging.getLogger(__name__)
     logger.info('Response is %s' % str(soap_response))
     try:
         logout.processResponseMsg(soap_response)
@@ -1516,6 +1546,7 @@ def process_logout_response(request, logout, soap_response, next):
 
 @never_cache
 def slo_return(request):
+    logger = logging.getLogger(__name__)
     logger.info('return from redirect')
     relay_state = request.REQUEST.get('RelayState')
     if not relay_state:
@@ -1585,6 +1616,7 @@ def create_server(request, provider_id=None):
 
 def log_info_authn_request_details(login):
     '''Push to logs details abour the received AuthnRequest'''
+    logger = logging.getLogger(__name__)
     request = login.request
     details = {'issuer': login.request.issuer and login.request.issuer.content,
             'forceAuthn': login.request.forceAuthn,
@@ -1602,6 +1634,7 @@ def log_info_authn_request_details(login):
 
 def check_destination(request, req_or_res):
     '''Check that a SAML message Destination has the proper value'''
+    logger = logging.getLogger(__name__)
     destination = request.build_absolute_uri(request.path)
     result = req_or_res.destination == destination
     if not result:
@@ -1615,6 +1648,7 @@ def error_redirect(request, msg, *args, **kwargs):
 
        It will redirect to Authentic2 homepage unless a next query parameter was used.
     '''
+    logger = logging.getLogger(__name__)
     default_kwargs = {
             'log_level': logging.WARNING,
             'msg_level': messages.WARNING,
