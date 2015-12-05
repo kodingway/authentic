@@ -1,11 +1,10 @@
-{% extends "authentic2/base-page.html" %}
+{% extends "gadjo/base.html" %}
 {% load i18n staticfiles %}
 {% load django_select2_tags %}
 {% load firstof from future %}
 
-{% block page-title %}
-  {{ block.super }} - {% trans "Administration" %}
-{% endblock %}
+{% block page-title %}{% firstof site_title "Authentic2" %}{% endblock %}
+{% block site-title %}{% firstof site_title "Authentic2" %}{% endblock %}
 
 {% block css %}
   {{ block.super }}
