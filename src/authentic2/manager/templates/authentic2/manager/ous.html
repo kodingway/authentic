@@ -13,7 +13,9 @@
 
 {% block appbar %}
   {{ block.super }}
-  <a href="{% url "a2-manager-ou-add" %}" rel="popup">{% blocktrans %}Add {{ model_name }}{% endblocktrans %}</a>
+  {% if view.can_add %}
+    <a href="{% url "a2-manager-ou-add" %}" rel="popup">{% blocktrans %}Add {{ model_name }}{% endblocktrans %}</a>
+  {% endif %}
 {% endblock %}
 
 {% block sidebar %}
