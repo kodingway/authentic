@@ -366,7 +366,8 @@ homepage = HomepageView.as_view()
 @json_view
 def menu_json(request):
     menu_entries = []
-    if request.user.has_perm_any('a2_rbac.view_organizationalunit'):
+    if request.user.has_perm_any(('a2_rbac.add_organizationalunit',
+                                  'a2_rbac.change_organizationalunit')):
         menu_entries.append({
             'label': force_text(_('Organizational units')),
             'slug': 'organizational-units',
