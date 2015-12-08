@@ -53,7 +53,7 @@ class AbstractBase(models.Model):
     def save(self, *args, **kwargs):
         # truncate slug and add a hash if it's too long
         if not self.slug:
-            self.slug = slugify(unicode(self.name))
+            self.slug = slugify(unicode(self.name)).lstrip('_')
         if len(self.slug) > 256:
             self.slug = self.slug[:252] + \
                 hashlib.md5(self.slug).hexdigest()[:4]
