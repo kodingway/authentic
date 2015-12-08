@@ -8,7 +8,8 @@ from django_rbac import utils as rbac_utils
 
 class RoleManager(BaseRoleManager):
     def get_admin_role(self, instance, name, slug, ou=None, operation=ADMIN_OP,
-                       update_name=False, update_slug=False, permissions=()):
+                       update_name=False, update_slug=False, permissions=(),
+                       self_administered=False):
         '''Get or create the role of manager's of this object instance'''
         kwargs = {}
         if ou or getattr(instance, 'ou', None):
@@ -26,10 +27,11 @@ class RoleManager(BaseRoleManager):
         admin_role = self.get_mirror_role(perm, name, slug, ou=ou,
                                           update_name=update_name,
                                           update_slug=update_slug)
-        self_perm = admin_role.add_self_administration()
         permissions = set(permissions)
         permissions.add(perm)
-        permissions.add(self_perm)
+        if self_administered:
+            self_perm = admin_role.add_self_administration()
+            permissions.add(self_perm)
         if set(admin_role.permissions.all()) != permissions:
             admin_role.permissions = permissions
         return admin_role

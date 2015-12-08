@@ -104,7 +104,8 @@ class Role(RoleAbstractBase):
                 role=unicode(self)),
             slug='_a2-managers-of-role-{role}'.format(
                 role=slugify(unicode(self))),
-            permissions=(utils.get_view_user_perm(),))
+            permissions=(utils.get_view_user_perm(),),
+            self_administered=True)
         return admin_role
 
     def clean(self):
@@ -126,6 +127,15 @@ class Role(RoleAbstractBase):
         if self.service:
             self.ou = self.service.ou
         return super(Role, self).save(*args, **kwargs)
+
+    def has_self_administration(self, op=CHANGE_OP):
+        Permission = rbac_utils.get_permission_model()
+        admin_op = rbac_utils.get_operation(op)
+        self_perm, created = Permission.objects.get_or_create(
+            operation=admin_op,
+            target_ct=ContentType.objects.get_for_model(self),
+            target_id=self.pk)
+        return self.permissions.filter(pk=self_perm.pk).exists()
 
     def add_self_administration(self, op=CHANGE_OP):
         'Add permission to role so that it is self-administered'
