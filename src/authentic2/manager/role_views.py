@@ -228,7 +228,7 @@ class RoleManagerViewMixin(RoleViewMixin):
 
     def get_object(self):
         self.role_object = super(RoleManagerViewMixin, self).get_object()
-        if self.role_object.admin_scope_ct_id:
+        if self.role_object.has_self_administration():
             raise Http404
         return self.role_object.get_admin_role()
 
