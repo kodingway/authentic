@@ -138,6 +138,9 @@ class Role(RoleAbstractBase):
         self.permissions.add(self_perm)
         return self_perm
 
+    def is_internal(self):
+        return self.slug.startswith('_')
+
     objects = managers.RoleManager()
 
     class Meta:

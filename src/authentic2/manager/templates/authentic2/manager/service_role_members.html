@@ -8,7 +8,7 @@
 
 {% block appbar %}
   {{ block.super }}
-  {% if view.can_change and not object.admin_scope_ct_id %}
+  {% if view.can_change and not object.is_internal %}
     <a href="{% url "a2-manager-service-role-managers" service_pk=view.kwargs.service_pk pk=object.pk %}">{% trans "Managers" %}</a>
   {% endif %}
   <a href="{% url "a2-manager-service-role-children" service_pk=view.kwargs.service_pk pk=object.pk %}">{% trans "Children roles" %}</a>

@@ -8,12 +8,12 @@
 
 {% block appbar %}
   {{ block.super }}
-  {% if not object.admin_scope_ct_id and view.can_delete %}
+  {% if not object.is_internal and view.can_delete %}
     <a rel="popup" href="{% url "a2-manager-role-delete" pk=object.pk %}">{% trans "Delete" %}</a>
   {% else %}
     <a class="disabled" title="{% trans "This role is technical, you cannot delete it." %}" href="#">{% trans "Delete" %}</a>
   {% endif %}
-  {% if view.can_change and not object.admin_scope_ct_id %}
+  {% if view.can_change and not object.is_internal %}
     <a rel="popup" href="{% url "a2-manager-role-edit" pk=object.pk %}">{% trans "Edit" %}</a>
     {% if ROLES_SHOW_PERMISSIONS %}
       <a href="{% url "a2-manager-role-permissions" pk=object.pk %}">{% trans "Permissions" %}</a>
@@ -83,7 +83,7 @@
        <a title="{% trans "Indirect parent role" %}" class="disabled role-remove icon-minus-sign"></a>
      {% endif %}
    {% endfor %}
-   {% if not object.admin_scope_ct_id %}
+   {% if not object.is_internal %}
      <a rel="popup" href="{% url "a2-manager-role-add-parent" pk=object.pk %}" class="role-add icon-add-sign"></a>
    {% else %}
      <a title="{% trans "This role is technical, you cannot modify its permissions." %}" class="disabled role-add icon-add-sign"></a>

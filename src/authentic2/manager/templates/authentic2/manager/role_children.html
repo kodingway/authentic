@@ -9,10 +9,10 @@
 
 {% block appbar %}
   {{ block.super }}
-  {% if not object.admin_scope_ct_id and view.can_delete %}
+  {% if not object.is_internal and view.can_delete %}
     <a rel="popup" href="{% url "a2-manager-role-delete" pk=object.pk %}">{% trans "Delete" %}</a>
   {% endif %}
-  {% if view.can_change and not object.admin_scope_ct_id %}
+  {% if view.can_change and not object.is_internal %}
     <a rel="popup" href="{% url "a2-manager-role-edit" pk=object.pk %}">{% trans "Edit" %}</a>
     {% if ROLES_SHOW_PERMISSIONS %}
       <a href="{% url "a2-manager-role-permissions" pk=object.pk %}">{% trans "Permissions" %}</a>
