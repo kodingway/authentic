@@ -6,6 +6,19 @@
 {% block page-title %}{% firstof site_title "Authentic2" %}{% endblock %}
 {% block site-title %}{% firstof site_title "Authentic2" %}{% endblock %}
 
+{% block user-links %}
+  <ul class="user-info">
+    {% if user.is_authenticated %}
+      <li class="ui-name">{{ user.get_full_name }}</li>
+      <li class="ui-logout"><a href="{% url 'auth_logout' %}">{% trans "Logout" %}</a></li>
+    {% endif %}
+  </ul>
+{% endblock %}
+
+{% block appbar %}
+  <h2>{% block page_title %}{% endblock %}</h2>
+{% endblock %}
+
 {% block css %}
   {{ block.super }}
   <link rel="stylesheet" type="text/css" media="all" href="{% static "authentic2/manager/css/style.css" %}"/>
