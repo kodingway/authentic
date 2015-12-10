@@ -59,7 +59,7 @@ class AbstractBase(models.Model):
                 hashlib.md5(self.slug).hexdigest()[:4]
         return super(AbstractBase, self).save(*args, **kwargs)
 
-    def get_natural_key(self):
+    def natural_key(self):
         return [self.uuid]
 
     class Meta:
@@ -112,7 +112,7 @@ class Operation(models.Model):
         verbose_name=_('slug'),
         unique=True)
 
-    def get_natural_key(self):
+    def natural_key(self):
         return [self.slug]
 
     def __unicode__(self):
@@ -144,11 +144,11 @@ class PermissionAbstractBase(models.Model):
 
     objects = managers.PermissionManager()
 
-    def get_natural_key(self):
+    def natural_key(self):
         return [self.operation.slug, self.ou and
-                self.ou.get_natural_key(),
-                self.target_ct.get_natural_key(),
-                self.target.get_natural_key()]
+                self.ou.natural_key(),
+                self.target_ct.natural_key(),
+                self.target.natural_key()]
 
     def __unicode__(self):
         ct = ContentType.objects.get_for_id(self.target_ct_id)
@@ -268,8 +268,8 @@ class RoleParentingAbstractBase(models.Model):
 
     objects = managers.RoleParentingManager()
 
-    def get_natural_key(self):
-        return [self.parent.get_natural_key(), self.child.get_natural_key(),
+    def natural_key(self):
+        return [self.parent.natural_key(), self.child.natural_key(),
                 self.direct]
 
     class Meta:
