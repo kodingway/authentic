@@ -112,11 +112,6 @@ class Role(RoleAbstractBase):
         super(Role, self).clean()
         if not self.service and not self.admin_scope_ct_id:
             if not self.id and self.__class__.objects.filter(
-                    slug=self.slug, ou=self.ou):
-                raise ValidationError(
-                    {'slug': _('This slug is not unique over this '
-                               'organizational unit.')})
-            if not self.id and self.__class__.objects.filter(
                     name=self.name, ou=self.ou):
                 raise ValidationError(
                     {'name': _('This name is not unique over this '

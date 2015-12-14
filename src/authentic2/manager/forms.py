@@ -1,12 +1,15 @@
+import hashlib
+
 from django.utils.translation import ugettext_lazy as _
 from django import forms
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.query import Q
+from django.utils.text import slugify
+from django.core.exceptions import ValidationError
 
 from authentic2.compat import get_user_model
 from authentic2.passwords import generate_password
 from authentic2.utils import send_templated_mail
-from authentic2.models import Service
 
 from django_rbac.models import Operation
 from django_rbac.utils import get_ou_model, get_role_model
@@ -22,6 +25,24 @@ from . import fields, app_settings
 class CssClass(object):
     error_css_class = 'error'
     required_css_class = 'required'
+
+
+class SlugMixin(forms.ModelForm):
+    def save(self, commit=True):
+        instance = self.instance
+        if not instance.slug:
+            instance.slug = slugify(unicode(instance.name)).lstrip('_')
+            qs = instance.__class__.objects.all()
+            if instance.pk:
+                qs = qs.exclude(pk=instance.pk)
+            i = 1
+            while qs.filter(slug=instance.slug).exists():
+                instance.slug += str(i)
+                i += 1
+        if len(instance.slug) > 256:
+            instance.slug = instance.slug[:252] + \
+                hashlib.md5(instance.slug).hexdigest()[:4]
+        return super(SlugMixin, self).save(commit=commit)
 
 
 class PrefixFormMixin(object):
@@ -65,8 +86,10 @@ class ChooseRoleForm(CssClass, forms.Form):
     role = fields.ChooseRoleField(label=_('Add a role'))
     action = forms.CharField(initial='add', widget=forms.HiddenInput)
 
+
 class RoleForm(CssClass, forms.Form):
     role = fields.ChooseRoleField(label=_('Add a role'))
+
 
 class ChooseUserRoleForm(CssClass, forms.Form):
     role = fields.ChooseUserRoleField(label=_('Add a role'))
@@ -140,10 +163,9 @@ class UserChangePasswordForm(CssClass, forms.ModelForm):
             raise forms.ValidationError(
                 _('You must choose password generation or type a new'
                   '  one'))
-        if self.instance and self.instance.pk \
-           and not self.instance.email and \
-           (self.cleaned_data.get('send_mail') or
-            self.cleaned_data.get('generate_password')):
+        if (self.instance and self.instance.pk and not self.instance.email and
+            (self.cleaned_data.get('send_mail')
+             or self.cleaned_data.get('generate_password'))):
             raise forms.ValidationError(
                 _('User does not have a mail, we cannot send the '
                   'informations to him.'))
@@ -309,17 +331,31 @@ class NameSearchForm(CssClass, PrefixFormMixin, forms.Form):
         return qs
 
 
-class RoleEditForm(HideOUFieldMixin, LimitQuerysetFormMixin, CssClass,
+class RoleEditForm(SlugMixin, HideOUFieldMixin, LimitQuerysetFormMixin, CssClass,
                    forms.ModelForm):
     ou = forms.ModelChoiceField(queryset=get_ou_model().objects,
                                 required=True, label=_('Organizational unit'))
+
+    def clean_name(self):
+        qs = get_role_model().objects.all()
+        if self.instance and self.instance.pk:
+            qs = qs.exclude(pk=self.instance.pk)
+        ou = self.cleaned_data.get('ou')
+        # Test unicity of name for an OU and globally if no OU is present
+        name = self.cleaned_data.get('name')
+        if name and ou:
+            query = Q(name=name) & (Q(ou__isnull=True) | Q(ou=ou))
+            if qs.filter(query).exists():
+                raise ValidationError(
+                    {'name': _('This name is not unique over this organizational unit.')})
+        return name
 
     class Meta:
         model = get_role_model()
         fields = ('name', 'ou', 'description')
 
 
-class OUEditForm(CssClass, forms.ModelForm):
+class OUEditForm(SlugMixin, CssClass, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(OUEditForm, self).__init__(*args, **kwargs)
         self.fields['name'].label = _('label').title()

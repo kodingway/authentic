@@ -58,6 +58,16 @@ def superuser(db):
 
 
 @pytest.fixture
+def admin(db):
+    user = create_user(username='admin', first_name='global', last_name='admin',
+                       email='admin@example.net', is_superuser=True, is_staff=True,
+                       is_active=True)
+    Role = get_role_model()
+    user.roles.add(Role.objects.get(slug='_a2-manager'))
+    return user
+
+
+@pytest.fixture
 def user_ou1(db, ou1):
     return create_user(username='john.doe', first_name=u'Jôhn', last_name=u'Dôe',
                        email='john.doe@example.net', ou=ou1)
@@ -97,7 +107,8 @@ def user(request, superuser, user_ou1, user_ou2, admin_ou1, admin_ou2, admin_ran
 
 @pytest.fixture
 def logged_app(app, user):
-    return utils.login(app, user)
+    utils.login(app, user)
+    return app
 
 @pytest.fixture
 def role_random(db, ou_rando):
@@ -126,4 +137,8 @@ def member_fake():
 
 @pytest.fixture(params=['member_rando','member_fake'])
 def member(request, member_rando, member_fake):
+    return locals().get(request.param)
+
+@pytest.fixture(params=['superuser','admin'])
+def superuser_or_admin(request, superuser, admin):
     return locals().get(request.param)

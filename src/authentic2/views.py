@@ -212,7 +212,6 @@ logger = logging.getLogger('authentic2.idp.views')
 def login(request, template_name='authentic2/login.html',
           redirect_field_name=REDIRECT_FIELD_NAME):
     """Displays the login form and handles the login action."""
-
     redirect_to = request.REQUEST.get(redirect_field_name)
     if not redirect_to or ' ' in redirect_to:
         redirect_to = settings.LOGIN_REDIRECT_URL

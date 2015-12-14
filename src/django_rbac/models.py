@@ -213,10 +213,6 @@ class RoleAbstractBase(AbstractOrganizationalUnitScopedBase, AbstractBase):
         RoleParenting.objects.filter(child=self, parent=parent,
                                      direct=True).delete()
 
-    def clean(self):
-        if not self.slug and self.name:
-            self.slug = slugify(self.name)
-
     def parents(self, include_self=True, annotate=False):
         return self.__class__.objects.filter(pk=self.pk) \
             .parents(include_self=include_self, annotate=annotate)
