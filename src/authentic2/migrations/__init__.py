@@ -61,7 +61,7 @@ class CreatePartialIndexes(Operation):
         if not self.allowed(app_label, schema_editor, to_state):
             return
         for i, (null_columns, non_null_columns) in enumerate(self.indexes()):
-            schema_editor.execute('DROP INDEX "%s_%s"' % (self.index_name, i))
+            schema_editor.execute('DROP INDEX IF EXISTS "%s_%s"' % (self.index_name, i))
 
     def describe(self):
         return "Create partial indexes"
