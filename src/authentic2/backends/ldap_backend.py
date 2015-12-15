@@ -944,8 +944,6 @@ class LDAPBackend(object):
                     user = LDAPUser(username=username)
                 user.transient = False
                 backend.populate_user(user, user_dn, username, conn, block, attrs)
-                for name, value in user.attributes.iteritems():
-                    setattr(user, name, value)
                 yield user
 
 class LDAPBackendPasswordLost(LDAPBackend):
