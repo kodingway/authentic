@@ -28,6 +28,7 @@ class compile_translations(Command):
     def run(self):
         curdir = os.getcwd()
         try:
+            os.environ.pop('DJANGO_SETTINGS_MODULE', None)
             from django.core.management import call_command
             for dir in ('src/authentic2', 'src/authentic2_idp_openid',
                     'src/authentic2_idp_cas', 'src/django_rbac'):
