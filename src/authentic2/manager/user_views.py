@@ -45,6 +45,11 @@ class UsersView(HideOUColumnMixin, BaseTableView):
             table.exclude = getattr(table, 'exclude', ()) + ('ou',)
         return table
 
+    def get_queryset(self):
+        return super(UsersView, self).get_queryset().select_related('ou').prefetch_related('roles',
+                                                                      'roles__parent_relation__parent')
+
+
 users = UsersView.as_view()
 
 
@@ -201,14 +206,22 @@ class UserEditView(PassRequestToFormMixin, OtherActionsMixin,
 user_edit = UserEditView.as_view()
 
 
+# Mock object to disable Queryset specialization by django-import-export
+class IterateIterable(object):
+    def __init__(self, qs):
+        self.qs = qs
+
+    def __iter__(self):
+        return self.qs.__iter__()
+
+
 class UsersExportView(ExportMixin, UsersView):
     permissions = ['custom_user.view_user']
     resource_class = UserResource
     export_prefix = 'users-'
 
     def get_data(self):
-        return self.get_queryset()
-
+        return IterateIterable(self.get_queryset())
 
 users_export = UsersExportView.as_view()
 
