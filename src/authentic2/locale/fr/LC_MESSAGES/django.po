@@ -624,7 +624,7 @@ msgid ""
 "href=\"%(registration_url)s\">click here</a>"
 msgstr ""
 "Vous venez de créer un nouveau compte sur %(site)s. Pour activer votre "
-"compte veuillez <a href=\"%(registration_url)s\">cliquez ici</a>."
+"compte veuillez <a href=\"%(registration_url)s\">cliquer ici</a>."
 
 #: authentic2/templates/authentic2/activation_email_body.html:6
 #: authentic2/templates/authentic2/activation_email_body.txt:6
