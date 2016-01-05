@@ -38,6 +38,9 @@
         <p id="{{field.id_for_label}}_p" class="{% if field.field.required %}required{% endif %} {% if field.errors %}error{% endif %}">
           {{ field.label_tag }}
           {{ field }}
+          {% if field.help_text %}
+            <span class="helptext">{{ field.help_text }}</span>
+          {% endif %}
           {% if field.errors %}
             <span class="errorlist">
               {% for error in  field.errors %}
