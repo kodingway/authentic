@@ -138,6 +138,9 @@ def test_api_users_list(app, user):
 
 def test_api_users_create(app, user):
     from django.contrib.auth import get_user_model
+    from authentic2.models import Attribute, AttributeValue
+
+    at = Attribute.objects.create(kind='title', name='title', label='title')
 
     app.authorization = ('Basic', (user.username, user.username))
     payload = {
@@ -147,6 +150,7 @@ def test_api_users_create(app, user):
         'last_name': 'Doe',
         'email': 'john.doe@example.net',
         'password': 'password',
+        'title': 'Mr',
     }
     if user.is_superuser:
         status = 201
@@ -159,11 +163,13 @@ def test_api_users_create(app, user):
     resp = app.post_json('/api/users/', payload, status=status)
     if user.is_superuser or user.roles.exists():
         assert set(['ou', 'id', 'uuid', 'is_staff', 'is_superuser', 'first_name', 'last_name',
-                   'date_joined', 'last_login', 'username', 'password', 'email', 'is_active']) == set(resp.json.keys())
+                    'date_joined', 'last_login', 'username', 'password', 'email', 'is_active',
+                    'title']) == set(resp.json.keys())
         assert resp.json['first_name'] == payload['first_name']
         assert resp.json['last_name'] == payload['last_name']
         assert resp.json['email'] == payload['email']
         assert resp.json['username'] == payload['username']
+        assert resp.json['title'] == payload['title']
         assert resp.json['uuid']
         assert resp.json['id']
         assert resp.json['date_joined']
@@ -178,6 +184,9 @@ def test_api_users_create(app, user):
         assert new_user.email == resp.json['email']
         assert new_user.first_name == resp.json['first_name']
         assert new_user.last_name == resp.json['last_name']
+        assert AttributeValue.objects.with_owner(new_user).count() == 1
+        assert AttributeValue.objects.with_owner(new_user)[0].attribute == at
+        assert json.loads(AttributeValue.objects.with_owner(new_user)[0].content) == payload['title']
         resp2 = app.get('/api/users/%s/' % resp.json['id'])
         assert resp.json == resp2.json
 

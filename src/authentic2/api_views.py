@@ -218,7 +218,7 @@ def attributes_hash(attributes):
 
 
 def get_user_class():
-    attributes = Attribute.objects.filter(kind='string')
+    attributes = Attribute.objects.all()
     key = 'user-class-%s' % attributes_hash(attributes)
     if key not in _class_cache:
         user_class = get_user_model()
@@ -259,7 +259,7 @@ class BaseUserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         extra_field = {}
-        for at in Attribute.objects.filter(kind='string'):
+        for at in Attribute.objects.all():
             if at.name in validated_data:
                 extra_field[at.name] = validated_data.pop(at.name)
         self.check_perm('custom_user.add_user', validated_data.get('ou'))
@@ -273,7 +273,7 @@ class BaseUserSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         extra_field = {}
-        for at in Attribute.objects.filter(kind='string'):
+        for at in Attribute.objects.all():
             if at.name in validated_data:
                 extra_field[at.name] = validated_data.pop(at.name)
         # Double check: to move an user from one ou into another you must be administrator of both
@@ -297,7 +297,7 @@ class UsersAPI(ModelViewSet):
     ordering_fields = ['username', 'first_name', 'last_name']
 
     def get_serializer_class(self):
-        attributes = Attribute.objects.filter(kind='string')
+        attributes = Attribute.objects.all()
         key = 'user-serializer-%s' % attributes_hash(attributes)
 
         if key not in _class_cache:
