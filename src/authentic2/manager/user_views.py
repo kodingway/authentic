@@ -16,7 +16,7 @@ from authentic2.constants import SWITCH_USER_SESSION_KEY
 from authentic2.models import Attribute, PasswordReset
 from authentic2.utils import switch_user
 from authentic2.a2_rbac.utils import get_default_ou
-from django_rbac.utils import get_role_model, get_role_parenting_model
+from django_rbac.utils import get_role_model, get_role_parenting_model, get_ou_model
 
 
 from .views import BaseTableView, BaseAddView, PassRequestToFormMixin, \
@@ -264,8 +264,9 @@ class UserRolesView(HideOUColumnMixin, BaseSubTableView):
             return UserRolesTable
 
     def is_ou_specified(self):
-        return self.search_form.is_valid() \
-            and self.search_form.cleaned_data.get('ou')
+        OU = get_ou_model()
+        return (OU.objects.count() < 2
+                or (self.search_form.is_valid() and self.search_form.cleaned_data.get('ou')))
 
     def get_table_queryset(self):
         if self.is_ou_specified():
