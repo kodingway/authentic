@@ -65,6 +65,10 @@ class OrganizationalUnit(OrganizationalUnitAbstractBase):
             instance=self, name=name, slug=slug, operation=VIEW_OP,
             update_name=True, update_slug=True)
 
+    def delete(self, *args, **kwargs):
+        Permission.objects.filter(ou=self).delete()
+        return super(OrganizationalUnitAbstractBase, self).delete(*args, **kwargs)
+
 
 class Permission(PermissionAbstractBase):
     class Meta:
