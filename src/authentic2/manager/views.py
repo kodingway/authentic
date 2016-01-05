@@ -397,6 +397,12 @@ def menu_json(request):
 class HideOUColumnMixin(object):
     def get_table(self, **kwargs):
         OU = get_ou_model()
+        exclude_ou = False
+        if (hasattr(self, 'search_form') and self.search_form.is_valid() and
+            self.search_form.cleaned_data.get('ou') is not None):
+            exclude_ou = True
         if OU.objects.count() < 2:
+            exclude_ou = True
+        if exclude_ou:
             kwargs['exclude'] = ['ou']
         return super(HideOUColumnMixin, self).get_table(**kwargs)

@@ -39,12 +39,6 @@ class UsersView(HideOUColumnMixin, BaseTableView):
         return self.search_form.is_valid() \
             and self.search_form.cleaned_data.get('ou')
 
-    def get_table(self, **kwargs):
-        table = super(UsersView, self).get_table(**kwargs)
-        if self.is_ou_specified():
-            table.exclude = getattr(table, 'exclude', ()) + ('ou',)
-        return table
-
     def get_queryset(self):
         return super(UsersView, self).get_queryset().select_related('ou').prefetch_related('roles',
                                                                       'roles__parent_relation__parent')
