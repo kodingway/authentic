@@ -793,8 +793,8 @@ msgid "Your account"
 msgstr "Votre compte"
 
 #: authentic2/templates/idp/account_management.html:11
-msgid "Profile"
-msgstr "Profil"
+msgid "Account data"
+msgstr "Données du compte"
 
 #: authentic2/templates/idp/account_management.html:29
 msgid "Change email"
@@ -802,12 +802,8 @@ msgstr "Modifier votre adresse électronique"
 
 #: authentic2/templates/idp/account_management.html:32
 #: authentic2/templates/profiles/edit_profile.html:4
-msgid "Edit profile"
-msgstr "Éditer votre profil"
-
-#: authentic2/templates/idp/account_management.html:35
-msgid "Delete profile"
-msgstr "Supprimer votre profil"
+msgid "Edit account data"
+msgstr "Éditer les données du compte"
 
 #: authentic2/templates/idp/account_management.html:38
 msgid "Switch back"
