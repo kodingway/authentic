@@ -123,6 +123,8 @@ default_settings = dict(
     A2_REGISTRATION_REQUIRED_FIELDS=Setting(default=(), definition='Fields from the registration form that must be required'),
     A2_REALMS=Setting(default=(), definition='List of realms to search user accounts'),
     A2_USERNAME_REGEX=Setting(default=None, definition='Regex that username must validate'),
+    A2_USERNAME_LABEL=Setting(default=None, definition='Alternate username label for the login'
+                              ' form'),
     A2_USERNAME_HELP_TEXT=Setting(default=None, definition='Help text to explain validation rules of usernames'),
     A2_USERNAME_IS_UNIQUE=Setting(default=True, definition='Check username uniqueness'),
     A2_REGISTRATION_USERNAME_IS_UNIQUE=Setting(default=True, definition='Check username uniqueness on registration'),
