@@ -49,6 +49,10 @@ def create_user(**kwargs):
         user.save()
     return user
 
+@pytest.fixture
+def simple_user(db, ou1):
+    return create_user(username='user', first_name=u'Jôhn', last_name=u'Dôe',
+                       email='user@example.net', ou=get_default_ou())
 
 @pytest.fixture
 def superuser(db):

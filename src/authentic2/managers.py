@@ -31,7 +31,7 @@ class DeletedUserManager(models.Manager):
     def delete_user(self, user):
         user.is_active = False
         user.save()
-        self.create(user=user)
+        self.get_or_create(user=user)
 
     def cleanup(self, threshold=600):
         '''Delete all deleted users for more than 10 minutes.'''

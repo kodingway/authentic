@@ -2,7 +2,7 @@ import copy
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext_lazy as _, gettext
+from django.utils.translation import ugettext_lazy as _, ugettext
 from django.forms import ModelForm, Form, CharField, PasswordInput, EmailField
 from django.utils.datastructures import SortedDict
 from django.db.models.fields import FieldDoesNotExist
@@ -167,3 +167,15 @@ class PasswordChangeForm(forms.NextUrlFormMixin, PasswordResetMixin,
                                     help_text=validators.password_help_text())
 
 
+class DeleteAccountForm(Form):
+    password = CharField(widget=PasswordInput, label=_("Password"))
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
+        super(DeleteAccountForm, self).__init__(*args, **kwargs)
+
+    def clean_password(self):
+        password = self.cleaned_data.get('password')
+        if password and not self.user.check_password(password):
+            raise ValidationError(ugettext('Password is invalid'))
+        return password

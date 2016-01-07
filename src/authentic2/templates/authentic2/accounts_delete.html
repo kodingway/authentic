@@ -1,0 +1,23 @@
+{% extends "authentic2/base-page.html" %}
+{% load i18n %}
+
+{% block page-title %}
+  {{ block.super }} - {% trans "Delete account" %}
+{% endblock %}
+
+{% block breadcrumb %}
+  {{ block.super }}
+  <a href="{% url "account_management" %}">{% trans "Your account" %}</a>
+  <a href="#">{% trans "Delete account" %}</a>
+{% endblock %}
+
+
+{% block content %}
+<form method="post">
+  {% csrf_token %}
+  <p>{% trans "Delete my account and all my personal datas ?" %}</p>
+  {{ form.as_p }}
+  <input type="submit" name="submit" value="{% trans "Delete" %}"/>
+  <input type="submit" name="cancel" value="{% trans "Cancel" %}"/>
+</form>
+{% endblock %}

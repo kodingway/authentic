@@ -10,6 +10,7 @@ from django.views.generic.edit import FormView, CreateView
 from django.views.generic.base import TemplateView
 from django.contrib.auth import get_user_model
 from django.forms import CharField
+from django.core.urlresolvers import reverse_lazy
 
 from authentic2.utils import import_module_or_class, redirect, make_url, get_fields_and_labels
 from authentic2.a2_rbac.utils import get_default_ou
@@ -17,7 +18,7 @@ from authentic2.a2_rbac.utils import get_default_ou
 from django_rbac.utils import get_ou_model
 
 from .. import models, app_settings, compat, cbv, views, forms, validators
-from .forms import RegistrationCompletionForm
+from .forms import RegistrationCompletionForm, DeleteAccountForm
 from authentic2.a2_rbac.models import OrganizationalUnit
 
 logger = logging.getLogger(__name__)
@@ -183,19 +184,30 @@ class RegistrationCompletionView(CreateView):
         login(self.request, self.object)
         return ret
 
-class DeleteView(TemplateView):
-    def get(self, request, *args, **kwargs):
+class DeleteView(FormView):
+    template_name = 'authentic2/accounts_delete.html'
+    form_class = DeleteAccountForm
+    success_url = reverse_lazy('auth_logout')
+
+    def dispatch(self, request, *args, **kwargs):
         if not app_settings.A2_REGISTRATION_CAN_DELETE_ACCOUNT:
             return redirect(request, '..')
-        return render(request, 'registration/delete_account.html')
+        return super(DeleteView, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        if 'submit' in request.POST:
-            models.DeletedUser.objects.delete_user(request.user)
-            logger.info(u'deletion of account %s requested', request.user)
-            messages.info(request, _('Your account has been scheduled for deletion. You cannot use it anymore.'))
-            return redirect(request, 'auth_logout')
-        else:
-            return redirect(request, '..')
+        if 'cancel' in request.POST:
+            return redirect(request, 'account_management')
+        return super(DeleteView, self).post(request, *args, **kwargs)
+
+    def get_form_kwargs(self, **kwargs):
+        kwargs = super(DeleteView, self).get_form_kwargs(**kwargs)
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        models.DeletedUser.objects.delete_user(form.user)
+        logger.info(u'deletion of account %s requested', form.user)
+        messages.info(self.request, _('Your account has been scheduled for deletion. You cannot use it anymore.'))
+        return super(DeleteView, self).form_valid(form)
 
 registration_completion = valid_token(RegistrationCompletionView.as_view())
