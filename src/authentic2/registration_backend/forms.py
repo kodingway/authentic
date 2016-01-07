@@ -1,4 +1,5 @@
 import copy
+from collections import OrderedDict
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -166,6 +167,14 @@ class PasswordChangeForm(forms.NextUrlFormMixin, PasswordResetMixin,
                                     validators=[validators.validate_password],
                                     help_text=validators.password_help_text())
 
+# make old_password the first field
+PasswordChangeForm.base_fields = OrderedDict(
+    [(k, PasswordChangeForm.base_fields[k])
+    for k in ['old_password', 'new_password1', 'new_password2']] +
+    [(k, PasswordChangeForm.base_fields[k])
+    for k in PasswordChangeForm.base_fields if k not in ['old_password', 'new_password1',
+                                                         'new_password2']]
+)
 
 class DeleteAccountForm(Form):
     password = CharField(widget=PasswordInput, label=_("Password"))
