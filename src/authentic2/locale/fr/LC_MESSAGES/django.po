@@ -156,7 +156,7 @@ msgstr "Le SIRET doit contenir 14 chiffres"
 
 #: authentic2/attribute_kinds.py:67
 msgid "SIRET validation code does not match"
-msgstr "Les clé de validation de votre SIRET sont inexactes"
+msgstr "La clé de validation du SIRET sont inexactes"
 
 #: authentic2/attributes_ng/sources/django_user.py:30
 msgid "User domain"
@@ -218,7 +218,7 @@ msgstr "Retourner au site"
 #: authentic2/dashboard.py:37
 #: authentic2/templates/auth/login_password_profile.html:6
 msgid "Change your password"
-msgstr "Modifier votre mot de passe"
+msgstr "Modifier le mot de passe"
 
 #: authentic2/dashboard.py:39
 msgid "Log out"
@@ -290,7 +290,7 @@ msgstr "Tableau de bord"
 
 #: authentic2/middleware.py:165
 msgid "You must change your password to continue"
-msgstr "Vous devez changer votre mot de passe avant de continuer."
+msgstr "Vous devez changer de mot de passe avant de continuer."
 
 #: authentic2/models.py:32 authentic2/models.py:46
 msgid "creation date"
@@ -522,7 +522,7 @@ msgstr "obligation de changement de mot de passe"
 #: authentic2/tests/test_all.py:1176
 msgid "A mail was sent to you with instructions to reset your password"
 msgstr ""
-"Un mail vous a été envoyé avec des instructions pour ré-initialiser votre "
+"Un courriel a été envoyé avec des instructions pour ré-initialiser le "
 "mot de passe."
 
 #: authentic2/profile_views.py:85
@@ -623,7 +623,7 @@ msgid ""
 "You created a new account on %(site)s. To activate your account, please <a "
 "href=\"%(registration_url)s\">click here</a>"
 msgstr ""
-"Vous venez de créer un nouveau compte sur %(site)s. Pour activer votre "
+"Vous venez de créer un nouveau compte sur %(site)s. Pour activer ce "
 "compte veuillez <a href=\"%(registration_url)s\">cliquer ici</a>."
 
 #: authentic2/templates/authentic2/activation_email_body.html:6
@@ -639,7 +639,7 @@ msgid ""
 "You created a new account on %(site)s. to activate your account, please\n"
 "click on the following link :"
 msgstr ""
-"Vous venez de créer un nouveau compte sur %(site)s. Pour activer votre "
+"Vous venez de créer un nouveau compte sur %(site)s. Pour activer ce "
 "compte\n"
 "veuillez cliquer sur le lien suivant :"
 
@@ -681,7 +681,7 @@ msgstr "Authentic"
 #: authentic2/templates/authentic2/homepage.html:13
 #: authentic2/templates/idp/account_management.html:10
 msgid "Account Management"
-msgstr "Gestion de votre compte"
+msgstr "Gestion du compte"
 
 #: authentic2/templates/authentic2/homepage.html:20
 msgid "Services"
@@ -739,7 +739,7 @@ msgstr ""
 "\n"
 "Vous ne vous êtes pas connecté depuis %(threshold)s jours. Dans "
 "%(clean_threshold)s jours \n"
-"votre compte sera supprimé."
+"le compte sera supprimé."
 
 #: authentic2/templates/authentic2/unused_account_alert_subject.txt:1
 #, python-format
@@ -756,14 +756,14 @@ msgid ""
 msgstr ""
 "Bonjour %(user)s,\n"
 "\n"
-"Vous ne vous êtes pas connecté dépuis %(threshold)s jours, votre compte a "
+"Vous ne vous êtes pas connecté dépuis %(threshold)s jours, le compte a "
 "donc\n"
 "été supprimé."
 
 #: authentic2/templates/authentic2/unused_account_delete_subject.txt:1
 #, python-format
 msgid "Notification: %(user)s, your account has been deleted"
-msgstr "Notification: %(user)s, votre compte a été supprimé"
+msgstr "Notification: %(user)s, le compte a été supprimé"
 
 #: authentic2/templates/error.html:8
 #: authentic2/templates/idp/account_management.html:66
@@ -798,7 +798,7 @@ msgstr "Données du compte"
 
 #: authentic2/templates/idp/account_management.html:29
 msgid "Change email"
-msgstr "Modifier votre adresse électronique"
+msgstr "Modifier l'adresse de courriel"
 
 #: authentic2/templates/idp/account_management.html:32
 #: authentic2/templates/profiles/edit_profile.html:4
@@ -807,7 +807,7 @@ msgstr "Éditer les données du compte"
 
 #: authentic2/templates/idp/account_management.html:38
 msgid "Switch back"
-msgstr "Me re-connecter avec mon utilisateur d'origine"
+msgstr "Me re-connecter avec l'utilisateur d'origine"
 
 #: authentic2/templates/idp/account_management.html:41
 msgid "Credentials"
@@ -843,11 +843,11 @@ msgstr "Page de consentement pour la fédération"
 
 #: authentic2/templates/interaction/consent_federation.html:13
 msgid "Do you accept to federate your account with "
-msgstr "Acceptez-vous de fédérer votre compte avec "
+msgstr "Acceptez-vous de fédérer le compte avec "
 
 #: authentic2/templates/interaction/consent_federation.html:15
 msgid "Do you accept to federate your account ?"
-msgstr "Acceptez-vous de federez vos comptes ?"
+msgstr "Acceptez-vous de federez le comptes ?"
 
 #: authentic2/templates/interaction/consent_federation.html:23
 msgid "Accept"
@@ -900,7 +900,7 @@ msgid ""
 msgstr ""
 "Bonjour %(name)s !\n"
 "\n"
-"Vous avez demandé à changer votre adresse de courriel sur %(domain)s de:\n"
+"Vous avez demandé à changer d'adresse de courriel sur %(domain)s de:\n"
 "\n"
 "  %(old_email)s\n"
 "\n"
@@ -947,11 +947,11 @@ msgstr "Ce lien est valide pendant %(expiration_days)s jours."
 
 #: authentic2/templates/registration/delete_account.html:5
 msgid "Delete account"
-msgstr "Supprimer votre compte"
+msgstr "Supprimer le compte"
 
 #: authentic2/templates/registration/delete_account.html:12
 msgid "Delete my account and all my personal datas ?"
-msgstr "Supprimer votre compte et toutes vos données personnelles ?"
+msgstr "Supprimer le compte et toutes les données personnelles ?"
 
 #: authentic2/templates/registration/logout.html:5
 msgid "Logging out"
@@ -994,7 +994,7 @@ msgid ""
 "You requested reset of your password on %(site_name)s, to proceed please\n"
 "click on the following link"
 msgstr ""
-"Vous avez demandé la ré-initialisation de votre mot de passe sur\n"
+"Vous avez demandé la ré-initialisation du mot de passe sur\n"
 "%(site_name)s, veuillez cliquer sur le lien suivant :"
 
 #: authentic2/templates/registration/password_reset_subject.txt:2
@@ -1081,7 +1081,7 @@ msgid ""
 "original user to do it again."
 msgstr ""
 "Vous avez déjà procédé à une reconnexion, veuillez allez sur « Mon compte » "
-"pour vous reconnecter avec votre utilisateur d'origine."
+"pour vous reconnecter avec l'utilisateur d'origine."
 
 #: authentic2/utils.py:597
 #, python-format
@@ -1200,7 +1200,7 @@ msgstr ""
 
 #: authentic2/views.py:450
 msgid "Logging out from all your services"
-msgstr "Déconnexion de toutes vos applications"
+msgstr "Déconnexion de toutes les applications"
 
 #: authentic2/views.py:455
 msgid "You have been logged out"

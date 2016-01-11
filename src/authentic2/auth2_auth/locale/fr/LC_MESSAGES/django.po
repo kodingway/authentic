@@ -64,4 +64,4 @@ msgstr "S'inscrire !"
 
 #: templates/auth/login_password_profile.html:6
 msgid "Change password"
-msgstr "Modifier votre mot de passe"
+msgstr "Modifier le mot de passe"

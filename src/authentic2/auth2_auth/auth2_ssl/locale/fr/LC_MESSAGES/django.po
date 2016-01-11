@@ -24,7 +24,7 @@ msgstr "Certificats SSL"
 #: authentic2/auth2_auth/auth2_ssl/templates/auth/account_linking_ssl.html:5
 #: authentic2/auth2_auth/auth2_ssl/templates/auth/account_linking_ssl.html:9
 msgid "Log in to link your certificate with an existing account"
-msgstr "connectez-vous pour lier votre certificat avec un compte existant"
+msgstr "Connexion pour lier le certificat avec un compte existant"
 
 #: authentic2/auth2_auth/auth2_ssl/templates/auth/account_linking_ssl.html:18
 #: authentic2/auth2_auth/auth2_ssl/templates/auth/account_linking_ssl.html:25

@@ -181,7 +181,6 @@ def get_connections(block, credentials=()):
                             'you forget to declare the TLS certificate in '
                             '/etc/ldap/ldap.conf ?', url)
                     continue
-            conn.whoami_s()
         except ldap.TIMEOUT:
             log.error('connection to %r timed out', url)
             continue
