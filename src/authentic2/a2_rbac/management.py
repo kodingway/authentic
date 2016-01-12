@@ -65,9 +65,6 @@ def update_ous_admin_roles():
     if len(ou_all) < 2:
         # If there is no ou or less than two, only generate global management
         # roles
-        Role.objects.filter(slug__startswith='_a2', ou__isnull=False).delete()
-        Role.objects.filter(slug__startswith='_a2-managers-of-').delete()
-        Permission.objects.filter(roles__isnull=True).delete()
         return
     for ou in ou_all:
         update_ou_admin_roles(ou)
