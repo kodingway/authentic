@@ -1,9 +1,11 @@
 from django.conf.urls import patterns, url
 from django.contrib.auth import views as auth_views, REDIRECT_FIELD_NAME
 from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 from django.contrib import messages
+from django.utils.translation import ugettext as _
 
-from authentic2.utils import import_module_or_class
+from authentic2.utils import import_module_or_class, redirect
 from . import app_settings, decorators, profile_views
 
 SET_PASSWORD_FORM_CLASS = import_module_or_class(
@@ -26,7 +28,10 @@ def password_change_view(request, *args, **kwargs):
     if not request.user.has_usable_password():
         messages.warning(request, _('Account has no password'))
         return redirect(request, post_change_redirect)
-    return auth_views.password_change(request, *args, **kwargs)
+    response = auth_views.password_change(request, *args, **kwargs)
+    if isinstance(response, HttpResponseRedirect):
+        messages.info(request, _('Password changed'))
+    return response
 
 
 urlpatterns = patterns('authentic2.views',
