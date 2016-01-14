@@ -1036,10 +1036,10 @@ msgid_plural ""
 "More accounts are associated to this email.  Please choose the account you "
 "want to log in with:"
 msgstr[0] ""
-"Un compte associé à cette adresse courriel existe déjà.\n"
+"Un compte associé à cette adresse de courriel existe déjà.\n"
 "Veuillez cliquer sur le nom du compte afin de vous y connecter :"
 msgstr[1] ""
-"Plusieurs comptes sont associés à cette adresse courriel.\n"
+"Plusieurs comptes sont associés à cette adresse de courriel.\n"
 "Veuillez choisir le compte avec lequel vous souhaitez vous connecter :"
 
 #: authentic2/templates/registration/registration_completion_form.html:28

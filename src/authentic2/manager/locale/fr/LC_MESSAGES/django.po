@@ -57,7 +57,7 @@ msgstr ""
 #: authentic2/manager/forms.py:148
 msgid "User does not have a mail, we cannot send the informations to him."
 msgstr ""
-"L'utilisateur n'a pas de courriel, nous ne pouvons donc pas envoyer lui "
+"L'utilisateur n'a pas d'adresse de courriel, nous ne pouvons donc pas envoyer lui "
 "envoyer les informations."
 
 #: authentic2/manager/forms.py:178
@@ -628,7 +628,7 @@ msgstr "Vous ne pouvez pas désactiver votre propre utilisateur."
 msgid ""
 "User has no email, it'not possible to send him am email to reset its password"
 msgstr ""
-"Cet utilisateur n'a pas de courriel, il n'est pas possible de lui envoyer un "
+"Cet utilisateur n'a pas d'adresse de courriel, il n'est pas possible de lui envoyer un "
 "lien de réinitialisation de son mot de passe"
 
 #: authentic2/manager/user_views.py:174
