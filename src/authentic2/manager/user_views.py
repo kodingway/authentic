@@ -169,7 +169,10 @@ class UserEditView(PassRequestToFormMixin, OtherActionsMixin,
 
         self.send_mail(subject_template_name, email_template_name,
                        context, user.email)
-
+        # An user without a password cannot reset it
+        if not user.has_usable_password():
+            user.set_password(uuid.uuid4().hex)
+            user.save()
         messages.info(request, _('A mail was sent to %s') % self.object.email)
 
     def action_delete_password_reset(self, request, *args, **kwargs):
