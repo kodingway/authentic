@@ -32,10 +32,6 @@ class PasswordResetForm(forms.Form):
         active_users = UserModel._default_manager.filter(
             email__iexact=email, is_active=True)
         for user in active_users:
-            # Make sure that no email is sent to a user that actually has
-            # a password marked as unusable
-            if not user.has_usable_password():
-                continue
             site_name = domain = request.get_host()
 
             c = RequestContext(request)

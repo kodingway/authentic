@@ -90,6 +90,9 @@ class PasswordResetConfirmView(cbv.RedirectToNextURLViewMixin, FormView):
                                         'or has expired'))
         if not validlink:
             return utils.redirect(request, self.get_success_url())
+        if not self.user.has_usable_password():
+            messages.warning(request, _('Account has no password, you cannot reset it.'))
+            return self.finish()
         return super(PasswordResetConfirmView, self).dispatch(request, *args,
                                                               **kwargs)
 
@@ -107,10 +110,13 @@ class PasswordResetConfirmView(cbv.RedirectToNextURLViewMixin, FormView):
 
     def form_valid(self, form):
         form.save()
-        self.user.backend = 'authentic2.backends.models_backend.ModelBackend'
         logging.getLogger(__name__).info(u'user %s resetted its password with '
                                          'token %r...', self.user,
                                          self.token[:9])
+        return self.finish()
+
+    def finish(self):
+        self.user.backend = 'authentic2.backends.models_backend.ModelBackend'
         return utils.login(self.request, self.user, 'email')
 
 password_reset_confirm = PasswordResetConfirmView.as_view()
