@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, url
 from django.contrib.auth import views as auth_views, REDIRECT_FIELD_NAME
 from django.core.urlresolvers import reverse
+from django.contrib import messages
 
 from authentic2.utils import import_module_or_class
 from . import app_settings, decorators, profile_views
@@ -22,6 +23,9 @@ def password_change_view(request, *args, **kwargs):
     kwargs['post_change_redirect'] = post_change_redirect
     extra_context = kwargs.setdefault('extra_context', {})
     extra_context[REDIRECT_FIELD_NAME] = post_change_redirect
+    if not request.user.has_usable_password():
+        messages.warning(request, _('Account has no password'))
+        return redirect(request, post_change_redirect)
     return auth_views.password_change(request, *args, **kwargs)
 
 
