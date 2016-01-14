@@ -1,5 +1,6 @@
 import time
 import urlparse
+import uuid
 from django.utils.http import urlquote
 from django.conf import settings
 from django.db import models
@@ -229,6 +230,12 @@ class AttributeValue(models.Model):
 class PasswordReset(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
             verbose_name=_('user'))
+
+    def save(self, *args, **kwargs):
+        if self.user_id and not self.user.has_usable_password():
+            self.user.set_password(uuid.uuid4().hex)
+            self.user.save()
+        return super(PasswordReset, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name = _('password reset')
