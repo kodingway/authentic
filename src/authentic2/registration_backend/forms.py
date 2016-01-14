@@ -159,6 +159,12 @@ class SetPasswordForm(PasswordResetMixin, auth_forms.SetPasswordForm):
                                     validators=[validators.validate_password],
                                     help_text=validators.password_help_text())
 
+    def clean_new_password1(self):
+        new_password1 = self.cleaned_data.get('new_password1')
+        if new_password1 and self.user.check_password(new_password1):
+            raise ValidationError(_('New password must differ from old password'))
+        return new_password1
+
 
 class PasswordChangeForm(forms.NextUrlFormMixin, PasswordResetMixin,
         auth_forms.PasswordChangeForm):
@@ -166,6 +172,13 @@ class PasswordChangeForm(forms.NextUrlFormMixin, PasswordResetMixin,
                                     widget=PasswordInput,
                                     validators=[validators.validate_password],
                                     help_text=validators.password_help_text())
+
+    def clean_new_password1(self):
+        new_password1 = self.cleaned_data.get('new_password1')
+        old_password = self.cleaned_data.get('old_password')
+        if new_password1 and new_password1 == old_password:
+            raise ValidationError(_('New password must differ from old password'))
+        return new_password1
 
 # make old_password the first field
 PasswordChangeForm.base_fields = OrderedDict(
