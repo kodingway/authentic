@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: authentic2_idp_cas 1.0 \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-13 20:31+0200\n"
+"POT-Creation-Date: 2016-01-15 16:23+0100\n"
 "PO-Revision-Date: 2015-12-03 21:34+0100\n"
 "Last-Translator: Benjamin Dauvergne <bdauvergne@entrouvert.com>\n"
 "Language: fr\n"
@@ -89,27 +89,27 @@ msgstr "nécessite une ré-authentification"
 msgid "valid"
 msgstr "valide"
 
-#: authentic2_idp_cas/models.py:96
+#: authentic2_idp_cas/models.py:95
 msgid "service URL"
 msgstr "URL de l'application"
 
-#: authentic2_idp_cas/models.py:99
+#: authentic2_idp_cas/models.py:97
 msgid "user"
 msgstr "utilisateur"
 
-#: authentic2_idp_cas/models.py:101
+#: authentic2_idp_cas/models.py:99
 msgid "creation"
 msgstr "date de création"
 
-#: authentic2_idp_cas/models.py:103
+#: authentic2_idp_cas/models.py:101
 msgid "expire"
 msgstr "date d'expiration"
 
-#: authentic2_idp_cas/models.py:105
+#: authentic2_idp_cas/models.py:103
 msgid "django session key"
 msgstr "clé de session django"
 
-#: authentic2_idp_cas/models.py:107
+#: authentic2_idp_cas/models.py:105
 msgid "proxies"
 msgstr "mandataires"
 

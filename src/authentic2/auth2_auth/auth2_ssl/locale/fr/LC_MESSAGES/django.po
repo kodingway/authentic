@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-13 20:31+0200\n"
+"POT-Creation-Date: 2016-01-15 16:23+0100\n"
 "PO-Revision-Date: 2013-07-23 17:41+0200\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -46,8 +46,10 @@ msgid "Log in"
 msgstr "S'identifier"
 
 #: authentic2/auth2_auth/auth2_ssl/templates/auth/login_form_ssl.html:4
-msgid "Use a self-generated X509 certificate to log in."
-msgstr "Utilisez un certificat x509 auto-généré pour vous connecter."
+#, fuzzy
+#| msgid "SSL with certificates"
+msgid "Login using a certificate."
+msgstr "Certificats SSL"
 
 #: authentic2/auth2_auth/auth2_ssl/templates/auth/login_form_ssl.html:11
 msgid "Cancel"
@@ -87,3 +89,6 @@ msgstr "Echec de l'authentification SSL. Erreur interne du serveur."
 #: authentic2/auth2_auth/auth2_ssl/views.py:146
 msgid "Certificate deleted."
 msgstr "Certificat supprimé."
+
+#~ msgid "Use a self-generated X509 certificate to log in."
+#~ msgstr "Utilisez un certificat x509 auto-généré pour vous connecter."

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-rbac\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-13 20:31+0200\n"
+"POT-Creation-Date: 2016-01-15 16:23+0100\n"
 "PO-Revision-Date: 2015-05-13 15:21+0200\n"
 "Last-Translator: Benjamin Dauvergner <bdauvergne@entrouvert.com>\n"
 "Language: \n"
@@ -58,66 +58,66 @@ msgstr ""
 msgid "permissions"
 msgstr ""
 
-#: django_rbac/models.py:251
+#: django_rbac/models.py:247
 msgid "role"
 msgstr "rôle"
 
-#: django_rbac/models.py:252
+#: django_rbac/models.py:248
 msgid "roles"
 msgstr "rôles"
 
-#: django_rbac/models.py:284
+#: django_rbac/models.py:280
 msgid "role parenting relation"
 msgstr "relation de parenté entre rôles"
 
-#: django_rbac/models.py:285
+#: django_rbac/models.py:281
 msgid "role parenting relations"
 msgstr "relations de parenté entre rôles"
 
-#: django_rbac/models.py:295
+#: django_rbac/models.py:291
 msgid "superuser status"
 msgstr ""
 
-#: django_rbac/models.py:296
+#: django_rbac/models.py:292
 msgid ""
 "Designates that this user has all permissions without explicitly assigning "
 "them."
 msgstr ""
 
-#: django_rbac/models.py:300
+#: django_rbac/models.py:296
 msgid "groups"
 msgstr "groupes"
 
-#: django_rbac/models.py:302
+#: django_rbac/models.py:298
 msgid ""
 "The groups this user belongs to. A user will get all permissions granted to "
 "each of his/her group."
 msgstr ""
 
-#: django_rbac/models.py:307
+#: django_rbac/models.py:303
 msgid "user permissions"
 msgstr "permissions de l'utilisateur"
 
-#: django_rbac/models.py:308
+#: django_rbac/models.py:304
 msgid "Specific permissions for this user."
 msgstr "Permission spécifiques pour cet utilisateur."
 
-#: django_rbac/models.py:403
+#: django_rbac/models.py:399
 msgid "Management"
 msgstr "Administration"
 
-#: django_rbac/models.py:404
+#: django_rbac/models.py:400
 msgid "Change"
 msgstr "Modification"
 
-#: django_rbac/models.py:405
+#: django_rbac/models.py:401
 msgid "Delete"
 msgstr "Suppression"
 
-#: django_rbac/models.py:406
+#: django_rbac/models.py:402
 msgid "Add"
 msgstr "Ajout"
 
-#: django_rbac/models.py:407
+#: django_rbac/models.py:403
 msgid "View"
 msgstr "Visualisation"

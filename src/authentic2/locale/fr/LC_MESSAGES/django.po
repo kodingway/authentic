@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-13 20:31+0200\n"
+"POT-Creation-Date: 2016-01-15 16:23+0100\n"
 "PO-Revision-Date: 2015-02-26 17:53+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -34,8 +34,8 @@ msgstr "adresses IP"
 msgid "deleted user %r"
 msgstr "utilisateur supprimé %r"
 
-#: authentic2/admin.py:107 authentic2/models.py:30 authentic2/models.py:40
-#: authentic2/models.py:230
+#: authentic2/admin.py:107 authentic2/models.py:32 authentic2/models.py:42
+#: authentic2/models.py:232
 msgid "user"
 msgstr "utilisateur"
 
@@ -48,12 +48,10 @@ msgid "external"
 msgstr "identifiant externe"
 
 #: authentic2/admin.py:122
-#: authentic2/templates/registration/delete_account.html:13
 msgid "Yes"
 msgstr "Oui"
 
 #: authentic2/admin.py:123
-#: authentic2/templates/registration/delete_account.html:14
 msgid "No"
 msgstr "Non"
 
@@ -67,8 +65,9 @@ msgstr ""
 
 #: authentic2/admin.py:172 authentic2/admin.py:209
 #: authentic2/auth_frontends.py:18 authentic2/forms.py:13
-#: authentic2/registration_backend/forms.py:73
-#: authentic2/templates/auth/login_password_profile.html:2
+#: authentic2/registration_backend/forms.py:76
+#: authentic2/registration_backend/forms.py:193
+#: authentic2/templates/authentic2/login_password_profile.html:2
 msgid "Password"
 msgstr "Mot de passe"
 
@@ -79,7 +78,7 @@ msgid ""
 "form</a>."
 msgstr ""
 
-#: authentic2/admin.py:206 authentic2/registration_backend/forms.py:87
+#: authentic2/admin.py:206 authentic2/registration_backend/forms.py:90
 msgid "The two password fields didn't match."
 msgstr "Les deux champs mot de passe ne correspondent pas."
 
@@ -107,20 +106,28 @@ msgstr "Dates importantes"
 msgid "Attributes"
 msgstr "Attributs"
 
-#: authentic2/api_views.py:57
+#: authentic2/api_views.py:64
 msgid "you are not authorized to create users in this ou"
 msgstr "Vous n'êtes pas autorisé à vous inscrire dans cette collectivité."
 
-#: authentic2/api_views.py:65 authentic2/api_views.py:74
+#: authentic2/api_views.py:71 authentic2/api_views.py:78
 #: authentic2/tests/test_all.py:826 authentic2/tests/test_all.py:851
 #: authentic2/tests/test_all.py:977 authentic2/tests/test_all.py:1002
 msgid "You already have an account"
 msgstr "Vous avez déjà un compte."
 
-#: authentic2/api_views.py:69 authentic2/tests/test_all.py:838
+#: authentic2/api_views.py:74 authentic2/tests/test_all.py:838
 #: authentic2/tests/test_all.py:989
 msgid "Username is required in this ou"
 msgstr "L'identifiant est requis dans cette collectivité."
+
+#: authentic2/api_views.py:349
+msgid "User successfully added to role"
+msgstr "Utilisateur ajouté du rôle"
+
+#: authentic2/api_views.py:353
+msgid "User successfully removed from role"
+msgstr "Utilisateur retiré du rôle"
 
 #: authentic2/app_settings.py:115
 msgid "Required. At most 30 characters. Letters, digits, and @/./+/-/_ only."
@@ -198,7 +205,7 @@ msgstr "attribut de rôle"
 msgid "Username or email"
 msgstr "Identifiant ou courriel"
 
-#: authentic2/auth_frontends.py:58
+#: authentic2/auth_frontends.py:60
 #, python-format
 msgid ""
 "You made too many login errors recently, you must wait <span class=\"js-"
@@ -216,9 +223,8 @@ msgid "Return to site"
 msgstr "Retourner au site"
 
 #: authentic2/dashboard.py:37
-#: authentic2/templates/auth/login_password_profile.html:6
-msgid "Change your password"
-msgstr "Modifier votre mot de passe"
+msgid "Change password"
+msgstr "Modification du mot de passe"
 
 #: authentic2/dashboard.py:39
 msgid "Log out"
@@ -292,72 +298,72 @@ msgstr "Tableau de bord"
 msgid "You must change your password to continue"
 msgstr "Vous devez changer votre mot de passe avant de continuer."
 
-#: authentic2/models.py:32 authentic2/models.py:46
+#: authentic2/models.py:34 authentic2/models.py:48
 msgid "creation date"
 msgstr "date de création"
 
-#: authentic2/models.py:35
+#: authentic2/models.py:37
 msgid "user to delete"
 msgstr "utilisateur à effacer"
 
-#: authentic2/models.py:36
+#: authentic2/models.py:38
 msgid "users to delete"
 msgstr "utilisateurs à effacer"
 
-#: authentic2/models.py:42
+#: authentic2/models.py:44
 msgid "source"
 msgstr "source"
 
-#: authentic2/models.py:44
+#: authentic2/models.py:46
 msgid "external id"
 msgstr "identifiant externe"
 
-#: authentic2/models.py:48
+#: authentic2/models.py:50
 msgid "last update date"
 msgstr "dernière date de mise à jour"
 
-#: authentic2/models.py:61
+#: authentic2/models.py:63
 msgid "user external id"
 msgstr "identifiant externe d'un utilisateur"
 
-#: authentic2/models.py:62
+#: authentic2/models.py:64
 msgid "user external ids"
 msgstr "identifiants externes des utilisateurs"
 
-#: authentic2/models.py:67
+#: authentic2/models.py:69
 msgid "when"
 msgstr "quand"
 
-#: authentic2/models.py:69
+#: authentic2/models.py:71
 msgid "who"
 msgstr "qui"
 
-#: authentic2/models.py:71
+#: authentic2/models.py:73
 msgid "how"
 msgstr "comment"
 
-#: authentic2/models.py:73
+#: authentic2/models.py:75
 msgid "nonce"
 msgstr "numéro unique"
 
-#: authentic2/models.py:78
+#: authentic2/models.py:80
 msgid "authentication log"
 msgstr "Journal des authentifications"
 
-#: authentic2/models.py:79
+#: authentic2/models.py:81
 msgid "authentication logs"
 msgstr "Journaux des authentification"
 
-#: authentic2/models.py:82
+#: authentic2/models.py:84
 #, python-format
 msgid "Authentication of %(who)s by %(how)s at %(when)s"
 msgstr "Authentification de %(who)s par %(how)s à %(when)s"
 
-#: authentic2/models.py:86
+#: authentic2/models.py:88
 msgid "url"
 msgstr "url"
 
-#: authentic2/models.py:86
+#: authentic2/models.py:88
 msgid ""
 "you can use a {} to pass the URL of the success icon, ex.: http://example."
 "com/logout?next={}"
@@ -365,15 +371,15 @@ msgstr ""
 "vous pouvez utiliser la chaîne {} pour passer l'URL de l'icône de succès,  "
 "ex.: http://example.com/logout?next={}"
 
-#: authentic2/models.py:90
+#: authentic2/models.py:92
 msgid "use an iframe instead of an img tag for logout"
 msgstr "utiliser une iframe au lieu d'un tag img pour la déconnexion"
 
-#: authentic2/models.py:93
+#: authentic2/models.py:95
 msgid "iframe logout timeout (ms)"
 msgstr "temps d'expiration pour les iframe de déconnexion (en ms)"
 
-#: authentic2/models.py:94
+#: authentic2/models.py:96
 msgid ""
 "if iframe logout is used, it's the time between the onload event for this "
 "iframe and the moment we consider its loading to be really finished"
@@ -382,137 +388,146 @@ msgstr ""
 "l'évènement onload pour cette iframe et le moment où l'on peut considérer "
 "que le chargement vraiment terminé."
 
-#: authentic2/models.py:110 authentic2/models.py:202
+#: authentic2/models.py:112 authentic2/models.py:204
 msgid "content type"
 msgstr "type d'objet"
 
-#: authentic2/models.py:112 authentic2/models.py:204
+#: authentic2/models.py:114 authentic2/models.py:206
 msgid "object identifier"
 msgstr "identifiant d'objet"
 
-#: authentic2/models.py:116 authentic2/models.py:117
+#: authentic2/models.py:118 authentic2/models.py:119
 msgid "logout URL"
 msgstr "URL de déconnexion"
 
-#: authentic2/models.py:121
+#: authentic2/models.py:123
 msgid "provider"
 msgstr "fournisseur"
 
-#: authentic2/models.py:123
+#: authentic2/models.py:125
 msgid "about"
 msgstr "à propos"
 
-#: authentic2/models.py:125
+#: authentic2/models.py:127
 msgid "service"
 msgstr "application"
 
-#: authentic2/models.py:127
+#: authentic2/models.py:129
 msgid "format identifier"
 msgstr "identifiant du format"
 
-#: authentic2/models.py:129
+#: authentic2/models.py:131
 msgid "identifier"
 msgstr "identifiant"
 
-#: authentic2/models.py:134
+#: authentic2/models.py:136
 msgid "federation identifier"
 msgstr "identifiant de fédération"
 
-#: authentic2/models.py:135
+#: authentic2/models.py:137
 msgid "federation identifiers"
 msgstr "identifiants de fédération"
 
-#: authentic2/models.py:138
+#: authentic2/models.py:140
 msgid "label"
 msgstr "libellé"
 
-#: authentic2/models.py:140
+#: authentic2/models.py:142
 msgid "description"
 msgstr "description"
 
-#: authentic2/models.py:141 authentic2/models.py:241
+#: authentic2/models.py:143 authentic2/models.py:249
 msgid "name"
 msgstr "identifiant"
 
-#: authentic2/models.py:144
+#: authentic2/models.py:146
 msgid "required"
 msgstr "requis"
 
-#: authentic2/models.py:147
+#: authentic2/models.py:149
 msgid "asked on registration"
 msgstr "demandé à l'enregistrement"
 
-#: authentic2/models.py:150
+#: authentic2/models.py:152
 msgid "user editable"
 msgstr "éditable par l'utilisateur"
 
-#: authentic2/models.py:153
+#: authentic2/models.py:155
 msgid "user visible"
 msgstr "visible de l'utilisateur"
 
-#: authentic2/models.py:156
+#: authentic2/models.py:158
 msgid "multiple"
 msgstr "multiple"
 
-#: authentic2/models.py:159
+#: authentic2/models.py:161
 msgid "kind"
 msgstr "type"
 
-#: authentic2/models.py:197
+#: authentic2/models.py:199
 msgid "attribute definition"
 msgstr "définition d'un attribut"
 
-#: authentic2/models.py:198
+#: authentic2/models.py:200
 msgid "attribute definitions"
 msgstr "définition des attributs"
 
-#: authentic2/models.py:208
+#: authentic2/models.py:210
 msgid "attribute"
 msgstr "attribut"
 
-#: authentic2/models.py:210
+#: authentic2/models.py:212
 msgid "content"
 msgstr "contenu"
 
-#: authentic2/models.py:225
+#: authentic2/models.py:227
 msgid "attribute value"
 msgstr "valeur d'un attribut"
 
-#: authentic2/models.py:226
+#: authentic2/models.py:228
 msgid "attribute values"
 msgstr "valeurs des attributs"
 
-#: authentic2/models.py:233 authentic2/models.py:234
+#: authentic2/models.py:241 authentic2/models.py:242
 msgid "password reset"
 msgstr "obligation de changement de mot de passe"
 
-#: authentic2/models.py:244
+#: authentic2/models.py:252
 msgid "slug"
 msgstr "identifiant court"
 
-#: authentic2/models.py:247
+#: authentic2/models.py:255
 msgid "organizational unit"
 msgstr "collectivité"
 
-#: authentic2/models.py:261
+#: authentic2/models.py:269
 msgid "The slug must be unique for this ou"
 msgstr "L'identifiant court doit être unique au sein de cette collectivité."
 
-#: authentic2/models.py:266
+#: authentic2/models.py:274
 msgid "The name must be unique for this ou"
 msgstr "Le nom doit être unique au sein de cette collectivité."
 
-#: authentic2/models.py:272
+#: authentic2/models.py:280
 msgid "base service model"
 msgstr "application"
 
-#: authentic2/models.py:273
+#: authentic2/models.py:281
 msgid "base service models"
 msgstr "applications"
 
-#: authentic2/profile_forms.py:15
+#: authentic2/profile_forms.py:17
 msgid "Email"
 msgstr "Courriel"
+
+#: authentic2/profile_urls.py:29
+msgid "Account has no password"
+msgstr "Le compte n'a pas de mot de passe"
+
+#: authentic2/profile_urls.py:33
+#: authentic2/templates/registration/password_change_done.html:9
+msgid "Password changed"
+msgstr "Mot de passe modifié"
 
 #: authentic2/profile_views.py:37
 msgid "Password reset"
@@ -533,12 +548,16 @@ msgstr "Utilisateur introuvable"
 msgid "You reset password link is invalid or has expired"
 msgstr "Votre lien de ré-initialisation de mot de passe est invalid ou expiré."
 
-#: authentic2/profile_views.py:99
+#: authentic2/profile_views.py:94
+msgid "Account has no password, you cannot reset it."
+msgstr "Le compte n'a pas de mot de passe, vous ne pouvez donc pas le ré-initialiser."
+
+#: authentic2/profile_views.py:102
 msgid "Enter new password"
 msgstr "Entrez un nouveau mot de passe"
 
-#: authentic2/registration_backend/forms.py:38
-#: authentic2/registration_backend/forms.py:121
+#: authentic2/registration_backend/forms.py:40
+#: authentic2/registration_backend/forms.py:124
 msgid ""
 "This email address is already in use. Please supply a different email "
 "address."
@@ -546,31 +565,40 @@ msgstr ""
 "Cette adresse de courriel est déjà utilisée. Utilisez s'il vous plait une "
 "autre adresse de courriel."
 
-#: authentic2/registration_backend/forms.py:76
+#: authentic2/registration_backend/forms.py:79
 msgid "Password (again)"
 msgstr "Mot de passe (encore une fois)"
 
-#: authentic2/registration_backend/forms.py:107
+#: authentic2/registration_backend/forms.py:110
 #: authentic2/tests/test_all.py:1085
 msgid "This username is already in use. Please supply a different username."
 msgstr ""
 "Cet identifiant est déjà utilisé. Utilisez s'il vous plait un autre "
 "identifiant."
 
-#: authentic2/registration_backend/forms.py:154
-#: authentic2/registration_backend/forms.py:162
+#: authentic2/registration_backend/forms.py:157
+#: authentic2/registration_backend/forms.py:171
 msgid "New password"
 msgstr "Nouveau mot de passe"
 
-#: authentic2/registration_backend/views.py:33
+#: authentic2/registration_backend/forms.py:165
+#: authentic2/registration_backend/forms.py:180
+msgid "New password must differ from old password"
+msgstr "Le nouveau mot de passe doit être différent de l'ancien."
+
+#: authentic2/registration_backend/forms.py:202
+msgid "Password is invalid"
+msgstr "Le mot de passe est invalide"
+
+#: authentic2/registration_backend/views.py:34
 msgid "Your activation key is expired"
 msgstr "Votre clé d'activation a expiré"
 
-#: authentic2/registration_backend/views.py:36
+#: authentic2/registration_backend/views.py:37
 msgid "Activation failed"
 msgstr "Échec à l'activation du compte"
 
-#: authentic2/registration_backend/views.py:196
+#: authentic2/registration_backend/views.py:210
 msgid ""
 "Your account has been scheduled for deletion. You cannot use it anymore."
 msgstr ""
@@ -616,6 +644,63 @@ msgstr "Accueil"
 msgid "Logs page"
 msgstr "Page de logs"
 
+#: authentic2/templates/authentic2/accounts.html:5
+#: authentic2/templates/authentic2/accounts.html:10
+#: authentic2/templates/authentic2/accounts_delete.html:10
+#: authentic2/templates/authentic2/accounts_edit.html:10
+#: authentic2/templates/authentic2/change_email.html:10
+#: authentic2/templates/authentic2/homepage.html:10
+#: authentic2/templates/registration/password_change_form.html:10
+msgid "Your account"
+msgstr "Votre compte"
+
+#: authentic2/templates/authentic2/accounts.html:35
+#: authentic2/templates/authentic2/change_email.html:11
+msgid "Change email"
+msgstr "Modifier votre adresse électronique"
+
+#: authentic2/templates/authentic2/accounts.html:38
+#: authentic2/templates/authentic2/accounts_edit.html:5
+#: authentic2/templates/authentic2/accounts_edit.html:11
+msgid "Edit account data"
+msgstr "Éditer les données du compte"
+
+#: authentic2/templates/authentic2/accounts.html:41
+#: authentic2/templates/authentic2/accounts_delete.html:5
+#: authentic2/templates/authentic2/accounts_delete.html:11
+msgid "Delete account"
+msgstr "Supprimer votre compte"
+
+#: authentic2/templates/authentic2/accounts.html:45
+msgid "Credentials"
+msgstr "Moyens d'authentification"
+
+#: authentic2/templates/authentic2/accounts.html:51
+msgid "Federation management"
+msgstr "Gestion des liaisons"
+
+#: authentic2/templates/authentic2/accounts_delete.html:18
+msgid "Delete my account and all my personal datas ?"
+msgstr "Supprimer votre compte et toutes vos données personnelles ?"
+
+#: authentic2/templates/authentic2/accounts_delete.html:20
+msgid "Delete"
+msgstr "Supprimer"
+
+#: authentic2/templates/authentic2/accounts_delete.html:21
+#: authentic2/templates/authentic2/login_password_form.html:8
+#: authentic2/templates/authentic2/logout_confirm.html:20
+msgid "Cancel"
+msgstr "Annuler"
+
+#: authentic2/templates/authentic2/accounts_edit.html:19
+msgid "Modify"
+msgstr "Modifier"
+
+#: authentic2/templates/authentic2/accounts_edit.html:21
+msgid "Create"
+msgstr "Créer"
+
 #: authentic2/templates/authentic2/activation_email_body.html:4
 #: authentic2/templates/registration/activation_email.html:4
 #, python-format
@@ -648,25 +733,71 @@ msgstr ""
 msgid "Account activation on"
 msgstr "Activation du compte sur"
 
-#: authentic2/templates/authentic2/base.html:19
-msgid "Versatile Identity Management Server"
-msgstr "Serveur de gestion d'identité versatile"
-
-#: authentic2/templates/authentic2/base.html:29
+#: authentic2/templates/authentic2/base.html:26
 #, python-format
 msgid "Last login %(LAST_LOGIN)s"
 msgstr "Date de dernière connexion: %(LAST_LOGIN)s"
 
-#: authentic2/templates/authentic2/base.html:30
-#, python-format
-msgid "Hello %(username)s."
-msgstr "Bonjour %(username)s"
-
-#: authentic2/templates/authentic2/base.html:31
+#: authentic2/templates/authentic2/base.html:27
 #: authentic2/templates/authentic2/logout.html:5
 #: authentic2/templates/authentic2/logout_confirm.html:6
 msgid "Logout"
 msgstr "Déconnexion"
+
+#: authentic2/templates/authentic2/change_email.html:5
+msgid "Email change"
+msgstr "Changer d'adresse de courriel"
+
+#: authentic2/templates/authentic2/change_email.html:15
+#, python-format
+msgid "Your current email is %(email)s"
+msgstr "Votre adresse de courriel actuelle est %(email)s"
+
+#: authentic2/templates/authentic2/change_email.html:19
+msgid "Validate"
+msgstr "Valider"
+
+#: authentic2/templates/authentic2/change_email_notification_body.txt:1
+#, python-format
+msgid ""
+"Hi %(name)s !\n"
+"\n"
+"You asked for changing your email on %(domain)s from:\n"
+"\n"
+"  %(old_email)s\n"
+"\n"
+"to:\n"
+"\n"
+"  %(email)s\n"
+"\n"
+"To validate this change please click on the following link:\n"
+"\n"
+"  %(link)s\n"
+"\n"
+"--\n"
+"%(domain)s\n"
+msgstr ""
+"Bonjour %(name)s !\n"
+"\n"
+"Vous avez demandé à changer votre adresse de courriel sur %(domain)s de:\n"
+"\n"
+"  %(old_email)s\n"
+"\n"
+"à:\n"
+"\n"
+"  %(email)s\n"
+"\n"
+"Veuillez cliquer sur le lien suivant pour valider ce changement ::\n"
+"\n"
+"  %(link)s\n"
+"\n"
+"--\n"
+"%(domain)s\n"
+
+#: authentic2/templates/authentic2/change_email_notification_subject.txt:1
+#, python-format
+msgid "Change email on %(domain)s"
+msgstr "Changer l'adresse de courriel sur %(domain)s"
 
 #: authentic2/templates/authentic2/display_message_and_continue.html:5
 #: authentic2/templates/authentic2/logout_confirm.html:19
@@ -674,33 +805,23 @@ msgstr "Déconnexion"
 msgid "Continue"
 msgstr "Continuer"
 
-#: authentic2/templates/authentic2/homepage.html:5
-msgid "Authentic"
-msgstr "Authentic"
-
-#: authentic2/templates/authentic2/homepage.html:13
-#: authentic2/templates/idp/account_management.html:10
-msgid "Account Management"
-msgstr "Gestion de votre compte"
-
-#: authentic2/templates/authentic2/homepage.html:20
-msgid "Services"
-msgstr "Services"
-
-#: authentic2/templates/authentic2/homepage.html:50
+#: authentic2/templates/authentic2/homepage.html:7
 msgid "Administration"
 msgstr "Administration"
 
-#: authentic2/templates/authentic2/login.html:5
+#: authentic2/templates/authentic2/homepage.html:17
+msgid "Services"
+msgstr "Services"
+
+#: authentic2/templates/authentic2/login.html:7
+#: authentic2/templates/registration/registration_completion_form.html:16
+msgid "Login"
+msgstr "Connexion"
+
 #: authentic2/templates/authentic2/login_password_form.html:6
 #: authentic2/templates/registration/activate.html:14
 msgid "Log in"
 msgstr "Connexion"
-
-#: authentic2/templates/authentic2/login_password_form.html:8
-#: authentic2/templates/authentic2/logout_confirm.html:20
-msgid "Cancel"
-msgstr "Annuler"
 
 #: authentic2/templates/authentic2/login_password_form.html:15
 msgid "Forgot password?"
@@ -718,7 +839,13 @@ msgstr "Pas de compte ?"
 msgid "Register!"
 msgstr "Enregistrez-vous !"
 
-#: authentic2/templates/authentic2/logout.html:44
+#: authentic2/templates/authentic2/login_password_profile.html:6
+#: authentic2/templates/registration/password_change_form.html:5
+#: authentic2/templates/registration/password_change_form.html:11
+msgid "Change your password"
+msgstr "Modifier votre mot de passe"
+
+#: authentic2/templates/authentic2/logout.html:41
 msgid "Continue logout"
 msgstr "Continuer la déconnexion"
 
@@ -765,8 +892,7 @@ msgstr ""
 msgid "Notification: %(user)s, your account has been deleted"
 msgstr "Notification: %(user)s, votre compte a été supprimé"
 
-#: authentic2/templates/error.html:8
-#: authentic2/templates/idp/account_management.html:66
+#: authentic2/templates/error.html:18
 #: authentic2/templates/registration/logout.html:10
 #: authentic2/templates/registration/registration_complete.html:10
 msgid "Back"
@@ -783,39 +909,6 @@ msgstr "Échec de l'authentification"
 #: authentic2/templates/error_ssl.html:10
 msgid "The SSL authentication has failed"
 msgstr "L'authentification SSL a échouée"
-
-msgid "Homepage"
-msgstr "Accueil"
-
-#: authentic2/templates/idp/account_management.html:10
-#: authentic2/templates/idp/homepage.html:13
-msgid "Your account"
-msgstr "Votre compte"
-
-#: authentic2/templates/idp/account_management.html:11
-msgid "Account data"
-msgstr "Données du compte"
-
-#: authentic2/templates/idp/account_management.html:29
-msgid "Change email"
-msgstr "Modifier votre adresse électronique"
-
-#: authentic2/templates/idp/account_management.html:32
-#: authentic2/templates/profiles/edit_profile.html:4
-msgid "Edit account data"
-msgstr "Éditer les données du compte"
-
-#: authentic2/templates/idp/account_management.html:38
-msgid "Switch back"
-msgstr "Me re-connecter avec mon utilisateur d'origine"
-
-#: authentic2/templates/idp/account_management.html:41
-msgid "Credentials"
-msgstr "Moyens d'authentification"
-
-#: authentic2/templates/idp/account_management.html:47
-msgid "Federation management"
-msgstr "Gestion des liaisons"
 
 #: authentic2/templates/interaction/consent_attributes.html:4
 msgid "Consent page for attribute propagation"
@@ -857,69 +950,6 @@ msgstr "Accepter"
 msgid "Refuse"
 msgstr "Refuser"
 
-#: authentic2/templates/profiles/edit_profile.html:11
-msgid "Modify"
-msgstr "Modifier"
-
-#: authentic2/templates/profiles/edit_profile.html:13
-msgid "Create"
-msgstr "Créer"
-
-#: authentic2/templates/profiles/email_change.html:4
-msgid "Email change"
-msgstr "Changer d'adresse de courriel"
-
-#: authentic2/templates/profiles/email_change.html:7
-#, python-format
-msgid "Your current email is %(email)s"
-msgstr "Votre adresse de courriel actuelle est %(email)s"
-
-#: authentic2/templates/profiles/email_change.html:11
-msgid "Validate"
-msgstr "Valider"
-
-#: authentic2/templates/profiles/email_change_body.txt:1
-#, python-format
-msgid ""
-"Hi %(name)s !\n"
-"\n"
-"You asked for changing your email on %(domain)s from:\n"
-"\n"
-"  %(old_email)s\n"
-"\n"
-"to:\n"
-"\n"
-"  %(email)s\n"
-"\n"
-"To validate this change please click on the following link:\n"
-"\n"
-"  %(link)s\n"
-"\n"
-"--\n"
-"%(domain)s\n"
-msgstr ""
-"Bonjour %(name)s !\n"
-"\n"
-"Vous avez demandé à changer votre adresse de courriel sur %(domain)s de:\n"
-"\n"
-"  %(old_email)s\n"
-"\n"
-"à:\n"
-"\n"
-"  %(email)s\n"
-"\n"
-"Veuillez cliquer sur le lien suivant pour valider ce changement ::\n"
-"\n"
-"  %(link)s\n"
-"\n"
-"--\n"
-"%(domain)s\n"
-
-#: authentic2/templates/profiles/email_change_subject.txt:1
-#, python-format
-msgid "Change email on %(domain)s"
-msgstr "Changer l'adresse de courriel sur %(domain)s"
-
 #: authentic2/templates/registration/activate.html:5
 msgid "Account activation"
 msgstr "Activer le compte sur"
@@ -945,14 +975,6 @@ msgstr "Activation du compte"
 msgid "Link is valid for %(expiration_days)s days."
 msgstr "Ce lien est valide pendant %(expiration_days)s jours."
 
-#: authentic2/templates/registration/delete_account.html:5
-msgid "Delete account"
-msgstr "Supprimer votre compte"
-
-#: authentic2/templates/registration/delete_account.html:12
-msgid "Delete my account and all my personal datas ?"
-msgstr "Supprimer votre compte et toutes vos données personnelles ?"
-
 #: authentic2/templates/registration/logout.html:5
 msgid "Logging out"
 msgstr "Déconnexion"
@@ -962,15 +984,18 @@ msgid "Logged out"
 msgstr "Déconnecté"
 
 #: authentic2/templates/registration/password_change_done.html:5
-#: authentic2/templates/registration/password_change_form.html:5
 msgid "Changing password"
 msgstr "Modification du mot de passe"
 
-#: authentic2/templates/registration/password_change_done.html:9
-msgid "Password changed"
-msgstr "Mot de passe modifié"
+#: authentic2/templates/registration/password_change_form.html:16
+msgid ""
+"To change your password you must provide your current password, then "
+"provide\n"
+"    the new password and confirm it.\n"
+"    "
+msgstr ""
 
-#: authentic2/templates/registration/password_change_form.html:13
+#: authentic2/templates/registration/password_change_form.html:21
 #: authentic2/templates/registration/password_reset_confirm.html:16
 #: authentic2/templates/registration/password_reset_form.html:16
 #: authentic2/templates/registration/registration_completion_form.html:55
@@ -1024,10 +1049,6 @@ msgstr ""
 msgid "Registration"
 msgstr "Enregistrement"
 
-#: authentic2/templates/registration/registration_completion_form.html:16
-msgid "Login"
-msgstr "Connexion"
-
 #: authentic2/templates/registration/registration_completion_form.html:18
 msgid ""
 "An account already exists for this email. Please click on the account name "
@@ -1071,11 +1092,11 @@ msgstr "créez un nouveau compte"
 msgid "Please fill the form to complete your registration"
 msgstr "Veuillez remplir le formulaire afin de finir l'enregistrement"
 
-#: authentic2/utils.py:446
+#: authentic2/utils.py:447
 msgid "The form was out of date, please try again."
 msgstr "Ce formulaire était périmé, veuillez ré-essayer."
 
-#: authentic2/utils.py:581
+#: authentic2/utils.py:582
 msgid ""
 "Your user is already switched, go to your account page and come back to your "
 "original user to do it again."
@@ -1083,17 +1104,17 @@ msgstr ""
 "Vous avez déjà procédé à une reconnexion, veuillez allez sur « Mon compte » "
 "pour vous reconnecter avec votre utilisateur d'origine."
 
-#: authentic2/utils.py:597
+#: authentic2/utils.py:598
 #, python-format
 msgid "Successfully switched to user %s"
 msgstr "Re-connexion avec l'utilisateur « %s » réussie"
 
-#: authentic2/utils.py:613
+#: authentic2/utils.py:614
 #, python-format
 msgid "Successfully switched back to user %s"
 msgstr "Re-connexion avec l'utilisateur « %s » réussie"
 
-#: authentic2/utils.py:617
+#: authentic2/utils.py:618
 msgid "No user to switch back to"
 msgstr ""
 
@@ -1160,7 +1181,7 @@ msgstr ""
 "changer ce message en modifiant le paramètre "
 "A2_PASSWORD_POLICY_REGEX_ERROR_MSG."
 
-#: authentic2/views.py:150
+#: authentic2/views.py:160
 msgid ""
 "Your request for changing your email is received. An email of validation was "
 "sent to you. Please click on the link contained inside."
@@ -1169,45 +1190,66 @@ msgstr ""
 "courriel de validation vous a été envoyé. Veuillez cliquer sur le lien "
 "contenu dans ce courriel."
 
-#: authentic2/views.py:173
+#: authentic2/views.py:183
 #, python-brace-format
 msgid "your request for changing your email for {0} is successful"
 msgstr "Votre demande de changement d'adresse de courriel pour {0} est validée"
 
-#: authentic2/views.py:179
+#: authentic2/views.py:189
 msgid "your request for changing your email is too old, try again"
 msgstr ""
 "Votre demande de changement d'adresse de courriel est trop ancienne, "
 "veuillez réessayez"
 
-#: authentic2/views.py:182
+#: authentic2/views.py:192
 msgid "your request for changing your email is invalid, try again"
 msgstr ""
 "Votre demande de changement d'adresse de courriel est invalide, veuillez "
 "réessayer"
 
-#: authentic2/views.py:185
+#: authentic2/views.py:195
 msgid "your request for changing your email was not on this site, try again"
 msgstr ""
 "Votre demande de changement d'adresse de courriel vient d'un autre site que "
 "celui-ci."
 
-#: authentic2/views.py:188
+#: authentic2/views.py:198
 msgid "your request for changing your email is for an unknown user, try again"
 msgstr ""
 "Votre demande de changement d'adresse de courriel concerne un utilisateur "
 "inconnu."
 
-#: authentic2/views.py:450
+#: authentic2/views.py:459
 msgid "Logging out from all your services"
 msgstr "Déconnexion de toutes vos applications"
 
-#: authentic2/views.py:455
+#: authentic2/views.py:464
 msgid "You have been logged out"
 msgstr "Vous avez été déconnecté."
 
-#: authentic2/views.py:491
+#: authentic2/views.py:501
 msgid "The page is out of date, it was reloaded for you"
 msgstr ""
 "Cette page est périmée car vous vous êtes connecté entre temps; nous l'avons "
 "rechargé pour vous."
+
+#~ msgid "Versatile Identity Management Server"
+#~ msgstr "Serveur de gestion d'identité versatile"
+
+#~ msgid "Hello %(username)s."
+#~ msgstr "Bonjour %(username)s"
+
+#~ msgid "Authentic"
+#~ msgstr "Authentic"
+
+#~ msgid "Account Management"
+#~ msgstr "Gestion de votre compte"
+
+#~ msgid "Homepage"
+#~ msgstr "Accueil"
+
+#~ msgid "Account data"
+#~ msgstr "Données du compte"
+
+#~ msgid "Switch back"
+#~ msgstr "Me re-connecter avec mon utilisateur d'origine"
