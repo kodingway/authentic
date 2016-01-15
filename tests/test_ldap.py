@@ -142,3 +142,18 @@ def test_wrong_ou(settings, client):
         result = client.post('/login/', {'login-password-submit': '1',
                                          'username': 'etienne.michu',
                                          'password': PASS}, follow=True)
+
+
+def test_dn_formatter():
+    from authentic2.ldap_utils import DnFormatter, FilterFormatter
+    formatter = FilterFormatter()
+
+    assert formatter.format('uid={uid}', uid='john doe') == 'uid=john doe'
+    assert formatter.format('uid={uid}', uid='(#$!"?éé') == 'uid=\\28#$!"?éé'
+    assert formatter.format('uid={uid}', uid=['(#$!"?éé']) == 'uid=\\28#$!"?éé'
+    assert formatter.format('uid={uid}', uid=('(#$!"?éé',)) == 'uid=\\28#$!"?éé'
+
+    formatter = DnFormatter()
+
+    assert formatter.format('uid={uid}', uid='john doé!#$"\'-_') == 'uid=john doé!#$\\"\'-_'
+    assert formatter.format('uid={uid}', uid=['john doé!#$"\'-_']) == 'uid=john doé!#$\\"\'-_'
