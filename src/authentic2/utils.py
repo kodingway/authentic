@@ -32,6 +32,7 @@ from django.core.urlresolvers import reverse
 from django.utils.formats import localize
 from django.contrib import messages
 from django.utils.functional import empty
+from django.template import RequestContext
 
 try:
     from django.core.exceptions import FieldDoesNotExist
@@ -472,10 +473,14 @@ def send_templated_mail(user_or_email, template_names, ctx, with_html=True,
        - <template_name>_body.txt for the plain text body
        - <template_name>_body.html for the HTML body
     '''
+    from . import middleware
     if isinstance(template_names, basestring):
         template_names = [template_names]
     if hasattr(user_or_email, 'email'):
         user_or_email = user_or_email.email
+    request = middleware.StoreRequestMiddleware().get_request()
+    if request:
+        ctx = RequestContext(request, ctx)
     subject_template_names = [template_name + '_subject.txt'
                              for template_name in template_names]
     subject = render_to_string(subject_template_names, ctx).strip()
