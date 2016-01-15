@@ -112,6 +112,8 @@ _DEFAULTS = {
     'clean_external_id_on_update': True,
     # Conserve the passsword in the Django User object
     'keep_password': False,
+    # Converse the password in the session if needed to retrieve attributes or change password
+    'keep_password_in_session': False,
     # Only authenticate users coming from the corresponding realm
     'limit_to_realm': False,
     # Assign users mandatorily to some groups
@@ -271,7 +273,8 @@ class LDAPUser(get_user_model()):
         self.is_active = True
         self.transient = transient
         if password:
-            self.set_ldap_password(password)
+            if self.block['keep_password_in_session']:
+                self.set_ldap_password(password)
             if block['keep_password']:
                 self.set_password(password)
             else:
@@ -279,15 +282,21 @@ class LDAPUser(get_user_model()):
 
     def set_ldap_password(self, password):
         request = StoreRequestMiddleware.get_request()
+        if not request:
+            return
         cache = request.session.setdefault(self.SESSION_PASSWORD_KEY, {})
         cache[self.dn] = password
         request.session.modified = True
 
     def get_ldap_password(self):
-        request = StoreRequestMiddleware.get_request()
-        cache = request.session.setdefault(self.SESSION_PASSWORD_KEY, {})
-        password = cache.get(self.dn)
-        return password
+        if self.block['keep_password_in_session']:
+            request = StoreRequestMiddleware.get_request()
+            cache = request.session.setdefault(self.SESSION_PASSWORD_KEY, {})
+            password = cache.get(self.dn)
+            return password
+        else:
+            self.set_ldap_password(None)
+            return None
 
     def check_password(self, raw_password):
         connection = get_connection(self.block)
