@@ -120,6 +120,7 @@ setup(name="authentic2",
         'Markdown>=2.1',
         'python-ldap',
         'django-filter<0.12.0',
+        'pycrypto',
       ],
       extras_require = {
           'idp-openid': ['python-openid'],
