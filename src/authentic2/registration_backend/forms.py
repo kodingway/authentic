@@ -18,7 +18,7 @@ from django.template.loader import render_to_string
 from django.core.urlresolvers import reverse
 from django.core.validators import RegexValidator
 
-from .. import app_settings, compat, forms, utils, validators, models
+from .. import app_settings, compat, forms, utils, validators, models, middleware
 from authentic2.a2_rbac.models import OrganizationalUnit
 
 User = compat.get_user_model()
@@ -153,7 +153,19 @@ class PasswordResetMixin(Form):
         return ret
 
 
-class SetPasswordForm(PasswordResetMixin, auth_forms.SetPasswordForm):
+class NotifyOfPasswordChange(object):
+    def save(self, commit=True):
+        user = super(NotifyOfPasswordChange, self).save(commit=commit)
+        if user.email:
+            ctx = {
+                'user': user,
+                'password': self.cleaned_data['new_password1'],
+            }
+            utils.send_templated_mail(user, "authentic2/password_change", ctx)
+        return user
+
+
+class SetPasswordForm(NotifyOfPasswordChange, PasswordResetMixin, auth_forms.SetPasswordForm):
     new_password1 = CharField(label=_("New password"),
                                     widget=PasswordInput,
                                     validators=[validators.validate_password],
@@ -166,8 +178,8 @@ class SetPasswordForm(PasswordResetMixin, auth_forms.SetPasswordForm):
         return new_password1
 
 
-class PasswordChangeForm(forms.NextUrlFormMixin, PasswordResetMixin,
-        auth_forms.PasswordChangeForm):
+class PasswordChangeForm(NotifyOfPasswordChange, forms.NextUrlFormMixin, PasswordResetMixin,
+                         auth_forms.PasswordChangeForm):
     new_password1 = CharField(label=_("New password"),
                                     widget=PasswordInput,
                                     validators=[validators.validate_password],
