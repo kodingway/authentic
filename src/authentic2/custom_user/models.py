@@ -94,7 +94,7 @@ class User(AbstractBaseUser, PermissionMixin):
         return qs
 
     def __unicode__(self):
-        human_name = self.username or self.get_full_name() or self.email
+        human_name = self.username or self.email or self.get_full_name()
         short_id = self.uuid[:6]
         return u'%s (%s)' % (human_name, short_id)
 
