@@ -228,7 +228,7 @@ msgstr ""
 
 #: authentic2/manager/templates/authentic2/manager/change-password-notification_subject.txt:1
 msgid "Your password has been changed"
-msgstr "Le mot de passe a été changé."
+msgstr "Votre mot de passe a été changé."
 
 #: authentic2/manager/templates/authentic2/manager/delete.html:15
 #, python-format

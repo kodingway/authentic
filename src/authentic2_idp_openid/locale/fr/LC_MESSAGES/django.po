@@ -60,7 +60,7 @@ msgstr "Ajouter une nouvelle identité OpenID"
 
 #: authentic2_idp_openid/templates/django_openid_provider/manage_trustroot.html:5
 msgid "Manage trusted site"
-msgstr "Gérer les sites de confiance"
+msgstr "Gérer vos sites de confiance"
 
 #: authentic2_idp_openid/templates/django_openid_provider/manage_trustroot.html:17
 msgid "Your trusted site"
