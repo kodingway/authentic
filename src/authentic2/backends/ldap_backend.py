@@ -28,6 +28,7 @@ from django.db import transaction
 
 from authentic2.compat_lasso import lasso
 
+from authentic2 import crypto
 from authentic2.decorators import to_list
 from authentic2.compat import get_user_model
 from authentic2.models import UserExternalId
@@ -285,6 +286,9 @@ class LDAPUser(get_user_model()):
         if not request:
             return
         cache = request.session.setdefault(self.SESSION_PASSWORD_KEY, {})
+        if password is not None:
+            # Prevent eavesdropping of the password through the session storage
+            password = crypto.aes_base64_encrypt(settings.SECRET_KEY, password)
         cache[self.dn] = password
         request.session.modified = True
 
@@ -293,6 +297,13 @@ class LDAPUser(get_user_model()):
             request = StoreRequestMiddleware.get_request()
             cache = request.session.setdefault(self.SESSION_PASSWORD_KEY, {})
             password = cache.get(self.dn)
+            if password is not None:
+                try:
+                    password = crypto.aes_base64_decrypt(settings.SECRET_KEY, password)
+                except crypto.DecryptionError:
+                    logging.getLogger(__name__).error('unable to decrypt a stored LDAP password')
+                    self.set_ldap_password(None)
+                    password = None
             return password
         else:
             self.set_ldap_password(None)
