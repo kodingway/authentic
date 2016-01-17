@@ -537,7 +537,7 @@ msgstr "obligation de changement de mot de passe"
 #: authentic2/tests/test_all.py:1176
 msgid "A mail was sent to you with instructions to reset your password"
 msgstr ""
-"Un mail vous a été envoyé avec des instructions pour ré-initialiser votre "
+"Un courriel vous a été envoyé avec des instructions pour ré-initialiser votre "
 "mot de passe."
 
 #: authentic2/profile_views.py:85
