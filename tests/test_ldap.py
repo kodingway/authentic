@@ -14,19 +14,30 @@ pytestmark = pytest.mark.skipunless(has_slapd(), reason='slapd is not installed'
 slapd = None
 
 DN = 'uid=etienne.michu,o=orga'
+UID = 'etienne.michu'
 PASS = 'pass'
 
 def setup_module(module):
     global slapd
     slapd = Slapd()
-    slapd.add_ldif('''dn: %s
+    slapd.add_ldif('''dn: {dn}
 objectClass: inetOrgPerson
-userPassword: %s
-uid: etienne.michu
+userPassword: {password}
+uid: {uid}
 cn: Étienne Michu
 sn: Michu
 gn: Étienne
-mail: etienne.michu@example.net''' % (DN, PASS))
+mail: etienne.michu@example.net
+
+dn: cn=group1,o=orga
+objectClass: groupOfNames
+member: {dn}
+
+dn: cn=group2,o=orga
+gidNumber: 10
+objectClass: posixGroup
+memberUid: {uid}
+'''.format(dn=DN, uid=UID, password=PASS))
 
 
 def teardown_module(module):

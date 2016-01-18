@@ -112,6 +112,7 @@ o: orga
             open(os.path.join(os.path.dirname(__file__), 'tests', 'core.ldif')).read(),
             open(os.path.join(os.path.dirname(__file__), 'tests', 'cosine.ldif')).read(),
             open(os.path.join(os.path.dirname(__file__), 'tests', 'inetorgperson.ldif')).read(),
+            open(os.path.join(os.path.dirname(__file__), 'tests', 'nis.ldif')).read(),
     ]
 
     def create_process(self, args):
