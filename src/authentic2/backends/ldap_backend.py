@@ -652,7 +652,7 @@ class LDAPBackend(object):
                     except KeyError:
                         pass
 
-    def get_ldap_group_dns(self, user, dn, conn, block):
+    def get_ldap_group_dns(self, user, dn, conn, block, attributes):
         '''Retrieve group DNs from the LDAP by attributes (memberOf) or by
            filter.
         '''
@@ -677,8 +677,8 @@ class LDAPBackend(object):
                 group_dns.update(dn for dn, attributes in results if dn)
         return group_dns
 
-    def populate_user_groups(self, user, dn, conn, block):
-        group_dns = self.get_ldap_group_dns(user, dn, conn, block)
+    def populate_user_groups(self, user, dn, conn, block, attributes):
+        group_dns = self.get_ldap_group_dns(user, dn, conn, block, attributes)
         log.debug('groups for dn %r: %r', dn, group_dns)
         self.populate_admin_flags_by_group(user, block, group_dns)
         self.populate_groups_by_mapping(user, dn, conn, block, group_dns)
@@ -717,7 +717,7 @@ class LDAPBackend(object):
         self.populate_user_attributes(user, block, attributes)
         self.populate_admin_fields(user, block)
         self.populate_mandatory_groups(user, block)
-        self.populate_user_groups(user, dn, conn, block)
+        self.populate_user_groups(user, dn, conn, block, attributes)
         self.populate_user_ou(user, dn, conn, block, attributes)
 
     def populate_user_ou(self, user, dn, conn, block, attributes):
