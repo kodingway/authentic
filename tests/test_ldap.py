@@ -157,3 +157,86 @@ def test_dn_formatter():
 
     assert formatter.format('uid={uid}', uid='john doé!#$"\'-_') == 'uid=john doé!#$\\"\'-_'
     assert formatter.format('uid={uid}', uid=['john doé!#$"\'-_']) == 'uid=john doé!#$\\"\'-_'
+
+
+@pytest.mark.django_db
+def test_group_mapping(settings, client):
+    from django.contrib.auth.models import Group
+
+    settings.LDAP_AUTH_SETTINGS = [{
+        'url': [slapd.ldapi_url],
+        'basedn': 'o=orga',
+        'use_tls': False,
+        'create_group': True,
+        'group_mapping': [
+            ('cn=group1,o=orga', ['Group1']),
+        ],
+    }]
+    assert Group.objects.filter(name='Group1').count() == 0
+    response = client.post('/login/', {'login-password-submit': '1',
+                                     'username': 'etienne.michu',
+                                     'password': PASS}, follow=True)
+    assert Group.objects.filter(name='Group1').count() == 1
+    assert response.context['user'].username == 'etienne.michu@ldap'
+    assert response.context['user'].groups.count() == 1
+
+
+@pytest.mark.django_db
+def test_posix_group_mapping(settings, client):
+    from django.contrib.auth.models import Group
+
+    settings.LDAP_AUTH_SETTINGS = [{
+        'url': [slapd.ldapi_url],
+        'basedn': 'o=orga',
+        'use_tls': False,
+        'create_group': True,
+        'group_mapping': [
+            ('cn=group2,o=orga', ['Group2']),
+        ],
+        'group_filter': '(&(memberUid={uid})(objectClass=posixGroup))',
+    }]
+    assert Group.objects.filter(name='Group2').count() == 0
+    response = client.post('/login/', {'login-password-submit': '1',
+                                     'username': 'etienne.michu',
+                                     'password': PASS}, follow=True)
+    assert Group.objects.filter(name='Group2').count() == 1
+    assert response.context['user'].username == 'etienne.michu@ldap'
+    assert response.context['user'].groups.count() == 1
+
+
+@pytest.mark.django_db
+def test_group_su(settings, client):
+    from django.contrib.auth.models import Group
+
+    settings.LDAP_AUTH_SETTINGS = [{
+        'url': [slapd.ldapi_url],
+        'basedn': 'o=orga',
+        'use_tls': False,
+        'groupsu': ['cn=group1,o=orga'],
+    }]
+    response = client.post('/login/', {'login-password-submit': '1',
+                                     'username': 'etienne.michu',
+                                     'password': PASS}, follow=True)
+    assert Group.objects.count() == 0
+    assert response.context['user'].username == 'etienne.michu@ldap'
+    assert response.context['user'].is_superuser
+    assert not response.context['user'].is_staff
+
+
+@pytest.mark.django_db
+def test_group_staff(settings, client):
+    from django.contrib.auth.models import Group
+
+    settings.LDAP_AUTH_SETTINGS = [{
+        'url': [slapd.ldapi_url],
+        'basedn': 'o=orga',
+        'use_tls': False,
+        'groupstaff': ['cn=group1,o=orga'],
+    }]
+    response = client.post('/login/', {'login-password-submit': '1',
+                                     'username': 'etienne.michu',
+                                     'password': PASS}, follow=True)
+    assert Group.objects.count() == 0
+    assert response.context['user'].username == 'etienne.michu@ldap'
+    assert response.context['user'].is_staff
+    assert not response.context['user'].is_superuser

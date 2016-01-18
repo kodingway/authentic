@@ -36,6 +36,7 @@ from authentic2.middleware import StoreRequestMiddleware
 from authentic2.user_login_failure import user_login_failure, user_login_success
 from django_rbac.utils import get_ou_model
 from authentic2.a2_rbac.utils import get_default_ou
+from authentic2.ldap_utils import FilterFormatter
 
 DEFAULT_CA_BUNDLE = ''
 
@@ -657,6 +658,7 @@ class LDAPBackend(object):
            filter.
         '''
         from ldap.filter import escape_filter_chars
+
         group_base_dn = block.get('group_basedn', block['basedn'])
         member_of_attribute = block['member_of_attribute']
         group_filter = block['group_filter']
@@ -667,9 +669,11 @@ class LDAPBackend(object):
             group_dns.update(results[0][1].get(member_of_attribute, []))
         if group_filter:
             group_filter = str(group_filter)
+            params = attributes.copy()
+            params['user_dn'] = dn
+            query = FilterFormatter().format(group_filter, **params)
             try:
-                results = conn.search_s(group_base_dn, ldap.SCOPE_SUBTREE,
-                        group_filter.format(user_dn=escape_filter_chars(dn)), [])
+                results = conn.search_s(group_base_dn, ldap.SCOPE_SUBTREE, query, [])
             except ldap.NO_SUCH_OBJECT:
                 pass
             else:
