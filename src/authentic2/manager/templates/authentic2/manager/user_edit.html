@@ -11,10 +11,6 @@
   <a href="#">{{ object.get_full_name }}</a>
 {% endblock %}
 
-{% block appbar %}
-  <a href="{% url "a2-manager-user-roles" pk=object.pk %}?search-ou={% firstof object.ou.pk default_ou.pk %}">{% trans "Roles" %}</a>
-{% endblock %}
-
 {% block beforeform %}
   <p>
     <label for="id_uuid">{% trans "UUID" %}&nbsp;:</label>
@@ -28,4 +24,17 @@
       <input type="submit" name="delete_password_reset" value="{% trans "Cancel this constraint" %}"/>
     </div>
   {% endif %}
+{% endblock %}
+
+{% block other_actions %}
+  {{ block.super }}
+  <strong>{% trans "Roles" %}</strong>
+  <ul>
+    {% for role in object.roles_and_parents %}
+      <li>{{ role }}</li>
+    {% endfor %}
+  </ul>
+  <button onclick="window.location.href = '{% url "a2-manager-user-roles" pk=object.pk %}?search-ou={% firstof object.ou.pk default_ou.pk %}'; return false">Modify</button>
+
+
 {% endblock %}

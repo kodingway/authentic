@@ -59,16 +59,18 @@
         <button>{% if action %}{{ action }}{% else %}{% trans "Save" %}{% endif %}</button>
       </div>
     </div>
-      {% if other_actions %}
-        <div class="other_actions">
-          <strong>{% trans "Actions" %}</strong>
-          {% for action in other_actions %}
-            <input type="submit" name="{{ action.name }}" value="{{ action.title }}"
-              {% if action.confirm %}data-confirm="{{ action.confirm }}"{% endif %}
-              {% if action.url_name %}data-url="{% url action.url_name pk=object.pk %}"{% endif %}
-              {% if action.url %}data-url="{{ action.url }}"{% endif %}
-            />
-          {% endfor %}
-        </div>
-      {% endif %}
+      <div class="other_actions">
+      {% block other_actions %}
+        {% if other_actions %}
+            <strong>{% trans "Actions" %}</strong>
+            {% for action in other_actions %}
+              <input type="submit" name="{{ action.name }}" value="{{ action.title }}"
+                {% if action.confirm %}data-confirm="{{ action.confirm }}"{% endif %}
+                {% if action.url_name %}data-url="{% url action.url_name pk=object.pk %}"{% endif %}
+                {% if action.url %}data-url="{{ action.url }}"{% endif %}
+              />
+            {% endfor %}
+        {% endif %}
+      {% endblock %}
+      </div>
 {% endblock %}
