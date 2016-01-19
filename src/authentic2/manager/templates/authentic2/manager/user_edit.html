@@ -36,7 +36,7 @@
     </li>
     {% endfor %}
   </ul>
-  <button onclick="window.location.href = '{% url "a2-manager-user-roles" pk=object.pk %}?search-ou={% firstof object.ou.pk default_ou.pk %}'; return false">Modify</button>
+  <button onclick="window.location.href = '{% url "a2-manager-user-roles" pk=object.pk %}?search-ou={% firstof object.ou.pk default_ou.pk %}'; return false">{% trans "Modify" %}</button>
 
 
 {% endblock %}
