@@ -274,7 +274,7 @@ class LDAPUser(get_user_model()):
         self.is_active = True
         self.transient = transient
         if password:
-            if self.block['keep_password_in_session']:
+            if self.block.get('keep_password_in_session', False):
                 self.set_ldap_password(password)
             if block['keep_password']:
                 self.set_password(password)
@@ -293,7 +293,7 @@ class LDAPUser(get_user_model()):
         request.session.modified = True
 
     def get_ldap_password(self):
-        if self.block['keep_password_in_session']:
+        if self.block.get('keep_password_in_session', False):
             request = StoreRequestMiddleware.get_request()
             cache = request.session.setdefault(self.SESSION_PASSWORD_KEY, {})
             password = cache.get(self.dn)
