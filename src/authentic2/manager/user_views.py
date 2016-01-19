@@ -291,6 +291,12 @@ class UserRolesView(HideOUColumnMixin, BaseSubTableView):
         else:
             return self.object.roles_and_parents()
 
+    def get_table_data(self):
+        qs = super(UserRolesView, self).get_table_data()
+        if self.is_ou_specified():
+            qs = list(qs)
+        return qs
+
     def dispatch(self, request, *args, **kwargs):
         return super(UserRolesView, self).dispatch(request, *args, **kwargs)
 

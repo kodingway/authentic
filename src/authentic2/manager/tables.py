@@ -101,7 +101,7 @@ class OuUserRolesTable(tables.Table):
         '''{% for rel in row.record.via %}{{ rel.child }} {% if not forloop.last %}, {% endif %}{% endfor %}''',
         verbose_name=_('Inherited from'), orderable=False)
     member = tables.TemplateColumn('''{% load i18n %}<input class="role-member{% if not row.record.member and row.record.via %} indeterminate{% endif %}" name='role-{{ row.record.pk }}' type='checkbox' {% if row.record.member %}checked{% endif %} {% if not row.record.has_perm %}disabled title="{% trans "You are not authorized to manage this role" %}"{% endif %}/>''',
-                                  verbose_name=_('Member'), orderable=False)
+                                  verbose_name=_('Member'), order_by=('member', 'via', 'name'))
 
 
     class Meta:
