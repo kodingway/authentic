@@ -424,6 +424,10 @@ def logout_list(request):
     '''Return logout links from idp backends'''
     return utils.accumulate_from_backends(request, 'logout_list')
 
+def redirect_logout_list(request):
+    '''Return redirect logout links from idp backends'''
+    return utils.accumulate_from_backends(request, 'redirect_logout_list')
+
 def logout(request, next_url=None, default_next_url='auth_homepage',
         redirect_field_name=REDIRECT_FIELD_NAME,
         template='authentic2/logout.html', do_local=True, check_referer=True):
@@ -441,30 +445,49 @@ def logout(request, next_url=None, default_next_url='auth_homepage',
     ctx = {}
     ctx['next_url'] = next_url
     ctx['redir_timeout'] = 60
-    # Shortcut !
-    if not request.user.is_authenticated():
-        return utils.redirect(request, next_url)
-    if check_referer and not utils.check_referer(request):
-        return render(request, 'authentic2/logout_confirm.html', ctx)
-    do_local = do_local and 'local' in request.REQUEST
-    if not do_local:
-        l = logout_list(request)
-        if l:
-            # Full logout
-            next_url = utils.make_url('auth_logout', params={
-                'local': 'ok',
-                REDIRECT_FIELD_NAME: next_url})
-            ctx['next_url'] = next_url
-            ctx['logout_list'] = l
-            ctx['message'] = _('Logging out from all your services')
-            return render(request, template, ctx)
-    # Local logout
-    logger.info('logged out')
-    auth_logout(request)
-    messages.info(request, _('You have been logged out'))
+    local_logout_done = False
+    if request.user.is_authenticated():
+        if check_referer and not utils.check_referer(request):
+            return render(request, 'authentic2/logout_confirm.html', ctx)
+        do_local = do_local and 'local' in request.REQUEST
+        if not do_local:
+            l = logout_list(request)
+            if l:
+                # Full logout with iframes
+                next_url = utils.make_url('auth_logout', params={
+                    'local': 'ok',
+                    REDIRECT_FIELD_NAME: next_url})
+                ctx['next_url'] = next_url
+                ctx['logout_list'] = l
+                ctx['message'] = _('Logging out from all your services')
+                return render(request, template, ctx)
+        # Get redirection targets for full logout with redirections
+        # (needed before local logout)
+        targets = redirect_logout_list(request)
+        logger.debug('Accumulated redirections : {}'.format(targets))
+        # Local logout
+        auth_logout(request)
+        logger.info('Logged out')
+        local_logout_done = True
+        # Last redirection will be the current next_url
+        targets.append(next_url)
+        # Put redirection targets in session (after local logout)
+        request.session['logout_redirections'] = targets
+        logger.debug('All planned redirections : {}'.format(targets))
+    # Full logout by redirections if any
+    targets = request.session.pop('logout_redirections', None)
+    if targets:
+        # Full logout with redirections
+        logger.debug('Redirections queue: {}'.format(targets))
+        next_url = targets.pop(0)
+        request.session['logout_redirections'] = targets
+    logger.debug('Next redirection : {}'.format(next_url))
     response = utils.redirect(request, next_url)
-    response.set_cookie('a2_just_logged_out', 1, max_age=60)
+    if local_logout_done:
+        response.set_cookie('a2_just_logged_out', 1, max_age=60)
+        messages.info(request, _('You have been logged out'))
     return response
+
 
 def login_password_profile(request, *args, **kwargs):
     context_instance = kwargs.pop('context_instance', None) or RequestContext(request)
