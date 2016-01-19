@@ -534,6 +534,11 @@ msgstr "Code court"
 msgid "Edit user"
 msgstr "Éditer l'utilisateur"
 
+#: authentic2/manager/templates/authentic2/manager/user_edit.html:5
+#: authentic2/manager/user_views.py:90
+msgid "Edit user %s"
+msgstr "Éditer l'utilisateur %s"
+
 #: authentic2/manager/templates/authentic2/manager/user_edit.html:20
 msgid "UUID"
 msgstr "Identifiant unique"
