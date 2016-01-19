@@ -87,12 +87,15 @@ user_add = UserAddView.as_view()
 class UserEditView(PassRequestToFormMixin, OtherActionsMixin,
                    ActionMixin, BaseEditView):
     model = get_user_model()
-    title = _('Edit user')
     template_name = 'authentic2/manager/user_edit.html'
     form_class = UserEditForm
     permissions = ['custom_user.change_user']
     fields = ['username', 'ou', 'first_name', 'last_name', 'email']
     success_url = '..'
+
+    @property
+    def title(self):
+        return  _('Edit user %s') % self.object.get_full_name()
 
     def get_fields(self):
         fields = list(self.fields)
