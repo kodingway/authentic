@@ -31,7 +31,9 @@
   <strong>{% trans "Roles" %}</strong>
   <ul>
     {% for role in object.roles_and_parents %}
-    <li {% if role.description %}title="{{ role.description }}"{% endif %}>{{ role }}</li>
+    <li {% if role.description %}title="{{ role.description }}"{% endif %}>
+      <a href="{% url "a2-manager-role-members" pk=role.pk %}">{{ role }}</a>
+    </li>
     {% endfor %}
   </ul>
   <button onclick="window.location.href = '{% url "a2-manager-user-roles" pk=object.pk %}?search-ou={% firstof object.ou.pk default_ou.pk %}'; return false">Modify</button>
