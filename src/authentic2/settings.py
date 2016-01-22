@@ -237,6 +237,9 @@ LOGGING = {
                 'level': logger.SettingsLogLevel('INFO', debug_setting='DEBUG_DB'),
                 'propagate': False,
         },
+        'django': {
+                'level': 'INFO',
+        }
         # django_select2 outputs debug message at level INFO
         'django_select2': {
                 'level': 'WARNING',
