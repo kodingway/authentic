@@ -6,6 +6,7 @@
 set -e
 
 NAME=authentic2-multitenant
+MANAGE_SCRIPT=$NAME-manager
 AUTHENTIC_USER=authentic-multitenant
 AUTHENTIC_GROUP=authentic-multitenant
 AUTHENTIC_HOME=/var/lib/$NAME
@@ -37,6 +38,9 @@ case "$1" in
             /var/lib/$NAME/collectstatic \
             /var/run/$NAME \
             /var/log/$NAME
+        ;;
+    triggered)
+        su -s /bin/sh -c "$MANAGE_SCRIPT hobo_deploy --redeploy" $AUTHENTIC_USER
         ;;
     reconfigure|abort-upgrade|abort-remove|abort-deconfigure)
         ;;
