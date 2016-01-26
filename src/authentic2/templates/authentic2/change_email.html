@@ -12,7 +12,8 @@
 {% endblock %}
 
 {% block content %}
-  <p>{% blocktrans with email=user.email %}Your current email is {{ email }}{% endblocktrans %}</p>
+  <p>{% blocktrans with email=user.email %}Your current email is {{ email }}.
+  An email will be sent to validate the new one.{% endblocktrans %}</p>
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
