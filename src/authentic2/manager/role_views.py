@@ -9,6 +9,7 @@ from django.db.models.query import Q
 from django.db.models import Count
 from django.core.urlresolvers import reverse
 from django.http import Http404
+from django.contrib.auth import get_user_model
 
 from django_rbac.utils import get_role_model, get_permission_model, \
     get_role_parenting_model, get_ou_model
@@ -135,6 +136,9 @@ class RoleMembersView(views.HideOUColumnMixin, RoleViewMixin, views.BaseSubTable
         ctx['parents'] = views.filter_view(self.request,
                                            self.object.parents(include_self=False,
                                            annotate=True))
+        ctx['admin_roles'] = views.filter_view(self.request,
+                                               self.object.get_admin_role().children(
+                                                   include_self=False, annotate=True))
         return ctx
 
 members = RoleMembersView.as_view()
@@ -224,33 +228,6 @@ class RoleMembersExportView(views.ExportMixin, RoleMembersView):
         return self.get_table_data()
 
 members_export = RoleMembersExportView.as_view()
-
-
-class RoleManagerViewMixin(RoleViewMixin):
-    model = get_role_model()
-
-    def get_object(self):
-        self.role_object = super(RoleManagerViewMixin, self).get_object()
-        if self.role_object.has_self_administration():
-            raise Http404
-        return self.role_object.get_admin_role()
-
-    def get_context_data(self, **kwargs):
-        ctx = super(RoleManagerViewMixin, self).get_context_data(**kwargs)
-        ctx['role'] = self.role_object
-        return ctx
-
-
-class RoleManagersView(RoleManagerViewMixin, RoleMembersView):
-    template_name = 'authentic2/manager/role_managers.html'
-
-managers = RoleManagersView.as_view()
-
-
-class RoleManagersRolesView(RoleManagerViewMixin, RoleChildrenView):
-    template_name = 'authentic2/manager/role_managers_roles.html'
-
-managers_roles = RoleManagersRolesView.as_view()
 
 
 class RoleAddChildView(views.AjaxFormViewMixin, views.TitleMixin,
@@ -343,3 +320,95 @@ class RoleRemoveParentView(views.AjaxFormViewMixin, SingleObjectMixin,
         return redirect(self.request, self.success_url)
 
 remove_parent = RoleRemoveParentView.as_view()
+
+
+class RoleAddAdminRoleView(views.AjaxFormViewMixin, views.TitleMixin,
+                       views.PermissionMixin, SingleObjectMixin, FormView):
+    title = _('Add admin role')
+    model = get_role_model()
+    form_class = forms.RolesForm
+    success_url = '..'
+    template_name = 'authentic2/manager/form.html'
+    permissions = 'a2_rbac.change_role'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super(RoleAddAdminRoleView, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        for role in form.cleaned_data['roles']:
+            self.get_object().get_admin_role().add_child(role)
+        return super(RoleAddAdminRoleView, self).form_valid(form)
+
+add_admin_role = RoleAddAdminRoleView.as_view()
+
+
+class RoleRemoveAdminRoleView(views.TitleMixin, views.AjaxFormViewMixin, SingleObjectMixin,
+                          views.PermissionMixin, TemplateView):
+    title = _('Remove admin role')
+    model = get_role_model()
+    success_url = '../..'
+    template_name = 'authentic2/manager/role_remove_admin_role.html'
+    permissions = 'a2_rbac.change_role'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.child = self.get_queryset().get(pk=kwargs['role_pk'])
+        return super(RoleRemoveAdminRoleView, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        ctx = super(RoleRemoveAdminRoleView, self).get_context_data(**kwargs)
+        ctx['child'] = self.child
+        return ctx
+
+    def post(self, request, *args, **kwargs):
+        self.object.get_admin_role().remove_child(self.child)
+        return redirect(self.request, self.success_url)
+
+remove_admin_role = RoleRemoveAdminRoleView.as_view()
+
+
+class RoleAddAdminUserView(views.AjaxFormViewMixin, views.TitleMixin,
+                       views.PermissionMixin, SingleObjectMixin, FormView):
+    title = _('Add admin user')
+    model = get_role_model()
+    form_class = forms.UsersForm
+    success_url = '..'
+    template_name = 'authentic2/manager/form.html'
+    permissions = 'a2_rbac.change_role'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super(RoleAddAdminUserView, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        for user in form.cleaned_data['users']:
+            self.get_object().get_admin_role().members.add(user)
+        return super(RoleAddAdminUserView, self).form_valid(form)
+
+add_admin_user = RoleAddAdminUserView.as_view()
+
+
+class RoleRemoveAdminUserView(views.TitleMixin, views.AjaxFormViewMixin, SingleObjectMixin,
+                          views.PermissionMixin, TemplateView):
+    title = _('Remove admin user')
+    model = get_role_model()
+    success_url = '../..'
+    template_name = 'authentic2/manager/role_remove_admin_user.html'
+    permissions = 'a2_rbac.change_role'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.user = get_user_model().objects.get(pk=kwargs['user_pk'])
+        return super(RoleRemoveAdminUserView, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        ctx = super(RoleRemoveAdminUserView, self).get_context_data(**kwargs)
+        ctx['user'] = self.user
+        return ctx
+
+    def post(self, request, *args, **kwargs):
+        self.object.get_admin_role().members.remove(self.user)
+        return redirect(self.request, self.success_url)
+
+remove_admin_user = RoleRemoveAdminUserView.as_view()

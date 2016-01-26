@@ -6,6 +6,12 @@
   <a href="#">{{ object }}</a>
 {% endblock %}
 
+{% block page_title %}{% trans "Role" %}&nbsp;-&nbsp;{{ title }}{% endblock %}
+
+{% block sidebar %}
+<p>{{ object.description }}</p>
+{% endblock %}
+
 {% block appbar %}
   {{ block.super }}
   {% if not object.is_internal and view.can_delete %}
@@ -31,9 +37,6 @@
       {% endif %}
     {% endif %}
   {% endif %}
-  {% if not object.has_self_administration %}
-    <a href="{% url "a2-manager-role-managers" pk=object.pk %}">{% trans "Managers" %}</a>
-  {% endif %}
 {% endblock %}
 
 
@@ -56,8 +59,41 @@
            <button>{% trans "Add" %}</button>
    </form>
  {% endif %}
- <h2>{% trans "Inheritance" %}</h2>
- <div class=role-inheritance">
+ <fieldset class="gadjo-foldable gadjo-folded" id="other-properties">
+ <legend class="gadjo-foldable-widget">{% trans "Advanced parameters" %}</legend>
+ <div class="role-inheritance gadjo-folding">
+   {% trans "Is administered by users" %}
+   {% for user in object.get_admin_role.all_members %}
+     <a href="{% url "a2-manager-user-edit" pk=user.pk %}">{{ user.get_full_name }}</a>
+     {% if user.direct %}
+       <a rel="popup" href="{% url "a2-manager-role-remove-admin-user" pk=object.pk user_pk=user.pk %}" class="role-remove icon-minus-sign"></a>
+     {% else %}
+       <a title="{% trans "Indirect child role" %}" class="disabled role-remove icon-minus-sign"></a>
+     {% endif %}
+   {% endfor %}
+  {% if view.can_change %}
+    <a rel="popup" href="{% url "a2-manager-role-add-admin-user" pk=object.pk %}" class="role-add icon-add-sign"></a>
+  {% else %}
+    <a title="{% trans "Permission denied" %}" class="disabled role-add icon-add-sign"></a>
+  {% endif %}
+ </div>
+ <div class="role-inheritance gadjo-folding">
+   {% trans "Is administered by roles" %}
+   {% for role in admin_roles %}
+     <a href="{% url "a2-manager-role-members" pk=role.pk %}">{{ role }}</a>
+     {% if role.direct %}
+       <a rel="popup" href="{% url "a2-manager-role-remove-admin-role" pk=object.pk role_pk=role.pk %}" class="role-remove icon-minus-sign"></a>
+     {% else %}
+       <a title="{% trans "Indirect admin role" %}" class="disabled role-remove icon-minus-sign"></a>
+     {% endif %}
+   {% endfor %}
+  {% if view.can_change %}
+    <a rel="popup" href="{% url "a2-manager-role-add-admin-role" pk=object.pk %}" class="role-add icon-add-sign"></a>
+  {% else %}
+    <a title="{% trans "Permission denied" %}" class="disabled role-add icon-add-sign"></a>
+  {% endif %}
+ </div>
+ <div class="role-inheritance gadjo-folding">
    {% trans "Child roles:" %}
    {% for child in children %}
      <a href="{% url "a2-manager-role-members" pk=child.pk %}">{{ child }}</a>
@@ -73,7 +109,7 @@
     <a title="{% trans "Permission denied" %}" class="disabled role-add icon-add-sign"></a>
   {% endif %}
  </div>
- <div class="role-inheritance">
+ <div class="role-inheritance gadjo-folding">
    {% trans "Parent roles:" %}
    {% for parent in parents %}
      <a class="role" href="{% url "a2-manager-role-members" pk=parent.pk %}">{{ parent }}</a>
@@ -89,5 +125,6 @@
      <a title="{% trans "This role is technical, you cannot modify its permissions." %}" class="disabled role-add icon-add-sign"></a>
    {% endif %}
  </div>
+ </fieldset>
 </div>
 {% endblock %}

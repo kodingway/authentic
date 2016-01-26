@@ -35,8 +35,6 @@ urlpatterns = required(
             role_views.export, name='a2-manager-roles-export'),
         url(r'^roles/(?P<pk>\d+)/$', role_views.members,
             name='a2-manager-role-members'),
-        url(r'^roles/(?P<pk>\d+)/children/$', role_views.children,
-            name='a2-manager-role-children'),
         url(r'^roles/(?P<pk>\d+)/add-child/$', role_views.add_child,
             name='a2-manager-role-add-child'),
         url(r'^roles/(?P<pk>\d+)/add-parent/$', role_views.add_parent,
@@ -45,6 +43,17 @@ urlpatterns = required(
             role_views.remove_child, name='a2-manager-role-remove-child'),
         url(r'^roles/(?P<pk>\d+)/remove-parent/(?P<parent_pk>\d+)/$',
             role_views.remove_parent, name='a2-manager-role-remove-parent'),
+
+        url(r'^roles/(?P<pk>\d+)/add-admin-user/$', role_views.add_admin_user,
+            name='a2-manager-role-add-admin-user'),
+        url(r'^roles/(?P<pk>\d+)/remove-admin-user/(?P<user_pk>\d+)/$',
+            role_views.remove_admin_user, name='a2-manager-role-remove-admin-user'),
+
+        url(r'^roles/(?P<pk>\d+)/add-admin-role/$', role_views.add_admin_role,
+            name='a2-manager-role-add-admin-role'),
+        url(r'^roles/(?P<pk>\d+)/remove-admin-role/(?P<role_pk>\d+)/$',
+            role_views.remove_admin_role, name='a2-manager-role-remove-admin-role'),
+
         url(r'^roles/(?P<pk>\d+)/export/(?P<format>csv|json|html|ods)/$',
             role_views.members_export,
             name='a2-manager-role-members-export'),
@@ -54,11 +63,6 @@ urlpatterns = required(
             name='a2-manager-role-edit'),
         url(r'^roles/(?P<pk>\d+)/permissions/$', role_views.permissions,
             name='a2-manager-role-permissions'),
-
-        url(r'^roles/(?P<pk>\d+)/managers/roles/$', role_views.managers_roles,
-            name='a2-manager-role-manager-roles'),
-        url(r'^roles/(?P<pk>\d+)/managers/$', role_views.managers,
-            name='a2-manager-role-managers'),
 
 
         # Authentic2 organizational units
@@ -78,18 +82,6 @@ urlpatterns = required(
             name='a2-manager-service'),
         url(r'^services/(?P<service_pk>\d+)/edit/$', service_views.edit,
             name='a2-manager-service-edit'),
-        url(r'^services/(?P<service_pk>\d+)/(?P<pk>\d+)/$',
-            service_views.role_members,
-            name='a2-manager-service-role-members'),
-        url(r'^services/(?P<service_pk>\d+)/(?P<pk>\d+)/children/$',
-            service_views.role_children,
-            name='a2-manager-service-role-children'),
-        url(r'^services/(?P<service_pk>\d+)/(?P<pk>\d+)/managers/$',
-            service_views.role_managers,
-            name='a2-manager-service-role-managers'),
-        url(r'^services/(?P<service_pk>\d+)/(?P<pk>\d+)/managers/roles/$',
-            service_views.role_managers_roles,
-            name='a2-manager-service-role-managers-roles'),
 
         # backoffice menu as json
         url(r'^menu.json$', views.menu_json),

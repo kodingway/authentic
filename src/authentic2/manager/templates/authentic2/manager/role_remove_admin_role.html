@@ -1,0 +1,23 @@
+{% extends "authentic2/manager/sidebar.html" %}
+{% load i18n %}
+
+{% block messages %}
+{% endblock %}
+
+{% block main %}
+  {% if title %}
+    <div id="appbar"><h2>{{ title }}</h2></div>
+  {% endif %}
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-inner-container">
+      {% block caption %}
+      <p>{% blocktrans %}Do you want to remove admin role {{ child }} ?{% endblocktrans %}</p>
+      {% endblock %}
+      <div class="buttons">
+        <button>{% trans "Remove" %}</button>
+        <a class="cancel" href="..">{% trans "Cancel" %}</a>
+      </div>
+    </div>
+  </form>
+{% endblock %}
