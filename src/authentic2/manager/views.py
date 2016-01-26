@@ -290,7 +290,7 @@ class SubTableViewMixin(FormatsContextData, PermissionMixin,
 class SimpleSubTableView(SubTableViewMixin, TemplateView):
     pass
 
-class BaseSubTableView(SubTableViewMixin, FormView):
+class BaseSubTableView(TitleMixin, SubTableViewMixin, FormView):
     success_url = '.'
 
 
