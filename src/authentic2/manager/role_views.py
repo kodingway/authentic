@@ -105,6 +105,9 @@ class RoleMembersView(views.HideOUColumnMixin, RoleViewMixin, views.BaseSubTable
     search_form_class = forms.UserSearchForm
     permissions = ['a2_rbac.view_role']
 
+    def get_title(self):
+        return self.object
+
     def get_table_queryset(self):
         return self.object.all_members()
 
