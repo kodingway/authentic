@@ -748,10 +748,15 @@ msgstr "Déconnexion"
 msgid "Email change"
 msgstr "Changer d'adresse de courriel"
 
-#: authentic2/templates/authentic2/change_email.html:15
+#: templates/authentic2/change_email.html:15
 #, python-format
-msgid "Your current email is %(email)s"
-msgstr "Votre adresse de courriel actuelle est %(email)s"
+msgid ""
+"Your current email is %(email)s.\n"
+"  An email will be sent to validate the new one."
+msgstr ""
+"Votre adresse actuelle est %(email)s.\n"
+"La nouvelle adresse souhaitée pour votre compte sera vérifiée "
+"par l'envoi d'un courriel."
 
 #: authentic2/templates/authentic2/change_email.html:19
 msgid "Validate"
