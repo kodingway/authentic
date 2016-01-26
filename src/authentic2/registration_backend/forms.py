@@ -27,7 +27,7 @@ class RegistrationForm(Form):
     error_css_class = 'form-field-error'
     required_css_class = 'form-field-required'
 
-    email = EmailField()
+    email = EmailField(label=_('Email'))
 
     def clean_email(self):
         """
