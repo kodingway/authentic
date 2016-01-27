@@ -22,7 +22,7 @@ class SecurityCheckMixin(object):
         app_label = model._meta.app_label
         model_name = model._meta.model_name
         return ['%s.%s_%s' % (app_label, perm, model_name)
-                 for perm in ['change', 'add', 'view', 'delete']]
+                 for perm in self.operations]
 
     def security_check(self, request, *args, **kwargs):
         model = self.queryset.model
