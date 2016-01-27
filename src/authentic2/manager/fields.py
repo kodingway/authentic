@@ -79,6 +79,18 @@ class ChooseUserField(SecurityCheckMixin, SplitSearchTermMixin,
         return (NO_ERR_RESP, False, utils.search_user(term))
 
 
+class ChooseUsersField(SecurityCheckMixin, SplitSearchTermMixin,
+                      AutoModelSelect2MultipleField):
+    queryset = get_user_model().objects
+    search_fields = [
+        'username__icontains', 'first_name__icontains',
+        'last_name__icontains', 'email__icontains'
+    ]
+
+    def get_results(self, request, term, page, context):
+        return (NO_ERR_RESP, False, utils.search_user(term))
+
+
 class GroupsField(SecurityCheckMixin, SplitSearchTermMixin,
                   AutoModelSelect2MultipleField):
     queryset = Group.objects
