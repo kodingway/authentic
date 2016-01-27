@@ -278,7 +278,7 @@ class RoleAddParentView(views.AjaxFormViewMixin, views.TitleMixin,
                         SingleObjectMixin, FormView):
     title = _('Add parent role')
     model = get_role_model()
-    form_class = forms.RoleForm
+    form_class = forms.RolesForChangeForm
     success_url = '..'
     template_name = 'authentic2/manager/form.html'
 
@@ -287,10 +287,8 @@ class RoleAddParentView(views.AjaxFormViewMixin, views.TitleMixin,
         return super(RoleAddParentView, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        if not self.request.user.has_perm('a2_rbac.change_role',
-                                          form.cleaned_data['role']):
-            raise PermissionDenied
-        self.get_object().add_parent(form.cleaned_data['role'])
+        for role in form.cleaned_data['roles']:
+            self.get_object().add_parent(roles)
         return super(RoleAddParentView, self).form_valid(form)
 
 add_parent = RoleAddParentView.as_view()
