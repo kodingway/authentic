@@ -138,6 +138,16 @@ class ChooseRoleField(RoleLabelMixin, SecurityCheckMixin, SplitSearchTermMixin,
     ]
 
 
+class ChooseRolesField(RoleLabelMixin, SecurityCheckMixin, SplitSearchTermMixin,
+                      AutoModelSelect2MultipleField):
+    queryset = get_role_model().objects.filter(admin_scope_ct__isnull=True)
+    search_fields = [
+        'name__icontains',
+        'service__name__icontains',
+    ]
+
+
+
 class ChooseOUField(SecurityCheckMixin, SplitSearchTermMixin,
                     AutoModelSelect2Field):
     queryset = get_ou_model().objects
