@@ -87,6 +87,10 @@ class ChooseRoleForm(CssClass, forms.Form):
     action = forms.CharField(initial='add', widget=forms.HiddenInput)
 
 
+class UsersForm(CssClass, forms.Form):
+    users = fields.ChooseUsersField(label=_('Add some users'))
+
+
 class RoleForm(CssClass, forms.Form):
     role = fields.ChooseRoleField(label=_('Add a role'))
 
