@@ -257,7 +257,7 @@ class RoleAddChildView(views.AjaxFormViewMixin, views.TitleMixin,
                        views.PermissionMixin, SingleObjectMixin, FormView):
     title = _('Add child role')
     model = get_role_model()
-    form_class = forms.RoleForm
+    form_class = forms.RolesForm
     success_url = '..'
     template_name = 'authentic2/manager/form.html'
     permissions = 'a2_rbac.change_role'
@@ -267,7 +267,8 @@ class RoleAddChildView(views.AjaxFormViewMixin, views.TitleMixin,
         return super(RoleAddChildView, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        self.get_object().add_child(form.cleaned_data['role'])
+        for role in form.cleaned_data['roles']:
+            self.get_object().add_child(role)
         return super(RoleAddChildView, self).form_valid(form)
 
 add_child = RoleAddChildView.as_view()
