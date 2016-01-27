@@ -80,7 +80,7 @@
             var $content = $response.find('#content .content');
             var $container = $('#content .content');
             $container.replaceWith($content);
-            $(window.document).trigger('manager:update-content');
+            $(window.document).trigger('gadjo:content-update');
           });
         }
         window.update_content = update_content;
@@ -195,6 +195,6 @@
         if ($('#search-form').length) {
             window.history.replaceState({'form': '#search-form', 'values': $('#search-form').values()}, window.document.title, window.location.href)
         }
-        $(window.document).trigger('manager:update-content');
+        $(window.document).trigger('gadjo:content-update');
     });
 })(jQuery, window)
