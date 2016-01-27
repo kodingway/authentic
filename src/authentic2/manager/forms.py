@@ -99,6 +99,10 @@ class RolesForm(CssClass, forms.Form):
     roles = fields.ChooseRolesField(label=_('Add some roles'))
 
 
+class RolesForChangeForm(CssClass, forms.Form):
+    roles = fields.ChooseRolesForChangeField(label=_('Add some roles'))
+
+
 class ChooseUserRoleForm(CssClass, forms.Form):
     role = fields.ChooseUserRoleField(label=_('Add a role'))
     action = forms.CharField(initial='add', widget=forms.HiddenInput)
