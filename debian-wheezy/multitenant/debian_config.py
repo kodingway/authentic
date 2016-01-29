@@ -37,6 +37,15 @@ LOGGING['loggers']['django_select2'] = {
     'level': 'WARNING',
 }
 
+# Rest Authentication Class for services access
+from django.core.exceptions import ImproperlyConfigured
+
+try:
+    import hobo.rest_authentication
+    REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] += ('hobo.rest_authentication.PublikAuthentication',)
+except ImportError:
+    raise ImproperlyConfigured('Unable to install PublikAuthentication for django-rest-framework')
+
 # HOBO Skeletons
 
 HOBO_SKELETONS_DIR = os.path.join(VAR_DIR, 'skeletons')
