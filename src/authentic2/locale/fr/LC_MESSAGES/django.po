@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-15 16:23+0100\n"
+"POT-Creation-Date: 2016-01-28 09:57+0100\n"
 "PO-Revision-Date: 2015-02-26 17:53+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -61,12 +61,12 @@ msgstr "domaine"
 
 #: authentic2/admin.py:169 authentic2/admin.py:207
 msgid "You must at least give a username or an email to your user"
-msgstr ""
+msgstr "Un utilisateur doit au minimum posséder un email ou un identifiant."
 
 #: authentic2/admin.py:172 authentic2/admin.py:209
 #: authentic2/auth_frontends.py:18 authentic2/forms.py:13
 #: authentic2/registration_backend/forms.py:76
-#: authentic2/registration_backend/forms.py:193
+#: authentic2/registration_backend/forms.py:205
 #: authentic2/templates/authentic2/login_password_profile.html:2
 msgid "Password"
 msgstr "Mot de passe"
@@ -187,15 +187,15 @@ msgstr "Identifiants uniques des rôles"
 
 #: authentic2/attributes_ng/sources/django_user.py:35
 msgid "Role slugs from same organizational unit as the service"
-msgstr ""
+msgstr "Identifiants des rôles de la même collectivité que le service"
 
 #: authentic2/attributes_ng/sources/django_user.py:36
 msgid "Role names from same organizational unit as the service"
-msgstr ""
+msgstr "Nom des rôles de la même collectivité que le service"
 
 #: authentic2/attributes_ng/sources/django_user.py:37
 msgid "Role uuids from same organizational unit as the service"
-msgstr ""
+msgstr "UUID des rôles de la même collectivité que le service"
 
 #: authentic2/attributes_ng/sources/service_roles.py:28
 msgid "role attribute"
@@ -516,7 +516,7 @@ msgstr "application"
 msgid "base service models"
 msgstr "applications"
 
-#: authentic2/profile_forms.py:17
+#: authentic2/profile_forms.py:17 authentic2/registration_backend/forms.py:30
 msgid "Email"
 msgstr "Courriel"
 
@@ -537,8 +537,8 @@ msgstr "obligation de changement de mot de passe"
 #: authentic2/tests/test_all.py:1176
 msgid "A mail was sent to you with instructions to reset your password"
 msgstr ""
-"Un courriel vous a été envoyé avec des instructions pour ré-initialiser votre "
-"mot de passe."
+"Un courriel vous a été envoyé avec des instructions pour ré-initialiser "
+"votre mot de passe."
 
 #: authentic2/profile_views.py:85
 msgid "User not found"
@@ -550,7 +550,8 @@ msgstr "Votre lien de ré-initialisation de mot de passe est invalid ou expiré.
 
 #: authentic2/profile_views.py:94
 msgid "Account has no password, you cannot reset it."
-msgstr "Le compte n'a pas de mot de passe, vous ne pouvez donc pas le ré-initialiser."
+msgstr ""
+"Le compte n'a pas de mot de passe, vous ne pouvez donc pas le ré-initialiser."
 
 #: authentic2/profile_views.py:102
 msgid "Enter new password"
@@ -576,17 +577,17 @@ msgstr ""
 "Cet identifiant est déjà utilisé. Utilisez s'il vous plait un autre "
 "identifiant."
 
-#: authentic2/registration_backend/forms.py:157
-#: authentic2/registration_backend/forms.py:171
+#: authentic2/registration_backend/forms.py:169
+#: authentic2/registration_backend/forms.py:183
 msgid "New password"
 msgstr "Nouveau mot de passe"
 
-#: authentic2/registration_backend/forms.py:165
-#: authentic2/registration_backend/forms.py:180
+#: authentic2/registration_backend/forms.py:177
+#: authentic2/registration_backend/forms.py:192
 msgid "New password must differ from old password"
 msgstr "Le nouveau mot de passe doit être différent de l'ancien."
 
-#: authentic2/registration_backend/forms.py:202
+#: authentic2/registration_backend/forms.py:214
 msgid "Password is invalid"
 msgstr "Le mot de passe est invalide"
 
@@ -748,17 +749,17 @@ msgstr "Déconnexion"
 msgid "Email change"
 msgstr "Changer d'adresse de courriel"
 
-#: templates/authentic2/change_email.html:15
+#: authentic2/templates/authentic2/change_email.html:15
 #, python-format
 msgid ""
 "Your current email is %(email)s.\n"
 "  An email will be sent to validate the new one."
 msgstr ""
 "Votre adresse actuelle est %(email)s.\n"
-"La nouvelle adresse souhaitée pour votre compte sera vérifiée "
-"par l'envoi d'un courriel."
+"La nouvelle adresse souhaitée pour votre compte sera vérifiée par l'envoi "
+"d'un courriel."
 
-#: authentic2/templates/authentic2/change_email.html:19
+#: authentic2/templates/authentic2/change_email.html:20
 msgid "Validate"
 msgstr "Valider"
 
@@ -857,6 +858,19 @@ msgstr "Continuer la déconnexion"
 #: authentic2/templates/authentic2/logout_confirm.html:13
 msgid "You are going to do a global logout, do you want to continue ?"
 msgstr "Vous avez demandé une déconnexion globale, voulez-vous continuer ?"
+
+#: authentic2/templates/authentic2/password_change_body.txt:1
+#, python-format
+msgid ""
+"Password of account %(user)s has been changed.\n"
+"\n"
+"If you did not ask for this change, please refer to your administrator."
+msgstr ""
+
+#: authentic2/templates/authentic2/password_change_subject.txt:1
+#, python-format
+msgid "Password changed on %(host)s for account %(user)s"
+msgstr "Mot de passe du compte %(user)s modifié sur %(host)s"
 
 #: authentic2/templates/authentic2/unused_account_alert_body.txt:1
 #, python-format
@@ -999,6 +1013,8 @@ msgid ""
 "    the new password and confirm it.\n"
 "    "
 msgstr ""
+"Pour modifier votre mot de passe vous devez fournir votre mot de passe "
+"actuel ainsi que le nouveau, puis confirmer ce dernier."
 
 #: authentic2/templates/registration/password_change_form.html:21
 #: authentic2/templates/registration/password_reset_confirm.html:16
@@ -1097,11 +1113,11 @@ msgstr "créez un nouveau compte"
 msgid "Please fill the form to complete your registration"
 msgstr "Veuillez remplir le formulaire afin de finir l'enregistrement"
 
-#: authentic2/utils.py:447
+#: authentic2/utils.py:448
 msgid "The form was out of date, please try again."
 msgstr "Ce formulaire était périmé, veuillez ré-essayer."
 
-#: authentic2/utils.py:582
+#: authentic2/utils.py:587
 msgid ""
 "Your user is already switched, go to your account page and come back to your "
 "original user to do it again."
@@ -1109,17 +1125,17 @@ msgstr ""
 "Vous avez déjà procédé à une reconnexion, veuillez allez sur « Mon compte » "
 "pour vous reconnecter avec votre utilisateur d'origine."
 
-#: authentic2/utils.py:598
+#: authentic2/utils.py:603
 #, python-format
 msgid "Successfully switched to user %s"
 msgstr "Re-connexion avec l'utilisateur « %s » réussie"
 
-#: authentic2/utils.py:614
+#: authentic2/utils.py:619
 #, python-format
 msgid "Successfully switched back to user %s"
 msgstr "Re-connexion avec l'utilisateur « %s » réussie"
 
-#: authentic2/utils.py:618
+#: authentic2/utils.py:623
 msgid "No user to switch back to"
 msgstr ""
 
@@ -1224,37 +1240,16 @@ msgstr ""
 "Votre demande de changement d'adresse de courriel concerne un utilisateur "
 "inconnu."
 
-#: authentic2/views.py:459
+#: authentic2/views.py:462
 msgid "Logging out from all your services"
 msgstr "Déconnexion de toutes vos applications"
 
-#: authentic2/views.py:464
+#: authentic2/views.py:488
 msgid "You have been logged out"
 msgstr "Vous avez été déconnecté."
 
-#: authentic2/views.py:501
+#: authentic2/views.py:524
 msgid "The page is out of date, it was reloaded for you"
 msgstr ""
 "Cette page est périmée car vous vous êtes connecté entre temps; nous l'avons "
 "rechargé pour vous."
-
-#~ msgid "Versatile Identity Management Server"
-#~ msgstr "Serveur de gestion d'identité versatile"
-
-#~ msgid "Hello %(username)s."
-#~ msgstr "Bonjour %(username)s"
-
-#~ msgid "Authentic"
-#~ msgstr "Authentic"
-
-#~ msgid "Account Management"
-#~ msgstr "Gestion de votre compte"
-
-#~ msgid "Homepage"
-#~ msgstr "Accueil"
-
-#~ msgid "Account data"
-#~ msgstr "Données du compte"
-
-#~ msgid "Switch back"
-#~ msgstr "Me re-connecter avec mon utilisateur d'origine"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: authentic2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-15 16:23+0100\n"
+"POT-Creation-Date: 2016-01-28 09:57+0100\n"
 "PO-Revision-Date: 2015-06-17 23:47+0200\n"
 "Last-Translator: Benjamin Dauvergne <bdauvergne@entrouvert.com>\n"
 "Language-Team: French <fr@li.org>\n"
@@ -21,80 +21,88 @@ msgstr ""
 msgid "Add an user"
 msgstr "Ajouter un utilisateur"
 
-#: authentic2/manager/forms.py:86 authentic2/manager/forms.py:91
-#: authentic2/manager/forms.py:95
+#: authentic2/manager/forms.py:86 authentic2/manager/forms.py:95
+#: authentic2/manager/forms.py:107
 msgid "Add a role"
 msgstr "Ajouter un rôle"
 
-#: authentic2/manager/forms.py:101
+#: authentic2/manager/forms.py:91
+msgid "Add some users"
+msgstr "Ajouter des utilisateurs"
+
+#: authentic2/manager/forms.py:99 authentic2/manager/forms.py:103
+msgid "Add some roles"
+msgstr "Ajouter des rôles"
+
+#: authentic2/manager/forms.py:113
 msgid "Operation"
 msgstr "Opération"
 
-#: authentic2/manager/forms.py:104 authentic2/manager/forms.py:286
-#: authentic2/manager/forms.py:303 authentic2/manager/forms.py:337
+#: authentic2/manager/forms.py:116 authentic2/manager/forms.py:298
+#: authentic2/manager/forms.py:315 authentic2/manager/forms.py:349
 #: authentic2/manager/templates/authentic2/manager/service.html:15
 msgid "Organizational unit"
 msgstr "Collectivité"
 
-#: authentic2/manager/forms.py:108
+#: authentic2/manager/forms.py:120
 msgid "Target object"
 msgstr "Objet ciblé"
 
-#: authentic2/manager/forms.py:135 authentic2/manager/forms.py:237
+#: authentic2/manager/forms.py:147 authentic2/manager/forms.py:249
 msgid "You must set a username or an email."
 msgstr "Vous devez au moins définir soit un identifiant soit un courriel."
 
-#: authentic2/manager/forms.py:145
+#: authentic2/manager/forms.py:157
 msgid "The two password fields didn't match."
 msgstr "Les deux champs mot de passe ne correspondent pas."
 
-#: authentic2/manager/forms.py:164
+#: authentic2/manager/forms.py:176
 msgid "You must choose password generation or type a new  one"
 msgstr ""
 "Vous devez choisir entre la génération d'un mot de passe ou en définir un "
 "nouveau."
 
-#: authentic2/manager/forms.py:170
+#: authentic2/manager/forms.py:182
 msgid "User does not have a mail, we cannot send the informations to him."
 msgstr ""
 "L'utilisateur n'a pas d'adresse de courriel, nous ne pouvons donc pas "
 "envoyer lui envoyer les informations."
 
-#: authentic2/manager/forms.py:200
+#: authentic2/manager/forms.py:212
 msgid "Generate new password"
 msgstr "Générer un mot de passe"
 
-#: authentic2/manager/forms.py:203
+#: authentic2/manager/forms.py:215
 msgid "Password"
 msgstr "Mot de passe"
 
-#: authentic2/manager/forms.py:207
+#: authentic2/manager/forms.py:219
 msgid "Confirmation"
 msgstr "Confirmation"
 
-#: authentic2/manager/forms.py:209
+#: authentic2/manager/forms.py:221
 msgid "Enter the same password as above, for verification."
 msgstr "Entrez le même mot de passe qu'au dessus, pour validation."
 
-#: authentic2/manager/forms.py:213
+#: authentic2/manager/forms.py:225
 msgid "Send informations to user"
 msgstr "Envoyer les informations à l'utilisateur"
 
-#: authentic2/manager/forms.py:229
+#: authentic2/manager/forms.py:241
 msgid "Ask for password reset on next login"
 msgstr "Doit changer de mot de passe à la prochaine connexion"
 
-#: authentic2/manager/forms.py:262 authentic2/manager/forms.py:299
-#: authentic2/manager/forms.py:325
+#: authentic2/manager/forms.py:274 authentic2/manager/forms.py:311
+#: authentic2/manager/forms.py:337
 #: authentic2/manager/templates/authentic2/manager/service.html:18
 msgid "Name"
 msgstr "Nom"
 
-#: authentic2/manager/forms.py:350
+#: authentic2/manager/forms.py:362
 msgid "This name is not unique over this organizational unit."
 msgstr ""
 
-#: authentic2/manager/forms.py:361 authentic2/manager/tables.py:47
+#: authentic2/manager/forms.py:373 authentic2/manager/tables.py:47
 #: authentic2/manager/tables.py:71 authentic2/manager/tables.py:99
 #: authentic2/manager/tables.py:117
 msgid "label"
@@ -109,7 +117,7 @@ msgstr ""
 "Vous ne pouvez pas supprimer la collectivité par défaut, vous devez d'abord "
 "endéfinir une nouvelle."
 
-#: authentic2/manager/role_views.py:65
+#: authentic2/manager/role_views.py:66
 #: authentic2/manager/templates/authentic2/manager/role_add.html:4
 #: authentic2/manager/templates/authentic2/manager/role_add.html:9
 #: authentic2/manager/templates/authentic2/manager/role_add.html:13
@@ -117,39 +125,55 @@ msgstr ""
 msgid "Add role"
 msgstr "Ajouter un rôle"
 
-#: authentic2/manager/role_views.py:92
+#: authentic2/manager/role_views.py:93
 msgid "Edit role description"
 msgstr "Modifier la description du rôle"
 
-#: authentic2/manager/role_views.py:117
+#: authentic2/manager/role_views.py:121
 msgid "User already in this role."
 msgstr "L'utilisateur a déjà ce rôle."
 
-#: authentic2/manager/role_views.py:124 authentic2/manager/role_views.py:166
-#: authentic2/manager/role_views.py:209 authentic2/manager/user_views.py:313
+#: authentic2/manager/role_views.py:128 authentic2/manager/role_views.py:173
+#: authentic2/manager/role_views.py:216 authentic2/manager/user_views.py:322
 msgid "You are not authorized"
 msgstr "Vous n'êtes pas autorisé."
 
-#: authentic2/manager/role_views.py:159
+#: authentic2/manager/role_views.py:166
 #, python-format
 msgid "Role \"%s\" is already a child of this role."
 msgstr "Le rôle « %s » descend déjà de ce rôle."
 
-#: authentic2/manager/role_views.py:255
+#: authentic2/manager/role_views.py:235
 msgid "Add child role"
 msgstr "Ajouter un rôle comme membre"
 
-#: authentic2/manager/role_views.py:275
+#: authentic2/manager/role_views.py:256
 msgid "Add parent role"
 msgstr "Ajouter ce rôle comme membre"
 
-#: authentic2/manager/role_views.py:297
+#: authentic2/manager/role_views.py:276
 msgid "Remove child role"
 msgstr "Supprimer un rôle membre"
 
-#: authentic2/manager/role_views.py:322
+#: authentic2/manager/role_views.py:301
 msgid "Remove parent role"
 msgstr "Supprimer ce rôle comme membre"
+
+#: authentic2/manager/role_views.py:327
+msgid "Add admin role"
+msgstr "Ajouter un rôle gestionnaire"
+
+#: authentic2/manager/role_views.py:348
+msgid "Remove admin role"
+msgstr "Supprimer un rôle gestionnaire"
+
+#: authentic2/manager/role_views.py:373
+msgid "Add admin user"
+msgstr "Ajouter un utilisateur gestionnaire"
+
+#: authentic2/manager/role_views.py:394
+msgid "Remove admin user"
+msgstr "Supprimer un rôle gestionnaire"
 
 #: authentic2/manager/service_views.py:42
 msgid "Edit service"
@@ -208,10 +232,8 @@ msgid "Logout"
 msgstr "Déconnexion"
 
 #: authentic2/manager/templates/authentic2/manager/base.html:53
-#, fuzzy
-#| msgid "Confirmation"
 msgid "Administration"
-msgstr "Confirmation"
+msgstr "Gestion"
 
 #: authentic2/manager/templates/authentic2/manager/change-password-notification_body.txt:1
 #, python-format
@@ -241,17 +263,18 @@ msgstr ""
 
 #: authentic2/manager/templates/authentic2/manager/delete.html:18
 #: authentic2/manager/templates/authentic2/manager/ou_delete.html:18
-#: authentic2/manager/templates/authentic2/manager/role_children.html:13
-#: authentic2/manager/templates/authentic2/manager/role_members.html:12
-#: authentic2/manager/templates/authentic2/manager/role_members.html:14
+#: authentic2/manager/templates/authentic2/manager/role_members.html:18
+#: authentic2/manager/templates/authentic2/manager/role_members.html:20
 #: authentic2/manager/templates/authentic2/manager/role_permissions.html:13
-#: authentic2/manager/user_views.py:121
+#: authentic2/manager/user_views.py:124
 msgid "Delete"
 msgstr "Supprimer"
 
 #: authentic2/manager/templates/authentic2/manager/delete.html:19
 #: authentic2/manager/templates/authentic2/manager/form.html:58
 #: authentic2/manager/templates/authentic2/manager/ou_delete.html:19
+#: authentic2/manager/templates/authentic2/manager/role_remove_admin_role.html:19
+#: authentic2/manager/templates/authentic2/manager/role_remove_admin_user.html:19
 #: authentic2/manager/templates/authentic2/manager/role_remove_child.html:19
 #: authentic2/manager/templates/authentic2/manager/role_remove_parent.html:19
 msgid "Cancel"
@@ -265,7 +288,7 @@ msgstr "Exporter"
 msgid "Save"
 msgstr "Sauvegarder"
 
-#: authentic2/manager/templates/authentic2/manager/form.html:64
+#: authentic2/manager/templates/authentic2/manager/form.html:65
 msgid "Actions"
 msgstr "Actions"
 
@@ -273,7 +296,7 @@ msgstr "Actions"
 msgid ""
 "Here you can manage objects related to organizational units, users, roles "
 "and applications."
-msgstr ""
+msgstr "Gérer les collectivités, les utilisateurs, les rôles et les services"
 
 #: authentic2/manager/templates/authentic2/manager/homepage.html:16
 #: authentic2/manager/templates/authentic2/manager/ou_common.html:4
@@ -300,7 +323,7 @@ msgstr "Utilisateurs"
 #: authentic2/manager/templates/authentic2/manager/role_common.html:4
 #: authentic2/manager/templates/authentic2/manager/role_common.html:8
 #: authentic2/manager/templates/authentic2/manager/role_edit.html:8
-#: authentic2/manager/templates/authentic2/manager/user_edit.html:15
+#: authentic2/manager/templates/authentic2/manager/user_edit.html:31
 #: authentic2/manager/templates/authentic2/manager/user_ou_roles.html:8
 #: authentic2/manager/templates/authentic2/manager/user_ou_roles.html:12
 #: authentic2/manager/templates/authentic2/manager/user_roles.html:8
@@ -367,67 +390,6 @@ msgstr ""
 msgid "Add %(model_name)s"
 msgstr "Ajouter un objet « %(model_name)s »"
 
-#: authentic2/manager/templates/authentic2/manager/role_children.html:7
-#: authentic2/manager/templates/authentic2/manager/role_permissions.html:19
-#: authentic2/manager/templates/authentic2/manager/service_role_children.html:7
-#: authentic2/manager/templates/authentic2/manager/service_role_members.html:14
-#: authentic2/manager/templates/authentic2/service_role_members.html:13
-msgid "Children roles"
-msgstr "Rôles descendants"
-
-#: authentic2/manager/templates/authentic2/manager/role_children.html:16
-#: authentic2/manager/templates/authentic2/manager/role_members.html:17
-#: authentic2/manager/templates/authentic2/manager/role_members.html:23
-#: authentic2/manager/templates/authentic2/manager/role_members.html:28
-#: authentic2/manager/templates/authentic2/manager/role_permissions.html:16
-#: authentic2/manager/templates/authentic2/manager/service.html:23
-msgid "Edit"
-msgstr "Éditer"
-
-#: authentic2/manager/templates/authentic2/manager/role_children.html:18
-#: authentic2/manager/templates/authentic2/manager/role_members.html:19
-#: authentic2/manager/templates/authentic2/manager/role_members.html:25
-#: authentic2/manager/templates/authentic2/manager/role_members.html:30
-#: authentic2/manager/templates/authentic2/manager/role_permissions.html:7
-msgid "Permissions"
-msgstr "Permissions"
-
-#: authentic2/manager/templates/authentic2/manager/role_children.html:20
-#: authentic2/manager/templates/authentic2/manager/role_managers.html:7
-#: authentic2/manager/templates/authentic2/manager/role_managers_roles.html:13
-#: authentic2/manager/templates/authentic2/manager/role_members.html:35
-#: authentic2/manager/templates/authentic2/manager/role_permissions.html:17
-#: authentic2/manager/templates/authentic2/manager/service_role_children.html:13
-#: authentic2/manager/templates/authentic2/manager/service_role_managers.html:7
-#: authentic2/manager/templates/authentic2/manager/service_role_managers_roles.html:12
-#: authentic2/manager/templates/authentic2/manager/service_role_members.html:12
-#: authentic2/manager/templates/authentic2/service_role_managers.html:7
-#: authentic2/manager/templates/authentic2/service_role_managers.html:11
-#: authentic2/manager/templates/authentic2/service_role_members.html:11
-msgid "Managers"
-msgstr "Gestionnaires"
-
-#: authentic2/manager/templates/authentic2/manager/role_children.html:22
-#: authentic2/manager/templates/authentic2/manager/role_permissions.html:20
-#: authentic2/manager/templates/authentic2/manager/service_role_children.html:15
-msgid "Members"
-msgstr "Membres"
-
-#: authentic2/manager/templates/authentic2/manager/role_children.html:40
-#: authentic2/manager/templates/authentic2/manager/role_managers.html:30
-#: authentic2/manager/templates/authentic2/manager/role_managers_roles.html:32
-#: authentic2/manager/templates/authentic2/manager/role_members.html:56
-#: authentic2/manager/templates/authentic2/manager/role_permissions.html:31
-#: authentic2/manager/templates/authentic2/manager/service_role_children.html:31
-#: authentic2/manager/templates/authentic2/manager/service_role_managers.html:29
-#: authentic2/manager/templates/authentic2/manager/service_role_managers_roles.html:28
-#: authentic2/manager/templates/authentic2/manager/service_role_members.html:32
-#: authentic2/manager/templates/authentic2/manager/user_roles.html:39
-#: authentic2/manager/templates/authentic2/service_role_managers.html:34
-#: authentic2/manager/templates/authentic2/service_role_members.html:33
-msgid "Add"
-msgstr "Ajouter"
-
 #: authentic2/manager/templates/authentic2/manager/role_children_table.html:10
 #, python-format
 msgid ""
@@ -442,6 +404,7 @@ msgid "Edit role"
 msgstr "Éditer le rôle"
 
 #: authentic2/manager/templates/authentic2/manager/role_edit.html:10
+#: authentic2/manager/templates/authentic2/manager/user_edit.html:39
 msgid "Modify"
 msgstr "Modifier"
 
@@ -449,52 +412,84 @@ msgstr "Modifier"
 msgid "Modify role"
 msgstr "Modifier le rôle"
 
-#: authentic2/manager/templates/authentic2/manager/role_managers.html:12
-#: authentic2/manager/templates/authentic2/manager/role_managers_roles.html:7
-#: authentic2/manager/templates/authentic2/manager/service_role_managers.html:12
-#: authentic2/manager/templates/authentic2/manager/service_role_managers_roles.html:7
-#: authentic2/manager/templates/authentic2/service_role_managers.html:16
-msgid "Manager roles"
-msgstr "Rôles gestionnaires"
+#: authentic2/manager/templates/authentic2/manager/role_members.html:9
+msgid "Role"
+msgstr "Rôle"
 
-#: authentic2/manager/templates/authentic2/manager/role_members.html:14
+#: authentic2/manager/templates/authentic2/manager/role_members.html:20
 msgid "This role is technical, you cannot delete it."
 msgstr "Ce rôle est interne, vous ne pouvez pas le supprimer."
 
 #: authentic2/manager/templates/authentic2/manager/role_members.html:23
+#: authentic2/manager/templates/authentic2/manager/role_members.html:29
+#: authentic2/manager/templates/authentic2/manager/role_members.html:34
+#: authentic2/manager/templates/authentic2/manager/role_permissions.html:16
+#: authentic2/manager/templates/authentic2/manager/service.html:23
+msgid "Edit"
+msgstr "Éditer"
+
 #: authentic2/manager/templates/authentic2/manager/role_members.html:25
-#: authentic2/manager/templates/authentic2/manager/role_members.html:73
+#: authentic2/manager/templates/authentic2/manager/role_members.html:31
+#: authentic2/manager/templates/authentic2/manager/role_members.html:36
+#: authentic2/manager/templates/authentic2/manager/role_permissions.html:7
+msgid "Permissions"
+msgstr "Permissions"
+
+#: authentic2/manager/templates/authentic2/manager/role_members.html:29
+#: authentic2/manager/templates/authentic2/manager/role_members.html:31
+#: authentic2/manager/templates/authentic2/manager/role_members.html:77
+#: authentic2/manager/templates/authentic2/manager/role_members.html:93
+#: authentic2/manager/templates/authentic2/manager/role_members.html:109
 msgid "Permission denied"
 msgstr "Vous n'êtes pas autorisé."
 
-#: authentic2/manager/templates/authentic2/manager/role_members.html:28
+#: authentic2/manager/templates/authentic2/manager/role_members.html:34
 msgid "This role is technical, you cannot edit it."
 msgstr "Ce rôle est interne, vous ne pouvez pas l'éditer."
 
-#: authentic2/manager/templates/authentic2/manager/role_members.html:30
-#: authentic2/manager/templates/authentic2/manager/role_members.html:89
+#: authentic2/manager/templates/authentic2/manager/role_members.html:36
+#: authentic2/manager/templates/authentic2/manager/role_members.html:125
 msgid "This role is technical, you cannot modify its permissions."
 msgstr "Ce rôle est interne, vous ne pouvez pas en modifier les permissions."
 
 #: authentic2/manager/templates/authentic2/manager/role_members.html:59
-msgid "Inheritance"
-msgstr "Inclusion de rôles"
+#: authentic2/manager/templates/authentic2/manager/role_permissions.html:29
+#: authentic2/manager/templates/authentic2/manager/user_roles.html:39
+msgid "Add"
+msgstr "Ajouter"
 
-#: authentic2/manager/templates/authentic2/manager/role_members.html:61
-msgid "Child roles:"
-msgstr "Contient les membres des rôles :"
+#: authentic2/manager/templates/authentic2/manager/role_members.html:63
+msgid "Advanced parameters"
+msgstr "Paramètres avancés"
 
-#: authentic2/manager/templates/authentic2/manager/role_members.html:67
+#: authentic2/manager/templates/authentic2/manager/role_members.html:65
+msgid "Is administered by users"
+msgstr "Est géré par le(s) utilisateurs(s)"
+
+#: authentic2/manager/templates/authentic2/manager/role_members.html:71
+#: authentic2/manager/templates/authentic2/manager/role_members.html:103
 msgid "Indirect child role"
 msgstr "Héritage indirect"
 
-#: authentic2/manager/templates/authentic2/manager/role_members.html:77
+#: authentic2/manager/templates/authentic2/manager/role_members.html:81
+msgid "Is administered by roles"
+msgstr "Est géré par le(s) rôle(s)"
+
+#: authentic2/manager/templates/authentic2/manager/role_members.html:87
+msgid "Indirect admin role"
+msgstr "rôle hérité"
+
+#: authentic2/manager/templates/authentic2/manager/role_members.html:97
+msgid "Child roles:"
+msgstr "Contient les membres des rôles :"
+
+#: authentic2/manager/templates/authentic2/manager/role_members.html:113
 msgid "Parent roles:"
 msgstr "Contient les permissions des rôles :"
 
-#: authentic2/manager/templates/authentic2/manager/role_members.html:83
+#: authentic2/manager/templates/authentic2/manager/role_members.html:119
 msgid "Indirect parent role"
-msgstr "Héritage indirect"
+msgstr "rôle hérité"
 
 #: authentic2/manager/templates/authentic2/manager/role_members_table.html:10
 #, python-format
@@ -505,15 +500,32 @@ msgstr ""
 "Souhaitez-vous vraiment retirer le rôle « %(object)s » à l'utilisateur "
 "« %(username)s » ?"
 
-#: authentic2/manager/templates/authentic2/manager/role_remove_child.html:15
-#, python-format
-msgid "Do you want to remove child role %(child)s ?"
-msgstr "Souhaitez-vous vraiment retirer ce rôle au rôle %(child)s ?"
+#: authentic2/manager/templates/authentic2/manager/role_permissions.html:18
+msgid "Members"
+msgstr "Membres"
 
+#: authentic2/manager/templates/authentic2/manager/role_remove_admin_role.html:15
+#, python-format
+msgid "Do you want to remove admin role %(child)s ?"
+msgstr "Souhaitez-vous vraiment retirer le rôle %(child)s des gestionnaires ?"
+
+#: authentic2/manager/templates/authentic2/manager/role_remove_admin_role.html:18
+#: authentic2/manager/templates/authentic2/manager/role_remove_admin_user.html:18
 #: authentic2/manager/templates/authentic2/manager/role_remove_child.html:18
 #: authentic2/manager/templates/authentic2/manager/role_remove_parent.html:18
 msgid "Remove"
 msgstr "Retirer"
+
+#: authentic2/manager/templates/authentic2/manager/role_remove_admin_user.html:15
+#, python-format
+msgid "Do you want to remove admin user %(user)s ?"
+msgstr ""
+"Souhaitez-vous vraiment retirer l'utilisateur %(user)s des gestionnaires ?"
+
+#: authentic2/manager/templates/authentic2/manager/role_remove_child.html:15
+#, python-format
+msgid "Do you want to remove child role %(child)s ?"
+msgstr "Souhaitez-vous vraiment retirer ce rôle au rôle %(child)s ?"
 
 #: authentic2/manager/templates/authentic2/manager/role_remove_parent.html:15
 #, python-format
@@ -530,26 +542,20 @@ msgid "Slug"
 msgstr "Code court"
 
 #: authentic2/manager/templates/authentic2/manager/user_edit.html:5
-#: authentic2/manager/user_views.py:90
 msgid "Edit user"
 msgstr "Éditer l'utilisateur"
 
-#: authentic2/manager/templates/authentic2/manager/user_edit.html:5
-#: authentic2/manager/user_views.py:90
-msgid "Edit user %s"
-msgstr "Éditer l'utilisateur %s"
-
-#: authentic2/manager/templates/authentic2/manager/user_edit.html:20
+#: authentic2/manager/templates/authentic2/manager/user_edit.html:16
 msgid "UUID"
 msgstr "Identifiant unique"
 
-#: authentic2/manager/templates/authentic2/manager/user_edit.html:27
+#: authentic2/manager/templates/authentic2/manager/user_edit.html:23
 msgid "User must change its password on next access to authentic"
 msgstr ""
 "L'utilisateur devra changer son mot de passe lors de sa prochaine "
 "utilisation du service"
 
-#: authentic2/manager/templates/authentic2/manager/user_edit.html:28
+#: authentic2/manager/templates/authentic2/manager/user_edit.html:24
 msgid "Cancel this constraint"
 msgstr "Annuler cette contrainte"
 
@@ -574,61 +580,66 @@ msgstr "Créer un nouvel utilisateur"
 msgid "Create"
 msgstr "Créer"
 
-#: authentic2/manager/user_views.py:107
+#: authentic2/manager/user_views.py:98
+#, python-format
+msgid "Edit user %s"
+msgstr "Éditer l'utilisateur %s"
+
+#: authentic2/manager/user_views.py:110
 msgid "Reset password"
 msgstr "Ré-initialiser le mot de passe"
 
-#: authentic2/manager/user_views.py:109
+#: authentic2/manager/user_views.py:112
 msgid "Deactivate"
 msgstr "Désactiver"
 
-#: authentic2/manager/user_views.py:111
+#: authentic2/manager/user_views.py:114
 msgid "Activate"
 msgstr "Activer"
 
-#: authentic2/manager/user_views.py:115
+#: authentic2/manager/user_views.py:118
 msgid "Force password change on next login"
 msgstr "Forcer le changement de mot de passe au prochain login"
 
-#: authentic2/manager/user_views.py:117 authentic2/manager/user_views.py:230
+#: authentic2/manager/user_views.py:120 authentic2/manager/user_views.py:233
 msgid "Change user password"
 msgstr "Changer le mot de passe"
 
-#: authentic2/manager/user_views.py:122
+#: authentic2/manager/user_views.py:125
 #, python-format
 msgid "Do you really want to delete \"%s\" ?"
 msgstr "Souhaitez-vous vraiment supprimer \"%s\" ?"
 
-#: authentic2/manager/user_views.py:125
+#: authentic2/manager/user_views.py:128
 msgid "Impersonate this user"
 msgstr "Se re-connecter avec cet utilisateur"
 
-#: authentic2/manager/user_views.py:136
+#: authentic2/manager/user_views.py:139
 msgid "You cannot desactivate your own user"
 msgstr "Vous ne pouvez pas désactiver votre propre utilisateur."
 
-#: authentic2/manager/user_views.py:152
+#: authentic2/manager/user_views.py:155
 msgid ""
 "User has no email, it'not possible to send him am email to reset its password"
 msgstr ""
 "Cet utilisateur n'a pas d'adresse de courriel, il n'est pas possible de lui "
 "envoyer un lien de réinitialisation de son mot de passe"
 
-#: authentic2/manager/user_views.py:176
+#: authentic2/manager/user_views.py:179
 #, python-format
 msgid "A mail was sent to %s"
 msgstr "Un courrier électronique a été envoyé à %s."
 
-#: authentic2/manager/user_views.py:235
+#: authentic2/manager/user_views.py:238
 #, python-format
 msgid "New password sent to %s"
 msgstr "Nouveau mot de passe envoyé à %s."
 
-#: authentic2/manager/user_views.py:237
+#: authentic2/manager/user_views.py:240
 msgid "New password set"
 msgstr "Nouveau mot de passe défini."
 
-#: authentic2/manager/user_views.py:306
+#: authentic2/manager/user_views.py:315
 #, python-brace-format
 msgid "User {user} has already the role {role}."
 msgstr "L'utilisateur {user} possède déjà le rôle {role}."
@@ -647,22 +658,3 @@ msgstr "Ajouter l'objet « %s »"
 #, python-format
 msgid "Edit %s"
 msgstr "Éditer l'objet « %s »"
-
-#~ msgid "Management"
-#~ msgstr "Gestion"
-
-#~ msgid "Identity and access management"
-#~ msgstr "Gestion des identités et des accès"
-
-#~ msgid "Welcome"
-#~ msgstr "Bienvenue"
-
-#~ msgid "Password change"
-#~ msgstr "Changer le mot de passe"
-
-#~ msgid "This role is technical, you cannot change its managers."
-#~ msgstr ""
-#~ "Ce rôle est interne, vous ne pouvez pas en changer les gestionnaires."
-
-#~ msgid "Role \"%(name)s\""
-#~ msgstr "Rôle « %(name)s »"
