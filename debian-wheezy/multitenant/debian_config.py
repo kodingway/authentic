@@ -43,6 +43,7 @@ from django.core.exceptions import ImproperlyConfigured
 try:
     import hobo.rest_authentication
     REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] += ('hobo.rest_authentication.PublikAuthentication',)
+    HOBO_ANONYMOUS_SERVICE_USER_CLASS = 'hobo.rest_authentication.AnonymousAuthenticServiceUser'
 except ImportError:
     raise ImproperlyConfigured('Unable to install PublikAuthentication for django-rest-framework')
 
