@@ -295,6 +295,7 @@ class BaseUserSerializer(serializers.ModelSerializer):
 class UsersAPI(ModelViewSet):
     filter_fields = ['username', 'first_name', 'last_name']
     ordering_fields = ['username', 'first_name', 'last_name']
+    lookup_field = 'uuid'
 
     def get_serializer_class(self):
         attributes = Attribute.objects.all()

@@ -187,7 +187,7 @@ def test_api_users_create(app, user):
         assert AttributeValue.objects.with_owner(new_user).count() == 1
         assert AttributeValue.objects.with_owner(new_user)[0].attribute == at
         assert json.loads(AttributeValue.objects.with_owner(new_user)[0].content) == payload['title']
-        resp2 = app.get('/api/users/%s/' % resp.json['id'])
+        resp2 = app.get('/api/users/%s/' % resp.json['uuid'])
         assert resp.json == resp2.json
 
 def test_api_role_add_member(app, user, role, member):
