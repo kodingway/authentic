@@ -550,7 +550,7 @@ def send_registration_mail(request, email, template_names, next_url=None,
     activate_url = request.build_absolute_uri(reverse('registration_activate',
                            kwargs={'registration_token': registration_token}))
     # ctx for rendering the templates
-    ctx = ctx.copy()
+    ctx = (ctx or {}).copy()
     ctx.update({
         'registration_url': activate_url,
         'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
