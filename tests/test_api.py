@@ -2,6 +2,7 @@
 
 import json
 import pytest
+import re
 
 from authentic2_provisionning_ldap.ldap_utils import Slapd, has_slapd
 from django.contrib.auth import get_user_model
@@ -9,6 +10,7 @@ from django.core.exceptions import ImproperlyConfigured
 from authentic2.a2_rbac.utils import get_default_ou
 from django_rbac.utils import get_ou_model, get_role_model
 from authentic2.models import Service
+from django.core import mail
 
 pytestmark = pytest.mark.django_db
 
@@ -190,6 +192,37 @@ def test_api_users_create(app, user):
         resp2 = app.get('/api/users/%s/' % resp.json['uuid'])
         assert resp.json == resp2.json
 
+def test_api_users_create_send_mail(app, settings, superuser):
+    from django.contrib.auth import get_user_model
+    from authentic2.models import Attribute, AttributeValue
+
+    # Use case is often that Email is the main identifier
+    settings.A2_EMAIL_IS_UNIQUE = True
+    at = Attribute.objects.create(kind='title', name='title', label='title')
+
+    app.authorization = ('Basic', (superuser.username, superuser.username))
+    payload = {
+        'ou': None,
+        'username': 'john.doe',
+        'first_name': 'John',
+        'last_name': 'Doe',
+        'email': 'john.doe@example.net',
+        'password': 'password',
+        'title': 'Mr',
+        'send_registration_email': True,
+    }
+    assert len(mail.outbox) == 0
+    resp = app.post_json('/api/users/', payload, status=201)
+    user_id = resp.json['id']
+    assert len(mail.outbox) == 1
+    # Follow activation link
+    assert re.findall('http://[^ ]*/', mail.outbox[0].body)
+    url = re.findall('http://[^ ]*/', mail.outbox[0].body)[0]
+    relative_url = url.split('localhost:80')[1]
+    resp = app.get(relative_url)
+    # Check user was properly logged in
+    assert app.session['_auth_user_id'] == user_id
+
 def test_api_role_add_member(app, user, role, member):
     app.authorization = ('Basic', (user.username, user.username))
     payload = {
@@ -218,7 +251,7 @@ def test_api_role_remove_member(app, user, role, member):
     app.authorization = ('Basic', (user.username, user.username))
 
     authorized = user.is_superuser or user.has_perm('a2_rbac.change_role', role)
-    
+
     if member.username == 'fake' or role.name == 'fake':
         status = 404
     elif authorized :
@@ -227,7 +260,7 @@ def test_api_role_remove_member(app, user, role, member):
         status = 403
 
     resp = app.delete_json('/api/roles/{0}/members/{1}/'.format(role.uuid, member.uuid), status=status)
-  
+
     if status == 404:
         pass
     elif authorized :

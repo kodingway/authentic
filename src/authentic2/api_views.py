@@ -253,16 +253,30 @@ class BaseUserSerializer(serializers.ModelSerializer):
         required=False, allow_null=True, default=get_default_ou)
     date_joined = serializers.DateTimeField(read_only=True)
     last_login = serializers.DateTimeField(read_only=True)
+    send_registration_email = serializers.BooleanField(write_only=True, required=False,
+                                                       default=False)
+    send_registration_email_next_url = serializers.URLField(write_only=True, required=False)
 
     def check_perm(self, perm, ou):
         self.context['view'].check_perm(perm, ou)
 
     def create(self, validated_data):
         extra_field = {}
+        send_registration_email = validated_data.pop('send_registration_email', False)
+        send_registration_email_next_url = validated_data.pop('send_registration_email_next_url',
+                                                              None)
         for at in Attribute.objects.all():
             if at.name in validated_data:
                 extra_field[at.name] = validated_data.pop(at.name)
         self.check_perm('custom_user.add_user', validated_data.get('ou'))
+        if send_registration_email and validated_data.get('email'):
+            try:
+                registration_template = ['authentic2/activation_email']
+                utils.send_registration_mail(self.context['request'], self.validated_data['email'],
+                                             registration_template,
+                                             next_url=send_registration_email_next_url)
+            except smtplib.SMTPException, e:
+                raise serializers.ValidationError('mail sending failed')
         instance = super(BaseUserSerializer, self).create(validated_data)
         for key, value in extra_field.iteritems():
             setattr(instance, key, value)
