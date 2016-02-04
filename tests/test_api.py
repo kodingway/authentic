@@ -207,7 +207,6 @@ def test_api_users_create_send_mail(app, settings, superuser):
         'first_name': 'John',
         'last_name': 'Doe',
         'email': 'john.doe@example.net',
-        'password': 'password',
         'title': 'Mr',
         'send_registration_email': True,
     }

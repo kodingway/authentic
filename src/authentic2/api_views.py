@@ -20,6 +20,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework import permissions, status
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.fields import CreateOnlyDefault
 
 from . import utils, decorators
 from .models import Attribute, AttributeValue
@@ -256,6 +257,9 @@ class BaseUserSerializer(serializers.ModelSerializer):
     send_registration_email = serializers.BooleanField(write_only=True, required=False,
                                                        default=False)
     send_registration_email_next_url = serializers.URLField(write_only=True, required=False)
+    password = serializers.CharField(max_length=128,
+                                     default=CreateOnlyDefault(utils.generate_password),
+                                     required=False)
 
     def check_perm(self, perm, ou):
         self.context['view'].check_perm(perm, ou)
