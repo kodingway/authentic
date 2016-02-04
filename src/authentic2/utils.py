@@ -32,6 +32,10 @@ from django.utils.formats import localize
 from django.contrib import messages
 from django.utils.functional import empty
 from django.template import RequestContext
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+
 
 try:
     from django.core.exceptions import FieldDoesNotExist
@@ -594,6 +598,47 @@ def send_registration_mail(request, email, template_names, next_url=None,
         'site': request.get_host()
     })
     send_templated_mail(email, template_names, ctx)
+
+
+def send_password_reset_mail(user, template_names=None, request=None,
+                             token_generator=default_token_generator, from_email=None,
+                             next_url=None, context=None,
+                             legacy_subject_templates=['registration/password_reset_subject.txt'],
+                             legacy_body_templates=['registration/password_reset_email.html'],
+                             **kwargs):
+    from . import middleware
+
+    if not user.email:
+        raise ValueError('user must have an email')
+    logger = logging.getLogger(__name__)
+    if not template_names:
+        template_names = 'authentic2/password_reset'
+    if not request:
+        request = middleware.StoreRequestMiddleware().get_request()
+
+    ctx = {}
+    ctx.update(context or {})
+    ctx.update({
+        'user': user,
+        'email': user.email,
+        'expiration_days': settings.PASSWORD_RESET_TIMEOUT_DAYS,
+    })
+
+    # Build reset URL
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    token = token_generator.make_token(user)
+    reset_url = reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token})
+    if request:
+        reset_url = request.build_absolute_uri(reset_url)
+    if next_url:
+        reset_url += '?' + urllib.urlencode({'next': next_url})
+    ctx['reset_url'] = reset_url
+
+    send_templated_mail(user.email, template_names, ctx, request=request, 
+                        legacy_subject_templates=legacy_subject_templates,
+                        legacy_body_templates=legacy_body_templates, **kwargs)
+    logger.info(u'password reset requests for %s, email sent to %s '
+                'with token %s...', user, user.email, token[:9])
 
 
 def batch(iterable, size):
