@@ -274,7 +274,9 @@ class BaseUserSerializer(serializers.ModelSerializer):
                 registration_template = ['authentic2/activation_email']
                 utils.send_registration_mail(self.context['request'], self.validated_data['email'],
                                              registration_template,
-                                             next_url=send_registration_email_next_url)
+                                             next_url=send_registration_email_next_url,
+                                             ctx={
+                                                 'password': validated_data['password']})
             except smtplib.SMTPException, e:
                 raise serializers.ValidationError('mail sending failed')
         instance = super(BaseUserSerializer, self).create(validated_data)
