@@ -521,6 +521,11 @@ def sso(request):
     else:
         logger.debug('no nameID policy format')
         nid_format = policy.default_name_id_format or 'transient'
+        if not name_id_policy:
+            logger.debug('no nameID policy at all')
+            login.request.nameIdPolicy = lasso.Samlp2NameIDPolicy()
+            name_id_policy = login.request.nameIdPolicy
+        name_id_policy.format = NAME_ID_FORMATS[nid_format]['samlv2']
         logger.debug('set nameID policy format %s' % nid_format)
     return sso_after_process_request(request, login, nid_format=nid_format)
 
