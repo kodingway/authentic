@@ -229,7 +229,7 @@ class AttributeValue(models.Model):
 
 class PasswordReset(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
-            verbose_name=_('user'))
+            verbose_name=_('user'), unique=True)
 
     def save(self, *args, **kwargs):
         if self.user_id and not self.user.has_usable_password():
