@@ -14,17 +14,6 @@ from . import cbv, profile_forms, utils
 class PasswordResetView(cbv.NextURLViewMixin, FormView):
     '''Ask for an email and send a password reset link by mail'''
     form_class = profile_forms.PasswordResetForm
-    email_template_name = [
-        'authentic2/password_reset_email_body.txt',
-        'registration/password_reset_email.html',
-    ]
-    html_email_template_name = [
-        'authentic2/password_reset_email_body.html',
-    ]
-    subject_template_name = [
-        'authentic2/password_reset_email_subject.txt',
-        'registration/password_reset_subject.txt',
-    ]
 
     def get_template_names(self):
         return [
@@ -38,16 +27,7 @@ class PasswordResetView(cbv.NextURLViewMixin, FormView):
         return ctx
 
     def form_valid(self, form):
-        opts = {
-            'use_https': self.request.is_secure(),
-            'token_generator': default_token_generator,
-            'from_email': None,
-            'email_template_name': self.email_template_name,
-            'subject_template_name': self.subject_template_name,
-            'request': self.request,
-            'html_email_template_name': self.html_email_template_name,
-        }
-        form.save(**opts)
+        form.save()
         # return to next URL
         messages.info(self.request, _('A mail was sent to you with '
                                       'instructions to reset your password'))
