@@ -1,5 +1,8 @@
+import re
 import pytest
+
 from django.core.urlresolvers import reverse
+from django.core import mail
 
 from django_rbac.utils import get_ou_model, get_role_model
 from utils import login
@@ -75,3 +78,21 @@ def test_manager_create_role(superuser_or_admin, app):
     assert len(options) == 3
     assert '---------' in options
     assert 'New OU' in options
+
+def test_manager_user_password_reset(app, superuser, simple_user):
+    resp = login(app, superuser, reverse('a2-manager-user-edit',
+                                                  kwargs={'pk': simple_user.pk}))
+    assert len(mail.outbox) == 0
+    resp = resp.form.submit('password_reset')
+    assert 'A mail was sent to' in resp
+    assert len(mail.outbox) == 1
+    body = mail.outbox[0].body
+    assert re.findall('http://[^ ]*/', body)
+    url = re.findall('http://[^ ]*/', body)[0]
+    relative_url = url.split('localhost:80')[1]
+    resp = app.get('/logout/').maybe_follow()
+    resp = app.get(relative_url, status=200)
+    resp.form.set('new_password1', '1234aA')
+    resp.form.set('new_password2', '1234aA')
+    resp = resp.form.submit().follow()
+    assert app.session['_auth_user_id'] == simple_user.pk

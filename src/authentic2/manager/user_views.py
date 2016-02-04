@@ -14,7 +14,7 @@ from django.views.generic import View
 
 from authentic2.constants import SWITCH_USER_SESSION_KEY
 from authentic2.models import Attribute, PasswordReset
-from authentic2.utils import switch_user
+from authentic2.utils import switch_user, send_password_reset_mail
 from authentic2.a2_rbac.utils import get_default_ou
 from django_rbac.utils import get_role_model, get_role_parenting_model, get_ou_model
 
@@ -147,35 +147,19 @@ class UserEditView(PassRequestToFormMixin, OtherActionsMixin,
         return HttpResponseRedirect('..')
 
     def action_password_reset(self, request, *args, **kwargs):
-        # FIXME: a bit hacky, could break if PasswordResetForm implementation
-        # changes copied from django.contrib.auth.views and
-        # django.contrib.auth.forms
         user = self.object
         if not user.email:
             messages.info(request, _('User has no email, it\'not possible to '
                                      'send him am email to reset its '
                                      'password'))
             return
-        site_name = domain = request.get_host()
-        context = {
-            'email': user.email,
-            'domain': domain,
-            'site_name': site_name,
-            'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-            'user': user,
-            'token': default_token_generator.make_token(user),
-            'protocol': 'https' if request.is_secure() else 'http',
-        }
 
-        subject_template_name = 'registration/password_reset_subject.txt'
-        email_template_name = 'registration/password_reset_email.html'
-
-        self.send_mail(subject_template_name, email_template_name,
-                       context, user.email)
         # An user without a password cannot reset it
         if not user.has_usable_password():
             user.set_password(uuid.uuid4().hex)
             user.save()
+
+        send_password_reset_mail(user, request=request)
         messages.info(request, _('A mail was sent to %s') % self.object.email)
 
     def action_delete_password_reset(self, request, *args, **kwargs):
