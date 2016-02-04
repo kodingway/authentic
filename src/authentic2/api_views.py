@@ -287,6 +287,9 @@ class BaseUserSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         extra_field = {}
+        # Remove unused fields
+        validated_data.pop('send_registration_email', False)
+        validated_data.pop('send_registration_email_next_url', None)
         for at in Attribute.objects.all():
             if at.name in validated_data:
                 extra_field[at.name] = validated_data.pop(at.name)
