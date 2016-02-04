@@ -497,7 +497,7 @@ def get_fields_and_labels(*args):
 
 
 def send_templated_mail(user_or_email, template_names, ctx, with_html=True, from_email=None,
-                        **kwargs):
+                        request=None, **kwargs):
     '''Send mail to an user by using templates:
        - <template_name>_subject.txt for the subject
        - <template_name>_body.txt for the plain text body
@@ -508,7 +508,8 @@ def send_templated_mail(user_or_email, template_names, ctx, with_html=True, from
         template_names = [template_names]
     if hasattr(user_or_email, 'email'):
         user_or_email = user_or_email.email
-    request = middleware.StoreRequestMiddleware().get_request()
+    if not request:
+        request = middleware.StoreRequestMiddleware().get_request()
     if request:
         ctx = RequestContext(request, ctx)
     subject_template_names = [template_name + '_subject.txt' for template_name in template_names]
