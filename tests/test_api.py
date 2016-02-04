@@ -12,6 +12,8 @@ from django_rbac.utils import get_ou_model, get_role_model
 from authentic2.models import Service
 from django.core import mail
 
+from utils import login
+
 pytestmark = pytest.mark.django_db
 
 
@@ -221,6 +223,29 @@ def test_api_users_create_send_mail(app, settings, superuser):
     resp = app.get(relative_url)
     # Check user was properly logged in
     assert app.session['_auth_user_id'] == user_id
+
+def test_api_users_create_force_password_reset(app, client, settings, superuser):
+    from django.contrib.auth import get_user_model
+    from authentic2.models import Attribute, AttributeValue
+
+    app.authorization = ('Basic', (superuser.username, superuser.username))
+    payload = {
+        'ou': None,
+        'username': 'john.doe',
+        'first_name': 'John',
+        'last_name': 'Doe',
+        'email': 'john.doe@example.net',
+        'password': '1234',
+        'force_password_reset': True,
+    }
+    app.post_json('/api/users/', payload, status=201)
+    # Verify password reset is enforced on next login
+    resp = login(app, 'john.doe', path='/', password='1234').follow()
+    resp.form.set('old_password', '1234')
+    resp.form.set('new_password1', '1234aB')
+    resp.form.set('new_password2', '1234aB')
+    resp = resp.form.submit('Submit').follow()
+    assert 'Password changed' in resp
 
 def test_api_role_add_member(app, user, role, member):
     app.authorization = ('Basic', (user.username, user.username))

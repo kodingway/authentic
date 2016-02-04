@@ -23,7 +23,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.fields import CreateOnlyDefault
 
 from . import utils, decorators
-from .models import Attribute, AttributeValue
+from .models import Attribute, AttributeValue, PasswordReset
 from .a2_rbac.utils import get_default_ou
 
 
@@ -260,6 +260,7 @@ class BaseUserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=128,
                                      default=CreateOnlyDefault(utils.generate_password),
                                      required=False)
+    force_password_reset = serializers.BooleanField(write_only=True, required=False, default=False)
 
     def check_perm(self, perm, ou):
         self.context['view'].check_perm(perm, ou)
@@ -269,6 +270,8 @@ class BaseUserSerializer(serializers.ModelSerializer):
         send_registration_email = validated_data.pop('send_registration_email', False)
         send_registration_email_next_url = validated_data.pop('send_registration_email_next_url',
                                                               None)
+        force_password_reset = validated_data.pop('force_password_reset', False)
+
         for at in Attribute.objects.all():
             if at.name in validated_data:
                 extra_field[at.name] = validated_data.pop(at.name)
@@ -280,6 +283,7 @@ class BaseUserSerializer(serializers.ModelSerializer):
                                              registration_template,
                                              next_url=send_registration_email_next_url,
                                              ctx={
+                                                 'force_password_reset': force_password_reset,
                                                  'password': validated_data['password']})
             except smtplib.SMTPException, e:
                 raise serializers.ValidationError('mail sending failed')
@@ -289,10 +293,13 @@ class BaseUserSerializer(serializers.ModelSerializer):
         if 'password' in validated_data:
             instance.set_password(validated_data['password'])
             instance.save()
+        if force_password_reset:
+            PasswordReset.objects.get_or_create(user=instance)
         return instance
 
     def update(self, instance, validated_data):
         extra_field = {}
+        force_password_reset = validated_data.pop('force_password_reset', False)
         # Remove unused fields
         validated_data.pop('send_registration_email', False)
         validated_data.pop('send_registration_email_next_url', None)
@@ -308,6 +315,8 @@ class BaseUserSerializer(serializers.ModelSerializer):
         if 'password' in validated_data:
             instance.set_password(validated_data['password'])
             instance.save()
+        if force_password_reset:
+            PasswordReset.objects.get_or_create(user=instance)
         return instance
 
     class Meta:
