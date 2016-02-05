@@ -1,4 +1,5 @@
 '''Views for Authentic2 API'''
+import logging
 import json
 import smtplib
 
@@ -267,6 +268,7 @@ class BaseUserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         extra_field = {}
+        original_data = validated_data.copy()
         send_registration_email = validated_data.pop('send_registration_email', False)
         send_registration_email_next_url = validated_data.pop('send_registration_email_next_url',
                                                               None)
@@ -276,17 +278,6 @@ class BaseUserSerializer(serializers.ModelSerializer):
             if at.name in validated_data:
                 extra_field[at.name] = validated_data.pop(at.name)
         self.check_perm('custom_user.add_user', validated_data.get('ou'))
-        if send_registration_email and validated_data.get('email'):
-            try:
-                registration_template = ['authentic2/activation_email']
-                utils.send_registration_mail(self.context['request'], self.validated_data['email'],
-                                             registration_template,
-                                             next_url=send_registration_email_next_url,
-                                             ctx={
-                                                 'force_password_reset': force_password_reset,
-                                                 'password': validated_data['password']})
-            except smtplib.SMTPException, e:
-                raise serializers.ValidationError('mail sending failed')
         instance = super(BaseUserSerializer, self).create(validated_data)
         for key, value in extra_field.iteritems():
             setattr(instance, key, value)
@@ -295,6 +286,19 @@ class BaseUserSerializer(serializers.ModelSerializer):
             instance.save()
         if force_password_reset:
             PasswordReset.objects.get_or_create(user=instance)
+        if send_registration_email and validated_data.get('email'):
+            try:
+                utils.send_password_reset_mail(instance,
+                                               template_names=['authentic2/api_user_create_registration_email',
+                                                               'authentic2/password_reset'],
+                                               request=self.context['request'],
+                                               next_url=send_registration_email_next_url,
+                                               context={
+                                                 'data': original_data,
+                                               })
+            except smtplib.SMTPException, e:
+                logging.getLogger(__name__).error(u'registration mail could not be sent to user %s '
+                                                  'created through API: %s', instance, e)
         return instance
 
     def update(self, instance, validated_data):

@@ -1,0 +1,1 @@
+{% load i18n %}{% blocktrans with hostname=request.get_host %}Your account was created on {{ hostname }}{% endblocktrans %}

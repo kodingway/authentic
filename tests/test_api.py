@@ -220,7 +220,11 @@ def test_api_users_create_send_mail(app, settings, superuser):
     assert re.findall('http://[^ ]*/', mail.outbox[0].body)
     url = re.findall('http://[^ ]*/', mail.outbox[0].body)[0]
     relative_url = url.split('localhost:80')[1]
-    resp = app.get(relative_url)
+    print relative_url
+    resp = app.get(relative_url, status=200)
+    resp.form.set('new_password1', '1234aA')
+    resp.form.set('new_password2', '1234aA')
+    resp = resp.form.submit().follow()
     # Check user was properly logged in
     assert app.session['_auth_user_id'] == user_id
 
