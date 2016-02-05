@@ -497,7 +497,8 @@ def get_fields_and_labels(*args):
 
 
 def send_templated_mail(user_or_email, template_names, ctx, with_html=True, from_email=None,
-                        request=None, **kwargs):
+                        request=None, legacy_subject_templates=None, legacy_body_templates=None,
+                        legacy_html_body_templates=None, **kwargs):
     '''Send mail to an user by using templates:
        - <template_name>_subject.txt for the subject
        - <template_name>_body.txt for the plain text body
@@ -512,14 +513,19 @@ def send_templated_mail(user_or_email, template_names, ctx, with_html=True, from
         request = middleware.StoreRequestMiddleware().get_request()
     if request:
         ctx = RequestContext(request, ctx)
+
     subject_template_names = [template_name + '_subject.txt' for template_name in template_names]
+    subject_template_names += legacy_subject_templates or []
     subject = render_to_string(subject_template_names, ctx).strip()
+
     body_template_names = [template_name + '_body.txt' for template_name in template_names]
+    body_template_names += legacy_body_templates or []
     body = render_to_string(body_template_names, ctx)
+
     html_body = None
+    html_body_template_names = [template_name + '_body.html' for template_name in template_names]
+    html_body_template_names += legacy_html_body_templates or []
     if with_html:
-        html_body_template_names = [template_name + '_body.html'
-                                    for template_name in template_names]
         try:
             html_body = render_to_string(html_body_template_names, ctx)
         except TemplateDoesNotExist:
