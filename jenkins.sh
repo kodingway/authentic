@@ -3,7 +3,9 @@
 set -e
 
 ./getlasso.sh
-pip install --upgrade 'pip<8'
+# SNI support for Debian
+pip install --upgrade pyOpenSSL ndg-httpsclient pyasn1
+pip install --upgrade pip
 pip install --upgrade pylint==1.4.0 astroid==1.3.2
 pip install --upgrade tox
 (pylint -f parseable --rcfile /var/lib/jenkins/pylint.django.rc src/authentic2/ | tee pylint.out) || /bin/true
