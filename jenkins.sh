@@ -8,7 +8,7 @@ pip install --upgrade pyOpenSSL ndg-httpsclient pyasn1
 pip install --upgrade pip
 pip install --upgrade pylint==1.4.0 astroid==1.3.2
 pip install --upgrade tox
-pip install -U 'virtualenv<14.0.4'
+pip install -U 'virtualenv<14'
 tox -r
 (pylint -f parseable --rcfile /var/lib/jenkins/pylint.django.rc src/authentic2/ | tee pylint.out) || /bin/true
 ./merge-junit-results.py rbac-django17.xml django17.xml  >junit.xml
