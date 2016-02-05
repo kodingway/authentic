@@ -1,9 +1,9 @@
 {% load i18n %}{% blocktrans with hostname=request.get_host %}A new account was created for you on {{ hostname }}{% endblocktrans %}
-{% if user.username %}
-	{% trans "Username" %} : {{ user.username }}{% endif %}
-	{% trans "Email" %} : {{ user.email }}
-	{% trans "First name" %} : {{ user.first_name }}
-	{% trans "Last name" %} : {{ user.last_name }}
+{% if data.username %}
+	{% trans "Username" %} : {{ data.username }}{% endif %}
+	{% trans "Email" %} : {{ data.email }}
+	{% trans "First name" %} : {{ data.first_name }}
+	{% trans "Last name" %} : {{ data.last_name }}
 
 {% blocktrans %}Please click on the following link to set your password:{% endblocktrans %}
 
