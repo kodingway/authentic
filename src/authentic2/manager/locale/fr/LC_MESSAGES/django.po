@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: authentic2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-28 09:57+0100\n"
+"POT-Creation-Date: 2016-02-05 16:43+0100\n"
 "PO-Revision-Date: 2015-06-17 23:47+0200\n"
 "Last-Translator: Benjamin Dauvergne <bdauvergne@entrouvert.com>\n"
 "Language-Team: French <fr@li.org>\n"
@@ -134,7 +134,7 @@ msgid "User already in this role."
 msgstr "L'utilisateur a déjà ce rôle."
 
 #: authentic2/manager/role_views.py:128 authentic2/manager/role_views.py:173
-#: authentic2/manager/role_views.py:216 authentic2/manager/user_views.py:322
+#: authentic2/manager/role_views.py:216 authentic2/manager/user_views.py:306
 msgid "You are not authorized"
 msgstr "Vous n'êtes pas autorisé."
 
@@ -601,7 +601,7 @@ msgstr "Activer"
 msgid "Force password change on next login"
 msgstr "Forcer le changement de mot de passe au prochain login"
 
-#: authentic2/manager/user_views.py:120 authentic2/manager/user_views.py:233
+#: authentic2/manager/user_views.py:120 authentic2/manager/user_views.py:217
 msgid "Change user password"
 msgstr "Changer le mot de passe"
 
@@ -618,28 +618,28 @@ msgstr "Se re-connecter avec cet utilisateur"
 msgid "You cannot desactivate your own user"
 msgstr "Vous ne pouvez pas désactiver votre propre utilisateur."
 
-#: authentic2/manager/user_views.py:155
+#: authentic2/manager/user_views.py:152
 msgid ""
 "User has no email, it'not possible to send him am email to reset its password"
 msgstr ""
 "Cet utilisateur n'a pas d'adresse de courriel, il n'est pas possible de lui "
 "envoyer un lien de réinitialisation de son mot de passe"
 
-#: authentic2/manager/user_views.py:179
+#: authentic2/manager/user_views.py:163
 #, python-format
 msgid "A mail was sent to %s"
 msgstr "Un courrier électronique a été envoyé à %s."
 
-#: authentic2/manager/user_views.py:238
+#: authentic2/manager/user_views.py:222
 #, python-format
 msgid "New password sent to %s"
 msgstr "Nouveau mot de passe envoyé à %s."
 
-#: authentic2/manager/user_views.py:240
+#: authentic2/manager/user_views.py:224
 msgid "New password set"
 msgstr "Nouveau mot de passe défini."
 
-#: authentic2/manager/user_views.py:315
+#: authentic2/manager/user_views.py:299
 #, python-brace-format
 msgid "User {user} has already the role {role}."
 msgstr "L'utilisateur {user} possède déjà le rôle {role}."

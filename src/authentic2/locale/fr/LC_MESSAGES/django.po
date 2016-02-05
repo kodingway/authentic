@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-28 09:57+0100\n"
+"POT-Creation-Date: 2016-02-05 16:43+0100\n"
 "PO-Revision-Date: 2015-02-26 17:53+0100\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -106,26 +106,26 @@ msgstr "Dates importantes"
 msgid "Attributes"
 msgstr "Attributs"
 
-#: authentic2/api_views.py:64
+#: authentic2/api_views.py:66
 msgid "you are not authorized to create users in this ou"
 msgstr "Vous n'êtes pas autorisé à vous inscrire dans cette collectivité."
 
-#: authentic2/api_views.py:71 authentic2/api_views.py:78
+#: authentic2/api_views.py:73 authentic2/api_views.py:80
 #: authentic2/tests/test_all.py:826 authentic2/tests/test_all.py:851
 #: authentic2/tests/test_all.py:977 authentic2/tests/test_all.py:1002
 msgid "You already have an account"
 msgstr "Vous avez déjà un compte."
 
-#: authentic2/api_views.py:74 authentic2/tests/test_all.py:838
+#: authentic2/api_views.py:76 authentic2/tests/test_all.py:838
 #: authentic2/tests/test_all.py:989
 msgid "Username is required in this ou"
 msgstr "L'identifiant est requis dans cette collectivité."
 
-#: authentic2/api_views.py:349
+#: authentic2/api_views.py:386
 msgid "User successfully added to role"
 msgstr "Utilisateur ajouté du rôle"
 
-#: authentic2/api_views.py:353
+#: authentic2/api_views.py:390
 msgid "User successfully removed from role"
 msgstr "Utilisateur retiré du rôle"
 
@@ -136,6 +136,7 @@ msgstr ""
 "caractères « @ », « . », « + », « - » et « _ »."
 
 #: authentic2/app_settings.py:117
+#: authentic2/templates/authentic2/api_registration_email_body.txt:3
 msgid "Username"
 msgstr "Identifiant"
 
@@ -516,7 +517,8 @@ msgstr "application"
 msgid "base service models"
 msgstr "applications"
 
-#: authentic2/profile_forms.py:17 authentic2/registration_backend/forms.py:30
+#: authentic2/profile_forms.py:12 authentic2/registration_backend/forms.py:30
+#: authentic2/templates/authentic2/api_registration_email_body.txt:4
 msgid "Email"
 msgstr "Courriel"
 
@@ -529,31 +531,31 @@ msgstr "Le compte n'a pas de mot de passe"
 msgid "Password changed"
 msgstr "Mot de passe modifié"
 
-#: authentic2/profile_views.py:37
+#: authentic2/profile_views.py:26
 msgid "Password reset"
 msgstr "obligation de changement de mot de passe"
 
-#: authentic2/profile_views.py:52 authentic2/tests/test_all.py:1163
+#: authentic2/profile_views.py:32 authentic2/tests/test_all.py:1163
 #: authentic2/tests/test_all.py:1176
 msgid "A mail was sent to you with instructions to reset your password"
 msgstr ""
 "Un courriel vous a été envoyé avec des instructions pour ré-initialiser "
 "votre mot de passe."
 
-#: authentic2/profile_views.py:85
+#: authentic2/profile_views.py:65
 msgid "User not found"
 msgstr "Utilisateur introuvable"
 
-#: authentic2/profile_views.py:89
+#: authentic2/profile_views.py:69
 msgid "You reset password link is invalid or has expired"
 msgstr "Votre lien de ré-initialisation de mot de passe est invalid ou expiré."
 
-#: authentic2/profile_views.py:94
+#: authentic2/profile_views.py:74
 msgid "Account has no password, you cannot reset it."
 msgstr ""
 "Le compte n'a pas de mot de passe, vous ne pouvez donc pas le ré-initialiser."
 
-#: authentic2/profile_views.py:102
+#: authentic2/profile_views.py:82
 msgid "Enter new password"
 msgstr "Entrez un nouveau mot de passe"
 
@@ -733,6 +735,29 @@ msgstr ""
 #: authentic2/templates/registration/activation_email_subject.txt:1
 msgid "Account activation on"
 msgstr "Activation du compte sur"
+
+#: authentic2/templates/authentic2/api_registration_email_body.txt:1
+#, python-format
+msgid "A new account was created for you on %(hostname)s"
+msgstr "Un nouveau vous a été créé sur %(hostname)s"
+
+#: authentic2/templates/authentic2/api_registration_email_body.txt:5
+msgid "First name"
+msgstr "Prénom"
+
+#: authentic2/templates/authentic2/api_registration_email_body.txt:6
+msgid "Last name"
+msgstr "Nom"
+
+#: authentic2/templates/authentic2/api_registration_email_body.txt:8
+msgid "Please click on the following link to set your password:"
+msgstr ""
+"Veuillez cliquer sur le lien suivant pour ré-initialiser votre mot de passe"
+
+#: authentic2/templates/authentic2/api_registration_email_subject.txt:1
+#, python-format
+msgid "Your account was created on %(hostname)s"
+msgstr "Votre compte a été créé sur %(hostname)s"
 
 #: authentic2/templates/authentic2/base.html:26
 #, python-format
@@ -1113,11 +1138,11 @@ msgstr "créez un nouveau compte"
 msgid "Please fill the form to complete your registration"
 msgstr "Veuillez remplir le formulaire afin de finir l'enregistrement"
 
-#: authentic2/utils.py:448
+#: authentic2/utils.py:479
 msgid "The form was out of date, please try again."
 msgstr "Ce formulaire était périmé, veuillez ré-essayer."
 
-#: authentic2/utils.py:587
+#: authentic2/utils.py:669
 msgid ""
 "Your user is already switched, go to your account page and come back to your "
 "original user to do it again."
@@ -1125,17 +1150,17 @@ msgstr ""
 "Vous avez déjà procédé à une reconnexion, veuillez allez sur « Mon compte » "
 "pour vous reconnecter avec votre utilisateur d'origine."
 
-#: authentic2/utils.py:603
+#: authentic2/utils.py:685
 #, python-format
 msgid "Successfully switched to user %s"
 msgstr "Re-connexion avec l'utilisateur « %s » réussie"
 
-#: authentic2/utils.py:619
+#: authentic2/utils.py:701
 #, python-format
 msgid "Successfully switched back to user %s"
 msgstr "Re-connexion avec l'utilisateur « %s » réussie"
 
-#: authentic2/utils.py:623
+#: authentic2/utils.py:705
 msgid "No user to switch back to"
 msgstr ""
 
