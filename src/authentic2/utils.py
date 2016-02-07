@@ -500,7 +500,7 @@ def get_fields_and_labels(*args):
     return fields, labels
 
 
-def send_templated_mail(user_or_email, template_names, ctx, with_html=True, from_email=None,
+def send_templated_mail(user_or_email, template_names, context=None, with_html=True, from_email=None,
                         request=None, legacy_subject_templates=None, legacy_body_templates=None,
                         legacy_html_body_templates=None, **kwargs):
     '''Send mail to an user by using templates:
@@ -516,7 +516,10 @@ def send_templated_mail(user_or_email, template_names, ctx, with_html=True, from
     if not request:
         request = middleware.StoreRequestMiddleware().get_request()
     if request:
-        ctx = RequestContext(request, ctx)
+        ctx = RequestContext(request)
+        ctx.update(context or {})
+    else:
+        ctx = context or {}
 
     subject_template_names = [template_name + '_subject.txt' for template_name in template_names]
     subject_template_names += legacy_subject_templates or []

@@ -198,7 +198,7 @@ class UserChangePasswordForm(CssClass, forms.ModelForm):
                 send_templated_mail(
                     user,
                     self.notification_template_prefix,
-                    ctx={'new_password': new_password, 'user': user})
+                    context={'new_password': new_password, 'user': user})
                 return ret
             user.save = save
         if commit:
