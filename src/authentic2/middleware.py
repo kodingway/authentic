@@ -3,6 +3,7 @@ import logging
 import datetime
 import random
 import struct
+import time
 try:
     import threading
 except ImportError:
@@ -146,10 +147,15 @@ class ViewRestrictionMiddleware(object):
         from .models import PasswordReset
 
         user = request.user
-        if user.is_authenticated() \
-                and isinstance(user, Model) \
-                and PasswordReset.objects.filter(user=request.user).exists():
-            return 'password_change'
+        b = user.is_authenticated()
+        if b and isinstance(user, Model):
+            now = time.time()
+            last_time = request.session.get('last_password_reset_check', 0)
+            if now - last_time > 10:
+                print 'coin'
+                if PasswordReset.objects.filter(user=request.user).exists():
+                    return 'password_change'
+            request.session['last_password_reset_check'] = now
         for plugin in plugins.get_plugins():
             if hasattr(plugin, 'check_view_restrictions'):
                 view = plugin.check_view_restrictions(request)
