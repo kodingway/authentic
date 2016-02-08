@@ -615,7 +615,7 @@ def send_password_reset_mail(user, template_names=None, request=None,
         raise ValueError('user must have an email')
     logger = logging.getLogger(__name__)
     if not template_names:
-        template_names = 'authentic2/password_reset'
+        template_names = 'authentic2/password_reset_email'
     if not request:
         request = middleware.StoreRequestMiddleware().get_request()
 
