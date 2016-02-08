@@ -120,14 +120,6 @@ class EmailChangeView(cbv.TemplateNamesMixin, FormView):
         'profiles/email_change.html',
         'authentic2//change_email.html'
     ]
-    subject_template = [
-        'profiles/email_change_subject.txt',
-        'authentic2/change_email_notification_subject.txt',
-    ]
-    body_template = [
-        'profiles/email_change_body.txt',
-        'authentic2/change_email_notification_body.txt',
-    ]
     success_url = '..'
 
     def get_form_kwargs(self):
@@ -152,10 +144,14 @@ class EmailChangeView(cbv.TemplateNamesMixin, FormView):
                'link': link,
                'domain': self.request.get_host(),
         }
-        subject = render_to_string(self.subject_template, ctx).strip()
-        body = render_to_string(self.body_template, ctx)
 
-        mail.EmailMessage(subject=subject, body=body, to=[email]).send()
+        utils.send_templated_mail(
+                email,
+                ['authentic2/change_email_notification'],
+                context=ctx,
+                legacy_subject_templates=['profiles/email_change_subject.txt'],
+                legacy_body_templates=['profiles/email_change_body.txt'])
+
         messages.info(self.request,
                 _('Your request for changing your email '
                   'is received. An email of validation '
