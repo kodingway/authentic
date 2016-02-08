@@ -265,7 +265,7 @@ class RoleAddParentView(views.AjaxFormViewMixin, views.TitleMixin,
 
     def form_valid(self, form):
         for role in form.cleaned_data['roles']:
-            self.get_object().add_parent(roles)
+            self.get_object().add_parent(role)
         return super(RoleAddParentView, self).form_valid(form)
 
 add_parent = RoleAddParentView.as_view()
