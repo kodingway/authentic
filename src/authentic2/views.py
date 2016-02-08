@@ -140,6 +140,7 @@ class EmailChangeView(cbv.TemplateNamesMixin, FormView):
                 token)
         link = self.request.build_absolute_uri(link)
         ctx = {'email': email,
+               'old_email': self.request.user.email,
                'user': self.request.user,
                'link': link,
                'domain': self.request.get_host(),
