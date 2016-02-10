@@ -271,7 +271,6 @@ class LDAPUser(get_user_model()):
     def ldap_init(self, block, dn, password=None, transient=False):
         self.block = block
         self.dn = dn
-        self.is_active = True
         self.transient = transient
         if password:
             if self.block.get('keep_password_in_session', False):
