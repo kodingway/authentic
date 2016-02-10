@@ -152,7 +152,6 @@ class ViewRestrictionMiddleware(object):
             now = time.time()
             last_time = request.session.get('last_password_reset_check', 0)
             if now - last_time > 10:
-                print 'coin'
                 if PasswordReset.objects.filter(user=request.user).exists():
                     return 'password_change'
             request.session['last_password_reset_check'] = now
