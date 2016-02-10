@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import pytest
+import mock
 
 from authentic2_provisionning_ldap.ldap_utils import Slapd, has_slapd
 from django.contrib.auth import get_user_model
@@ -32,12 +33,25 @@ mail: etienne.michu@example.net
 dn: cn=group1,o=orga
 objectClass: groupOfNames
 member: {dn}
-
-dn: cn=group2,o=orga
+'''.format(dn=DN, uid=UID, password=PASS))
+    for i in range(100):
+        slapd.add_ldif('''dn: uid=michu{i},o=orga
+objectClass: inetOrgPerson
+userPassword: {password}
+uid: michu{i}
+cn: Étienne Michu
+sn: Michu
+gn: Étienne
+mail: etienne.michu@example.net'''.format(i=i, password=PASS))
+    group_ldif = '''dn: cn=group2,o=orga
 gidNumber: 10
 objectClass: posixGroup
 memberUid: {uid}
-'''.format(dn=DN, uid=UID, password=PASS))
+'''.format(uid=UID)
+    for i in range(100):
+        group_ldif += 'memberUid: michu{i}\n'.format(i=i)
+    slapd.add_ldif(group_ldif)
+
 
 
 def teardown_module(module):
@@ -75,6 +89,10 @@ def test_simple(settings, client):
     assert user.username == 'etienne.michu@ldap'
     assert user.first_name == u'Étienne'
     assert user.last_name == 'Michu'
+    assert user.is_active == True
+    assert user.is_superuser == False
+    assert user.is_staff == False
+    assert user.groups.count() == 0
     assert user.ou == get_default_ou()
     assert not user.check_password(PASS)
     assert ldap_backend.LDAPUser.SESSION_PASSWORD_KEY not in client.session
@@ -240,3 +258,51 @@ def test_group_staff(settings, client):
     assert response.context['user'].username == 'etienne.michu@ldap'
     assert response.context['user'].is_staff
     assert not response.context['user'].is_superuser
+
+@pytest.mark.django_db
+def test_get_users(settings):
+    import django.db.models.base
+    from types import MethodType
+
+    User = get_user_model()
+    settings.LDAP_AUTH_SETTINGS = [{
+        'url': [slapd.ldapi_url],
+        'basedn': 'o=orga',
+        'use_tls': False,
+        'create_group': True,
+        'group_mapping': [
+            ('cn=group2,o=orga', ['Group2']),
+        ],
+        'group_filter': '(&(memberUid={uid})(objectClass=posixGroup))',
+    }]
+    save = mock.Mock(wraps=ldap_backend.LDAPUser.save)
+    ldap_backend.LDAPUser.save = MethodType(save, None, ldap_backend.LDAPUser)
+    bulk_create = mock.Mock(wraps=django.db.models.query.QuerySet.bulk_create)
+    django.db.models.query.QuerySet.bulk_create = MethodType(bulk_create, None,
+                                                             django.db.models.query.QuerySet)
+
+    # Provision all users and their groups
+    assert User.objects.count() == 0
+    users = list(ldap_backend.LDAPBackend.get_users())
+    assert len(users) == 101
+    assert User.objects.count() == 101
+    assert bulk_create.call_count == 101
+    assert save.call_count == 101
+
+    # Check that if nothing changed no save() is made
+    save.reset_mock()
+    bulk_create.reset_mock()
+    users = list(ldap_backend.LDAPBackend.get_users())
+    assert save.call_count == 0
+    assert bulk_create.call_count == 0
+
+    # Check that if we delete 1 user, only this user is created
+    save.reset_mock()
+    bulk_create.reset_mock()
+    User.objects.last().delete()
+    assert User.objects.count() == 100
+    users = list(ldap_backend.LDAPBackend.get_users())
+    assert len(users) == 101
+    assert User.objects.count() == 101
+    assert save.call_count == 1
+    assert bulk_create.call_count == 1

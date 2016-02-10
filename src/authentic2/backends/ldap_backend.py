@@ -263,6 +263,7 @@ class LDAPException(Exception):
 class LDAPUser(get_user_model()):
     attributes = {}
     SESSION_PASSWORD_KEY = 'ldap-password-cached'
+    _changed = False
 
     class Meta:
         proxy = True
@@ -274,13 +275,17 @@ class LDAPUser(get_user_model()):
         self.transient = transient
         if password:
             if self.block.get('keep_password_in_session', False):
-                self.set_ldap_password(password)
+                self.keep_password_in_session(password)
             if block['keep_password']:
-                self.set_password(password)
+                if not super(LDAPUser, self).check_password(password):
+                    super(LDAPUserself, self).set_password(password)
+                    self._changed = True
             else:
-                self.set_unusable_password()
+                if super(LDAPUser, self).has_usable_password():
+                    self.set_unusable_password()
+                    self._changed = True
 
-    def set_ldap_password(self, password):
+    def keep_password_in_session(self, password):
         request = StoreRequestMiddleware.get_request()
         if not request:
             return
@@ -291,7 +296,7 @@ class LDAPUser(get_user_model()):
         cache[self.dn] = password
         request.session.modified = True
 
-    def get_ldap_password(self):
+    def get_password_in_session(self):
         if self.block.get('keep_password_in_session', False):
             request = StoreRequestMiddleware.get_request()
             cache = request.session.setdefault(self.SESSION_PASSWORD_KEY, {})
@@ -301,11 +306,11 @@ class LDAPUser(get_user_model()):
                     password = crypto.aes_base64_decrypt(settings.SECRET_KEY, password)
                 except crypto.DecryptionError:
                     logging.getLogger(__name__).error('unable to decrypt a stored LDAP password')
-                    self.set_ldap_password(None)
+                    self.keep_password_in_session(None)
                     password = None
             return password
         else:
-            self.set_ldap_password(None)
+            self.keep_password_in_session(None)
             return None
 
     def check_password(self, raw_password):
@@ -320,11 +325,11 @@ class LDAPUser(get_user_model()):
         return True
 
     def set_password(self, new_password):
-        old_password = self.get_ldap_password()
+        old_password = self.get_password_in_session()
         if old_password != new_password:
             conn = self.get_connection()
             modify_password(conn, self.block, self.dn, old_password, new_password)
-        self.set_ldap_password(new_password)
+        self.keep_password_in_session(new_password)
         if self.block['keep_password']:
             super(LDAPUser, self).set_password(new_password)
         else:
@@ -334,7 +339,7 @@ class LDAPUser(get_user_model()):
         return self.block['user_can_change_password']
 
     def get_connection(self):
-        ldap_password = self.get_ldap_password()
+        ldap_password = self.get_password_in_session()
         credentials = ()
         if ldap_password:
             credentials = (self.dn, ldap_password)
@@ -619,7 +624,9 @@ class LDAPBackend(object):
                 value = attributes[ldap_attribute][0]
             else:
                 value = u''
-            setattr(user, legacy_attribute, value)
+            if getattr(user, legacy_attribute) != value:
+                setattr(user, legacy_attribute, value)
+                user._changed = True
         user.attributes = attributes
 
     def populate_admin_flags_by_group(self, user, block, group_dns):
@@ -632,25 +639,35 @@ class LDAPBackend(object):
                 continue
             for group_dn in group_dns_to_match:
                 if group_dn in group_dns:
-                    setattr(user, attr, True)
+                    v = True
                     break
             else:
-                setattr(user, attr, False)
+                v = False
+            if getattr(user, attr) != v:
+                setattr(user, attr, v)
+                user._changed = True
 
     def populate_groups_by_mapping(self, user, dn, conn, block, group_dns):
         '''Assign group to user based on a mapping from group DNs'''
         group_mapping = block['group_mapping']
         if not group_mapping:
             return
+        if not user.pk:
+            user.save()
+            user._changed = False
+        groups = user.groups.all()
         for dn, group_names in group_mapping:
             method = user.groups.add if dn in group_dns else user.groups.remove
             for group_name in group_names:
                 group = self.get_group_by_name(block, group_name)
-                if group is not None:
-                    try:
-                        method(group)
-                    except KeyError:
-                        pass
+                if group is None:
+                    continue
+                # Add missing groups
+                if dn in group_dns and group not in groups:
+                    user.groups.add(group)
+                # Remove extra groups
+                elif dn not in group_dns and group in groups:
+                    user.groups.remove(group)
 
     def get_ldap_group_dns(self, user, dn, conn, block, attributes):
         '''Retrieve group DNs from the LDAP by attributes (memberOf) or by
@@ -704,24 +721,34 @@ class LDAPBackend(object):
         mandatory_groups = block.get('set_mandatory_groups')
         if not mandatory_groups:
             return
+        if not user.pk:
+            user.save()
+            user._changed = False
+        groups = user.groups.all()
         for group_name in mandatory_groups:
             group = self.get_group_by_name(block, group_name)
-            if group:
+            if group is None:
+                continue
+            if group not in groups:
                 user.groups.add(group)
 
     def populate_admin_fields(self, user, block):
         if block['is_staff'] is not None:
-            user.is_staff = block['is_staff']
+            if user.is_staff != block['is_staff']:
+                user.is_staff = block['is_staff']
+                user._changed = True
         if block['is_superuser'] is not None:
-            user.is_superuser = block['is_superuser']
+            if user.is_superuser != block['is_superuser']:
+                user.is_superuser = block['is_superuser']
+                user._changed = True
 
     def populate_user(self, user, dn, username, conn, block, attributes):
-        self.update_user_identifiers(user, username, block, attributes)
         self.populate_user_attributes(user, block, attributes)
         self.populate_admin_fields(user, block)
+        self.populate_user_ou(user, dn, conn, block, attributes)
+        self.update_user_identifiers(user, username, block, attributes)
         self.populate_mandatory_groups(user, block)
         self.populate_user_groups(user, dn, conn, block, attributes)
-        self.populate_user_ou(user, dn, conn, block, attributes)
 
     def populate_user_ou(self, user, dn, conn, block, attributes):
         '''Assign LDAP user to an ou, the default one if ou_slug setting is
@@ -732,12 +759,15 @@ class LDAPBackend(object):
         if ou_slug:
             ou_slug = unicode(ou_slug)
             try:
-                user.ou = OU.objects.get(slug=ou_slug)
+                ou = OU.objects.get(slug=ou_slug)
             except OU.DoesNotExist:
                 raise ImproperlyConfigured('ou_slug value is wrong for ldap %r',
                                           block['url'])
         else:
-            user.ou = get_default_ou()
+            ou = get_default_ou()
+        if user.ou != ou:
+            user.ou = ou
+            user._changed = True
 
     @classmethod
     def attribute_name_from_external_id_tuple(cls, external_id_tuple):
@@ -835,7 +865,7 @@ class LDAPBackend(object):
         User = get_user_model()
         try:
             log.debug('lookup using username %r', username)
-            return LDAPUser.objects.get(username=username)
+            return LDAPUser.objects.prefetch_related('groups').get(username=username)
         except User.DoesNotExist:
             return
 
@@ -848,7 +878,7 @@ class LDAPBackend(object):
             try:
                 log.debug('lookup using external_id %r: %r', eid_tuple,
                         external_id)
-                return LDAPUser.objects.get(
+                return LDAPUser.objects.prefetch_related('groups').get(
                         userexternalid__external_id=external_id,
                         userexternalid__source=block['realm'])
             except User.DoesNotExist:
@@ -869,7 +899,7 @@ class LDAPBackend(object):
             if user.username != username:
                 old_username = user.username
                 user.username = username
-                user.save()
+                user._changed = True
                 log_msg = 'updating username from %r to %r'
                 log.debug(log_msg, old_username, user.username)
         # if external_id lookup is used, update it
@@ -878,6 +908,7 @@ class LDAPBackend(object):
            and block['external_id_tuples'][0]:
             if not user.pk:
                 user.save()
+                user._changed = False
             external_id = self.build_external_id(
                     block['external_id_tuples'][0],
                     attributes)
@@ -892,8 +923,8 @@ class LDAPBackend(object):
                         .filter(user=user, source=block['realm']) \
                         .delete()
 
-    def _return_user(self, dn, password, conn, block):
-        attributes = self.get_ldap_attributes(block, conn, dn)
+    def _return_user(self, dn, password, conn, block, attributes=None):
+        attributes = attributes or self.get_ldap_attributes(block, conn, dn)
         if attributes is None:
             # attributes retrieval failed
             return
@@ -922,7 +953,8 @@ class LDAPBackend(object):
             user.set_unusable_password()
         user.ldap_init(block, dn, password)
         self.populate_user(user, dn, username, conn, block, attributes)
-        user.save()
+        if not user.pk or getattr(user, '_changed', False):
+            user.save()
         user.keep_pk = user.pk
         user.pk = 'persistent!{0}'.format(base64.b64encode(pickle.dumps(user)))
         user_login_success(user.get_username())
@@ -952,21 +984,16 @@ class LDAPBackend(object):
                 continue
             user_basedn = block.get('user_basedn') or block['basedn']
             user_filter = block['user_filter'].replace('%s', '*')
-            attrs = block['attributes']
-            users = conn.search_s(user_basedn, ldap.SCOPE_SUBTREE, user_filter, [])
+            attrs = list(cls.get_ldap_attributes_names(block))
+            users = conn.search_s(user_basedn, ldap.SCOPE_SUBTREE, user_filter, attrlist=attrs)
             backend = cls()
             for user_dn, data in users:
                 # ignore referrals
                 if not user_dn:
                     continue
-                attrs = cls.get_ldap_attributes(block, conn, user_dn)
-                username = backend.create_username(block, attrs)
-                user = backend.lookup_existing_user(username, block, attrs)
-                if not user:
-                    user = LDAPUser(username=username)
-                user.transient = False
-                backend.populate_user(user, user_dn, username, conn, block, attrs)
-                yield user
+                data['dn'] = user_dn
+                yield backend._return_user(user_dn, None, conn, block, data)
+
 
 class LDAPBackendPasswordLost(LDAPBackend):
     def authenticate(self, user=None, **kwargs):
