@@ -991,6 +991,7 @@ class LDAPBackend(object):
                 # ignore referrals
                 if not user_dn:
                     continue
+                data = normalize_ldap_results(data)
                 data['dn'] = user_dn
                 yield backend._return_user(user_dn, None, conn, block, data)
 
