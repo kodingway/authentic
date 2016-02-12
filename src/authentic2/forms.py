@@ -51,10 +51,7 @@ class BaseUserForm(forms.ModelForm):
         initial = kwargs.setdefault('initial', {})
         if kwargs.get('instance'):
             instance = kwargs['instance']
-            content_type = ContentType.objects.get_for_model(instance.__class__)
-            for av in models.AttributeValue.objects.filter(
-                    content_type=content_type,
-                    object_id=instance.pk):
+            for av in models.AttributeValue.objects.with_owner(instance):
                 initial[av.attribute.name] = av.to_python()
         super(BaseUserForm, self).__init__(*args, **kwargs)
 
