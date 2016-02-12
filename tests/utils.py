@@ -1,4 +1,14 @@
+import pytest
+
 from django.core.urlresolvers import reverse
+from django.conf import settings
+import sqlite3
+
+
+skipif_no_partial_index = pytest.mark.skipif(
+    sqlite3.sqlite_version_info < (3, 8) and 'sqlite' in settings.DATABASES['default']['ENGINE'],
+    reason='partial indexes do not work with sqlite < 3.8')
+
 
 def login(app, user, path=None, password=None):
     if path:
