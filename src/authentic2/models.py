@@ -180,14 +180,23 @@ class Attribute(models.Model):
     def set_value(self, owner, value):
         serialize = self.get_kind()['serialize']
         content = serialize(value)
-        av, created = AttributeValue.objects.get_or_create(
-                content_type=ContentType.objects.get_for_model(owner),
-                object_id=owner.pk,
-                attribute=self,
-                defaults={'content': content})
-        if not created:
-            av.content = content
-            av.save()
+        if self.multiple:
+            AttributeValue.objects.get_or_create(
+                    content_type=ContentType.objects.get_for_model(owner),
+                    object_id=owner.pk,
+                    attribute=self,
+                    multiple=True,
+                    content=content)
+        else:
+            av, created = AttributeValue.objects.get_or_create(
+                    content_type=ContentType.objects.get_for_model(owner),
+                    object_id=owner.pk,
+                    attribute=self,
+                    multiple=False,
+                    defaults={'content': content})
+            if not created:
+                av.content = content
+                av.save()
 
     def natural_key(self):
         return (self.name,)
@@ -208,6 +217,7 @@ class AttributeValue(models.Model):
 
     attribute = models.ForeignKey('Attribute',
             verbose_name=_('attribute'))
+    multiple = models.BooleanField(default=False)
 
     content = models.TextField(verbose_name=_('content'))
 
@@ -226,6 +236,9 @@ class AttributeValue(models.Model):
     class Meta:
         verbose_name = _('attribute value')
         verbose_name_plural = _('attribute values')
+        unique_together = (
+            ('content_type', 'object_id', 'attribute', 'multiple', 'content'),
+        )
 
 class PasswordReset(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,

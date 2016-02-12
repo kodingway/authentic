@@ -110,6 +110,7 @@ class SerializerTests(TestCase):
                     'owner': [['custom_user', 'user'], [u.uuid]],
                     'attribute': ['phone'],
                     'content': '0101010101',
+                    'multiple': False,
                 }
             }
         ]
