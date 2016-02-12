@@ -93,9 +93,9 @@ LOCALE_PATHS = ( os.path.join(BASE_DIR, 'locale'), )
 
 INSTALLED_APPS = (
     'django.contrib.staticfiles',
+    'django.contrib.contenttypes',
     'authentic2.custom_user',
     'django.contrib.auth',
-    'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'admin_tools',
