@@ -24,7 +24,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.fields import CreateOnlyDefault
 
 from . import utils, decorators
-from .models import Attribute, AttributeValue, PasswordReset
+from .models import Attribute, PasswordReset
 from .a2_rbac.utils import get_default_ou
 
 
@@ -211,41 +211,9 @@ def user(request):
     return request.user.to_json()
 
 
-_class_cache = {}
-
-
 def attributes_hash(attributes):
     attributes = sorted(attributes, key=lambda at: at.name)
     return hash(tuple((at.name, at.required) for at in attributes))
-
-
-def get_user_class():
-    attributes = Attribute.objects.all()
-    key = 'user-class-%s' % attributes_hash(attributes)
-    if key not in _class_cache:
-        user_class = get_user_model()
-
-        class Meta:
-            proxy = True
-        fields = {
-            'Meta': Meta,
-            '__module__': user_class.__module__,
-        }
-        for at in attributes:
-            def new_property(at):
-                def get_property(self):
-                    try:
-                        return json.loads(
-                            AttributeValue.objects.with_owner(self).get(attribute=at).content)
-                    except AttributeValue.DoesNotExist:
-                        return ''
-
-                def set_property(self, value):
-                    at.set_value(self, value)
-                return property(get_property, set_property)
-            fields[at.name] = new_property(at)
-        _class_cache[key] = type('NewUserClass', (user_class,), fields)
-    return _class_cache[key]
 
 
 class BaseUserSerializer(serializers.ModelSerializer):
@@ -262,6 +230,14 @@ class BaseUserSerializer(serializers.ModelSerializer):
                                      default=CreateOnlyDefault(utils.generate_password),
                                      required=False)
     force_password_reset = serializers.BooleanField(write_only=True, required=False, default=False)
+
+    def __init__(self, *args, **kwargs):
+        super(BaseUserSerializer, self).__init__(*args, **kwargs)
+
+        for at in Attribute.objects.all():
+            if at.name in self.fields:
+                continue
+            self.fields[at.name] = serializers.CharField(required=at.required, allow_blank=True)
 
     def check_perm(self, perm, ou):
         self.context['view'].check_perm(perm, ou)
@@ -332,22 +308,10 @@ class UsersAPI(ModelViewSet):
     filter_fields = ['username', 'first_name', 'last_name']
     ordering_fields = ['username', 'first_name', 'last_name']
     lookup_field = 'uuid'
-
-    def get_serializer_class(self):
-        attributes = Attribute.objects.all()
-        key = 'user-serializer-%s' % attributes_hash(attributes)
-
-        if key not in _class_cache:
-            class Meta(BaseUserSerializer.Meta):
-                model = get_user_class()
-            attrs = {'Meta': Meta}
-            for at in attributes:
-                attrs[at.name] = serializers.CharField(required=at.required, allow_blank=True)
-            _class_cache[key] = type('UserSerializer', (BaseUserSerializer,), attrs)
-        return _class_cache[key]
+    serializer_class = BaseUserSerializer
 
     def get_queryset(self):
-        User = get_user_class()
+        User = get_user_model()
         return self.request.user.filter_by_perm(['custom_user.view_user'], User.objects.all())
 
     def check_perm(self, perm, ou):
