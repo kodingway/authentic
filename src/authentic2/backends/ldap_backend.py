@@ -41,9 +41,9 @@ from authentic2.ldap_utils import FilterFormatter
 DEFAULT_CA_BUNDLE = ''
 
 CA_BUNDLE_PATHS = [
-    '/etc/pki/tls/certs/ca-bundle.crt', # RHEL/Fedora
-    '/etc/ssl/certs/ca-certificates.crt', # Debian
-    '/var/lib/ca-certificates/ca-bundle.pem', # OpenSuse
+    '/etc/pki/tls/certs/ca-bundle.crt',  # RHEL/Fedora
+    '/etc/ssl/certs/ca-certificates.crt',  # Debian
+    '/var/lib/ca-certificates/ca-bundle.pem',  # OpenSuse
 ]
 
 # Select a system certificate store
@@ -52,213 +52,6 @@ for bundle_path in CA_BUNDLE_PATHS:
         DEFAULT_CA_BUNDLE = bundle_path
         break
 
-_DEFAULTS = {
-    'binddn': None,
-    'bindpw': None,
-    'bindsasl': (),
-    'user_dn_template': None,
-    'user_filter': 'uid=%s',
-    'user_basedn': None,
-    'group_dn_template': None,
-    'member_of_attribute': None,
-    'group_filter': '(&(member={user_dn})(objectClass=groupOfNames))',
-    'group': None,
-    'groupsu': None,
-    'groupstaff': None,
-    'groupactive': None,
-    'group_mapping': (),
-    'replicas': True,
-    'email_field': 'mail',
-    'fname_field': 'givenName',
-    'lname_field': 'sn',
-    'timeout': -1,
-    'referrals': False,
-    'disable_update': False,
-    'use_for_data' : None,
-    'bind_with_username': False,
-    # always use the first URL to build the external id
-    'use_first_url_for_external_id': True,
-    # do not try to get a Django user from the LDAP user
-    # it's incompatible with a lot of Django applications, the
-    # django.contrib.admin for example
-    'transient': False,
-    # active directory ?
-    'active_directory': False,
-    # shuffle replicas
-    'shuffle_replicas': True,
-    # all users from this LDAP are superusers
-    'is_superuser': None,
-    # all users from this LDAP are staff
-    'is_staff': None,
-    # create missing group if needed
-    'create_group': False,
-    # attributes to retrieve and store with the user object
-    'attributes': ['uid'],
-    # default value for some attributes
-    'mandatory_attributes_values': {},
-    # mapping from LDAP attributes name to other names
-    'attribute_mappings': [],
-    # realm for selecting an ldap configuration or formatting usernames
-    'realm': 'ldap',
-    # template for building username
-    'username_template': '{uid[0]}@{realm}',
-    # allow to match multiple user records
-    'multimatch': True,
-    # update username on all login, use with CAUTION !! only if you know that
-    # generated username are unique
-    'update_username': False,
-    # lookup existing user with an external id build with attributes
-    'lookups': ('external_id', 'username'),
-    'external_id_tuples': (('uid',),('dn:noquote',),),
-    # keep password around so that Django authentification also work
-    'clean_external_id_on_update': True,
-    # Conserve the passsword in the Django User object
-    'keep_password': False,
-    # Converse the password in the session if needed to retrieve attributes or change password
-    'keep_password_in_session': False,
-    # Only authenticate users coming from the corresponding realm
-    'limit_to_realm': False,
-    # Assign users mandatorily to some groups
-    'set_mandatory_groups': (),
-    # Can users change their password ?
-    'user_can_change_password': True,
-    # Use starttls
-    'use_tls': True,
-    # Require certificate
-    'require_cert': 'demand',
-    # client and server certificates
-    'cacertfile': DEFAULT_CA_BUNDLE,
-    'cacertdir': '',
-    'certfile': '',
-    'keyfile': '',
-    # LDAP library options
-    'ldap_options': {
-    },
-    'global_ldap_options': {
-    },
-    # Use Password Modify extended operation
-    'use_password_modify': True,
-    # Target OU
-    'ou_slug': '',
-}
-
-_REQUIRED = ('url', 'basedn')
-_TO_ITERABLE = ('url', 'groupsu', 'groupstaff', 'groupactive')
-_TO_LOWERCASE = ('fname_field', 'lname_field', 'email_field', 'attributes',
-    'mandatory_attributes_values')
-_VALID_CONFIG_KEYS = list(set(_REQUIRED).union(set(_DEFAULTS)))
-
-
-def get_connections(block, credentials=()):
-    '''Try each replicas, and yield successfull connections'''
-    if not block['url']:
-        raise ImproperlyConfigured("block['url'] must contain at least one url")
-    for url in block['url']:
-        for key, value in block['global_ldap_options'].iteritems():
-            ldap.set_option(key, value)
-        conn = ldap.initialize(url)
-        if block['timeout'] > 0:
-            conn.set_option(ldap.OPT_NETWORK_TIMEOUT, block['timeout'])
-        conn.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, getattr(ldap, 'OPT_X_TLS_' + block['require_cert'].upper()))
-        if block['cacertfile']:
-            conn.set_option(ldap.OPT_X_TLS_CACERTFILE, block['cacertfile'])
-        if block['cacertdir']:
-            conn.set_option(ldap.OPT_X_TLS_CACERTDIR, block['cacertdir'])
-        if block['certfile']:
-            conn.set_option(ldap.OPT_X_TLS_CERTFILE, block['certfile'])
-        if block['keyfile']:
-            conn.set_option(ldap.OPT_X_TLS_CERTFILE, block['keyfile'])
-        for key, value in block['ldap_options']:
-            conn.set_option(key, value)
-        conn.set_option(ldap.OPT_REFERRALS, 1 if block['referrals'] else 0)
-        # allow TLS options to be applied
-        conn.set_option(ldap.OPT_X_TLS_NEWCTX, 0)
-        try:
-            if not url.startswith('ldaps://') and block['use_tls']:
-                try:
-                    conn.start_tls_s()
-                except ldap.CONNECT_ERROR:
-                    log.error('connection to %r failed when activating TLS, did '
-                            'you forget to declare the TLS certificate in '
-                            '/etc/ldap/ldap.conf ?', url)
-                    continue
-        except ldap.TIMEOUT:
-            log.error('connection to %r timed out', url)
-            continue
-        except ldap.CONNECT_ERROR:
-            log.error('connection to %r failed when activating TLS, did '
-                    'you forget to declare the TLS certificate in '
-                    '/etc/ldap/ldap.conf ?', url)
-            continue
-        except ldap.SERVER_DOWN:
-            if block['replicas']:
-                log.warning('ldap %r is down', url)
-            else:
-                log.error('ldap %r is down', url)
-            continue
-        try:
-            if credentials:
-                conn.bind_s(*credentials)
-            elif block['bindsasl']:
-                sasl_mech, who, sasl_params = block['bindsasl']
-                handler_class = getattr(ldap.sasl, sasl_mech)
-                auth = handler_class(*sasl_params)
-                conn.sasl_interactive_bind_s(who, auth)
-            elif block['binddn'] and block['bindpw']:
-                conn.bind_s(block['binddn'], block['bindpw'])
-            yield conn
-        except ldap.INVALID_CREDENTIALS:
-            log.error('admin bind failed on %s: invalid credentials', url)
-            if block['replicas']:
-                break
-        except ldap.INVALID_DN_SYNTAX:
-            log.error('admin bind failed on %s: invalid dn syntax %r', url, who)
-            if block['replicas']:
-                break
-
-def get_connection(block, credentials=()):
-    '''Try to get at least one connection'''
-    for conn in get_connections(block, credentials=credentials):
-        return conn
-
-def ad_encoding(s):
-    '''Encode an unicode string for AD consumption as a password'''
-    return (u'"{0}"'.format(s)).encode('utf-16-le')
-
-def modify_password(conn, block, dn, old_password, new_password):
-    '''Change user password with adaptation for Active Directory'''
-    if block['use_password_modify'] and not block['active_directory']:
-        conn.passwd_s(dn, old_password or None, new_password)
-    else:
-        modlist = []
-        if block['active_directory']:
-            key = 'unicodePwd'
-            value = ad_encoding(new_password)
-            if old_password:
-                modlist = [
-                        (ldap.MOD_DELETE, key, [ad_encoding(old_password)]),
-                        (ldap.MOD_ADD, key, [value])]
-            else:
-                modlist = [(ldap.MOD_REPLACE, key, [value])]
-        else:
-            key = 'userPassword'
-            value = new_password.encode('utf-8')
-            modlist = [(ldap.MOD_REPLACE, key, [value])]
-        conn.modify_s(dn, modlist)
-    log.debug('modified password for dn %r', dn)
-
-def normalize_ldap_results(attributes, encoding='utf-8'):
-    new_attributes = {}
-    for key in attributes:
-        try:
-            new_attributes[key.lower()] = map(lambda x: unicode(x, encoding), attributes[key])
-        except UnicodeDecodeError:
-            log.debug('unable to decode attribute %r as UTF-8, converting to base64', key)
-            new_attributes[key.lower()] = map(base64.b64encode, attributes[key])
-    return new_attributes
-
-class LDAPException(Exception):
-    pass
 
 class LDAPUser(get_user_model()):
     attributes = {}
@@ -278,7 +71,7 @@ class LDAPUser(get_user_model()):
                 self.keep_password_in_session(password)
             if block['keep_password']:
                 if not super(LDAPUser, self).check_password(password):
-                    super(LDAPUserself, self).set_password(password)
+                    super(LDAPUser, self).set_password(password)
                     self._changed = True
             else:
                 if super(LDAPUser, self).has_usable_password():
@@ -314,7 +107,7 @@ class LDAPUser(get_user_model()):
             return None
 
     def check_password(self, raw_password):
-        connection = get_connection(self.block)
+        connection = self.backend.get_connection(self.block)
         try:
             connection.simple_bind_s(self.dn, raw_password.encode('utf-8'))
         except ldap.INVALID_CREDENTIALS:
@@ -328,7 +121,7 @@ class LDAPUser(get_user_model()):
         old_password = self.get_password_in_session()
         if old_password != new_password:
             conn = self.get_connection()
-            modify_password(conn, self.block, self.dn, old_password, new_password)
+            self.backend.modify_password(conn, self.block, self.dn, old_password, new_password)
         self.keep_password_in_session(new_password)
         if self.block['keep_password']:
             super(LDAPUser, self).set_password(new_password)
@@ -346,12 +139,12 @@ class LDAPUser(get_user_model()):
         # must be redone if session is older than current code update and new
         # options have been added to the setting dictionnary for LDAP
         # authentication
-        update_default(self.block)
-        return get_connection(self.block, credentials=credentials)
+        self.backend.update_default(self.block)
+        return self.backend.get_connection(self.block, credentials=credentials)
 
     def get_attributes(self):
         conn = self.get_connection()
-        return LDAPBackend.get_ldap_attributes(self.block, conn, self.dn)
+        return self.backend.get_ldap_attributes(self.block, conn, self.dn)
 
     def save(self, *args, **kwargs):
         if self.transient:
@@ -363,101 +156,121 @@ class LDAPUser(get_user_model()):
         if hasattr(self, 'keep_pk'):
             self.pk = pk
 
-class LDAPBackendError(RuntimeError):
-    pass
-
-def update_default(block):
-    '''Add missing key to block based on default values'''
-    for key in block:
-        if not key in _VALID_CONFIG_KEYS:
-            raise ImproperlyConfigured(
-                ('"{}" : invalid LDAP_AUTH_SETTINGS key, '
-                +'available are {}').format(key, _VALID_CONFIG_KEYS))
-
-    for r in _REQUIRED:
-        if r not in block:
-            raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: missing required configuration option %r' % r)
-
-    for d in _DEFAULTS:
-        if d not in block:
-            block[d] = _DEFAULTS[d]
-        else:
-            if isinstance(_DEFAULTS[d], six.string_types):
-                if not isinstance(block[d], six.string_types):
-                    raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: '
-                            'attribute %r must be a string' % d)
-                try:
-                    block[d] = str(block[d])
-                except UnicodeEncodeError:
-                    raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: '
-                            'attribute %r must be a string' % d)
-            if isinstance(_DEFAULTS[d], bool) and not isinstance(block[d], bool):
-                raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: '
-                        'attribute %r must be a boolean' % d)
-            if isinstance(_DEFAULTS[d], (list, tuple)) and not isinstance(block[d], (list, tuple)):
-                raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: '
-                        'attribute %r must be a list or a tuple' % d)
-            if isinstance(_DEFAULTS[d], dict) and not isinstance(block[d], dict):
-                raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: '
-                        'attribute %r must be a dictionary' % d)
-            if not isinstance(_DEFAULTS[d], bool) and d in _REQUIRED and not block[d]:
-                raise ImproperlyConfigured('LDAP_AUTH_SETTINGS: '
-                        'attribute %r is required but is empty')
-    for i in _TO_ITERABLE:
-        if isinstance(block[i], six.string_types):
-            block[i] = (block[i],)
-    # lowercase LDAP attribute names
-    block['external_id_tuples'] = map(lambda t: map(str.lower, map(str, t)), block['external_id_tuples'])
-    block['attribute_mappings'] = map(lambda t: map(str.lower, map(str, t)), block['attribute_mappings'])
-    for key in _TO_LOWERCASE:
-        # we handle strings, list of strings and list of list or tuple whose first element is a string
-        if isinstance(block[key], six.string_types):
-            block[key] = str(block[key]).lower()
-        elif isinstance(block[key], (list, tuple)):
-            new_seq = []
-            for elt in block[key]:
-                if isinstance(elt, six.string_types):
-                    elt = str(elt).lower()
-                elif isinstance(elt, (list, tuple)):
-                    elt = list(elt)
-                    elt[0] = str(elt[0]).lower()
-                    elt = tuple(elt)
-                new_seq.append(elt)
-            block[key] = tuple(new_seq)
-        elif isinstance(block[key], dict):
-            newdict = {}
-            for subkey in block[key]:
-                newdict[str(subkey).lower()] = block[key][subkey]
-            block[key] = newdict
-        else:
-            raise NotImplementedError('LDAP setting %r cannot be '
-                    'converted to lowercase '
-                    'setting, its type is %r'
-                    % (key, type(block[key])))
-    # Want to randomize our access, otherwise what's the point of having multiple servers?
-    block['url'] = list(block['url'])
-    if block['shuffle_replicas']:
-        random.shuffle(block['url'])
 
 class LDAPBackend(object):
+    _DEFAULTS = {
+        'binddn': None,
+        'bindpw': None,
+        'bindsasl': (),
+        'user_dn_template': None,
+        'user_filter': 'uid=%s',
+        'user_basedn': None,
+        'group_dn_template': None,
+        'member_of_attribute': None,
+        'group_filter': '(&(member={user_dn})(objectClass=groupOfNames))',
+        'group': None,
+        'groupsu': None,
+        'groupstaff': None,
+        'groupactive': None,
+        'group_mapping': (),
+        'replicas': True,
+        'email_field': 'mail',
+        'fname_field': 'givenName',
+        'lname_field': 'sn',
+        'timeout': -1,
+        'referrals': False,
+        'disable_update': False,
+        'use_for_data': None,
+        'bind_with_username': False,
+        # always use the first URL to build the external id
+        'use_first_url_for_external_id': True,
+        # do not try to get a Django user from the LDAP user
+        # it's incompatible with a lot of Django applications, the
+        # django.contrib.admin for example
+        'transient': False,
+        # active directory ?
+        'active_directory': False,
+        # shuffle replicas
+        'shuffle_replicas': True,
+        # all users from this LDAP are superusers
+        'is_superuser': None,
+        # all users from this LDAP are staff
+        'is_staff': None,
+        # create missing group if needed
+        'create_group': False,
+        # attributes to retrieve and store with the user object
+        'attributes': ['uid'],
+        # default value for some attributes
+        'mandatory_attributes_values': {},
+        # mapping from LDAP attributes name to other names
+        'attribute_mappings': [],
+        # realm for selecting an ldap configuration or formatting usernames
+        'realm': 'ldap',
+        # template for building username
+        'username_template': '{uid[0]}@{realm}',
+        # allow to match multiple user records
+        'multimatch': True,
+        # update username on all login, use with CAUTION !! only if you know that
+        # generated username are unique
+        'update_username': False,
+        # lookup existing user with an external id build with attributes
+        'lookups': ('external_id', 'username'),
+        'external_id_tuples': (('uid',), ('dn:noquote',),),
+        # keep password around so that Django authentification also work
+        'clean_external_id_on_update': True,
+        # Conserve the passsword in the Django User object
+        'keep_password': False,
+        # Converse the password in the session if needed to retrieve attributes or change password
+        'keep_password_in_session': False,
+        # Only authenticate users coming from the corresponding realm
+        'limit_to_realm': False,
+        # Assign users mandatorily to some groups
+        'set_mandatory_groups': (),
+        # Can users change their password ?
+        'user_can_change_password': True,
+        # Use starttls
+        'use_tls': True,
+        # Require certificate
+        'require_cert': 'demand',
+        # client and server certificates
+        'cacertfile': DEFAULT_CA_BUNDLE,
+        'cacertdir': '',
+        'certfile': '',
+        'keyfile': '',
+        # LDAP library options
+        'ldap_options': {
+        },
+        'global_ldap_options': {
+        },
+        # Use Password Modify extended operation
+        'use_password_modify': True,
+        # Target OU
+        'ou_slug': '',
+    }
+    _REQUIRED = ('url', 'basedn')
+    _TO_ITERABLE = ('url', 'groupsu', 'groupstaff', 'groupactive')
+    _TO_LOWERCASE = ('fname_field', 'lname_field', 'email_field', 'attributes',
+                     'mandatory_attributes_values')
+    _VALID_CONFIG_KEYS = list(set(_REQUIRED).union(set(_DEFAULTS)))
+
     @classmethod
     @to_list
-    def get_realms(self):
-        config = self.get_config()
+    def get_realms(cls):
+        config = cls.get_config()
         for block in config:
             yield block['realm']
 
     @classmethod
-    def get_config(self):
+    def get_config(cls):
         if not getattr(settings, 'LDAP_AUTH_SETTINGS', []):
             return []
         if isinstance(settings.LDAP_AUTH_SETTINGS[0], dict):
             blocks = settings.LDAP_AUTH_SETTINGS
         else:
-            blocks = (self._parse_simple_config(),)
+            blocks = (cls._parse_simple_config(),)
         # First get our configuration into a standard format
         for block in blocks:
-            update_default(block)
+            cls.update_default(block)
         log.debug('got config %r', blocks)
         return blocks
 
@@ -488,7 +301,7 @@ class LDAPBackend(object):
         utf8_username = username.encode('utf-8')
         utf8_password = password.encode('utf-8')
 
-        for conn in get_connections(block):
+        for conn in self.get_connections(block):
             authz_ids = []
             user_basedn = block.get('user_basedn') or block['basedn']
 
@@ -508,33 +321,32 @@ class LDAPBackend(object):
                             try:
                                 query = filter_format(user_filter, (utf8_username,) * n)
                             except TypeError, e:
-                                log.error('user_filter syntax error %r: %s',
-                                        block['user_filter'], e)
+                                log.error('user_filter syntax error %r: %s', block['user_filter'],
+                                          e)
                                 return
-                            log.debug('looking up dn for username %r using '
-                                    'query %r', username, query)
+                            log.debug('looking up dn for username %r using query %r', username,
+                                      query)
                             results = conn.search_s(user_basedn, ldap.SCOPE_SUBTREE, query)
                             # remove search references
-                            results = [ result for result in results if result[0] is not None]
+                            results = [result for result in results if result[0] is not None]
                             log.debug('found dns %r', results)
                             if len(results) == 0:
                                 log.debug('user lookup failed: no entry found, %s' % query)
                             elif not block['multimatch'] and len(results) > 1:
-                                log.error('user lookup failed: too many (%d) '
-                                        'entries found: %s', len(results), query)
+                                log.error('user lookup failed: too many (%d) entries found: %s',
+                                          len(results), query)
                             else:
                                 authz_ids.extend(result[0] for result in results)
                         else:
                             raise NotImplementedError
                     except ldap.NO_SUCH_OBJECT:
-                        log.error('user lookup failed: basedn %s not found',
-                                user_basedn)
+                        log.error('user lookup failed: basedn %s not found', user_basedn)
                         if block['replicas']:
                             break
                         continue
                     except ldap.LDAPError, e:
-                        log.error('user lookup failed: with query %r got error '
-                                '%s: %s', username, query, e)
+                        log.error('user lookup failed: with query %r got error %s: %s', username,
+                                  query, e)
                         continue
                 if not authz_ids:
                     continue
@@ -560,13 +372,12 @@ class LDAPBackend(object):
                         break
                 return self._return_user(authz_id, password, conn, block)
             except ldap.CONNECT_ERROR:
-                log.error('connection to %r failed, did '
-                        'you forget to declare the TLS certificate in '
-                        '/etc/ldap/ldap.conf ?', uri)
+                log.error('connection to %r failed, did you forget to declare the TLS certificate '
+                          'in /etc/ldap/ldap.conf ?', block['url'])
             except ldap.TIMEOUT:
-                log.error('connection to %r timed out', uri)
+                log.error('connection to %r timed out', block['url'])
             except ldap.SERVER_DOWN:
-                log.error('ldap authentication error: %r is down', uri)
+                log.error('ldap authentication error: %r is down', block['url'])
             finally:
                 del conn
         return None
@@ -584,7 +395,8 @@ class LDAPBackend(object):
     @classmethod
     def _parse_simple_config(self):
         if len(settings.LDAP_AUTH_SETTINGS) < 2:
-            raise LDAPBackendError('In a minimal configuration, you must at least specify url and user DN')
+            raise ImproperlyConfigured('In a minimal configuration, you must at least specify '
+                                       'url and user DN')
         return {'url': settings.LDAP_AUTH_SETTINGS[0], 'basedn': settings.LDAP_AUTH_SETTINGS[1]}
 
     def backend_name(self):
@@ -616,7 +428,8 @@ class LDAPBackend(object):
 
     def populate_user_attributes(self, user, block, attributes):
         for legacy_attribute, legacy_field in (('email', 'email_field'),
-                ('first_name', 'fname_field'), ('last_name', 'lname_field')):
+                                               ('first_name', 'fname_field'),
+                                               ('last_name', 'lname_field')):
             ldap_attribute = block[legacy_field]
             if not ldap_attribute:
                 break
@@ -633,7 +446,9 @@ class LDAPBackend(object):
         '''Attribute admin flags based on groups.
 
            It supersedes is_staff, is_superuser and is_active.'''
-        for g, attr in (('groupsu', 'is_superuser'), ('groupstaff', 'is_staff'), ('groupactive', 'is_active')):
+        for g, attr in (('groupsu', 'is_superuser'),
+                        ('groupstaff', 'is_staff'),
+                        ('groupactive', 'is_active')):
             group_dns_to_match = block[g]
             if not group_dns_to_match:
                 continue
@@ -657,7 +472,6 @@ class LDAPBackend(object):
             user._changed = False
         groups = user.groups.all()
         for dn, group_names in group_mapping:
-            method = user.groups.add if dn in group_dns else user.groups.remove
             for group_name in group_names:
                 group = self.get_group_by_name(block, group_name)
                 if group is None:
@@ -673,8 +487,6 @@ class LDAPBackend(object):
         '''Retrieve group DNs from the LDAP by attributes (memberOf) or by
            filter.
         '''
-        from ldap.filter import escape_filter_chars
-
         group_base_dn = block.get('group_basedn', block['basedn'])
         member_of_attribute = block['member_of_attribute']
         group_filter = block['group_filter']
@@ -702,7 +514,6 @@ class LDAPBackend(object):
         log.debug('groups for dn %r: %r', dn, group_dns)
         self.populate_admin_flags_by_group(user, block, group_dns)
         self.populate_groups_by_mapping(user, dn, conn, block, group_dns)
-
 
     def get_group_by_name(self, block, group_name, create=None):
         '''Obtain a Django group'''
@@ -761,8 +572,7 @@ class LDAPBackend(object):
             try:
                 ou = OU.objects.get(slug=ou_slug)
             except OU.DoesNotExist:
-                raise ImproperlyConfigured('ou_slug value is wrong for ldap %r',
-                                          block['url'])
+                raise ImproperlyConfigured('ou_slug value is wrong for ldap %r' % block['url'])
         else:
             ou = get_default_ou()
         if user.ou != ou:
@@ -802,7 +612,7 @@ class LDAPBackend(object):
         except ldap.LDAPError:
             log.exception('unable to retrieve attributes of dn %r', dn)
             return {}
-        attribute_map = normalize_ldap_results(results[0][1])
+        attribute_map = cls.normalize_ldap_results(results[0][1])
         # add mandatory attributes
         for key, mandatory_values in mandatory_attributes_values.iteritems():
             key = str(key)
@@ -835,22 +645,24 @@ class LDAPBackend(object):
             quote = True
             if ':' in attribute:
                 attribute, param = attribute.split(':')
-                quote = not 'noquote' in param.split(',')
+                quote = 'noquote' not in param.split(',')
             if quote:
                 decoded.append((attribute, urllib.unquote(value)))
             else:
                 decoded.append((attribute, value.encode('utf-8')))
-        filters = [filter_format('(%s=%s)', (a,b)) for a, b in decoded]
+        filters = [filter_format('(%s=%s)', (a, b)) for a, b in decoded]
         return '(&{0})'.format(''.join(filters))
 
     def build_external_id(self, external_id_tuple, attributes):
-        '''Build the exernal id for the user, use attribute that eventually never change like GUID or UUID'''
+        '''Build the exernal id for the user, use attribute that eventually
+           never change like GUID or UUID.
+        '''
         l = []
         for attribute in external_id_tuple:
             quote = True
             if ':' in attribute:
                 attribute, param = attribute.split(':')
-                quote = not 'noquote' in param.split(',')
+                quote = 'noquote' not in param.split(',')
             v = attributes[attribute]
             if isinstance(v, list):
                 v = v[0]
@@ -876,11 +688,9 @@ class LDAPBackend(object):
             if not external_id:
                 continue
             try:
-                log.debug('lookup using external_id %r: %r', eid_tuple,
-                        external_id)
+                log.debug('lookup using external_id %r: %r', eid_tuple, external_id)
                 return LDAPUser.objects.prefetch_related('groups').get(
-                        userexternalid__external_id=external_id,
-                        userexternalid__source=block['realm'])
+                    userexternalid__external_id=external_id, userexternalid__source=block['realm'])
             except User.DoesNotExist:
                 pass
 
@@ -910,13 +720,11 @@ class LDAPBackend(object):
                 user.save()
                 user._changed = False
             external_id = self.build_external_id(
-                    block['external_id_tuples'][0],
-                    attributes)
+                block['external_id_tuples'][0],
+                attributes)
             if external_id:
                 new, created = UserExternalId.objects.get_or_create(
-                        user=user,
-                        external_id=external_id,
-                        source=block['realm'])
+                    user=user, external_id=external_id, source=block['realm'])
                 if block['clean_external_id_on_update']:
                     UserExternalId.objects \
                         .exclude(id=new.id) \
@@ -931,11 +739,9 @@ class LDAPBackend(object):
         log.debug('retrieved attributes for %r: %r', dn, attributes)
         username = self.create_username(block, attributes)
         if block['transient']:
-            return self._return_transient_user(dn, username, password,
-                    conn, block, attributes)
+            return self._return_transient_user(dn, username, password, conn, block, attributes)
         else:
-            return self._return_django_user(dn, username, password, conn,
-                    block, attributes)
+            return self._return_django_user(dn, username, password, conn, block, attributes)
 
     def _return_transient_user(self, dn, username, password, conn, block, attributes):
         user = LDAPUser(username=username)
@@ -978,7 +784,7 @@ class LDAPBackend(object):
     def get_users(cls):
         logger = logging.getLogger(__name__)
         for block in cls.get_config():
-            conn = get_connection(block)
+            conn = cls.get_connection(block)
             if conn is None:
                 logger.warning(u'unable to synchronize with LDAP servers %r', block['url'])
                 continue
@@ -991,9 +797,200 @@ class LDAPBackend(object):
                 # ignore referrals
                 if not user_dn:
                     continue
-                data = normalize_ldap_results(data)
+                data = cls.normalize_ldap_results(data)
                 data['dn'] = user_dn
                 yield backend._return_user(user_dn, None, conn, block, data)
+
+    @classmethod
+    def ad_encoding(cls, s):
+        '''Encode an unicode string for AD consumption as a password'''
+        return (u'"{0}"'.format(s)).encode('utf-16-le')
+
+    @classmethod
+    def modify_password(cls, conn, block, dn, old_password, new_password):
+        '''Change user password with adaptation for Active Directory'''
+        if block['use_password_modify'] and not block['active_directory']:
+            conn.passwd_s(dn, old_password or None, new_password)
+        else:
+            modlist = []
+            if block['active_directory']:
+                key = 'unicodePwd'
+                value = cls.ad_encoding(new_password)
+                if old_password:
+                    modlist = [
+                        (ldap.MOD_DELETE, key, [cls.ad_encoding(old_password)]),
+                        (ldap.MOD_ADD, key, [value])
+                    ]
+                else:
+                    modlist = [(ldap.MOD_REPLACE, key, [value])]
+            else:
+                key = 'userPassword'
+                value = new_password.encode('utf-8')
+                modlist = [(ldap.MOD_REPLACE, key, [value])]
+            conn.modify_s(dn, modlist)
+        log.debug('modified password for dn %r', dn)
+
+    @classmethod
+    def normalize_ldap_results(cls, attributes, encoding='utf-8'):
+        new_attributes = {}
+        for key in attributes:
+            try:
+                new_attributes[key.lower()] = map(lambda x: unicode(x, encoding), attributes[key])
+            except UnicodeDecodeError:
+                log.debug('unable to decode attribute %r as UTF-8, converting to base64', key)
+                new_attributes[key.lower()] = map(base64.b64encode, attributes[key])
+        return new_attributes
+
+    @classmethod
+    def get_connections(cls, block, credentials=()):
+        '''Try each replicas, and yield successfull connections'''
+        if not block['url']:
+            raise ImproperlyConfigured("block['url'] must contain at least one url")
+        for url in block['url']:
+            for key, value in block['global_ldap_options'].iteritems():
+                ldap.set_option(key, value)
+            conn = ldap.initialize(url)
+            if block['timeout'] > 0:
+                conn.set_option(ldap.OPT_NETWORK_TIMEOUT, block['timeout'])
+            conn.set_option(ldap.OPT_X_TLS_REQUIRE_CERT,
+                            getattr(ldap, 'OPT_X_TLS_' + block['require_cert'].upper()))
+            if block['cacertfile']:
+                conn.set_option(ldap.OPT_X_TLS_CACERTFILE, block['cacertfile'])
+            if block['cacertdir']:
+                conn.set_option(ldap.OPT_X_TLS_CACERTDIR, block['cacertdir'])
+            if block['certfile']:
+                conn.set_option(ldap.OPT_X_TLS_CERTFILE, block['certfile'])
+            if block['keyfile']:
+                conn.set_option(ldap.OPT_X_TLS_CERTFILE, block['keyfile'])
+            for key, value in block['ldap_options']:
+                conn.set_option(key, value)
+            conn.set_option(ldap.OPT_REFERRALS, 1 if block['referrals'] else 0)
+            # allow TLS options to be applied
+            conn.set_option(ldap.OPT_X_TLS_NEWCTX, 0)
+            try:
+                if not url.startswith('ldaps://') and block['use_tls']:
+                    try:
+                        conn.start_tls_s()
+                    except ldap.CONNECT_ERROR:
+                        log.error('connection to %r failed when activating TLS, did you forget '
+                                  'to declare the TLS certificate in /etc/ldap/ldap.conf ?', url)
+                        continue
+            except ldap.TIMEOUT:
+                log.error('connection to %r timed out', url)
+                continue
+            except ldap.CONNECT_ERROR:
+                log.error('connection to %r failed when activating TLS, did you forget to '
+                          'declare the TLS certificate in /etc/ldap/ldap.conf ?', url)
+                continue
+            except ldap.SERVER_DOWN:
+                if block['replicas']:
+                    log.warning('ldap %r is down', url)
+                else:
+                    log.error('ldap %r is down', url)
+                continue
+            try:
+                if credentials:
+                    conn.bind_s(*credentials)
+                elif block['bindsasl']:
+                    sasl_mech, who, sasl_params = block['bindsasl']
+                    handler_class = getattr(ldap.sasl, sasl_mech)
+                    auth = handler_class(*sasl_params)
+                    conn.sasl_interactive_bind_s(who, auth)
+                elif block['binddn'] and block['bindpw']:
+                    conn.bind_s(block['binddn'], block['bindpw'])
+                yield conn
+            except ldap.INVALID_CREDENTIALS:
+                log.error('admin bind failed on %s: invalid credentials', url)
+                if block['replicas']:
+                    break
+            except ldap.INVALID_DN_SYNTAX:
+                log.error('admin bind failed on %s: invalid dn syntax %r', url, who)
+                if block['replicas']:
+                    break
+
+    @classmethod
+    def get_connection(cls, block, credentials=()):
+        '''Try to get at least one connection'''
+        for conn in cls.get_connections(block, credentials=credentials):
+            return conn
+
+    @classmethod
+    def update_default(cls, block):
+        '''Add missing key to block based on default values'''
+        for key in block:
+            if key not in cls._VALID_CONFIG_KEYS:
+                raise ImproperlyConfigured(
+                    '"{}" : invalid LDAP_AUTH_SETTINGS key, available are {}'.format(
+                        key, cls._VALID_CONFIG_KEYS))
+
+        for r in cls._REQUIRED:
+            if r not in block:
+                raise ImproperlyConfigured(
+                    'LDAP_AUTH_SETTINGS: missing required configuration option %r' % r)
+
+        for d in cls._DEFAULTS:
+            if d not in block:
+                block[d] = cls._DEFAULTS[d]
+            else:
+                if isinstance(cls._DEFAULTS[d], six.string_types):
+                    if not isinstance(block[d], six.string_types):
+                        raise ImproperlyConfigured(
+                            'LDAP_AUTH_SETTINGS: attribute %r must be a string' % d)
+                    try:
+                        block[d] = str(block[d])
+                    except UnicodeEncodeError:
+                        raise ImproperlyConfigured(
+                            'LDAP_AUTH_SETTINGS: attribute %r must be a string' % d)
+                if isinstance(cls._DEFAULTS[d], bool) and not isinstance(block[d], bool):
+                    raise ImproperlyConfigured(
+                        'LDAP_AUTH_SETTINGS: attribute %r must be a boolean' % d)
+                if (isinstance(cls._DEFAULTS[d], (list, tuple))
+                        and not isinstance(block[d], (list, tuple))):
+                    raise ImproperlyConfigured(
+                        'LDAP_AUTH_SETTINGS: attribute %r must be a list or a tuple' % d)
+                if isinstance(cls._DEFAULTS[d], dict) and not isinstance(block[d], dict):
+                    raise ImproperlyConfigured(
+                        'LDAP_AUTH_SETTINGS: attribute %r must be a dictionary' % d)
+                if not isinstance(cls._DEFAULTS[d], bool) and d in cls._REQUIRED and not block[d]:
+                    raise ImproperlyConfigured(
+                        'LDAP_AUTH_SETTINGS: attribute %r is required but is empty')
+        for i in cls._TO_ITERABLE:
+            if isinstance(block[i], six.string_types):
+                block[i] = (block[i],)
+        # lowercase LDAP attribute names
+        block['external_id_tuples'] = map(
+            lambda t: map(str.lower, map(str, t)), block['external_id_tuples'])
+        block['attribute_mappings'] = map(
+            lambda t: map(str.lower, map(str, t)), block['attribute_mappings'])
+        for key in cls._TO_LOWERCASE:
+            # we handle strings, list of strings and list of list or tuple whose first element is a
+            # string
+            if isinstance(block[key], six.string_types):
+                block[key] = str(block[key]).lower()
+            elif isinstance(block[key], (list, tuple)):
+                new_seq = []
+                for elt in block[key]:
+                    if isinstance(elt, six.string_types):
+                        elt = str(elt).lower()
+                    elif isinstance(elt, (list, tuple)):
+                        elt = list(elt)
+                        elt[0] = str(elt[0]).lower()
+                        elt = tuple(elt)
+                    new_seq.append(elt)
+                block[key] = tuple(new_seq)
+            elif isinstance(block[key], dict):
+                newdict = {}
+                for subkey in block[key]:
+                    newdict[str(subkey).lower()] = block[key][subkey]
+                block[key] = newdict
+            else:
+                raise NotImplementedError(
+                    'LDAP setting %r cannot be converted to lowercase setting, its type is %r'
+                    % (key, type(block[key])))
+        # Want to randomize our access, otherwise what's the point of having multiple servers?
+        block['url'] = list(block['url'])
+        if block['shuffle_replicas']:
+            random.shuffle(block['url'])
 
 
 class LDAPBackendPasswordLost(LDAPBackend):
@@ -1009,22 +1006,27 @@ class LDAPBackendPasswordLost(LDAPBackend):
                 if user_external_id.source != unicode(block['realm']):
                     continue
                 for external_id_tuple in block['external_id_tuples']:
-                    conn = get_connection(block)
+                    conn = self.backend.get_connection(block)
                     try:
                         if external_id_tuple == ('dn:noquote',):
                             dn = external_id
                             results = conn.search_s(dn, ldap.SCOPE_BASE)
                         else:
                             ldap_filter = self.external_id_to_filter(external_id, external_id_tuple)
-                            results = conn.search_s(block['basedn'], ldap.SCOPE_SUBTREE, ldap_filter)
+                            results = conn.search_s(block['basedn'],
+                                                    ldap.SCOPE_SUBTREE, ldap_filter)
                             if not results:
-                                log.error('unable to find user %r based on '
-                                        'external id %s', unicode(user),
-                                        external_id)
+                                log.error(
+                                    'unable to find user %r based on external id %s',
+                                    unicode(user), external_id)
                                 continue
                             dn = results[0][0]
                     except ldap.LDAPError:
-                        log.error('unable to find user %r based on external id '
-                                '%s', unicode(user), external_id)
+                        log.error(
+                            'unable to find user %r based on external id %s', unicode(user),
+                            external_id)
                         continue
                     return self._return_user(dn, None, conn, block)
+
+LDAPUser.backend = LDAPBackend
+LDAPBackendPasswordLost.backend = LDAPBackend
