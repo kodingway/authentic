@@ -7,6 +7,7 @@ from django.db import models
 from django.db.models.query import Q
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
+from django.contrib.contenttypes.models import ContentType
 
 from model_utils.managers import QueryManager
 
@@ -177,17 +178,38 @@ class Attribute(models.Model):
     def contribute_to_form(self, form, **kwargs):
         form.fields[self.name] = self.get_form_field(**kwargs)
 
+    def get_value(self, owner):
+        kind = self.get_kind()
+        deserialize = kind['deserialize']
+        atvs = AttributeValue.objects.with_owner(owner)
+        if self.multiple:
+            result = []
+            for atv in atvs.filter(attribute=self, multiple=True):
+                result.append(deserialize(atv.content))
+            return result
+        else:
+            try:
+                atv = atvs.get(attribute=self, multiple=False)
+                return deserialize(atv.content)
+            except AttributeValue.DoesNotExist:
+                return kind['default']
+
+
     def set_value(self, owner, value):
         serialize = self.get_kind()['serialize']
-        content = serialize(value)
         if self.multiple:
-            AttributeValue.objects.get_or_create(
-                    content_type=ContentType.objects.get_for_model(owner),
-                    object_id=owner.pk,
-                    attribute=self,
-                    multiple=True,
-                    content=content)
+            assert isinstance(value, (list, set, tuple))
+            values = value
+            for value in values:
+                content = serialize(value)
+                AttributeValue.objects.get_or_create(
+                        content_type=ContentType.objects.get_for_model(owner),
+                        object_id=owner.pk,
+                        attribute=self,
+                        multiple=True,
+                        content=content)
         else:
+            content = serialize(value)
             av, created = AttributeValue.objects.get_or_create(
                     content_type=ContentType.objects.get_for_model(owner),
                     object_id=owner.pk,

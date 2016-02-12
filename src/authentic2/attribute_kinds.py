@@ -86,6 +86,7 @@ def get_form_field(kind, **kwargs):
 
 def get_kind(kind):
     d = get_attribute_kinds()[kind]
+    d.setdefault('default', None)
     d.setdefault('serialize', json.dumps)
     d.setdefault('deserialize', json.loads)
     return d
