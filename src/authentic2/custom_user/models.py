@@ -13,7 +13,7 @@ from django_rbac.utils import get_role_parenting_model
 
 from authentic2 import utils, validators, app_settings
 from authentic2.decorators import errorcollector
-from authentic2.models import Service, AttributeValue
+from authentic2.models import Service, AttributeValue, Attribute
 
 from .managers import UserManager
 
@@ -100,6 +100,20 @@ class User(AbstractBaseUser, PermissionMixin):
 
     def __repr__(self):
         return '<User: %r>' % unicode(self)
+
+    def __getattr__(self, name):
+        try:
+            at = Attribute.objects.get(name=name)
+            return at.get_value(self)
+        except Attribute.DoesNotExist:
+            return super(User, self).__getattr__(name)
+
+    def __setattr__(self, name, value):
+        try:
+            at = Attribute.objects.get(name=name)
+            at.set_value(self, value)
+        except Attribute.DoesNotExist:
+            return super(User, self).__setattr__(name, value)
 
     def clean(self):
         errors = {}
