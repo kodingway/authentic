@@ -237,7 +237,7 @@ class BaseUserSerializer(serializers.ModelSerializer):
         for at in Attribute.objects.all():
             if at.name in self.fields:
                 continue
-            self.fields[at.name] = serializers.CharField(required=at.required, allow_blank=True)
+            self.fields[at.name] = serializers.CharField(source='attributes.%s' % at.name, required=at.required, allow_blank=True)
 
     def check_perm(self, perm, ou):
         self.context['view'].check_perm(perm, ou)
@@ -250,13 +250,11 @@ class BaseUserSerializer(serializers.ModelSerializer):
                                                               None)
         force_password_reset = validated_data.pop('force_password_reset', False)
 
-        for at in Attribute.objects.all():
-            if at.name in validated_data:
-                extra_field[at.name] = validated_data.pop(at.name)
+        attributes = validated_data.pop('attributes', {})
         self.check_perm('custom_user.add_user', validated_data.get('ou'))
         instance = super(BaseUserSerializer, self).create(validated_data)
-        for key, value in extra_field.iteritems():
-            setattr(instance, key, value)
+        for key, value in attributes.iteritems():
+            setattr(instance.attributes, key, value)
         if 'password' in validated_data:
             instance.set_password(validated_data['password'])
             instance.save()
@@ -283,15 +281,13 @@ class BaseUserSerializer(serializers.ModelSerializer):
         # Remove unused fields
         validated_data.pop('send_registration_email', False)
         validated_data.pop('send_registration_email_next_url', None)
-        for at in Attribute.objects.all():
-            if at.name in validated_data:
-                extra_field[at.name] = validated_data.pop(at.name)
+        attributes = validated_data.pop('attributes', {})
         # Double check: to move an user from one ou into another you must be administrator of both
         self.check_perm('custom_user.change_user', instance.ou)
         self.check_perm('custom_user.change_user', validated_data.get('ou'))
         super(BaseUserSerializer, self).update(instance, validated_data)
-        for key, value in extra_field.iteritems():
-            setattr(instance, key, value)
+        for key, value in attributes.iteritems():
+            setattr(instance.attributes, key, value)
         if 'password' in validated_data:
             instance.set_password(validated_data['password'])
             instance.save()

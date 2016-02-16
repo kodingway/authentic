@@ -17,6 +17,30 @@ from authentic2.models import Service, AttributeValue, Attribute
 
 from .managers import UserManager
 
+
+class Attributes(object):
+    def __init__(self, owner):
+        super(Attributes, self).__setattr__('owner', owner)
+
+    def __setattr__(self, name, value):
+        try:
+            at = Attribute.objects.get(name=name)
+            at.set_value(self.owner, value)
+        except Attribute.DoesNotExist:
+            raise AttributeError(name)
+
+    def __getattr__(self, name):
+        try:
+            return Attribute.objects.get(name=name).get_value(self.owner)
+        except Attribute.DoesNotExist:
+            raise AttributeError(name)
+
+
+class AttributesDescriptor(object):
+    def __get__(self, obj, objtype):
+        return Attributes(obj)
+
+
 class User(AbstractBaseUser, PermissionMixin):
     """
     An abstract base class implementing a fully featured User model with
@@ -47,6 +71,7 @@ class User(AbstractBaseUser, PermissionMixin):
 
 
     objects = UserManager()
+    attributes = AttributesDescriptor()
 
     USERNAME_FIELD = 'uuid'
     REQUIRED_FIELDS = ['username', 'email']
@@ -100,20 +125,6 @@ class User(AbstractBaseUser, PermissionMixin):
 
     def __repr__(self):
         return '<User: %r>' % unicode(self)
-
-    def __getattr__(self, name):
-        try:
-            at = Attribute.objects.get(name=name)
-            return at.get_value(self)
-        except Attribute.DoesNotExist:
-            return super(User, self).__getattr__(name)
-
-    def __setattr__(self, name, value):
-        try:
-            at = Attribute.objects.get(name=name)
-            at.set_value(self, value)
-        except Attribute.DoesNotExist:
-            return super(User, self).__setattr__(name, value)
 
     def clean(self):
         errors = {}
