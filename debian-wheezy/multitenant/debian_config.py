@@ -1,4 +1,5 @@
 import os
+from django.utils.translation import ugettext_lazy as _
 
 # Debian defaults
 DEBUG = False
@@ -36,6 +37,9 @@ LOGGING['loggers']['django_select2'] = {
     'handlers': ['syslog'],
     'level': 'WARNING',
 }
+
+# Default login's form username label
+A2_USERNAME_LABEL = _('Email')
 
 # Rest Authentication Class for services access
 from django.core.exceptions import ImproperlyConfigured
