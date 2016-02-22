@@ -6,7 +6,7 @@ Quickstart a CAS Identity Provider
 
 1. Activate CAS IdP support in your local_settings.py::
 
- IDP_CAS = True
+ A2_IDP_CAS_ENABLE = True
 
 2. Then create the database table to hold CAS service tickets::
 
