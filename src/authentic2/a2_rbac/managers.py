@@ -33,7 +33,9 @@ class RoleManager(BaseRoleManager):
             self_perm = admin_role.add_self_administration()
             permissions.add(self_perm)
         if set(admin_role.permissions.all()) != permissions:
-            admin_role.permissions = permissions
+            for permission in permissions:
+                admin_role.permissions.through.objects.get_or_create(role=admin_role,
+                                                                     permission=permission)
         return admin_role
 
     def get_mirror_role(self, instance, name, slug, ou=None,
