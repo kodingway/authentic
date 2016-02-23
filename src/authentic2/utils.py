@@ -134,7 +134,7 @@ def accumulate_from_backends(request, method_name):
 def load_backend(path):
     '''Load an IdP backend by its module path'''
     i = path.rfind('.')
-    module, attr = path[:i], path[i+1:]
+    module, attr = path[:i], path[i + 1:]
     try:
         mod = import_module(module)
     except ImportError, e:
@@ -500,9 +500,9 @@ def get_fields_and_labels(*args):
     return fields, labels
 
 
-def send_templated_mail(user_or_email, template_names, context=None, with_html=True, from_email=None,
-                        request=None, legacy_subject_templates=None, legacy_body_templates=None,
-                        legacy_html_body_templates=None, **kwargs):
+def send_templated_mail(user_or_email, template_names, context=None, with_html=True,
+                        from_email=None, request=None, legacy_subject_templates=None,
+                        legacy_body_templates=None, legacy_html_body_templates=None, **kwargs):
     '''Send mail to an user by using templates:
        - <template_name>_subject.txt for the subject
        - <template_name>_body.txt for the plain text body
@@ -637,7 +637,7 @@ def send_password_reset_mail(user, template_names=None, request=None,
         reset_url += '?' + urllib.urlencode({'next': next_url})
     ctx['reset_url'] = reset_url
 
-    send_templated_mail(user.email, template_names, ctx, request=request, 
+    send_templated_mail(user.email, template_names, ctx, request=request,
                         legacy_subject_templates=legacy_subject_templates,
                         legacy_body_templates=legacy_body_templates, **kwargs)
     logger.info(u'password reset requests for %s, email sent to %s '
