@@ -47,9 +47,9 @@ class RegistrationSerializer(serializers.Serializer):
     username = serializers.CharField(
         required=False, allow_blank=True)
     first_name = serializers.CharField(
-        required=False, allow_blank=True)
+        required=False, allow_blank=True, default='')
     last_name = serializers.CharField(
-        required=False, allow_blank=True)
+        required=False, allow_blank=True, default='')
     password = serializers.CharField(
         required=False, allow_null=True)
     no_email_validation = serializers.BooleanField(
