@@ -4,11 +4,10 @@ import json
 import pytest
 import re
 
-from authentic2_provisionning_ldap.ldap_utils import Slapd, has_slapd
+from django.core.urlresolvers import reverse
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ImproperlyConfigured
 from authentic2.a2_rbac.utils import get_default_ou
-from django_rbac.utils import get_ou_model, get_role_model
+from django_rbac.utils import get_role_model
 from authentic2.models import Service
 from django.core import mail
 
@@ -41,8 +40,8 @@ def test_api_user(client):
     role2 = Role.objects.create(name='Role2', service=service)
     role2.members.add(user)
 
-    role3 = Role.objects.create(name='Role3', ou=ou)
-    role4 = Role.objects.create(name='Role4', service=service)
+    Role.objects.create(name='Role3', ou=ou)
+    Role.objects.create(name='Role4', service=service)
 
     # test failure when unlogged
     response = client.get('/api/user/', HTTP_ORIGIN='http://testserver')
@@ -76,16 +75,16 @@ def test_api_user(client):
         assert (role['uuid'] == role1.uuid and
                 role['name'] == role1.name and
                 role['slug'] == role1.slug and
-                role['is_admin'] == False and
-                role['is_service'] == False and
+                role['is_admin'] is False and
+                role['is_service'] is False and
                 role['ou__uuid'] == ou.uuid and
                 role['ou__name'] == ou.name and
                 role['ou__slug'] == ou.slug) or \
                (role['uuid'] == role2.uuid and
                 role['name'] == role2.name and
                 role['slug'] == role2.slug and
-                role['is_admin'] == False and
-                role['is_service'] == True and
+                role['is_admin'] is False and
+                role['is_service'] is True and
                 role['ou__uuid'] == ou.uuid and
                 role['ou__name'] == ou.name and
                 role['ou__slug'] == ou.slug)
@@ -110,19 +109,20 @@ def test_api_user(client):
         assert (role['uuid'] == role1.uuid and
                 role['name'] == role1.name and
                 role['slug'] == role1.slug and
-                role['is_admin'] == False and
-                role['is_service'] == False and
+                role['is_admin'] is False and
+                role['is_service'] is False and
                 role['ou__uuid'] == ou.uuid and
                 role['ou__name'] == ou.name and
                 role['ou__slug'] == ou.slug) or \
                (role['uuid'] == role2.uuid and
                 role['name'] == role2.name and
                 role['slug'] == role2.slug and
-                role['is_admin'] == False and
-                role['is_service'] == True and
+                role['is_admin'] is False and
+                role['is_service'] is True and
                 role['ou__uuid'] == ou.uuid and
                 role['ou__name'] == ou.name and
                 role['ou__slug'] == ou.slug)
+
 
 def test_api_users_list(app, user):
     app.authorization = ('Basic', (user.username, user.username))
@@ -139,6 +139,7 @@ def test_api_users_list(app, user):
         count = 0
     assert resp.json['count'] == count
     assert len(resp.json['results']) == count
+
 
 def test_api_users_create(app, user):
     from django.contrib.auth import get_user_model
@@ -190,17 +191,18 @@ def test_api_users_create(app, user):
         assert new_user.last_name == resp.json['last_name']
         assert AttributeValue.objects.with_owner(new_user).count() == 1
         assert AttributeValue.objects.with_owner(new_user)[0].attribute == at
-        assert json.loads(AttributeValue.objects.with_owner(new_user)[0].content) == payload['title']
+        assert (json.loads(AttributeValue.objects.with_owner(new_user)[0].content) ==
+                payload['title'])
         resp2 = app.get('/api/users/%s/' % resp.json['uuid'])
         assert resp.json == resp2.json
 
+
 def test_api_users_create_send_mail(app, settings, superuser):
-    from django.contrib.auth import get_user_model
-    from authentic2.models import Attribute, AttributeValue
+    from authentic2.models import Attribute
 
     # Use case is often that Email is the main identifier
     settings.A2_EMAIL_IS_UNIQUE = True
-    at = Attribute.objects.create(kind='title', name='title', label='title')
+    Attribute.objects.create(kind='title', name='title', label='title')
 
     app.authorization = ('Basic', (superuser.username, superuser.username))
     payload = {
@@ -228,10 +230,8 @@ def test_api_users_create_send_mail(app, settings, superuser):
     # Check user was properly logged in
     assert app.session['_auth_user_id'] == user_id
 
-def test_api_users_create_force_password_reset(app, client, settings, superuser):
-    from django.contrib.auth import get_user_model
-    from authentic2.models import Attribute, AttributeValue
 
+def test_api_users_create_force_password_reset(app, client, settings, superuser):
     app.authorization = ('Basic', (superuser.username, superuser.username))
     payload = {
         'ou': None,
@@ -251,6 +251,7 @@ def test_api_users_create_force_password_reset(app, client, settings, superuser)
     resp = resp.form.submit('Submit').follow()
     assert 'Password changed' in resp
 
+
 def test_api_role_add_member(app, user, role, member):
     app.authorization = ('Basic', (user.username, user.username))
     payload = {
@@ -262,15 +263,16 @@ def test_api_role_add_member(app, user, role, member):
 
     if member.username == 'fake' or role.name == 'fake':
         status = 404
-    elif authorized :
+    elif authorized:
         status = 201
     else:
         status = 403
 
-    resp = app.post_json('/api/roles/{0}/members/{1}/'.format(role.uuid, member.uuid), payload, status=status)
+    resp = app.post_json('/api/roles/{0}/members/{1}/'.format(role.uuid, member.uuid), payload,
+                         status=status)
     if status == 404:
         pass
-    elif authorized :
+    elif authorized:
         assert resp.json['detail'] == 'User successfully added to role'
     else:
         assert resp.json['detail'] == 'User not allowed to change role'
@@ -282,16 +284,17 @@ def test_api_role_remove_member(app, user, role, member):
 
     if member.username == 'fake' or role.name == 'fake':
         status = 404
-    elif authorized :
+    elif authorized:
         status = 200
     else:
         status = 403
 
-    resp = app.delete_json('/api/roles/{0}/members/{1}/'.format(role.uuid, member.uuid), status=status)
+    resp = app.delete_json('/api/roles/{0}/members/{1}/'.format(role.uuid, member.uuid),
+                           status=status)
 
     if status == 404:
         pass
-    elif authorized :
+    elif authorized:
         assert resp.json['detail'] == 'User successfully removed from role'
     else:
         assert resp.json['detail'] == 'User not allowed to change role'
