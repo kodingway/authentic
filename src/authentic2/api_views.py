@@ -193,7 +193,7 @@ class Register(BaseRpcView):
                 validated_data['uuid'] = new_user.uuid
                 response = {
                     'result': 1,
-                    'user': validated_data,
+                    'user': BaseUserSerializer(new_user).data,
                     'token': token,
                 }
                 if email:
