@@ -398,6 +398,8 @@ class ProfileView(cbv.TemplateNamesMixin, TemplateView):
         # Credentials management
         blocks = [ frontend.profile(request, context_instance=context_instance) for frontend in frontends \
                 if hasattr(frontend, 'profile') and frontend.enabled() ]
+        blocks_by_id = { frontend.id(): frontend.profile(request, context_instance=context_instance)
+                for frontend in frontends if hasattr(frontend, 'profile') and frontend.enabled() }
         idp_backends = utils.get_backends()
         # Get actions for federation management
         federation_management = []
@@ -407,6 +409,7 @@ class ProfileView(cbv.TemplateNamesMixin, TemplateView):
                     federation_management.extend(idp_backend.federation_management(request))
         context_instance.update({
             'frontends_block': blocks,
+            'frontends_block_by_id': blocks_by_id,
             'profile': profile,
             'allow_account_deletion': app_settings.A2_REGISTRATION_CAN_DELETE_ACCOUNT,
             'allow_profile_edit': EditProfile.can_edit_profile(),
