@@ -17,14 +17,18 @@
 {% block content %}
   <div id="a2-login-forms">
     {% for id, login_block in blocks.iteritems %}
-      <span id="css-tab{{ forloop.counter }}"></span>
+      {% if not login_block.is_hidden %}
+        <span id="css-tab{{ forloop.counter }}"></span>
+      {% endif %}
     {% endfor %}
 
     {% if blocks|length != 1 %}
       {% for id, login_block in blocks.iteritems %}
-      <a class="css-tab-link css-tab{{ forloop.counter }} {% if forloop.first %}css-tab-default{% endif %}" href="#css-tab{{ forloop.counter }}">
-          {{ login_block.name }}
-        </a>
+        {% if not login_block.is_hidden %}
+          <a class="css-tab-link css-tab{{ forloop.counter }} {% if forloop.first %}css-tab-default{% endif %}" href="#css-tab{{ forloop.counter }}">
+              {{ login_block.name }}
+          </a>
+        {% endif %}
       {% endfor %}
     {% endif %}
 

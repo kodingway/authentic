@@ -280,6 +280,11 @@ def login(request, template_name='authentic2/login.html',
                     'content': response.content,
                     'frontend': frontend,
             })
+        if hasattr(frontend, 'is_hidden'):
+            blocks[-1]['is_hidden'] = frontend.is_hidden(request)
+        else:
+            blocks[-1]['is_hidden'] = False
+
 
     # Old frontends API
     for block in blocks:
