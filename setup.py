@@ -61,7 +61,7 @@ class sdist(_sdist):
         version_file = open('VERSION', 'w')
         version_file.write(version)
         version_file.close()
-        sdist.run(self)
+        _sdist.run(self)
         print "removing VERSION file"
         if os.path.exists('VERSION'):
             os.remove('VERSION')
