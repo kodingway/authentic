@@ -341,6 +341,7 @@ class BaseUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
+        extra_kwargs = {'uuid': {'read_only': False}}
         exclude = ('date_joined', 'user_permissions', 'groups', 'last_login')
 
 
