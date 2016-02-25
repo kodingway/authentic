@@ -601,7 +601,7 @@ class LDAPBackend(object):
                 external_id_tuple))
         for from_at, to_at in block['attribute_mappings']:
             attributes.add(to_at)
-        return set(map(str.lower, map(str, attributes)))
+        return list(set(map(str.lower, map(str, attributes))))
 
     @classmethod
     def get_ldap_attributes(cls, block, conn, dn):
@@ -611,7 +611,7 @@ class LDAPBackend(object):
         attribute_mappings = block['attribute_mappings']
         mandatory_attributes_values = block['mandatory_attributes_values']
         try:
-            results = conn.search_s(dn, ldap.SCOPE_BASE, '(objectclass=*)', list(attributes))
+            results = conn.search_s(dn, ldap.SCOPE_BASE, '(objectclass=*)', attributes)
         except ldap.LDAPError:
             log.exception('unable to retrieve attributes of dn %r', dn)
             return {}
@@ -793,7 +793,7 @@ class LDAPBackend(object):
                 continue
             user_basedn = block.get('user_basedn') or block['basedn']
             user_filter = block['user_filter'].replace('%s', '*')
-            attrs = list(cls.get_ldap_attributes_names(block))
+            attrs = cls.get_ldap_attributes_names(block)
             users = conn.search_s(user_basedn, ldap.SCOPE_SUBTREE, user_filter, attrlist=attrs)
             backend = cls()
             for user_dn, data in users:
