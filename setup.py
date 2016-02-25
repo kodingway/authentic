@@ -10,8 +10,8 @@ import os
 
 from setuptools import setup, find_packages
 from setuptools.command.install_lib import install_lib as _install_lib
+from setuptools.command.sdist import sdist as _sdist
 from distutils.command.build import build as _build
-from distutils.command.sdist import sdist
 from distutils.cmd import Command
 
 
@@ -30,8 +30,8 @@ class compile_translations(Command):
         try:
             os.environ.pop('DJANGO_SETTINGS_MODULE', None)
             from django.core.management import call_command
-            for dir in ('src/authentic2', 'src/authentic2_idp_openid',
-                    'src/authentic2_idp_cas', 'src/django_rbac'):
+            for dir in ('src/authentic2', 'src/authentic2_idp_openid', 'src/authentic2_idp_cas',
+                        'src/django_rbac'):
                 for path, dirs, files in os.walk(dir):
                     if 'locale' not in dirs:
                         continue
@@ -49,8 +49,9 @@ class compile_translations(Command):
 class build(_build):
     sub_commands = [('compile_translations', None)] + _build.sub_commands
 
-class eo_sdist(sdist):
-    sub_commands = [('compile_translations', None)] + sdist.sub_commands
+
+class sdist(_sdist):
+    sub_commands = [('compile_translations', None)] + _sdist.sub_commands
 
     def run(self):
         print "creating VERSION file"
@@ -64,6 +65,7 @@ class eo_sdist(sdist):
         print "removing VERSION file"
         if os.path.exists('VERSION'):
             os.remove('VERSION')
+
 
 class install_lib(_install_lib):
     def run(self):
@@ -79,15 +81,15 @@ def get_version():
         with open('VERSION', 'r') as v:
             return v.read()
     if os.path.exists('.git'):
-        p = subprocess.Popen(['git','describe','--dirty','--match=v*'],
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen(['git', 'describe', '--dirty', '--match=v*'], stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
         result = p.communicate()[0]
         if p.returncode == 0:
-            return result.split()[0][1:].replace('-', '.')
+            result = result.split()[0][1:]
         else:
-            return '0.0.0-%s' % len(
-                    subprocess.check_output(
-                            ['git', 'rev-list', 'HEAD']).splitlines())
+            result = '0.0.0-%s' % len(subprocess.check_output(
+                ['git', 'rev-list', 'HEAD']).splitlines())
+        return result.replace('-', '.')
     return '0.0.0'
 
 
@@ -100,27 +102,28 @@ setup(name="authentic2",
       author_email="authentic@listes.entrouvert.com",
       maintainer="Benjamin Dauvergne",
       maintainer_email="bdauvergne@entrouvert.com",
-      scripts = ('authentic2-ctl',),
+      scripts=('authentic2-ctl',),
       packages=find_packages('src'),
       package_dir={
           '': 'src',
       },
       include_package_data=True,
-      install_requires=['django >= 1.7.6,< 1.9',
-        'requests>=2.3',
-        'django-model-utils>=2,<2.4',
-        'django-admin-tools>=0.6,<0.7',
-        'dnspython>=1.10',
-        'Django-Select2>=4.3.0,<5',
-        'django-tables2>=1.0',
-        'gadjo>=0.6',
-        'django-import-export>=0.2.7',
-        'djangorestframework>=3.1',
-        'six>=1',
-        'Markdown>=2.1',
-        'python-ldap',
-        'django-filter<0.12.0',
-        'pycrypto',
+      install_requires=[
+          'django>=1.7.6,<1.9',
+          'requests>=2.3',
+          'django-model-utils>=2,<2.4',
+          'django-admin-tools>=0.6,<0.7',
+          'dnspython>=1.10',
+          'Django-Select2>=4.3.0,<5',
+          'django-tables2>=1.0',
+          'gadjo>=0.6',
+          'django-import-export>=0.2.7',
+          'djangorestframework>=3.1',
+          'six>=1',
+          'Markdown>=2.1',
+          'python-ldap',
+          'django-filter<0.12.0',
+          'pycrypto',
       ],
       extras_require = {
           'idp-openid': ['python-openid'],
@@ -142,9 +145,12 @@ setup(name="authentic2",
           "Programming Language :: Python",
           "Topic :: System :: Systems Administration :: Authentication/Directory",
       ],
-      cmdclass={'build': build, 'install_lib': install_lib,
+      cmdclass={
+          'build': build,
+          'install_lib': install_lib,
           'compile_translations': compile_translations,
-          'sdist': eo_sdist},
+          'sdist': sdist,
+      },
       entry_points={
           'authentic2.plugin': [
               'authentic2-auth-ssl = authentic2.auth2_auth.auth2_ssl:Plugin',
@@ -153,5 +159,4 @@ setup(name="authentic2",
               'authentic2-idp-cas = authentic2_idp_cas:Plugin',
               'authentic2-provisionning-ldap = authentic2_provisionning_ldap:Plugin',
           ],
-      },
-)
+      })
