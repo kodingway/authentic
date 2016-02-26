@@ -274,6 +274,7 @@ class BaseUserSerializer(serializers.ModelSerializer):
                                      default=CreateOnlyDefault(utils.generate_password),
                                      required=False)
     force_password_reset = serializers.BooleanField(write_only=True, required=False, default=False)
+    uuid = serializers.CharField(max_length=32, required=False)
 
     def __init__(self, *args, **kwargs):
         super(BaseUserSerializer, self).__init__(*args, **kwargs)
@@ -341,7 +342,6 @@ class BaseUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        extra_kwargs = {'uuid': {'read_only': False}}
         exclude = ('date_joined', 'user_permissions', 'groups', 'last_login')
 
 
