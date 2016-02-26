@@ -292,7 +292,7 @@ def login(request, template_name='authentic2/login.html',
         if not 'form' in block:
             continue
         frontend = block['frontend']
-        context = { 
+        context = {
                 'submit_name': 'submit-%s' % fid,
                 redirect_field_name: redirect_to,
                 'form': block['form']
@@ -403,8 +403,8 @@ class ProfileView(cbv.TemplateNamesMixin, TemplateView):
         # Credentials management
         blocks = [ frontend.profile(request, context_instance=context_instance) for frontend in frontends \
                 if hasattr(frontend, 'profile') and frontend.enabled() ]
-        blocks_by_id = { frontend.id(): frontend.profile(request, context_instance=context_instance)
-                for frontend in frontends if hasattr(frontend, 'profile') and frontend.enabled() }
+        blocks_by_id = dict((frontend.id(), frontend.profile(request, context_instance=context_instance))
+                for frontend in frontends if hasattr(frontend, 'profile') and frontend.enabled())
         idp_backends = utils.get_backends()
         # Get actions for federation management
         federation_management = []
