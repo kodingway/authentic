@@ -19,5 +19,7 @@ class Plugin(object):
         return ['authentic2_auth_saml.auth_frontends.SAMLFrontend']
 
     def redirect_logout_list(self, request, next_url=None):
-        response = logout(request)
-        return [response['Location']]
+        if 'mellon_session' in request.session:
+            response = logout(request)
+            return [response['Location']]
+        return []
