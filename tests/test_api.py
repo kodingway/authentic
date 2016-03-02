@@ -198,10 +198,10 @@ def test_api_users_create(app, user):
                 payload['title'])
         resp2 = app.get('/api/users/%s/' % resp.json['uuid'])
         assert resp.json == resp2.json
-    payload.update({'uuid': '1234567890', 'email': 'foo@example.com',
-                    'username': 'foobar'})
-    resp = app.post_json('/api/users/', payload, status=status)
-    assert resp.json['uuid'] == '1234567890'
+        payload.update({'uuid': '1234567890', 'email': 'foo@example.com',
+                        'username': 'foobar'})
+        resp = app.post_json('/api/users/', payload, status=status)
+        assert resp.json['uuid'] == '1234567890'
 
 
 def test_api_users_create_send_mail(app, settings, superuser):
