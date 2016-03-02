@@ -1,0 +1,7 @@
+{% load i18n %}<form method="post">
+    <input type="submit" name="{{ submit_name }}" value="{% trans "Login" %}"/>
+    {% if cancel %}
+        <input type="submit" name="cancel" value="{% trans 'Cancel' %}"/>
+    {% endif %}
+</form>
+

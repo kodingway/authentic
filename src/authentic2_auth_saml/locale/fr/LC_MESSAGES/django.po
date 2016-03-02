@@ -1,0 +1,122 @@
+# Authentic2 Mon.service-public.fr plugin french translations
+# Copyright (C) 2014 Entr'ouvert
+# This file is distributed under the same license as the authentic2-auth-fc package.
+# Benjamin Dauvergne <bdauvergne@entrouvert.com, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: authentic2-auth-fc 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-11-02 16:29+0100\n"
+"PO-Revision-Date: 2014-12-10 16:00+0100\n"
+"Last-Translator: Benjamin Dauvergne <bdauvergne@entrouvert.com>\n"
+"Language-Team: french <fr@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: auth_frontends.py:13
+msgid "France Connect"
+msgstr "France Connect"
+
+#: models.py:25
+msgid "user"
+msgstr "Utilisateur"
+
+#: models.py:28
+msgid "sub"
+msgstr "sub"
+
+#: models.py:30 models.py:31
+msgid "access token"
+msgstr "Jeton d'accès"
+
+#: models.py:52
+#, python-brace-format
+msgid "{0} (Last connection from : {1})"
+msgstr "{0} (Dernière connexion depuis : {1})"
+
+#: templates/authentic2_auth_fc/connecting.html:10
+msgid "Connect with"
+msgstr "Connectez-vous avec"
+
+#: templates/authentic2_auth_fc/linking.html:12
+msgid "Add a link"
+msgstr "Ajouter une liaison"
+
+#: templates/authentic2_auth_fc/linking.html:22
+msgid "Delete link"
+msgstr "Supprimer la liaison"
+
+#: templates/authentic2_auth_fc/unlink.html:8
+#, python-format
+msgid ""
+"You're about to delete the link between your third party account and your "
+"FranceConnect account : %(fc_account)s."
+msgstr ""
+"Vous êtes sur le point de supprimer la liaison entre votre compte Partenaire "
+"et votre compte FranceConnect : %(fc_account)s."
+
+#: templates/authentic2_auth_fc/unlink.html:9
+msgid ""
+"Delete this link won't delete those accounts. However, once all the links "
+"with FranceConnect are deleted, it's no more possible to use the "
+"FranceConnect features from your third party account. It is still possible "
+"to link those accounts once again by clicking on the button FranceConnect on "
+"the login page."
+msgstr ""
+"Supprimer la liaison ne supprimera pas ces comptes. Cependant, une fois "
+"toutes les liaisons avec FranceConnect supprimées, il ne sera plus possible "
+"d'utiliser les fonctionnalités FranceConnect depuis votre compte Partenaire. "
+"Il sera toujours possible de lier à nouveau ces comptes en cliquant sur le "
+"bouton FranceConnect sur la page de connexion."
+
+#: templates/authentic2_auth_fc/unlink.html:10
+#, python-format
+msgid ""
+"Do you confirm the deletion of the link with the FranceConnect account "
+"%(fc_account)s ?"
+msgstr ""
+"Confirmez-vous la suppression de la liaison avec le compte FranceConnect "
+"%(fc_account)s ?"
+
+#: templates/authentic2_auth_fc/unlink.html:11
+msgid "Unlink"
+msgstr "Délier"
+
+#: templates/authentic2_auth_fc/unlink.html:12
+msgid "Cancel"
+msgstr "Annuler"
+
+#: views.py:177
+msgid "request denied by user"
+msgstr "Demande refusée par l'utilisateur !"
+
+#: views.py:253
+msgid "fc link created"
+msgstr "La liaison avec France Connect est créée."
+
+#: views.py:256
+msgid "to create a link with fc, please authenticate"
+msgstr ""
+"Pour créer une nouvelle liaison avec France Connect, veuillez vous "
+"authentifier."
+
+#: views.py:282
+#, python-brace-format
+msgid "The link with the FranceConnect account {fc_account} has been deleted"
+msgstr "La liaison avec le compte FranceConnect {fc_account} a été supprimée"
+
+#~ msgid "access grant code"
+#~ msgstr "Identifiant de liaison"
+
+#~ msgid "no local account is linked to your FC account"
+#~ msgstr ""
+#~ "Vous n'avez aucun compte relié à FC account actuellement ! Veuillez "
+#~ "d'abord vous connecter avec votre compte pour faire une demande de "
+#~ "création de liaison."
+
+#~ msgid "fc link already exists"
+#~ msgstr "Une liaison avec France Connect existe déjà."

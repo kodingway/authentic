@@ -277,6 +277,11 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
 }
 
+
+# Authentic2 Auth SAML
+MELLON_ADAPTER = ('authentic2_auth_saml.adapters.AuthenticAdapter',)
+
+
 #
 # Load configuration file
 #

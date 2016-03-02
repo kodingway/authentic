@@ -1,0 +1,9 @@
+<h4>SAML</h4>
+
+<ul>
+{% for user_saml_identifier in user_saml_identifiers %}
+    <li>{% firstof user_saml_identifier.idp.DISPLAY_NAME user_saml_identifier.issuer %}&nbsp;:
+        {{ user_saml_identifier.name_id }}
+    </li>
+{% endfor %}
+</ul>
