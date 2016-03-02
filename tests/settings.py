@@ -1,7 +1,9 @@
+import os
+
 LANGUAGE_CODE = 'en'
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': os.environ['DB_ENGINE'],
         'TEST': {
             'NAME': 'a2-test',
         },

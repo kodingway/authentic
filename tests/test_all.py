@@ -25,7 +25,7 @@ from django_rbac.utils import get_role_model, get_ou_model
 from authentic2 import hashers, utils, models, attribute_kinds
 from authentic2.custom_user.models import User
 
-from . import Authentic2TestCase, get_response_form
+from utils import Authentic2TestCase, get_response_form
 
 
 class HashersTests(TestCase):
@@ -601,7 +601,7 @@ class UserProfileTests(TestCase):
 
 
 class CacheTests(TestCase):
-    urls = 'authentic2.tests.cache_urls'
+    urls = 'cache_urls'
 
     def test_cache_decorator_base(self):
         import random

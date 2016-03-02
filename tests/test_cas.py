@@ -6,11 +6,12 @@ from django.test.utils import override_settings
 
 
 from authentic2.compat import get_user_model
-from authentic2.tests import Authentic2TestCase
 from authentic2_idp_cas.models import Ticket, Service, Attribute
 from authentic2_idp_cas import constants
 from authentic2.constants import AUTHENTICATION_EVENTS_SESSION_KEY, NONCE_FIELD_NAME
 from authentic2.a2_rbac.utils import get_default_ou
+
+from utils import Authentic2TestCase
 
 CAS_NAMESPACES = {
     'cas': constants.CAS_NAMESPACE,

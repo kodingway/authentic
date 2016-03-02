@@ -11,18 +11,19 @@ from django.contrib.auth import get_user_model, REDIRECT_FIELD_NAME
 from django.core.urlresolvers import reverse
 from django.utils.translation import gettext as _
 
-from authentic2.tests import Authentic2TestCase
 from authentic2.saml import models as saml_models
 from authentic2.a2_rbac.models import Role, OrganizationalUnit
 from authentic2.utils import make_url
 from authentic2.constants import NONCE_FIELD_NAME
+from authentic2.idp.saml import app_settings
+
+from utils import Authentic2TestCase
 
 try:
     import lasso
 except ImportError:
     lasso = None
 
-from authentic2.idp.saml import app_settings
 
 
 @unittest.skipUnless(lasso is not None, 'lasso is not installed')

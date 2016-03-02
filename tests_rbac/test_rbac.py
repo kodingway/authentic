@@ -1,6 +1,13 @@
-from django.test import TestCase
+import time
 
-from . import utils
+from django.test import TestCase
+from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.models import ContentType
+from django.test.utils import CaptureQueriesContext
+from django.db import connection
+
+
+from django_rbac import utils, models, backends
 
 
 class RoleTestCase(TestCase):
@@ -68,9 +75,6 @@ class RoleTestCase(TestCase):
     SPAN = 50
 
     def test_massive_role_parenting(self):
-        from . import utils, models
-        from django.contrib.auth import get_user_model
-        from django.contrib.contenttypes.models import ContentType
 
         User = get_user_model()
         Role = utils.get_role_model()
@@ -100,7 +104,6 @@ class RoleTestCase(TestCase):
             target_id=ContentType.objects.get_for_model(User).id)
         roles[0].members.add(user)
         Role.objects.get(pk=roles[-1].pk).permissions.add(perm)
-        import time
         b = time.time()
         for i in range(1000):
             self.assertTrue(
@@ -117,12 +120,6 @@ class RoleTestCase(TestCase):
         b = time.time()
 
     def test_rbac_backend(self):
-        from . import utils, models, backends
-        from django.contrib.auth import get_user_model
-        from django.contrib.contenttypes.models import ContentType
-        from django.test.utils import CaptureQueriesContext
-        from django.db import connection
-
         Permission = utils.get_permission_model()
         User = get_user_model()
         OU = utils.get_ou_model()
@@ -229,8 +226,6 @@ class RoleTestCase(TestCase):
                               'django_rbac.delete_role']))
 
     def test_all_members(self):
-        from . import utils
-        from django.contrib.auth import get_user_model
 
         User = get_user_model()
         u1 = User.objects.create(username='john.doe')
