@@ -1,6 +1,5 @@
 '''Views for Authentic2 API'''
 import logging
-import json
 import smtplib
 
 from django.db import models
@@ -13,9 +12,9 @@ from django.shortcuts import get_object_or_404
 
 from django_rbac.utils import get_ou_model, get_role_model
 
-from rest_framework import serializers, authentication
+from rest_framework import serializers
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet, ViewSet
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.routers import SimpleRouter
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
@@ -72,19 +71,16 @@ class RegistrationSerializer(serializers.Serializer):
         User = get_user_model()
         if ou:
             if ou.email_is_unique and \
-                    User.objects.filter(ou=ou,
-                                       email__iexact=data['email']).exists():
+                    User.objects.filter(ou=ou, email__iexact=data['email']).exists():
                 raise serializers.ValidationError(
                     _('You already have an account'))
             if ou.username_is_unique and not \
                     'username' in data:
                 raise serializers.ValidationError(
                     _('Username is required in this ou'))
-            if ou.username_is_unique and \
-                   User.objects.filter(ou=data['ou'],
-                                       username=data['username']).exists():
-                raise serializers.ValidationError(
-                _('You already have an account'))
+            if ou.username_is_unique and User.objects.filter(
+                    ou=data['ou'], username=data['username']).exists():
+                raise serializers.ValidationError(_('You already have an account'))
         return data
 
 
@@ -180,7 +176,8 @@ class Register(BaseRpcView):
                 response = {
                     'result': 0,
                     'errors': {
-                        '__all__': ['You must set at least a username, an email or a first name and a last name']
+                        '__all__': ['You must set at least a username, an email or '
+                                    'a first name and a last name']
                     },
                 }
                 response_status = status.HTTP_400_BAD_REQUEST
@@ -197,8 +194,8 @@ class Register(BaseRpcView):
                     'token': token,
                 }
                 if email:
-                    response['validation_url'] = utils.build_activation_url(request, email,
-                                                                            next_url=final_return_url)
+                    response['validation_url'] = utils.build_activation_url(
+                        request, email, next_url=final_return_url)
                 if token:
                     response['token'] = token
                 response_status = status.HTTP_201_CREATED
@@ -281,13 +278,13 @@ class BaseUserSerializer(serializers.ModelSerializer):
         for at in Attribute.objects.all():
             if at.name in self.fields:
                 continue
-            self.fields[at.name] = serializers.CharField(source='attributes.%s' % at.name, required=at.required, allow_blank=True)
+            self.fields[at.name] = serializers.CharField(source='attributes.%s' % at.name,
+                                                         required=at.required, allow_blank=True)
 
     def check_perm(self, perm, ou):
         self.context['view'].check_perm(perm, ou)
 
     def create(self, validated_data):
-        extra_field = {}
         original_data = validated_data.copy()
         send_registration_email = validated_data.pop('send_registration_email', False)
         send_registration_email_next_url = validated_data.pop('send_registration_email_next_url',
@@ -306,21 +303,21 @@ class BaseUserSerializer(serializers.ModelSerializer):
             PasswordReset.objects.get_or_create(user=instance)
         if send_registration_email and validated_data.get('email'):
             try:
-                utils.send_password_reset_mail(instance,
-                                               template_names=['authentic2/api_user_create_registration_email',
-                                                               'authentic2/password_reset'],
-                                               request=self.context['request'],
-                                               next_url=send_registration_email_next_url,
-                                               context={
-                                                 'data': original_data,
-                                               })
+                utils.send_password_reset_mail(
+                    instance,
+                    template_names=['authentic2/api_user_create_registration_email',
+                                    'authentic2/password_reset'],
+                    request=self.context['request'],
+                    next_url=send_registration_email_next_url,
+                    context={
+                        'data': original_data,
+                    })
             except smtplib.SMTPException, e:
                 logging.getLogger(__name__).error(u'registration mail could not be sent to user %s '
                                                   'created through API: %s', instance, e)
         return instance
 
     def update(self, instance, validated_data):
-        extra_field = {}
         force_password_reset = validated_data.pop('force_password_reset', False)
         # Remove unused fields
         validated_data.pop('send_registration_email', False)
@@ -375,6 +372,7 @@ class UsersAPI(ModelViewSet):
 router = SimpleRouter()
 router.register(r'users', UsersAPI, base_name='a2-api-users')
 
+
 class RolesAPI(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
@@ -392,10 +390,12 @@ class RolesAPI(APIView):
 
     def post(self, request, *args, **kwargs):
         self.role.members.add(self.member)
-        return Response({'detail': _('User successfully added to role')}, status= status.HTTP_201_CREATED)
+        return Response({'detail': _('User successfully added to role')},
+                        status=status.HTTP_201_CREATED)
 
     def delete(self, request, *args, **kwargs):
         self.role.members.remove(self.member)
-        return Response({'detail': _('User successfully removed from role')}, status= status.HTTP_200_OK)
+        return Response({'detail': _('User successfully removed from role')},
+                        status=status.HTTP_200_OK)
 
 roles = RolesAPI.as_view()
