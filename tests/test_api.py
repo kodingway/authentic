@@ -201,8 +201,7 @@ def test_api_users_create(app, user):
     payload.update({'uuid': '1234567890', 'email': 'foo@example.com',
                     'username': 'foobar'})
     resp = app.post_json('/api/users/', payload, status=status)
-    if user.is_superuser or user.roles.exists():
-        assert resp.json['uuid'] == '1234567890'
+    assert resp.json['uuid'] == '1234567890'
 
 
 def test_api_users_create_send_mail(app, settings, superuser):
