@@ -10,7 +10,7 @@ from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from django.utils.functional import allow_lazy
 from django.template.defaultfilters import capfirst
 
-from .decorators import to_list
+from .decorators import to_iter
 from . import app_settings
 
 capfirst = allow_lazy(capfirst, unicode)
@@ -20,6 +20,7 @@ DEFAULT_TITLE_CHOICES = (
     (pgettext_lazy('title', 'Mr'), pgettext_lazy('title', 'Mr')),
 )
 
+@to_iter
 def get_title_choices():
     return app_settings.A2_ATTRIBUTE_KIND_TITLE_CHOICES or DEFAULT_TITLE_CHOICES
 
@@ -46,7 +47,7 @@ def get_attribute_kinds():
         attribute_kinds[attribute_kind['name']] = attribute_kind
     return attribute_kinds
 
-@to_list
+@to_iter
 def get_choices():
     '''Produce a choice list to use in form fields'''
     for d in get_attribute_kinds().itervalues():
