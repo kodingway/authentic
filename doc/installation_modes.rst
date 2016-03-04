@@ -23,7 +23,7 @@ The other Authentic 2 dependencies are:
 - django-tables2>=1.0
 - gadjo>=0.6
 - django-import-export>=0.2.7
-- djangorestframework>=3.1
+- djangorestframework>=3.3
 - six>=1.9
 - Markdown>=2.5
 - python-ldap
