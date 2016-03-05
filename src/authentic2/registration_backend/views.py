@@ -70,6 +70,8 @@ class RegistrationCompletionView(CreateView):
             self.ou = None
         self.users = User.objects.filter(email__iexact=self.email) \
             .order_by('date_joined')
+        if self.ou:
+            self.users = self.users.filter(ou=self.ou)
         self.email_is_unique = app_settings.A2_EMAIL_IS_UNIQUE \
             or app_settings.A2_REGISTRATION_EMAIL_IS_UNIQUE
         if self.ou:
