@@ -195,7 +195,7 @@ class Register(BaseRpcView):
                 }
                 if email:
                     response['validation_url'] = utils.build_activation_url(
-                        request, email, next_url=final_return_url)
+                        request, email, next_url=final_return_url, **registration_data)
                 if token:
                     response['token'] = token
                 response_status = status.HTTP_201_CREATED
