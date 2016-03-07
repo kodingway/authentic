@@ -54,7 +54,6 @@ for bundle_path in CA_BUNDLE_PATHS:
 
 
 class LDAPUser(get_user_model()):
-    attributes = {}
     SESSION_PASSWORD_KEY = 'ldap-password-cached'
     _changed = False
 
@@ -62,10 +61,9 @@ class LDAPUser(get_user_model()):
         proxy = True
         app_label = 'authentic2'
 
-    def ldap_init(self, block, dn, password=None, transient=False):
+    def ldap_init(self, block, dn, password=None):
         self.block = block
         self.dn = dn
-        self.transient = transient
         if password:
             if self.block.get('keep_password_in_session', False):
                 self.keep_password_in_session(password)
@@ -150,8 +148,6 @@ class LDAPUser(get_user_model()):
         return self.backend.get_ldap_attributes(self.block, conn, self.dn)
 
     def save(self, *args, **kwargs):
-        if self.transient:
-            return
         if hasattr(self, 'keep_pk'):
             pk = self.pk
             self.pk = self.keep_pk
@@ -187,10 +183,6 @@ class LDAPBackend(object):
         'bind_with_username': False,
         # always use the first URL to build the external id
         'use_first_url_for_external_id': True,
-        # do not try to get a Django user from the LDAP user
-        # it's incompatible with a lot of Django applications, the
-        # django.contrib.admin for example
-        'transient': False,
         # active directory ?
         'active_directory': False,
         # shuffle replicas
@@ -388,11 +380,10 @@ class LDAPBackend(object):
     def get_user(self, user_id):
         pickle_dump = user_id.split('!', 1)[1]
         user = pickle.loads(base64.b64decode(pickle_dump))
-        if not user_id.startswith('transient!'):
-            try:
-                user.__dict__.update(LDAPUser.objects.get(pk=user.pk).__dict__)
-            except LDAPUser.DoesNotExist:
-                return None
+        try:
+            user.__dict__.update(LDAPUser.objects.get(pk=user.pk).__dict__)
+        except LDAPUser.DoesNotExist:
+            return None
         return user
 
     @classmethod
@@ -687,8 +678,6 @@ class LDAPBackend(object):
                 return self.lookup_by_external_id(block, attributes)
 
     def update_user_identifiers(self, user, username, block, attributes):
-        if block['transient']:
-            return
         # if username has changed and we propagate those changes, update it
         if block['update_username']:
             if user.username != username:
@@ -723,17 +712,7 @@ class LDAPBackend(object):
             return
         log.debug('retrieved attributes for %r: %r', dn, attributes)
         username = self.create_username(block, attributes)
-        if block['transient']:
-            return self._return_transient_user(dn, username, password, conn, block, attributes)
-        else:
-            return self._return_django_user(dn, username, password, conn, block, attributes)
-
-    def _return_transient_user(self, dn, username, password, conn, block, attributes):
-        user = LDAPUser(username=username)
-        user.ldap_init(block, dn, password, transient=True)
-        self.populate_user(user, dn, username, conn, block, attributes)
-        user.pk = 'transient!{0}'.format(base64.b64encode(pickle.dumps(user)))
-        return user
+        return self._return_django_user(dn, username, password, conn, block, attributes)
 
     def _return_django_user(self, dn, username, password, conn, block, attributes):
         user = self.lookup_existing_user(username, block, attributes)

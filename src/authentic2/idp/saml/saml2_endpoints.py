@@ -74,7 +74,6 @@ from authentic2.idp import signals as idp_signals
 
 from authentic2.utils import (make_url, get_backends as get_idp_backends,
         get_username, login_require, find_authentication_event, datetime_to_xs_datetime)
-from authentic2.decorators import is_transient_user
 from authentic2.attributes_ng.engine import get_attributes
 
 from . import app_settings
@@ -664,27 +663,6 @@ def sso_after_process_request(request, login, consent_obtained=False,
                 "NoPassive", nonce)
         set_saml2_response_responder_status_code(login.response,
                 lasso.SAML2_STATUS_CODE_NO_PASSIVE)
-        return finish_sso(request, login)
-
-    #Deal with transient users
-    transient_user = False
-    # XXX: Deal with all kind of transient users
-    if is_transient_user(request.user):
-        logger.debug('the user is transient')
-        transient_user = True
-    if transient_user and nid_format == 'persistent':
-        logger.info("access denied, the user is "
-            "transient and the sp ask for persistent")
-        set_saml2_response_responder_status_code(login.response,
-                lasso.SAML2_STATUS_CODE_REQUEST_DENIED)
-        return finish_sso(request, login)
-    # If the sp does not allow create, reject
-    if transient_user and login.request.nameIdPolicy and \
-            login.request.nameIdPolicy.allowCreate == 'false':
-        logger.info("access denied, we created a "
-            "transient user and allow creation is not authorized by the SP")
-        set_saml2_response_responder_status_code(login.response,
-                lasso.SAML2_STATUS_CODE_REQUEST_DENIED)
         return finish_sso(request, login)
 
     #Do not ask consent for federation if a transient nameID is provided

@@ -234,7 +234,7 @@ def test_api_users_create_send_mail(app, settings, superuser):
     resp.form.set('new_password2', '1234aA')
     resp = resp.form.submit().follow()
     # Check user was properly logged in
-    assert app.session['_auth_user_id'] == user_id
+    assert str(app.session['_auth_user_id']) == str(user_id)
 
 
 def test_api_users_create_force_password_reset(app, client, settings, superuser):

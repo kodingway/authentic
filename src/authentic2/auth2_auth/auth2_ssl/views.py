@@ -11,7 +11,6 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login
 
 
-from authentic2.decorators import prevent_access_to_transient_users
 from authentic2.utils import continue_to_next_url, record_authentication_event, redirect, redirect_to_login
 
 from . import models, util, app_settings
@@ -136,7 +135,6 @@ def profile(request, template_name='ssl/profile.html', *args, **kwargs):
     return render_to_string(template_name, ctx,
             context_instance=context_instance)
 
-@prevent_access_to_transient_users
 def delete_certificate(request, certificate_pk):
     qs = models.ClientCertificate.objects.filter(pk=certificate_pk)
     count = qs.count()

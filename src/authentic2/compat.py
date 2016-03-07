@@ -1,5 +1,6 @@
-import django
+from datetime import datetime
 
+import django
 from django.conf import settings
 
 try:
@@ -25,7 +26,7 @@ if django.VERSION < (1, 8):
             if not user.last_login:
                 new_user = user.__class__()
                 new_user.__dict__ = user.__dict__
-                new_user.last_login = new_user.last_login or ''
+                new_user.last_login = new_user.last_login or datetime(1970, 1, 1)
                 user = new_user
             return super(PasswordResetTokenGenerator, self).check_token(user, token)
 
@@ -33,7 +34,8 @@ if django.VERSION < (1, 8):
             if not user.last_login:
                 new_user = user.__class__()
                 new_user.__dict__ = user.__dict__
-                usre = new_user
+                new_user.last_login = new_user.last_login or datetime(1970, 1, 1)
+                user = new_user
             return super(PasswordResetTokenGenerator, self).make_token(user)
 
 default_token_generator = PasswordResetTokenGenerator()

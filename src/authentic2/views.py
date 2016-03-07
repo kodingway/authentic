@@ -95,8 +95,7 @@ class EditProfile(cbv.TemplateNamesMixin, UpdateView):
         kwargs['prefix'] = 'edit-profile'
         return kwargs
 
-edit_profile = decorators.setting_enabled('A2_PROFILE_CAN_EDIT_PROFILE')(
-    decorators.prevent_access_to_transient_users(EditProfile.as_view()))
+edit_profile = decorators.setting_enabled('A2_PROFILE_CAN_EDIT_PROFILE')(EditProfile.as_view())
 
 
 def su(request, username, redirect_url='/'):
@@ -162,8 +161,7 @@ class EmailChangeView(cbv.TemplateNamesMixin, FormView):
                                          self.request.user)
         return super(EmailChangeView, self).form_valid(form)
 
-email_change = decorators.setting_enabled('A2_PROFILE_CAN_CHANGE_EMAIL')(
-    decorators.prevent_access_to_transient_users((EmailChangeView.as_view())))
+email_change = decorators.setting_enabled('A2_PROFILE_CAN_CHANGE_EMAIL')(EmailChangeView.as_view())
 
 class EmailChangeVerifyView(TemplateView):
     def get(self, request, *args, **kwargs):
@@ -334,9 +332,8 @@ def homepage(request):
 def _homepage(request):
     '''Homepage of the IdP'''
     tpl_parameters = {}
-    if not decorators.is_transient_user(request.user):
-        tpl_parameters['account_management'] = 'account_management'
-        tpl_parameters['authorized_services'] = service_list(request)
+    tpl_parameters['account_management'] = 'account_management'
+    tpl_parameters['authorized_services'] = service_list(request)
     return render_to_response(('idp/homepage.html',
                                'authentic2/homepage.html'), tpl_parameters,
                               RequestContext(request))
@@ -423,7 +420,7 @@ class ProfileView(cbv.TemplateNamesMixin, TemplateView):
         })
         return context_instance
 
-profile = decorators.prevent_access_to_transient_users(ProfileView.as_view())
+profile = ProfileView.as_view()
 
 def logout_list(request):
     '''Return logout links from idp backends'''

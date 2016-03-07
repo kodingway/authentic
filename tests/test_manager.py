@@ -95,4 +95,4 @@ def test_manager_user_password_reset(app, superuser, simple_user):
     resp.form.set('new_password1', '1234aA')
     resp.form.set('new_password2', '1234aA')
     resp = resp.form.submit().follow()
-    assert app.session['_auth_user_id'] == simple_user.pk
+    assert str(app.session['_auth_user_id']) == str(simple_user.pk)
