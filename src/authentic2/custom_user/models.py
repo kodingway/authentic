@@ -3,7 +3,6 @@ from django.db import models
 from django.db.models.fields import NOT_PROVIDED
 from django.utils import timezone
 from django.core.mail import send_mail
-from django.contrib.auth.models import AbstractBaseUser
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
 
@@ -16,6 +15,7 @@ from authentic2.decorators import errorcollector
 from authentic2.models import Service, AttributeValue, Attribute
 
 from .managers import UserManager
+from .base_user import AbstractBaseUser
 
 
 class Attributes(object):

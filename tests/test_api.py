@@ -181,7 +181,6 @@ def test_api_users_create(app, user):
         assert resp.json['uuid']
         assert resp.json['id']
         assert resp.json['date_joined']
-        assert resp.json['last_login']
         if user.is_superuser:
             assert resp.json['ou'] is None
         elif user.roles.exists():
