@@ -61,10 +61,9 @@ class LDAPUser(get_user_model()):
         proxy = True
         app_label = 'authentic2'
 
-    def ldap_init(self, block, dn, password=None):
+    def ldap_init(self, block, dn):
         self.block = block
         self.dn = dn
-        self.keep_password(password)
 
     def keep_password(self, password):
         if not password:
@@ -725,7 +724,8 @@ class LDAPBackend(object):
         else:
             user = LDAPUser(username=username)
             user.set_unusable_password()
-        user.ldap_init(block, dn, password)
+        user.ldap_init(block, dn)
+        user.keep_password(password)
         self.populate_user(user, dn, username, conn, block, attributes)
         if not user.pk or getattr(user, '_changed', False):
             user.save()
