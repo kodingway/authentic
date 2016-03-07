@@ -2,7 +2,6 @@
 from django import forms
 from django.utils.translation import ugettext as _
 from django.contrib.auth import get_user_model
-from django.contrib.auth.tokens import default_token_generator
 
 from .utils import send_password_reset_mail
 

@@ -3,10 +3,10 @@ import logging
 from django.views.generic import FormView
 from django.contrib import messages
 from django.contrib.auth import get_user_model
-from django.contrib.auth.tokens import default_token_generator
 from django.utils.translation import ugettext as _
 from django.utils.http import urlsafe_base64_decode
 
+from .compat import default_token_generator
 from .registration_backend.forms import SetPasswordForm
 from . import cbv, profile_forms, utils
 
