@@ -411,24 +411,6 @@ class LDAPBackend(object):
         return username_template.format(realm=block['realm'],
                                         **attributes)
 
-    def save_user(self, user, username):
-        User = get_user_model()
-        parts = username.split('@', 1)
-        if len(parts) == 1:
-            left, right = user, ''
-        else:
-            left, right = parts
-        for i in itertools.count(0):
-            setattr(user, User.USERNAME_FIELD, username)
-            try:
-                sid = transaction.savepoint()
-                user.save()
-                transaction.savepoint_commit(sid)
-                break
-            except DatabaseError:
-                transaction.savepoint_rollback(sid)
-            username = u'{0}{1}@{2}'.format(left, i, right)
-
     def populate_user_attributes(self, user, block, attributes):
         for legacy_attribute, legacy_field in (('email', 'email_field'),
                                                ('first_name', 'fname_field'),
