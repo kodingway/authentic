@@ -64,17 +64,21 @@ class LDAPUser(get_user_model()):
     def ldap_init(self, block, dn, password=None):
         self.block = block
         self.dn = dn
-        if password:
-            if self.block.get('keep_password_in_session', False):
-                self.keep_password_in_session(password)
-            if block['keep_password']:
-                if not super(LDAPUser, self).check_password(password):
-                    super(LDAPUser, self).set_password(password)
-                    self._changed = True
-            else:
-                if super(LDAPUser, self).has_usable_password():
-                    self.set_unusable_password()
-                    self._changed = True
+        self.keep_password(password)
+
+    def keep_password(self, password):
+        if not password:
+            return
+        if self.block.get('keep_password_in_session', False):
+            self.keep_password_in_session(password)
+        if block['keep_password']:
+            if not super(LDAPUser, self).check_password(password):
+                super(LDAPUser, self).set_password(password)
+                self._changed = True
+        else:
+            if super(LDAPUser, self).has_usable_password():
+                self.set_unusable_password()
+                self._changed = True
 
     def keep_password_in_session(self, password):
         request = StoreRequestMiddleware.get_request()
