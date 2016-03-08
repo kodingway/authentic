@@ -57,6 +57,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'authentic2.middleware.StoreRequestMiddleware',
     'authentic2.middleware.RequestIdMiddleware',
     'authentic2.middleware.LoggingCollectorMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -74,7 +75,6 @@ MIDDLEWARE_CLASSES += (
     'authentic2.middleware.DisplayMessageBeforeRedirectMiddleware',
     'authentic2.idp.middleware.DebugMiddleware',
     'authentic2.middleware.CollectIPMiddleware',
-    'authentic2.middleware.StoreRequestMiddleware',
     'authentic2.middleware.ViewRestrictionMiddleware',
     'authentic2.middleware.OpenedSessionCookieMiddleware',
 )
