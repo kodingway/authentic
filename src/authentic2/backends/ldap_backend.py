@@ -408,7 +408,14 @@ class LDAPBackend(object):
         return None
 
     def get_user(self, user_id):
-        return LDAPUser.objects.get(pk=user_id)
+        try:
+            try:
+                user_id = int(user_id)
+            except ValueError:
+                return None
+            return LDAPUser.objects.get(pk=user_id)
+        except LDAPUser.DoesNotExist:
+            return None
 
     @classmethod
     def _parse_simple_config(self):
