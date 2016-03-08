@@ -8,10 +8,8 @@ except ImportError:
     ldap = None
 import logging
 import random
-import pickle
 import base64
 import urllib
-import itertools
 import six
 import os
 
@@ -23,8 +21,6 @@ log = logging.getLogger(__name__)
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
 from django.contrib.auth.models import Group
-from django.db import DatabaseError
-from django.db import transaction
 
 from authentic2.compat_lasso import lasso
 
@@ -54,23 +50,51 @@ for bundle_path in CA_BUNDLE_PATHS:
 
 
 class LDAPUser(get_user_model()):
-    SESSION_PASSWORD_KEY = 'ldap-password-cached'
+    SESSION_LDAP_DATA_KEY = 'ldap-data'
     _changed = False
+    _ldap_data = None
 
     class Meta:
         proxy = True
         app_label = 'authentic2'
 
+    @property
+    def block(self):
+        return self.ldap_data['block']
+
+    @property
+    def dn(self):
+        return self.ldap_data['dn']
+
     def ldap_init(self, block, dn):
-        self.block = block
-        self.dn = dn
+        data = self.ldap_data
+        data['block'] = block
+        data['dn'] = dn
+        # ensure session is dirty
+        self.ldap_data = data
+
+    @property
+    def ldap_data(self):
+        request = StoreRequestMiddleware.get_request()
+        if not request:
+            if not self._ldap_data:
+                self._ldap_data = {}
+            return self._ldap_data
+        return request.session.setdefault(self.SESSION_LDAP_DATA_KEY, {})
+
+    @ldap_data.setter
+    def ldap_data(self, data):
+        request = StoreRequestMiddleware.get_request()
+        if not request:
+            return
+        request.session[self.SESSION_LDAP_DATA_KEY] = data
 
     def keep_password(self, password):
         if not password:
             return
         if self.block.get('keep_password_in_session', False):
             self.keep_password_in_session(password)
-        if block['keep_password']:
+        if self.block['keep_password']:
             if not super(LDAPUser, self).check_password(password):
                 super(LDAPUser, self).set_password(password)
                 self._changed = True
@@ -80,20 +104,23 @@ class LDAPUser(get_user_model()):
                 self._changed = True
 
     def keep_password_in_session(self, password):
-        request = StoreRequestMiddleware.get_request()
-        if not request:
+        data = self.ldap_data
+        if data is None:
             return
-        cache = request.session.setdefault(self.SESSION_PASSWORD_KEY, {})
+        cache = data.setdefault('password', {})
         if password is not None:
             # Prevent eavesdropping of the password through the session storage
             password = crypto.aes_base64_encrypt(settings.SECRET_KEY, password)
         cache[self.dn] = password
-        request.session.modified = True
+        # ensure session is marked dirty
+        self.ldap_data = data
 
     def get_password_in_session(self):
         if self.block.get('keep_password_in_session', False):
-            request = StoreRequestMiddleware.get_request()
-            cache = request.session.setdefault(self.SESSION_PASSWORD_KEY, {})
+            data = self.ldap_data
+            if data is None:
+                return
+            cache = data.get('passwords', {})
             password = cache.get(self.dn)
             if password is not None:
                 try:
@@ -381,13 +408,7 @@ class LDAPBackend(object):
         return None
 
     def get_user(self, user_id):
-        pickle_dump = user_id.split('!', 1)[1]
-        user = pickle.loads(base64.b64decode(pickle_dump))
-        try:
-            user.__dict__.update(LDAPUser.objects.get(pk=user.pk).__dict__)
-        except LDAPUser.DoesNotExist:
-            return None
-        return user
+        return LDAPUser.objects.get(pk=user_id)
 
     @classmethod
     def _parse_simple_config(self):
@@ -729,8 +750,6 @@ class LDAPBackend(object):
         self.populate_user(user, dn, username, conn, block, attributes)
         if not user.pk or getattr(user, '_changed', False):
             user.save()
-        user.keep_pk = user.pk
-        user.pk = 'persistent!{0}'.format(base64.b64encode(pickle.dumps(user)))
         user_login_success(user.get_username())
         return user
 

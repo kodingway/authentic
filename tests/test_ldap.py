@@ -95,7 +95,7 @@ def test_simple(settings, client):
     assert user.groups.count() == 0
     assert user.ou == get_default_ou()
     assert not user.check_password(PASS)
-    assert ldap_backend.LDAPUser.SESSION_PASSWORD_KEY not in client.session
+    assert 'password' not in client.session['ldap-data']
 
 @pytest.mark.django_db
 def test_keep_password_in_session(settings, client):
@@ -118,10 +118,10 @@ def test_keep_password_in_session(settings, client):
     assert user.last_name == 'Michu'
     assert user.ou == get_default_ou()
     assert not user.check_password(PASS)
-    assert ldap_backend.LDAPUser.SESSION_PASSWORD_KEY in client.session
-    assert DN in client.session[ldap_backend.LDAPUser.SESSION_PASSWORD_KEY]
+    assert client.session['ldap-data']['password']
+    assert DN in client.session['ldap-data']['password']
     assert crypto.aes_base64_decrypt(
-        settings.SECRET_KEY, client.session[ldap_backend.LDAPUser.SESSION_PASSWORD_KEY][DN]) == PASS
+        settings.SECRET_KEY, client.session['ldap-data']['password'][DN]) == PASS
 
 @pytest.mark.django_db
 def test_custom_ou(settings, client):
