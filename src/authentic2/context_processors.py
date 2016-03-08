@@ -41,6 +41,7 @@ def a2_processor(request):
             __AUTHENTIC2_DISTRIBUTION = str(get_distribution('authentic2'))
     variables['AUTHENTIC2_VERSION'] = __AUTHENTIC2_DISTRIBUTION
     variables['add_to_blocks'] = defaultdict(lambda:[])
-    variables['LAST_LOGIN'] = request.session.get(constants.LAST_LOGIN_SESSION_KEY)
-    variables['USER_SWITCHED'] = constants.SWITCH_USER_SESSION_KEY in request.session
+    if hasattr(request, 'session'):
+        variables['LAST_LOGIN'] = request.session.get(constants.LAST_LOGIN_SESSION_KEY)
+        variables['USER_SWITCHED'] = constants.SWITCH_USER_SESSION_KEY in request.session
     return variables
