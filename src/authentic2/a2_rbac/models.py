@@ -144,7 +144,7 @@ class Role(RoleAbstractBase):
             operation=admin_op,
             target_ct=ContentType.objects.get_for_model(self),
             target_id=self.pk)
-        self.permissions.add(self_perm)
+        self.permissions.through.objects.get_or_create(role=self, permission=self_perm)
         return self_perm
 
     def is_internal(self):
