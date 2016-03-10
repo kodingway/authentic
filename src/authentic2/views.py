@@ -420,7 +420,7 @@ class ProfileView(cbv.TemplateNamesMixin, TemplateView):
         })
         return context_instance
 
-profile = ProfileView.as_view()
+profile = login_required(ProfileView.as_view())
 
 def logout_list(request):
     '''Return logout links from idp backends'''
