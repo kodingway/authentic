@@ -17,7 +17,7 @@ from authentic2.a2_rbac.utils import get_default_ou
 
 from django_rbac.utils import get_ou_model
 
-from .. import models, app_settings, compat, cbv, views, forms, validators
+from .. import models, app_settings, compat, cbv, views, forms, validators, utils
 from .forms import RegistrationCompletionForm, DeleteAccountForm
 from authentic2.a2_rbac.models import OrganizationalUnit
 
@@ -131,9 +131,25 @@ class RegistrationCompletionView(CreateView):
             ou = get_object_or_404(OU, id=self.token['ou'])
         else:
             ou = get_default_ou()
-        kwargs['instance'] = get_user_model()(
-            email=self.email,
-            ou=ou)
+
+        attributes = {'email': self.email, 'ou': ou}
+        logger.debug(u'attributes %s', attributes)
+
+        prefilling_list = utils.accumulate_from_backends(self.request, 'registration_form_prefill')
+        logger.debug(u'prefilling_list %s', prefilling_list)
+        # Build a single meaningful prefilling with sets of values
+        prefilling = {}
+        for p in prefilling_list:
+            for name, values in p.items():
+                if name in self.fields:
+                    prefilling.setdefault(name, set()).update(values)
+        logger.debug(u'prefilling %s', prefilling)
+
+        for name, values in prefilling.items():
+            attributes[name] = ' '.join(values)
+        logger.debug(u'attributes with prefilling %s', attributes)
+
+        kwargs['instance'] = get_user_model()(**attributes)
         return kwargs
 
     def get_context_data(self, **kwargs):
