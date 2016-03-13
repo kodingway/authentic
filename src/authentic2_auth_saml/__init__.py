@@ -1,9 +1,3 @@
-from django.contrib.auth import REDIRECT_FIELD_NAME
-
-from authentic2.utils import make_url
-
-from mellon.views import logout
-
 class Plugin(object):
     def get_before_urls(self):
         from . import urls
@@ -19,6 +13,7 @@ class Plugin(object):
         return ['authentic2_auth_saml.auth_frontends.SAMLFrontend']
 
     def redirect_logout_list(self, request, next_url=None):
+        from mellon.views import logout
         if 'mellon_session' in request.session:
             response = logout(request)
             return [response['Location']]
