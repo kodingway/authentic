@@ -70,8 +70,8 @@ def extract_settings_from_environ():
     import os
     import json
     from django.core.exceptions import ImproperlyConfigured
-    global (MANAGERS, DATABASES, SENTRY_TRANSPORT, SENTRY_DSN, INSTALLED_APPS,
-            SECURE_PROXY_SSL_HEADER, CACHES, SESSION_ENGINE, LDAP_AUTH_SETTINGS)
+    global MANAGERS, DATABASES, SENTRY_TRANSPORT, SENTRY_DSN, INSTALLED_APPS, \
+            SECURE_PROXY_SSL_HEADER, CACHES, SESSION_ENGINE, LDAP_AUTH_SETTINGS
 
     BOOLEAN_ENVS = (
            'DEBUG',

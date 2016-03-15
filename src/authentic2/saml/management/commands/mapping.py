@@ -44,7 +44,7 @@ def get_definition_from_alias(alias):
             return value
 
 
-def get_definition_from_alias(alias):
+def get_def_name_from_alias(alias):
     for key, value in ATTRIBUTE_MAPPING.iteritems():
         if 'alias' in value and alias in value['alias']:
             return key
