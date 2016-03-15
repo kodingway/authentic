@@ -70,9 +70,8 @@ def extract_settings_from_environ():
     import os
     import json
     from django.core.exceptions import ImproperlyConfigured
-    global MANAGERS, DATABASES, SENTRY_DSN, INSTALLED_APPS, \
-            SECURE_PROXY_SSL_HEADER, CACHES, SESSION_ENGINE, \
-            LDAP_AUTH_SETTINGS, RAVEN_CONFIG
+    global (MANAGERS, DATABASES, SENTRY_TRANSPORT, SENTRY_DSN, INSTALLED_APPS,
+            SECURE_PROXY_SSL_HEADER, CACHES, SESSION_ENGINE, LDAP_AUTH_SETTINGS)
 
     BOOLEAN_ENVS = (
            'DEBUG',
@@ -229,14 +228,19 @@ def extract_settings_from_environ():
     # add sentry handler if environment contains SENTRY_DSN
     if 'SENTRY_DSN' in os.environ:
         try:
-            import raven
+            from raven.transport.requests import RequestsHTTPTransport
         except ImportError:
-            raise ImproperlyConfigured('SENTRY_DSN environment variable is set but raven is not installed.')
-        SENTRY_DSN = os.environ['SENTRY_DSN']
-        RAVEN_CONFIG = {
-                'dsn': SENTRY_DSN,
-        }
-        INSTALLED_APPS = tuple(INSTALLED_APPS) + ('raven.contrib.django.raven_compat',)
+            raise ImproperlyConfigured('unable to load python-raven')
+        else:
+            SENTRY_DSN = os.environ['SENTRY_DSN']
+            SENTRY_TRANSPORT = RequestsHTTPTransport
+            INSTALLED_APPS = tuple(INSTALLED_APPS) + ('raven.contrib.django.raven_compat',)
+            LOGGING['handlers']['sentry'] = {
+                'level': 'ERROR',
+                'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler'
+            }
+            LOGGING['loggers']['']['handlers'].append('sentry')
+
 
     # extract any key starting with setting
     for key in os.environ:
