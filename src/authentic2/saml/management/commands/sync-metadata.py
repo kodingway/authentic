@@ -16,9 +16,9 @@ from authentic2.compat_lasso import lasso
 from authentic2.saml.shibboleth.afp_parser import parse_attribute_filters_file
 from authentic2.saml.models import (LibertyProvider, SAMLAttribute, LibertyServiceProvider,
                                     SPOptionsIdPPolicy)
-from authentic2.attribute_aggregator.core import (
-    get_definition_from_alias, get_full_definition, get_def_name_from_alias, get_def_name_from_oid,
-    get_definition_from_oid)
+
+from .mapping import (get_def_name_from_oid, get_definition_from_oid, get_full_definition,
+                      get_definition_from_alias, get_def_name_from_alias)
 
 SAML2_METADATA_UI_HREF = 'urn:oasis:names:tc:SAML:metadata:ui'
 
