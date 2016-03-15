@@ -12,14 +12,12 @@ from authentic2 import crypto
 
 pytestmark = pytest.mark.skipunless(has_slapd(), reason='slapd is not installed')
 
-slapd = None
-
 DN = 'uid=etienne.michu,o=orga'
 UID = 'etienne.michu'
 PASS = 'pass'
 
-def setup_module(module):
-    global slapd
+@pytest.fixture
+def slapd(request):
     slapd = Slapd()
     slapd.add_ldif('''dn: {dn}
 objectClass: inetOrgPerson
@@ -52,27 +50,19 @@ memberUid: {uid}
         group_ldif += 'memberUid: michu{i}\n'.format(i=i)
     slapd.add_ldif(group_ldif)
 
+    def finalize():
+        slapd.clean()
+    request.addfinalizer(finalize)
+    return slapd
 
 
-def teardown_module(module):
-    slapd.clean()
-
-
-def setup_function(function):
-    slapd.checkpoint()
-
-
-def teardown_function(function):
-    slapd.restore()
-
-
-def test_connection():
+def test_connection(slapd):
     conn = slapd.get_connection()
     conn.simple_bind_s(DN, PASS)
 
 
 @pytest.mark.django_db
-def test_simple(settings, client):
+def test_simple(slapd, settings, client):
     settings.LDAP_AUTH_SETTINGS = [{
         'url': [slapd.ldapi_url],
         'basedn': 'o=orga',
@@ -98,7 +88,7 @@ def test_simple(settings, client):
     assert 'password' not in client.session['ldap-data']
 
 @pytest.mark.django_db
-def test_keep_password_in_session(settings, client):
+def test_keep_password_in_session(slapd, settings, client):
     settings.LDAP_AUTH_SETTINGS = [{
         'url': [slapd.ldapi_url],
         'basedn': 'o=orga',
@@ -124,7 +114,7 @@ def test_keep_password_in_session(settings, client):
         settings.SECRET_KEY, client.session['ldap-data']['password'][DN]) == PASS
 
 @pytest.mark.django_db
-def test_custom_ou(settings, client):
+def test_custom_ou(slapd, settings, client):
     OU = get_ou_model()
     ou = OU.objects.create(name='test', slug='test')
     settings.LDAP_AUTH_SETTINGS = [{
@@ -149,7 +139,7 @@ def test_custom_ou(settings, client):
 
 
 @pytest.mark.django_db
-def test_wrong_ou(settings, client):
+def test_wrong_ou(slapd, settings, client):
     settings.LDAP_AUTH_SETTINGS = [{
         'url': [slapd.ldapi_url],
         'basedn': 'o=orga',
@@ -178,7 +168,7 @@ def test_dn_formatter():
 
 
 @pytest.mark.django_db
-def test_group_mapping(settings, client):
+def test_group_mapping(slapd, settings, client):
     from django.contrib.auth.models import Group
 
     settings.LDAP_AUTH_SETTINGS = [{
@@ -200,7 +190,7 @@ def test_group_mapping(settings, client):
 
 
 @pytest.mark.django_db
-def test_posix_group_mapping(settings, client):
+def test_posix_group_mapping(slapd, settings, client):
     from django.contrib.auth.models import Group
 
     settings.LDAP_AUTH_SETTINGS = [{
@@ -223,7 +213,7 @@ def test_posix_group_mapping(settings, client):
 
 
 @pytest.mark.django_db
-def test_group_su(settings, client):
+def test_group_su(slapd, settings, client):
     from django.contrib.auth.models import Group
 
     settings.LDAP_AUTH_SETTINGS = [{
@@ -242,7 +232,7 @@ def test_group_su(settings, client):
 
 
 @pytest.mark.django_db
-def test_group_staff(settings, client):
+def test_group_staff(slapd, settings, client):
     from django.contrib.auth.models import Group
 
     settings.LDAP_AUTH_SETTINGS = [{
@@ -260,7 +250,7 @@ def test_group_staff(settings, client):
     assert not response.context['user'].is_superuser
 
 @pytest.mark.django_db
-def test_get_users(settings):
+def test_get_users(slapd, settings):
     import django.db.models.base
     from types import MethodType
 
