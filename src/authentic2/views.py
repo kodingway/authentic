@@ -400,8 +400,12 @@ class ProfileView(cbv.TemplateNamesMixin, TemplateView):
         # Credentials management
         blocks = [ frontend.profile(request, context_instance=context_instance) for frontend in frontends \
                 if hasattr(frontend, 'profile') and frontend.enabled() ]
-        blocks_by_id = dict((frontend.id(), frontend.profile(request, context_instance=context_instance))
-                for frontend in frontends if hasattr(frontend, 'profile') and frontend.enabled())
+        blocks_by_id = {}
+        for frontend in frontends:
+            if hasattr(frontend, 'profile') and frontend.enabled():
+                blocks_by_id[frontend.id()] = \
+                    {'name': frontend.name(),
+                     'content': frontend.profile(request, context_instance=context_instance)}
         idp_backends = utils.get_backends()
         # Get actions for federation management
         federation_management = []
