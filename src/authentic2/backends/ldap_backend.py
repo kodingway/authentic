@@ -73,10 +73,14 @@ class LDAPUser(get_user_model()):
         # ensure session is dirty
         self.ldap_data = data
 
+    def init_from_session(self, session):
+        if self.SESSION_LDAP_DATA_KEY in session:
+            self._ldap_data = session[self.SESSION_LDAP_DATA_KEY]
+
     @property
     def ldap_data(self):
         request = StoreRequestMiddleware.get_request()
-        if not request:
+        if not request or not self._ldap_data is None:
             if not self._ldap_data:
                 self._ldap_data = {}
             return self._ldap_data
@@ -85,9 +89,8 @@ class LDAPUser(get_user_model()):
     @ldap_data.setter
     def ldap_data(self, data):
         request = StoreRequestMiddleware.get_request()
-        if not request:
-            return
-        request.session[self.SESSION_LDAP_DATA_KEY] = data
+        if request and self._ldap_data is None:
+            request.session[self.SESSION_LDAP_DATA_KEY] = data
 
     def keep_password(self, password):
         if not password:

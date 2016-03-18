@@ -432,6 +432,8 @@ def get_user_from_session_key(session_key):
         assert backend_path in settings.AUTHENTICATION_BACKENDS
         backend = load_backend(backend_path)
         user = backend.get_user(user_id) or AnonymousUser()
+        if hasattr(user, 'init_from_session'):
+            user.init_from_session(session)
     except (KeyError, AssertionError):
         user = AnonymousUser()
     return user
