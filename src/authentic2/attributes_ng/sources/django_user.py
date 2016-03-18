@@ -29,6 +29,7 @@ def get_attribute_names(instance, ctx):
     yield 'django_user_group_names', User._meta.get_field_by_name('groups')[0].verbose_name + u' (django_user_group_names)'
     yield 'django_user_domain', _('User domain') + u' (django_user_domain)'
     yield 'django_user_identifier', _('User identifier') + u' (django_user_identifier)'
+    yield 'django_user_full_name', _('Full name') + u' (django_user_full_name)'
     yield 'a2_role_slugs', _('Role slugs')
     yield 'a2_role_names', _('Role names')
     yield 'a2_role_uuids', _('Role UUIDs')
@@ -56,6 +57,7 @@ def get_attributes(instance, ctx):
     if user.username:
         ctx['django_user_domain'] = user.username.rsplit('@', 1)[1] if '@' in user.username else ''
         ctx['django_user_identifier'] = user.username.rsplit('@', 1)[0] if '@' in user.username else ''
+    ctx['django_user_full_name'] = user.get_full_name()
     Role = get_role_model()
     roles = Role.objects.for_user(user)
     ctx['a2_role_slugs'] = roles.values_list('slug', flat=True)
