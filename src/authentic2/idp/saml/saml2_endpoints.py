@@ -399,8 +399,8 @@ def build_assertion(request, login, nid_format='transient'):
         kwargs = nameid2kwargs(login.assertion.subject.nameID)
     kwargs['entity_id'] = login.remoteProviderId
     kwargs['user'] = request.user
-    logger.info(u'sending nameID %(name_id_format)s: '
-        '%(name_id_content)s to %(entity_id)s for user %(user)s' % kwargs)
+    logger.info(u'sending nameID %(name_id_format)r: %(name_id_content)r to '
+                u'%(entity_id)s for user %(user)s' % kwargs)
 
     register_new_saml2_session(request, login)
 
