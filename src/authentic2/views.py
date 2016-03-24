@@ -95,7 +95,8 @@ class EditProfile(cbv.TemplateNamesMixin, UpdateView):
         kwargs['prefix'] = 'edit-profile'
         return kwargs
 
-edit_profile = decorators.setting_enabled('A2_PROFILE_CAN_EDIT_PROFILE')(EditProfile.as_view())
+edit_profile = decorators.setting_enabled('A2_PROFILE_CAN_EDIT_PROFILE')(
+    login_required(EditProfile.as_view()))
 
 
 def su(request, username, redirect_url='/'):
@@ -161,7 +162,8 @@ class EmailChangeView(cbv.TemplateNamesMixin, FormView):
                                          self.request.user)
         return super(EmailChangeView, self).form_valid(form)
 
-email_change = decorators.setting_enabled('A2_PROFILE_CAN_CHANGE_EMAIL')(EmailChangeView.as_view())
+email_change = decorators.setting_enabled('A2_PROFILE_CAN_CHANGE_EMAIL')(
+    login_required(EmailChangeView.as_view()))
 
 class EmailChangeVerifyView(TemplateView):
     def get(self, request, *args, **kwargs):
