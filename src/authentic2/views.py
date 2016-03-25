@@ -7,6 +7,7 @@ import re
 import collections
 
 
+import django
 from django.conf import settings
 from django.shortcuts import render_to_response, render
 from django.template import RequestContext
@@ -236,6 +237,8 @@ def login(request, template_name='authentic2/login.html',
         'can_reset_password': app_settings.A2_CAN_RESET_PASSWORD,
         'registration_authorized': getattr(settings, 'REGISTRATION_OPEN', True),
     })
+    if django.VERSION >= (1, 8, 0):
+        context_instance['add_to_blocks'] = collections.defaultdict(lambda: [])
 
     # Cancel button
     if request.method == "POST" \
