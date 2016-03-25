@@ -196,6 +196,7 @@ class LDAPBackend(object):
         'bindsasl': (),
         'user_dn_template': None,
         'user_filter': 'uid=%s',
+        'sync_ldap_users_filter': None,
         'user_basedn': None,
         'group_dn_template': None,
         'member_of_attribute': None,
@@ -786,7 +787,8 @@ class LDAPBackend(object):
                 logger.warning(u'unable to synchronize with LDAP servers %r', block['url'])
                 continue
             user_basedn = block.get('user_basedn') or block['basedn']
-            user_filter = block['user_filter'].replace('%s', '*')
+            user_filter = block['sync_ldap_users_filter'] or block['user_filter']
+            user_filter = user_filter.replace('%s', '*')
             attrs = cls.get_ldap_attributes_names(block)
             users = conn.search_s(user_basedn, ldap.SCOPE_SUBTREE, user_filter, attrlist=attrs)
             backend = cls()
