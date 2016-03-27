@@ -352,6 +352,8 @@ class ProfileView(cbv.TemplateNamesMixin, TemplateView):
         request = self.request
 
         context_instance = RequestContext(request, ctx)
+        if django.VERSION >= (1, 8, 0):
+            context_instance['add_to_blocks'] = collections.defaultdict(lambda: [])
         if request.method == "POST":
             for frontend in frontends:
                 if not frontend.enabled():
