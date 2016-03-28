@@ -6,7 +6,7 @@ set -e
 # SNI support for Debian
 pip install --upgrade pyOpenSSL ndg-httpsclient pyasn1
 pip install --upgrade pip
-pip install --upgrade pylint==1.4.0 astroid==1.3.2
+pip install --upgrade pylint pylint-django
 pip install --upgrade tox
 pip install -U 'virtualenv<14'
 tox -r
