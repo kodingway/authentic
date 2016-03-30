@@ -3,7 +3,7 @@ import pytest
 import mock
 from ldap.dn import escape_dn_chars
 
-from authentic2_provisionning_ldap.ldap_utils import Slapd, has_slapd
+from ldaptools.slapd import Slapd, has_slapd
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ImproperlyConfigured
 from authentic2.a2_rbac.utils import get_default_ou
@@ -70,7 +70,7 @@ def test_connection(slapd):
 @pytest.mark.django_db
 def test_simple(slapd, settings, client):
     settings.LDAP_AUTH_SETTINGS = [{
-        'url': [slapd.ldapi_url],
+        'url': [slapd.ldap_url],
         'basedn': 'o=orga',
         'use_tls': False,
     }]
@@ -97,7 +97,7 @@ def test_simple(slapd, settings, client):
 @pytest.mark.django_db
 def test_double_login(slapd, simple_user, settings, app):
     settings.LDAP_AUTH_SETTINGS = [{
-        'url': [slapd.ldapi_url],
+        'url': [slapd.ldap_url],
         'basedn': 'o=orga',
         'use_tls': False,
         'is_superuser': True,
@@ -110,7 +110,7 @@ def test_double_login(slapd, simple_user, settings, app):
 @pytest.mark.django_db
 def test_keep_password_in_session(slapd, settings, client):
     settings.LDAP_AUTH_SETTINGS = [{
-        'url': [slapd.ldapi_url],
+        'url': [slapd.ldap_url],
         'basedn': 'o=orga',
         'use_tls': False,
         'keep_password_in_session': True,
@@ -139,7 +139,7 @@ def test_custom_ou(slapd, settings, client):
     OU = get_ou_model()
     ou = OU.objects.create(name='test', slug='test')
     settings.LDAP_AUTH_SETTINGS = [{
-        'url': [slapd.ldapi_url],
+        'url': [slapd.ldap_url],
         'basedn': 'o=orga',
         'use_tls': False,
         'ou_slug': 'test',
@@ -162,7 +162,7 @@ def test_custom_ou(slapd, settings, client):
 @pytest.mark.django_db
 def test_wrong_ou(slapd, settings, client):
     settings.LDAP_AUTH_SETTINGS = [{
-        'url': [slapd.ldapi_url],
+        'url': [slapd.ldap_url],
         'basedn': 'o=orga',
         'use_tls': False,
         'ou_slug': 'test',
@@ -193,7 +193,7 @@ def test_group_mapping(slapd, settings, client):
     from django.contrib.auth.models import Group
 
     settings.LDAP_AUTH_SETTINGS = [{
-        'url': [slapd.ldapi_url],
+        'url': [slapd.ldap_url],
         'basedn': 'o=orga',
         'use_tls': False,
         'create_group': True,
@@ -215,7 +215,7 @@ def test_posix_group_mapping(slapd, settings, client):
     from django.contrib.auth.models import Group
 
     settings.LDAP_AUTH_SETTINGS = [{
-        'url': [slapd.ldapi_url],
+        'url': [slapd.ldap_url],
         'basedn': 'o=orga',
         'use_tls': False,
         'create_group': True,
@@ -238,7 +238,7 @@ def test_group_su(slapd, settings, client):
     from django.contrib.auth.models import Group
 
     settings.LDAP_AUTH_SETTINGS = [{
-        'url': [slapd.ldapi_url],
+        'url': [slapd.ldap_url],
         'basedn': 'o=orga',
         'use_tls': False,
         'groupsu': ['cn=group1,o=orga'],
@@ -257,7 +257,7 @@ def test_group_staff(slapd, settings, client):
     from django.contrib.auth.models import Group
 
     settings.LDAP_AUTH_SETTINGS = [{
-        'url': [slapd.ldapi_url],
+        'url': [slapd.ldap_url],
         'basedn': 'o=orga',
         'use_tls': False,
         'groupstaff': ['cn=group1,o=orga'],
@@ -278,7 +278,7 @@ def test_get_users(slapd, settings):
 
     User = get_user_model()
     settings.LDAP_AUTH_SETTINGS = [{
-        'url': [slapd.ldapi_url],
+        'url': [slapd.ldap_url],
         'basedn': 'o=orga',
         'use_tls': False,
         'create_group': True,

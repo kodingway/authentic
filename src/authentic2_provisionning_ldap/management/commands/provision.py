@@ -6,13 +6,15 @@ try:
     from ldap.filter import filter_format
 except ImportError:
     ldap = None
+from ldaptools import paged
 
 from django.core.management.base import BaseCommand
 
 from authentic2.attributes_ng.engine import get_attributes
 from authentic2 import compat, utils
 
-from authentic2_provisionning_ldap import app_settings, ldap_utils
+from authentic2_provisionning_ldap import app_settings
+
 
 ADD = 1
 REPLACE = 2
@@ -87,7 +89,7 @@ class Command(BaseCommand):
         verbosity = int(options['verbosity'])
         fake = options['fake']
         # FIXME: Check ressource well formedness
-        conn = ldap_utils.PagedLDAPObject(ressource['url'], retry_max=10,
+        conn = paged.PagedLDAPObject(ressource['url'], retry_max=10,
                 retry_delay=2)
         base_dn = ressource['base_dn']
         use_tls = ressource.get('use_tls')

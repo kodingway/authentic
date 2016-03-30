@@ -125,6 +125,7 @@ setup(name="authentic2",
           'django-filter<0.12.0',
           'pycrypto',
           'django-mellon',
+          'ldaptools',
       ],
       extras_require = {
           'idp-openid': ['python-openid'],
