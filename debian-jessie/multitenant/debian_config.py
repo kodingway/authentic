@@ -24,9 +24,6 @@ LOGGING['filters'].update({
     'cleaning': {
         '()':  'authentic2.utils.CleanLogMessage',
     },
-    'request_context': {
-        '()':  'authentic2.log_filters.RequestContextFilter',
-    },
 })
 LOGGING['formatters']['syslog'] = {
     'format': '%(ip)s %(user)s %(request_id)s %(levelname)s %(name)s.%(funcName)s: %(message)s'
