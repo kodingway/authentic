@@ -25,10 +25,8 @@ LOGGING['filters'].update({
         '()':  'authentic2.utils.CleanLogMessage',
     },
 })
-LOGGING['formatters']['syslog'] = {
-    'format': '%(ip)s %(user)s %(request_id)s %(levelname)s %(name)s.%(funcName)s: %(message)s'
-}
-LOGGING['handlers']['syslog']['filters'] = ['cleaning', 'request_context']
+for handler in LOGGING['handlers'].values():
+    handler.setdefault('filters', []).append('cleaning')
 # django_select2 outputs debug message at level INFO
 LOGGING['loggers']['django_select2'] = {
     'handlers': ['syslog'],
