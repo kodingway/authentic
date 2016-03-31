@@ -327,6 +327,8 @@ def login(request, user, how, **kwargs):
        URL or settings.LOGIN_REDIRECT_URL.'''
     last_login = user.last_login
     auth_login(request, user)
+    if hasattr(user, 'init_to_session'):
+        user.init_to_session(request.session)
     if constants.LAST_LOGIN_SESSION_KEY not in request.session:
         request.session[constants.LAST_LOGIN_SESSION_KEY] = \
             localize(to_current_timezone(last_login), True)

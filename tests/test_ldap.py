@@ -10,6 +10,8 @@ from django_rbac.utils import get_ou_model
 from authentic2.backends import ldap_backend
 from authentic2 import crypto
 
+import utils
+
 pytestmark = pytest.mark.skipunless(has_slapd(), reason='slapd is not installed')
 
 DN = 'uid=etienne.michu,o=orga'
@@ -86,6 +88,20 @@ def test_simple(slapd, settings, client):
     assert user.ou == get_default_ou()
     assert not user.check_password(PASS)
     assert 'password' not in client.session['ldap-data']
+
+
+@pytest.mark.django_db
+def test_double_login(slapd, simple_user, settings, app):
+    settings.LDAP_AUTH_SETTINGS = [{
+        'url': [slapd.ldapi_url],
+        'basedn': 'o=orga',
+        'use_tls': False,
+        'is_superuser': True,
+        'is_staff': True,
+    }]
+    utils.login(app, simple_user, path='/admin/')
+    utils.login(app, 'etienne.michu', password=PASS, path='/admin/')
+
 
 @pytest.mark.django_db
 def test_keep_password_in_session(slapd, settings, client):

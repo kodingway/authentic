@@ -17,7 +17,7 @@ skipif_no_partial_index = pytest.mark.skipif(
 
 def login(app, user, path=None, password=None):
     if path:
-        login_page = app.get(path, status=302).follow()
+        login_page = app.get(path, status=302).maybe_follow()
     else:
         login_page = app.get(reverse('auth_login'))
     assert login_page.request.path == reverse('auth_login')

@@ -52,7 +52,6 @@ for bundle_path in CA_BUNDLE_PATHS:
 class LDAPUser(get_user_model()):
     SESSION_LDAP_DATA_KEY = 'ldap-data'
     _changed = False
-    _ldap_data = None
 
     class Meta:
         proxy = True
@@ -67,30 +66,28 @@ class LDAPUser(get_user_model()):
         return self.ldap_data['dn']
 
     def ldap_init(self, block, dn):
-        data = self.ldap_data
-        data['block'] = block
-        data['dn'] = dn
-        # ensure session is dirty
-        self.ldap_data = data
+        self.ldap_data = {
+            'block': block,
+            'dn': dn,
+        }
 
     def init_from_session(self, session):
         if self.SESSION_LDAP_DATA_KEY in session:
-            self._ldap_data = session[self.SESSION_LDAP_DATA_KEY]
+            self.ldap_data = session[self.SESSION_LDAP_DATA_KEY]
 
-    @property
-    def ldap_data(self):
-        request = StoreRequestMiddleware.get_request()
-        if not request or not self._ldap_data is None:
-            if not self._ldap_data:
-                self._ldap_data = {}
-            return self._ldap_data
-        return request.session.setdefault(self.SESSION_LDAP_DATA_KEY, {})
+    def init_to_session(self, session):
+        session[self.SESSION_LDAP_DATA_KEY] = self.ldap_data
 
-    @ldap_data.setter
-    def ldap_data(self, data):
+    def update_request(self):
         request = StoreRequestMiddleware.get_request()
-        if request and self._ldap_data is None:
-            request.session[self.SESSION_LDAP_DATA_KEY] = data
+        if request:
+            assert not request.session is None
+            self.init_to_session(request.session)
+
+    def init_from_request(self):
+        request = StoreRequestMiddleware.get_request()
+        assert request and not request.session is None
+        self.ldap_data = request.session[self.SESSION_LDAP_DATA_KEY]
 
     def keep_password(self, password):
         if not password:
@@ -107,23 +104,17 @@ class LDAPUser(get_user_model()):
                 self._changed = True
 
     def keep_password_in_session(self, password):
-        data = self.ldap_data
-        if data is None:
-            return
-        cache = data.setdefault('password', {})
+        cache = self.ldap_data.setdefault('password', {})
         if password is not None:
             # Prevent eavesdropping of the password through the session storage
             password = crypto.aes_base64_encrypt(settings.SECRET_KEY, password)
         cache[self.dn] = password
         # ensure session is marked dirty
-        self.ldap_data = data
+        self.update_request()
 
     def get_password_in_session(self):
         if self.block.get('keep_password_in_session', False):
-            data = self.ldap_data
-            if data is None:
-                return
-            cache = data.get('passwords', {})
+            cache = self.ldap_data.get('passwords', {})
             password = cache.get(self.dn)
             if password is not None:
                 try:
@@ -417,7 +408,10 @@ class LDAPBackend(object):
                 user_id = int(user_id)
             except ValueError:
                 return None
-            return LDAPUser.objects.get(pk=user_id)
+            user = LDAPUser.objects.get(pk=user_id)
+            # retrieve data from current request
+            user.init_from_request()
+            return user
         except LDAPUser.DoesNotExist:
             return None
 
