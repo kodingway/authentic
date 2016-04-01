@@ -727,3 +727,13 @@ def datetime_to_utc(dt):
 
 def datetime_to_xs_datetime(dt):
     return datetime_to_utc(dt).isoformat().split('.')[0] + 'Z'
+
+
+def utf8_encode(v):
+    if isinstance(v, dict):
+        return dict((utf8_encode(a), utf8_encode(b)) for a, b in v.iteritems())
+    if isinstance(v, (list, tuple)):
+        return type(v)(utf8_encode(a) for a in v)
+    if isinstance(v, unicode):
+        return v.encode('utf-8')
+    return v

@@ -33,6 +33,7 @@ from authentic2.user_login_failure import user_login_failure, user_login_success
 from django_rbac.utils import get_ou_model
 from authentic2.a2_rbac.utils import get_default_ou
 from authentic2.ldap_utils import FilterFormatter
+from authentic2.utils import utf8_encode
 
 DEFAULT_CA_BUNDLE = ''
 
@@ -73,7 +74,7 @@ class LDAPUser(get_user_model()):
 
     def init_from_session(self, session):
         if self.SESSION_LDAP_DATA_KEY in session:
-            self.ldap_data = session[self.SESSION_LDAP_DATA_KEY]
+            self.ldap_data = utf8_encode(session[self.SESSION_LDAP_DATA_KEY])
 
     def init_to_session(self, session):
         session[self.SESSION_LDAP_DATA_KEY] = self.ldap_data
@@ -87,7 +88,7 @@ class LDAPUser(get_user_model()):
     def init_from_request(self):
         request = StoreRequestMiddleware.get_request()
         assert request and not request.session is None
-        self.ldap_data = request.session[self.SESSION_LDAP_DATA_KEY]
+        self.init_from_session(request.session)
 
     def keep_password(self, password):
         if not password:

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import pytest
 import mock
+from ldap.dn import escape_dn_chars
 
 from authentic2_provisionning_ldap.ldap_utils import Slapd, has_slapd
 from django.contrib.auth import get_user_model
@@ -14,9 +15,12 @@ import utils
 
 pytestmark = pytest.mark.skipunless(has_slapd(), reason='slapd is not installed')
 
-DN = 'uid=etienne.michu,o=orga'
+USERNAME = u'etienne.michu'
 UID = 'etienne.michu'
+CN = 'Étienne Michu'
+DN = 'cn=%s,o=orga' % escape_dn_chars(CN)
 PASS = 'pass'
+
 
 @pytest.fixture
 def slapd(request):
@@ -71,19 +75,19 @@ def test_simple(slapd, settings, client):
         'use_tls': False,
     }]
     result = client.post('/login/', {'login-password-submit': '1',
-                                     'username': 'etienne.michu',
+                                     'username': USERNAME,
                                      'password': PASS}, follow=True)
     assert result.status_code == 200
     assert 'Étienne Michu' in str(result)
     User = get_user_model()
     assert User.objects.count() == 1
     user = User.objects.get()
-    assert user.username == 'etienne.michu@ldap'
+    assert user.username == u'%s@ldap' % USERNAME
     assert user.first_name == u'Étienne'
     assert user.last_name == 'Michu'
-    assert user.is_active == True
-    assert user.is_superuser == False
-    assert user.is_staff == False
+    assert user.is_active is True
+    assert user.is_superuser is False
+    assert user.is_staff is False
     assert user.groups.count() == 0
     assert user.ou == get_default_ou()
     assert not user.check_password(PASS)
@@ -100,7 +104,7 @@ def test_double_login(slapd, simple_user, settings, app):
         'is_staff': True,
     }]
     utils.login(app, simple_user, path='/admin/')
-    utils.login(app, 'etienne.michu', password=PASS, path='/admin/')
+    utils.login(app, UID, password=PASS, path='/admin/')
 
 
 @pytest.mark.django_db
@@ -112,22 +116,23 @@ def test_keep_password_in_session(slapd, settings, client):
         'keep_password_in_session': True,
     }]
     result = client.post('/login/', {'login-password-submit': '1',
-                                     'username': 'etienne.michu',
+                                     'username': USERNAME,
                                      'password': PASS}, follow=True)
     assert result.status_code == 200
     assert 'Étienne Michu' in str(result)
     User = get_user_model()
     assert User.objects.count() == 1
     user = User.objects.get()
-    assert user.username == 'etienne.michu@ldap'
+    assert user.username == u'%s@ldap' % USERNAME
     assert user.first_name == u'Étienne'
     assert user.last_name == 'Michu'
     assert user.ou == get_default_ou()
     assert not user.check_password(PASS)
     assert client.session['ldap-data']['password']
-    assert DN in client.session['ldap-data']['password']
+    assert DN in result.context['request'].user.ldap_data['password']
     assert crypto.aes_base64_decrypt(
-        settings.SECRET_KEY, client.session['ldap-data']['password'][DN]) == PASS
+        settings.SECRET_KEY, result.context['request'].user.ldap_data['password'][DN]) == PASS
+
 
 @pytest.mark.django_db
 def test_custom_ou(slapd, settings, client):
@@ -140,14 +145,14 @@ def test_custom_ou(slapd, settings, client):
         'ou_slug': 'test',
     }]
     result = client.post('/login/', {'login-password-submit': '1',
-                                     'username': 'etienne.michu',
+                                     'username': USERNAME,
                                      'password': PASS}, follow=True)
     assert result.status_code == 200
     assert 'Étienne Michu' in str(result)
     User = get_user_model()
     assert User.objects.count() == 1
     user = User.objects.get()
-    assert user.username == u'etienne.michu@ldap'
+    assert user.username == u'%s@ldap' % USERNAME
     assert user.first_name == u'Étienne'
     assert user.last_name == u'Michu'
     assert user.ou == ou
@@ -163,9 +168,9 @@ def test_wrong_ou(slapd, settings, client):
         'ou_slug': 'test',
     }]
     with pytest.raises(ImproperlyConfigured):
-        result = client.post('/login/', {'login-password-submit': '1',
-                                         'username': 'etienne.michu',
-                                         'password': PASS}, follow=True)
+        client.post('/login/', {'login-password-submit': '1',
+                                'username': USERNAME,
+                                'password': PASS}, follow=True)
 
 
 def test_dn_formatter():
@@ -198,10 +203,10 @@ def test_group_mapping(slapd, settings, client):
     }]
     assert Group.objects.filter(name='Group1').count() == 0
     response = client.post('/login/', {'login-password-submit': '1',
-                                     'username': 'etienne.michu',
-                                     'password': PASS}, follow=True)
+                                       'username': USERNAME,
+                                       'password': PASS}, follow=True)
     assert Group.objects.filter(name='Group1').count() == 1
-    assert response.context['user'].username == 'etienne.michu@ldap'
+    assert response.context['user'].username == u'%s@ldap' % USERNAME
     assert response.context['user'].groups.count() == 1
 
 
@@ -221,10 +226,10 @@ def test_posix_group_mapping(slapd, settings, client):
     }]
     assert Group.objects.filter(name='Group2').count() == 0
     response = client.post('/login/', {'login-password-submit': '1',
-                                     'username': 'etienne.michu',
-                                     'password': PASS}, follow=True)
+                                       'username': USERNAME,
+                                       'password': PASS}, follow=True)
     assert Group.objects.filter(name='Group2').count() == 1
-    assert response.context['user'].username == 'etienne.michu@ldap'
+    assert response.context['user'].username == u'%s@ldap' % USERNAME
     assert response.context['user'].groups.count() == 1
 
 
@@ -239,10 +244,10 @@ def test_group_su(slapd, settings, client):
         'groupsu': ['cn=group1,o=orga'],
     }]
     response = client.post('/login/', {'login-password-submit': '1',
-                                     'username': 'etienne.michu',
-                                     'password': PASS}, follow=True)
+                                       'username': USERNAME,
+                                       'password': PASS}, follow=True)
     assert Group.objects.count() == 0
-    assert response.context['user'].username == 'etienne.michu@ldap'
+    assert response.context['user'].username == u'%s@ldap' % USERNAME
     assert response.context['user'].is_superuser
     assert not response.context['user'].is_staff
 
@@ -258,12 +263,13 @@ def test_group_staff(slapd, settings, client):
         'groupstaff': ['cn=group1,o=orga'],
     }]
     response = client.post('/login/', {'login-password-submit': '1',
-                                     'username': 'etienne.michu',
-                                     'password': PASS}, follow=True)
+                                       'username': 'etienne.michu',
+                                       'password': PASS}, follow=True)
     assert Group.objects.count() == 0
-    assert response.context['user'].username == 'etienne.michu@ldap'
+    assert response.context['user'].username == u'%s@ldap' % USERNAME
     assert response.context['user'].is_staff
     assert not response.context['user'].is_superuser
+
 
 @pytest.mark.django_db
 def test_get_users(slapd, settings):
