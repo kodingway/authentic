@@ -19,6 +19,7 @@ from django_rbac.utils import get_ou_model
 
 from .. import models, app_settings, compat, cbv, views, forms, validators, utils
 from .forms import RegistrationCompletionForm, DeleteAccountForm
+from .forms import RegistrationCompletionFormNoPassword
 from authentic2.a2_rbac.models import OrganizationalUnit
 
 logger = logging.getLogger(__name__)
@@ -109,8 +110,11 @@ class RegistrationCompletionView(CreateView):
         self.help_texts = help_texts
 
     def get_form_class(self):
+        form_class = RegistrationCompletionForm
+        if self.token.get('no_password', False):
+            form_class = RegistrationCompletionFormNoPassword
         form_class = forms.modelform_factory(self.model,
-                                             form=RegistrationCompletionForm,
+                                             form=form_class,
                                              fields=self.fields,
                                              labels=self.labels,
                                              required=self.required,
