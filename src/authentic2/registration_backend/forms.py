@@ -68,28 +68,10 @@ class RegistrationForm(Form):
                   [data['email']], fail_silently=True,
                   html_message=html_message)
 
-class RegistrationCompletionForm(forms.BaseUserForm):
+
+class RegistrationCompletionFormNoPassword(forms.BaseUserForm):
     error_css_class = 'form-field-error'
     required_css_class = 'form-field-required'
-
-
-    password1 = CharField(widget=PasswordInput, label=_("Password"),
-            validators=[validators.validate_password],
-            help_text=validators.password_help_text())
-    password2 = CharField(widget=PasswordInput, label=_("Password (again)"))
-
-    def clean(self):
-        """
-        Verifiy that the values entered into the two password fields
-        match. Note that an error here will end up in
-        ``non_field_errors()`` because it doesn't apply to a single
-        field.
-        """
-        if 'password1' in self.cleaned_data and 'password2' in self.cleaned_data:
-            if self.cleaned_data['password1'] != self.cleaned_data['password2']:
-                raise ValidationError(_("The two password fields didn't match."))
-	    self.instance.set_password(self.cleaned_data['password1'])
-        return self.cleaned_data
 
     def clean_username(self):
         if self.cleaned_data.get('username'):
@@ -126,7 +108,7 @@ class RegistrationCompletionForm(forms.BaseUserForm):
             return BaseUserManager.normalize_email(email)
 
     def save(self, commit=True):
-        user = super(RegistrationCompletionForm, self).save(commit=commit)
+        user = super(RegistrationCompletionFormNoPassword, self).save(commit=commit)
         if commit and app_settings.A2_REGISTRATION_GROUPS:
             groups = []
             for name in app_settings.A2_REGISTRATION_GROUPS:
@@ -134,6 +116,27 @@ class RegistrationCompletionForm(forms.BaseUserForm):
                 groups.append(group)
             user.groups = groups
         return user
+
+
+class RegistrationCompletionForm(RegistrationCompletionFormNoPassword):
+    password1 = CharField(widget=PasswordInput, label=_("Password"),
+            validators=[validators.validate_password],
+            help_text=validators.password_help_text())
+    password2 = CharField(widget=PasswordInput, label=_("Password (again)"))
+
+    def clean(self):
+        """
+        Verifiy that the values entered into the two password fields
+        match. Note that an error here will end up in
+        ``non_field_errors()`` because it doesn't apply to a single
+        field.
+        """
+        if 'password1' in self.cleaned_data and 'password2' in self.cleaned_data:
+            if self.cleaned_data['password1'] != self.cleaned_data['password2']:
+                raise ValidationError(_("The two password fields didn't match."))
+	    self.instance.set_password(self.cleaned_data['password1'])
+        return self.cleaned_data
+
 
 class PasswordResetMixin(Form):
     '''Remove all password reset object for the current user when password is
