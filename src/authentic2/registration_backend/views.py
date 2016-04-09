@@ -26,6 +26,12 @@ logger = logging.getLogger(__name__)
 
 User = compat.get_user_model()
 
+legacy_template_names = {
+    'legacy_subject_templates': ['registration/activation_email_subject.txt'],
+    'legacy_body_templates': ['registration/activation_email.txt'],
+    'legacy_html_body_templates': ['registration/activation_email.html']
+}
+
 def valid_token(method):
     def f(request, *args, **kwargs):
         try:
@@ -110,6 +116,9 @@ class RegistrationCompletionView(CreateView):
         self.help_texts = help_texts
 
     def get_form_class(self):
+        if not self.token.get('valid_email', True):
+            self.fields.append('email')
+            self.required.append('email')
         form_class = RegistrationCompletionForm
         if self.token.get('no_password', False):
             form_class = RegistrationCompletionFormNoPassword
@@ -170,7 +179,8 @@ class RegistrationCompletionView(CreateView):
             # Found one user, EMAIL is unique, log her in
             login(request, self.users[0])
             return redirect(request, self.get_success_url())
-        if all(field in self.token for field in self.fields):
+        if all(field in self.token for field in self.fields) \
+                and not self.token.get('confirm_data', False):
             # We already have every fields
             form_kwargs = self.get_form_kwargs()
             form_class = self.get_form_class()
@@ -202,6 +212,17 @@ class RegistrationCompletionView(CreateView):
         return super(RegistrationCompletionView, self).post(request, *args, **kwargs)
 
     def form_valid(self, form):
+        if 'email' in self.request.POST and (not 'email' in self.token or
+                                             self.request.POST['email'] != self.token['email']):
+            # If an email is submitted it must be validated or be the same as in the token
+            data = form.cleaned_data
+            data['no_password'] = self.token.get('no_password', False)
+            utils.send_registration_mail(self.request,
+                                   template_names=[],
+                                   legacy_template_names=legacy_template_names,
+                                   next_url=self.get_success_url(),
+                                   **data)
+            return redirect(self.request, 'registration_complete')
         ret = super(RegistrationCompletionView, self).form_valid(form)
         login(self.request, self.object)
         return ret
