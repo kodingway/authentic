@@ -43,7 +43,12 @@ class RegistrationForm(Form):
 
     def save(self, request):
         data = self.cleaned_data
-        if REDIRECT_FIELD_NAME in request.GET:
+        token = request.GET.get('token', None)
+        if token:
+            token = signing.loads(token, max_age=settings.ACCOUNT_ACTIVATION_DAYS*3600*24)
+            for name, value in token.items():
+                data[name] = value
+        if REDIRECT_FIELD_NAME in request.GET and REDIRECT_FIELD_NAME not in data:
             data[REDIRECT_FIELD_NAME] = request.GET[REDIRECT_FIELD_NAME]
         registration_token = signing.dumps(data)
         ctx_dict = RequestContext(request)
