@@ -115,18 +115,18 @@ class IterableFactory(object):
         return iter(self.f())
 
 
-def accumulate_from_backends(request, method_name):
+def accumulate_from_backends(request, method_name, **kwargs):
     list = []
     for backend in get_backends():
         method = getattr(backend, method_name, None)
         if callable(method):
-            list += method(request)
+            list += method(request, **kwargs)
     # now try plugins
     for plugin in plugins.get_plugins():
         if hasattr(plugin, method_name):
             method = getattr(plugin, method_name)
             if callable(method):
-                list += method(request)
+                list += method(request, **kwargs)
     return list
 
 

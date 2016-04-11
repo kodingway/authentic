@@ -1,3 +1,5 @@
+import django
+import collections
 import logging
 
 from django.conf import settings
@@ -11,6 +13,7 @@ from django.views.generic.base import TemplateView
 from django.contrib.auth import get_user_model
 from django.forms import CharField
 from django.core.urlresolvers import reverse_lazy
+from django.template import RequestContext
 
 from authentic2.utils import import_module_or_class, redirect, make_url, get_fields_and_labels
 from authentic2.a2_rbac.utils import get_default_ou
@@ -50,6 +53,7 @@ def login(request, user):
     user.backend = 'authentic2.backends.models_backend.ModelBackend'
     django_login(request, user)
 
+
 class RegistrationView(cbv.ValidateCSRFMixin, FormView):
     form_class = import_module_or_class(app_settings.A2_REGISTRATION_FORM_CLASS)
     template_name = 'registration/registration_form.html'
@@ -57,6 +61,19 @@ class RegistrationView(cbv.ValidateCSRFMixin, FormView):
     def form_valid(self, form):
         form.save(self.request)
         return redirect(self.request, 'registration_complete')
+
+    def get_context_data(self, **kwargs):
+        ctx = super(RegistrationView, self).get_context_data(**kwargs)
+        request_context = RequestContext(self.request)
+        request_context.push(ctx)
+        if django.VERSION >= (1, 8, 0):
+            request_context['add_to_blocks'] = collections.defaultdict(lambda: [])
+        registration_frontends = utils.accumulate_from_backends(self.request,
+                                                                'registration_frontend',
+                                                                context_instance=request_context)
+        request_context['registration_frontends'] = registration_frontends
+        return request_context
+
 
 class RegistrationCompletionView(CreateView):
     model = get_user_model()
