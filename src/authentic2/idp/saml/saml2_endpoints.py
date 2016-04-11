@@ -74,6 +74,7 @@ from authentic2.idp import signals as idp_signals
 
 from authentic2.utils import (make_url, get_backends as get_idp_backends,
         get_username, login_require, find_authentication_event, datetime_to_xs_datetime)
+from authentic2 import utils
 from authentic2.attributes_ng.engine import get_attributes
 
 from . import app_settings
@@ -593,7 +594,8 @@ def continue_sso(request):
         login_dump, consent_obtained, nid_format = \
                 get_and_delete_key_values(nonce)
     except KeyError:
-        return error_redirect(request, N_('request has expired'))
+        messages.warning(request, N_('request has expired'))
+        return utils.redirect(request, 'auth_homepage')
     server = create_server(request)
     # Work Around for lasso < 2.3.6
     login_dump = login_dump.replace('<Login ', '<lasso:Login ') \
@@ -1018,7 +1020,8 @@ def finish_slo(request):
     try:
         logout_dump, session_key = get_and_delete_key_values(id)
     except KeyError:
-        return error_redirect(request, N_('request has expired'))
+        messages.warning(request, N_('request has expired'))
+        return utils.redirect(request, 'auth_homepage')
     server = create_server(request)
     logout = lasso.Logout.newFromDump(server, logout_dump)
     load_provider(request, logout.remoteProviderId, server=logout.server)
