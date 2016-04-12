@@ -588,7 +588,7 @@ def build_activation_url(request, email, next_url=None, **kwargs):
 
 
 def send_registration_mail(request, email, template_names, next_url=None,
-                           ctx=None, **kwargs):
+                           ctx=None, legacy_template_names={}, **kwargs):
     '''Send a registration mail to an user. All given kwargs will be used
        to completed the user model.
 
@@ -608,7 +608,7 @@ def send_registration_mail(request, email, template_names, next_url=None,
         'request': request,
         'site': request.get_host()
     })
-    send_templated_mail(email, template_names, ctx)
+    send_templated_mail(email, template_names, ctx, **legacy_template_names)
 
 
 def send_password_reset_mail(user, template_names=None, request=None,
