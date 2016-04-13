@@ -225,7 +225,7 @@ def login(request, template_name='authentic2/login.html',
 
     # set default priority and name
     for frontend in frontends:
-        if not hasattr(frontend, 'name'):
+        if hasattr(frontend.name, '__call__'):
             frontend.name = frontend.name()
         if not hasattr(frontend, 'priority'):
             frontend.priority = 0
@@ -343,12 +343,22 @@ def _homepage(request):
                                'authentic2/homepage.html'), tpl_parameters,
                               RequestContext(request))
 
+
 class ProfileView(cbv.TemplateNamesMixin, TemplateView):
     template_names = ['idp/account_management.html', 'authentic2/accounts.html']
 
     def get_context_data(self, **kwargs):
         ctx = super(ProfileView, self).get_context_data(**kwargs)
         frontends = utils.get_backends('AUTH_FRONTENDS')
+
+        # set default priority and name
+        for frontend in frontends:
+            if hasattr(frontend.name, '__call__'):
+                frontend.name = frontend.name()
+            if not hasattr(frontend, 'priority'):
+                frontend.priority = 0
+        frontends.sort(key=lambda f: f.priority)
+
         request = self.request
 
         context_instance = RequestContext(request, ctx)
@@ -411,7 +421,7 @@ class ProfileView(cbv.TemplateNamesMixin, TemplateView):
         for frontend in frontends:
             if hasattr(frontend, 'profile') and frontend.enabled():
                 blocks_by_id[frontend.id()] = \
-                    {'name': frontend.name(),
+                    {'name': frontend.name,
                      'content': frontend.profile(request, context_instance=context_instance)}
         idp_backends = utils.get_backends()
         # Get actions for federation management
