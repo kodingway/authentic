@@ -34,6 +34,7 @@ from django.http import HttpResponse, HttpResponseRedirect, \
 from django.utils.translation import ugettext as _, ugettext_noop as N_
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import never_cache
+from django.views.decorators.http import require_POST
 from django.contrib.auth import BACKEND_SESSION_KEY, REDIRECT_FIELD_NAME
 from django.conf import settings
 from django.utils.encoding import smart_unicode
@@ -898,6 +899,7 @@ def reload_artifact(login):
         pass
 
 
+@require_POST
 @never_cache
 @csrf_exempt
 def artifact(request):
@@ -1204,6 +1206,7 @@ def set_session_dump_from_liberty_sessions(profile, lib_sessions):
         % profile.session.dump())
 
 
+@require_POST
 @never_cache
 @csrf_exempt
 def slo_soap(request):
