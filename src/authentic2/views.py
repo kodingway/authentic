@@ -407,13 +407,14 @@ class ProfileView(cbv.TemplateNamesMixin, TemplateView):
                 if not title:
                     title = field.verbose_name
                 value = getattr(self.request.user, field_name, None)
-            if not value:
-                continue
-            if callable(value):
-                value = value()
-            if not isinstance(value, (list, tuple)):
-                value = (value,)
-            profile.append((title, map(unicode, value)))
+            if value:
+                if callable(value):
+                    value = value()
+                if not isinstance(value, (list, tuple)):
+                    value = (value,)
+                value = map(unicode, value)
+            if value or app_settings.A2_PROFILE_DISPLAY_EMPTY_FIELDS:
+                profile.append((title, value))
         # Credentials management
         blocks = [ frontend.profile(request, context_instance=context_instance) for frontend in frontends \
                 if hasattr(frontend, 'profile') and frontend.enabled() ]

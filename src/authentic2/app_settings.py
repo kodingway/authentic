@@ -104,6 +104,8 @@ default_settings = dict(
                 definition='Can user self edit their profile'),
     A2_PROFILE_CAN_MANAGE_FEDERATION = Setting(default=True,
                 definition='Can user manage its federations'),
+    A2_PROFILE_DISPLAY_EMPTY_FIELDS = Setting(default=False,
+                definition='Include empty fields in profile view'),
     A2_HOMEPAGE_URL = Setting(default=None, definition='IdP has no homepage, '
         'redirect to this one.'),
     A2_CAN_RESET_PASSWORD = Setting(default=True, definition='Allow online reset of passwords'),
