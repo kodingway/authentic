@@ -26,8 +26,7 @@ def password_change_view(request, *args, **kwargs):
     extra_context = kwargs.setdefault('extra_context', {})
     extra_context[REDIRECT_FIELD_NAME] = post_change_redirect
     if not request.user.has_usable_password():
-        messages.warning(request, _('Account has no password'))
-        return redirect(request, post_change_redirect)
+        kwargs['password_change_form'] = SET_PASSWORD_FORM_CLASS
     response = auth_views.password_change(request, *args, **kwargs)
     if isinstance(response, HttpResponseRedirect):
         messages.info(request, _('Password changed'))
