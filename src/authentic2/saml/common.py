@@ -377,6 +377,14 @@ def load_provider(request, entity_id, server=None, sp_or_idp='sp',
     if server:
         server.addProviderFromBuffer(lasso.PROVIDER_ROLE_SP,
                                      liberty_provider.metadata.encode('utf8'))
+        policy = get_sp_options_policy(liberty_provider)
+        if policy:
+            encryption_mode = 0
+            if policy.encrypt_assertion:
+                encryption_mode = lasso.ENCRYPTION_MODE_ASSERTION
+            if policy.encrypt_nameid:
+                encryption_mode = lasso.ENCRYPTION_MODE_NAMEID
+            server.providers[entity_id].setEncryptionMode(encryption_mode)
     logger.debug('loaded provider %s', entity_id)
     return liberty_provider
 
