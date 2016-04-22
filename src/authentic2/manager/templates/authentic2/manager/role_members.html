@@ -114,7 +114,11 @@
    {% for parent in parents %}
      <a class="role" href="{% url "a2-manager-role-members" pk=parent.pk %}">{{ parent }}</a>
      {% if parent.direct %}
-       <a rel="popup" href="{% url "a2-manager-role-remove-parent" pk=object.pk parent_pk=parent.pk %}" class="role-remove icon-minus-sign"></a>
+       {% if not object.is_internal %}
+         <a rel="popup" href="{% url "a2-manager-role-remove-parent" pk=object.pk parent_pk=parent.pk %}" class="role-remove icon-minus-sign"></a>
+       {% else %}
+         <a title="{% trans "This role is technical, you cannot modify its permissions." %}" class="disabled role-add icon-minus-sign"></a>
+       {% endif %}
      {% else %}
        <a title="{% trans "Indirect parent role" %}" class="disabled role-remove icon-minus-sign"></a>
      {% endif %}

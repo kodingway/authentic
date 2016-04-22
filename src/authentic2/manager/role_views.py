@@ -261,6 +261,8 @@ class RoleAddParentView(views.AjaxFormViewMixin, views.TitleMixin,
 
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
+        if self.object.is_internal():
+            raise PermissionDenied
         return super(RoleAddParentView, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -305,6 +307,8 @@ class RoleRemoveParentView(views.AjaxFormViewMixin, SingleObjectMixin,
 
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
+        if self.object.is_internal():
+            raise PermissionDenied
         self.parent = self.get_queryset().get(pk=kwargs['parent_pk'])
         return super(RoleRemoveParentView, self).dispatch(request, *args, **kwargs)
 
