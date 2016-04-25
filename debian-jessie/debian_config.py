@@ -1,5 +1,6 @@
 import os
 import warnings
+from authentic2 import logger
 
 
 # Add the XForwardedForMiddleware
@@ -31,7 +32,10 @@ LOGGING = {
     },
     'formatters': {
         'syslog': {
-            'format': '%(ip)s %(user)s %(request_id)s %(levelname)s %(name)s.%(funcName)s: %(message)s',
+            'format': 'authentic2[%(process)d]: %(ip)s %(user)s %(request_id)s %(levelname)s %(message)s',
+        },
+        'syslog_db': {
+            'format': 'authentic2[%(process)d]: %(levelname)s %(message)s',
         },
     },
     'handlers': {
@@ -42,13 +46,23 @@ LOGGING = {
             'filters': ['cleaning', 'request_context'],
             'formatter': 'syslog',
         },
+        # remove request_context filter for db log to prevent infinite loop
+        # when logging sql query to retrieve the session user
+        'syslog_db': {
+            'level': 'DEBUG',
+            'address': '/dev/log',
+            'class': 'logging.handlers.SysLogHandler',
+            'filters': ['cleaning'],
+            'formatter': 'syslog_db',
+        },
     },
     'loggers': {
         # even when debugging seeing SQL queries is too much, activate it
         # explicitly using DEBUG_DB
         'django.db': {
-                'handlers': ['syslog'],
-                'level': 'INFO',
+                'handlers': ['syslog_db'],
+                'level': logger.SettingsLogLevel('INFO', debug_setting='DEBUG_DB'),
+                'propagate': False,
         },
         'django': {
                 'level': 'INFO',
@@ -60,7 +74,7 @@ LOGGING = {
         },
         '': {
                 'handlers': ['syslog'],
-                'level': 'INFO',
+                'level': logger.SettingsLogLevel('INFO'),
         },
     },
 }
