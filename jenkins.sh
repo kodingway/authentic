@@ -9,7 +9,7 @@ pip install --upgrade pip
 pip install --upgrade pylint pylint-django
 pip install --upgrade tox
 pip install -U 'virtualenv<14'
-tox -r
+tox -r -e 'fast-coverage-{dj17,dj18}-{authentic,rbac}-{pg,sqlite}'
 (pylint -f parseable --rcfile /var/lib/jenkins/pylint.django.rc src/authentic2/ | tee pylint.out) || /bin/true
 ./merge-junit-results.py rbac-django17.xml django17.xml  >junit.xml
 ./merge-coverage.py -o coverage.xml *coverage.xml

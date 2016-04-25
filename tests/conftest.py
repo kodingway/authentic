@@ -7,8 +7,10 @@ import django_webtest
 from django.core.wsgi import get_wsgi_application
 from django.contrib.auth import get_user_model
 from django_rbac.utils import get_ou_model, get_role_model
+from django.conf import settings
 
 from django.contrib.contenttypes.models import ContentType
+from pytest_django.migrations import DisableMigrations
 
 from authentic2.a2_rbac.utils import get_default_ou
 
@@ -157,3 +159,9 @@ def concurrency(settings):
         return 20
     else:
         return 100
+
+
+@pytest.fixture
+def migrations():
+    if isinstance(settings.MIGRATION_MODULES, DisableMigrations):
+        pytest.skip('this test requires native migrations')

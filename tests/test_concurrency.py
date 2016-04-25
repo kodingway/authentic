@@ -6,7 +6,7 @@ from utils import skipif_no_partial_index
 
 
 @skipif_no_partial_index
-def test_attribute_value_uniqueness(transactional_db, simple_user, concurrency):
+def test_attribute_value_uniqueness(migrations, transactional_db, simple_user, concurrency):
     from django.db.transaction import set_autocommit
 
     set_autocommit(True)

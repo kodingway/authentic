@@ -38,7 +38,7 @@ def test_manager_create_ou(superuser_or_admin, app):
     assert OU.objects.count() == 3
 
 
-def test_manager_create_role(superuser_or_admin, app):
+def test_manager_create_role(migrations, superuser_or_admin, app):
     Role = get_role_model()
     OU = get_ou_model()
 
