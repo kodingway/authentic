@@ -1,0 +1,14 @@
+/var/log/authentic2-multitenant/*.log {
+	weekly
+	missingok
+	rotate 52
+	compress
+	delaycompress
+	notifempty
+	create 0640 authentic-multitenant adm
+	sharedscripts
+	postrotate
+		[ ! -f /var/run/authentic2-multitenant/authentic2-multitenant.pid ] || kill -HUP `cat /var/run/authentic2-multitenant/authentic2-multitenant.pid`
+	endscript
+}
+

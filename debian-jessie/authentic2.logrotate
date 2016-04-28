@@ -1,0 +1,14 @@
+/var/log/authentic2/*.log {
+	weekly
+	missingok
+	rotate 52
+	compress
+	delaycompress
+	notifempty
+	create 0640 authentic adm
+	sharedscripts
+	postrotate
+		[ ! -f /var/run/authentic2/authentic2.pid ] || kill -HUP `cat /var/run/authentic2/authentic2.pid`
+	endscript
+}
+
