@@ -1,8 +1,8 @@
 #!/bin/sh
 ### BEGIN INIT INFO
 # Provides:          authentic2
-# Required-Start:    $network $local_fs $remote_fs $syslog
-# Required-Stop:     $network $local_fs $remote_fs $syslog
+# Required-Start:    $network $local_fs $syslog
+# Required-Stop:     $network $local_fs $syslog
 # Should-Start:      postgresql
 # Should-Stop:       postgresql
 # Default-Start:     2 3 4 5
@@ -167,26 +167,21 @@ case "$1" in
   status)
        status_of_proc "$DAEMON" "$NAME" && exit 0 || exit $?
        ;;
-  reload|force-reload)
-	#
-	# If do_reload() is not implemented then leave this commented out
-	# and leave 'force-reload' as an alias for 'restart'.
-	#
+  reload)
 	log_daemon_msg "Reloading $DESC" "$NAME"
 	do_reload
 	log_end_msg $?
 	;;
-  restart|force-reload)
-	#
-	# If the "reload" option is implemented then remove the
-	# 'force-reload' alias
-	#
+  update)
+	log_daemon_msg "Updating $DESC" "$NAME"
+	do_migrate && do_collectstatic
+	log_end_msg $?
+	;;
+  restart)
 	log_daemon_msg "Restarting $DESC" "$NAME"
 	do_stop
 	case "$?" in
 	  0|1)
-    do_migrate
-    do_collectstatic
 		do_start
 		case "$?" in
 			0) log_end_msg 0 ;;
@@ -200,12 +195,6 @@ case "$1" in
 		;;
 	esac
 	;;
-  collectstatic)
-    do_collectstatic
-  ;;
-  migrate)
-    do_migrate
-  ;;
   manage)
     shift
     if [ $(id -un) != "$USER" ]; then
@@ -215,7 +204,7 @@ case "$1" in
     fi
   ;;
   *)
-	echo "Usage: $SCRIPTNAME {start|stop|status|restart|force-reload}" >&2
+	echo "Usage: $SCRIPTNAME {start|stop|status|restart|update|reload}" >&2
 	exit 3
 	;;
 esac

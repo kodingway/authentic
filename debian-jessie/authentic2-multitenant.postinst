@@ -39,6 +39,7 @@ case "$1" in
             /var/run/$NAME \
             /var/log/$NAME
         ;;
+        /etc/init.d/$NAME update
     triggered)
         su -s /bin/sh -c "$MANAGE_SCRIPT hobo_deploy --redeploy" $AUTHENTIC_USER
         ;;
