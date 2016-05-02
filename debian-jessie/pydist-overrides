@@ -13,3 +13,5 @@ django-import-export    python-django-import-export
 django-sekizai          python-django-sekizai
 six                     python-six
 pycrypto                python-crypto
+ldaptools               python-ldaptools
+djang-mellon            python-django-mellon
