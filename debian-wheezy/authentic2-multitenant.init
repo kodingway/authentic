@@ -68,7 +68,7 @@ fi
 # Function collecting static files
 do_collectstatic() {
     log_action_msg "Collect static files.."
-    su $USER -s /bin/sh -p -c "$MANAGE_SCRIPT collectstatic --noinput"
+    su $USER -s /bin/sh -p -c "$MANAGE_SCRIPT collectstatic -l --noinput"
     log_action_msg ".. done"
 }
 
@@ -129,7 +129,7 @@ do_reload() {
 
 do_migrate() {
     log_action_msg "Applying new migrations .."
-    su $USER -s /bin/sh -p -c "$MANAGE_SCRIPT migrate_schemas -l --noinput"
+    su $USER -s /bin/sh -p -c "$MANAGE_SCRIPT migrate_schemas --noinput"
     log_action_msg ".. done"
 }
 
