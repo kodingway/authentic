@@ -14,4 +14,4 @@ django-sekizai          python-django-sekizai
 six                     python-six
 pycrypto                python-crypto
 ldaptools               python-ldaptools
-djang-mellon            python-django-mellon
+django-mellon           python-django-mellon
