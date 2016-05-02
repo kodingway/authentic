@@ -85,8 +85,9 @@ class EditProfile(cbv.TemplateNamesMixin, UpdateView):
 
     def get_form_class(self):
         fields, labels = self.get_fields()
-        return forms.modelform_factory(compat.get_user_model(),
-                fields=fields, labels=labels)
+        # Email must be edited through the change email view, as it needs validation
+        fields = [field for field in fields if field != 'email']
+        return forms.modelform_factory(compat.get_user_model(), fields=fields, labels=labels)
 
     def get_object(self):
         return self.request.user
