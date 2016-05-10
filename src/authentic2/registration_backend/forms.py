@@ -104,7 +104,7 @@ class RegistrationCompletionFormNoPassword(forms.BaseUserForm):
             if app_settings.A2_REGISTRATION_EMAIL_IS_UNIQUE:
                 User = get_user_model()
                 try:
-                    User.get(email__iexact=email)
+                    User.objects.get(email__iexact=email)
                 except User.DoesNotExist:
                     pass
                 else:
