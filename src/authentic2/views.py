@@ -117,12 +117,16 @@ def su(request, username, redirect_url='/'):
 
 
 class EmailChangeView(cbv.TemplateNamesMixin, FormView):
-    form_class = forms.EmailChangeForm
     template_names = [
         'profiles/email_change.html',
         'authentic2//change_email.html'
     ]
     success_url = '..'
+
+    def get_form_class(self):
+        if self.request.user.has_usable_password():
+            return forms.EmailChangeForm
+        return forms.EmailChangeFormNoPassword
 
     def get_form_kwargs(self):
         kwargs = super(EmailChangeView, self).get_form_kwargs()

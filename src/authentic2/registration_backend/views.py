@@ -11,7 +11,7 @@ from django.core import signing
 from django.views.generic.edit import FormView, CreateView
 from django.views.generic.base import TemplateView
 from django.contrib.auth import get_user_model
-from django.forms import CharField
+from django.forms import CharField, Form
 from django.core.urlresolvers import reverse_lazy
 from django.template import RequestContext
 
@@ -246,7 +246,6 @@ class RegistrationCompletionView(CreateView):
 
 class DeleteView(FormView):
     template_name = 'authentic2/accounts_delete.html'
-    form_class = DeleteAccountForm
     success_url = reverse_lazy('auth_logout')
 
     def dispatch(self, request, *args, **kwargs):
@@ -259,14 +258,20 @@ class DeleteView(FormView):
             return redirect(request, 'account_management')
         return super(DeleteView, self).post(request, *args, **kwargs)
 
+    def get_form_class(self):
+        if self.request.user.has_usable_password():
+            return DeleteAccountForm
+        return Form
+
     def get_form_kwargs(self, **kwargs):
         kwargs = super(DeleteView, self).get_form_kwargs(**kwargs)
-        kwargs['user'] = self.request.user
+        if self.request.user.has_usable_password():
+            kwargs['user'] = self.request.user
         return kwargs
 
     def form_valid(self, form):
-        models.DeletedUser.objects.delete_user(form.user)
-        logger.info(u'deletion of account %s requested', form.user)
+        models.DeletedUser.objects.delete_user(self.request.user)
+        logger.info(u'deletion of account %s requested', self.request.user)
         messages.info(self.request, _('Your account has been scheduled for deletion. You cannot use it anymore.'))
         return super(DeleteView, self).form_valid(form)
 

@@ -31,13 +31,13 @@
           {% endfor %}
         </dl>
       {% endif %}
-      {% if allow_email_change and user.has_usable_password %}
+      {% if allow_email_change %}
         <p><a href="{% url 'email-change' %}">{% trans "Change email" %}</a></p>
       {% endif %}
       {% if allow_profile_edit %}
         <p><a href="{% url 'profile_edit' %}">{% trans "Edit account data" %}</a></p>
       {% endif %}
-      {% if allow_account_deletion and user.has_usable_password %}
+      {% if allow_account_deletion %}
         <p><a href="{% url 'delete_account' %}">{% trans "Delete account" %}</a></p>
       {% endif %}
     </div>

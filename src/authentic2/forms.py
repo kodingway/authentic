@@ -9,14 +9,17 @@ from authentic2.compat import get_user_model
 
 from . import models, app_settings
 
-class EmailChangeForm(forms.Form):
-    password = forms.CharField(label=_("Password"),
-                               widget=forms.PasswordInput)
+
+class EmailChangeFormNoPassword(forms.Form):
     email = forms.EmailField(label=_('New email'))
 
     def __init__(self, user, *args, **kwargs):
         self.user = user
-        super(EmailChangeForm, self).__init__(*args, **kwargs)
+        super(EmailChangeFormNoPassword, self).__init__(*args, **kwargs)
+
+class EmailChangeForm(EmailChangeFormNoPassword):
+    password = forms.CharField(label=_("Password"),
+                               widget=forms.PasswordInput)
 
     def clean_password(self):
         password = self.cleaned_data["password"]
