@@ -127,6 +127,23 @@ def register_plugins_idp_backends(idp_backends,
                     idp_backends.append(cls)
     return tuple(idp_backends)
 
+
+def collect_from_plugins(name, *args, **kwargs):
+    '''
+        Collect a property or the result of a function from plugins.
+    '''
+    accumulator = []
+    for plugin in get_plugins():
+        if not hasattr(plugin, name):
+            continue
+        attribute = getattr(plugin, name)
+        if hasattr(attribute, '__call__'):
+            accumulator.append(attribute(*args, **kwargs))
+        else:
+            accumulator.append(attribute)
+    return accumulator
+
+
 def init():
     for plugin in get_plugins():
         if hasattr(plugin, 'init'):
