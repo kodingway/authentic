@@ -11,6 +11,7 @@ from django.utils.functional import allow_lazy
 from django.template.defaultfilters import capfirst
 
 from .decorators import to_iter
+from .plugins import collect_from_plugins
 from . import app_settings
 
 capfirst = allow_lazy(capfirst, unicode)
@@ -41,11 +42,15 @@ DEFAULT_ATTRIBUTE_KINDS = [
         }
 ]
 
+
 def get_attribute_kinds():
     attribute_kinds = {}
     for attribute_kind in chain(DEFAULT_ATTRIBUTE_KINDS, app_settings.A2_ATTRIBUTE_KINDS):
         attribute_kinds[attribute_kind['name']] = attribute_kind
+    for attribute_kind in chain(*collect_from_plugins('attribute_kinds')):
+        attribute_kinds[attribute_kind['name']] = attribute_kind
     return attribute_kinds
+
 
 @to_iter
 def get_choices():
