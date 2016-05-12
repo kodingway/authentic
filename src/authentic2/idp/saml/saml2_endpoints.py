@@ -1421,10 +1421,10 @@ def icon_url(name):
     return '%s/authentic2/images/%s.png' % (settings.STATIC_URL, name)
 
 def ko_icon(request):
-    return HttpResponseRedirect(icon_url('ko'))
+    return HttpResponseRedirect(icon_url('ko'), status=307)
 
 def ok_icon(request):
-    return HttpResponseRedirect(icon_url('ok'))
+    return HttpResponseRedirect(icon_url('ok'), status=307)
 
 
 @never_cache

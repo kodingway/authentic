@@ -1,6 +1,7 @@
 import logging
 import urllib
 import operator
+import random
 
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
@@ -88,8 +89,10 @@ class SamlBackend(object):
                         % provider_id)
                 else:
                     url = reverse(saml2_endpoints.idp_slo, args=[provider_id])
-                    url = '{0}?provider_id={1}'.format(url,
-                            urllib.quote(provider_id))
+                    # add a nonce so this link is never cached
+                    nonce = hex(random.getrandbits(128))
+                    url = '{0}?provider_id={1}&nonce={2}'.format(
+                        url, urllib.quote(provider_id), nonce)
                     name = name or provider_id
                     code = render_to_string('idp/saml/logout_fragment.html', {
                         'needs_iframe': policy.needs_iframe_logout,
