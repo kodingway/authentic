@@ -13,6 +13,10 @@ if [ "$(whoami)" != "authentic" ]; then
     fi
 fi
 
+if [ -f /etc/default/authentic2 ]; then
+    . /etc/default/authentic2
+fi
+
 if [ -f /etc/authentic2/db.conf ]; then
     . /etc/authentic2/db.conf
 fi

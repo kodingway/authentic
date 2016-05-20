@@ -195,14 +195,6 @@ case "$1" in
 		;;
 	esac
 	;;
-  manage)
-    shift
-    if [ $(id -un) != "$USER" ]; then
-        sudo -u $USER -- $MANAGE_SCRIPT "$@"
-    else
-        $MANAGE_SCRIPT "$@"
-    fi
-  ;;
   *)
 	echo "Usage: $SCRIPTNAME {start|stop|status|restart|update|reload}" >&2
 	exit 3
