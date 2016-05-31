@@ -1030,15 +1030,21 @@ def finish_slo(request):
     # Clean all session
     all_sessions = \
         LibertySession.objects.filter(django_session_key=session_key)
-    if all_sessions.exists():
-        all_sessions.delete()
-        return return_logout_error(request, logout,
-            lasso.SAML2_STATUS_CODE_PARTIAL_LOGOUT)
     try:
         logout.buildResponseMsg()
-    except:
-        logger.exception('failure to build reponse msg')
-        pass
+    except lasso.ProfileUnknownProfileUrlError:
+        # SP sent us a logout request but we do not know its Response endpoint, just continue to the
+        # homepage
+        return redirect('auth_homepage')
+    except lasso.Error, e:
+        logger.warning('logout.buildResponseMsg() failed: %s', e)
+        return redirect('auth_homepage')
+    if all_sessions.exists():
+        all_sessions.delete()
+        set_saml2_response_responder_status_code(logout.response,
+                                                 lasso.SAML2_STATUS_CODE_PARTIAL_LOGOUT)
+        logger.warning('partial logout')
+        logout.buildResponseMsg()
     provider = LibertyProvider.objects.get(entity_id=logout.remoteProviderId)
     return return_saml2_response(request, logout,
         title=_('You are being redirected to "%s"') % provider.name)
