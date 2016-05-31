@@ -401,13 +401,18 @@ class ProfileView(cbv.TemplateNamesMixin, TemplateView):
             try:
                 field = request.user._meta.get_field(field_name)
             except FieldDoesNotExist:
+                try:
+                    attribute = models.Attribute.objects.get(
+                            name=field_name, user_visible=True)
+                except models.Attribute.DoesNotExist:
+                    continue
                 qs = models.AttributeValue.objects.with_owner(request.user)
-                qs = qs.filter( attribute__name=field_name, attribute__user_visible=True)
+                qs = qs.filter(attribute=attribute)
                 qs = qs.select_related()
                 value = [at_value.to_python() for at_value in qs]
                 value = filter(None, value)
-                if qs and not title:
-                    title = unicode(qs[0].attribute)
+                if not title:
+                    title = unicode(attribute)
             else:
                 if not title:
                     title = field.verbose_name
