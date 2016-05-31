@@ -127,6 +127,9 @@ class RegistrationCompletionView(CreateView):
             list(required_fields)
         if 'email' in fields:
             fields.remove('email')
+        for field in self.token.get('skip_fields') or []:
+            if field in fields:
+                fields.remove(field)
         self.fields = fields
         self.labels = labels
         self.required = required
@@ -179,7 +182,11 @@ class RegistrationCompletionView(CreateView):
             attributes[name] = ' '.join(values)
         logger.debug(u'attributes with prefilling %s', attributes)
 
-        kwargs['instance'] = get_user_model()(**attributes)
+        if self.token.get('user_id'):
+            kwargs['instance'] = User.objects.get(id=self.token.get('user_id'))
+        else:
+            kwargs['instance'] = get_user_model()(**attributes)
+
         return kwargs
 
     def get_context_data(self, **kwargs):
@@ -230,7 +237,8 @@ class RegistrationCompletionView(CreateView):
 
     def form_valid(self, form):
         if 'email' in self.request.POST and (not 'email' in self.token or
-                                             self.request.POST['email'] != self.token['email']):
+                                             self.request.POST['email'] !=
+                                             self.token['email']) and not self.token.get('skip_email_check'):
             # If an email is submitted it must be validated or be the same as in the token
             data = form.cleaned_data
             data['no_password'] = self.token.get('no_password', False)
