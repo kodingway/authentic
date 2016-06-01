@@ -195,19 +195,23 @@ class Attribute(models.Model):
                 return kind['default']
 
 
-    def set_value(self, owner, value):
+    def set_value(self, owner, value, verified=False):
         serialize = self.get_kind()['serialize']
         if self.multiple:
             assert isinstance(value, (list, set, tuple))
             values = value
             for value in values:
                 content = serialize(value)
-                AttributeValue.objects.get_or_create(
+                av, created = AttributeValue.objects.get_or_create(
                         content_type=ContentType.objects.get_for_model(owner),
                         object_id=owner.pk,
                         attribute=self,
                         multiple=True,
-                        content=content)
+                        content=content,
+                        defaults={'verified': verified})
+                if not created:
+                    av.verified = verified
+                    av.save()
         else:
             content = serialize(value)
             av, created = AttributeValue.objects.get_or_create(
@@ -215,9 +219,10 @@ class Attribute(models.Model):
                     object_id=owner.pk,
                     attribute=self,
                     multiple=False,
-                    defaults={'content': content})
+                    defaults={'content': content, 'verified': verified})
             if not created:
                 av.content = content
+                av.verified = verified
                 av.save()
 
     def natural_key(self):
