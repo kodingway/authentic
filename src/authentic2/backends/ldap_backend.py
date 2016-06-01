@@ -130,7 +130,7 @@ class LDAPUser(get_user_model()):
             return None
 
     def check_password(self, raw_password):
-        connection = self.backend.get_connection(self.block)
+        connection = self.ldap_backend.get_connection(self.block)
         try:
             connection.simple_bind_s(self.dn, raw_password.encode('utf-8'))
         except ldap.INVALID_CREDENTIALS:
@@ -147,7 +147,7 @@ class LDAPUser(get_user_model()):
         old_password = getattr(self, 'old_password') or self.get_password_in_session()
         if old_password != new_password:
             conn = self.get_connection()
-            self.backend.modify_password(conn, self.block, self.dn, old_password, new_password)
+            self.ldap_backend.modify_password(conn, self.block, self.dn, old_password, new_password)
         self.keep_password_in_session(new_password)
         if self.block['keep_password']:
             super(LDAPUser, self).set_password(new_password)
@@ -165,12 +165,12 @@ class LDAPUser(get_user_model()):
         # must be redone if session is older than current code update and new
         # options have been added to the setting dictionnary for LDAP
         # authentication
-        self.backend.update_default(self.block)
-        return self.backend.get_connection(self.block, credentials=credentials)
+        self.ldap_backend.update_default(self.block)
+        return self.ldap_backend.get_connection(self.block, credentials=credentials)
 
     def get_attributes(self):
         conn = self.get_connection()
-        return self.backend.get_ldap_attributes(self.block, conn, self.dn)
+        return self.ldap_backend.get_ldap_attributes(self.block, conn, self.dn)
 
     def save(self, *args, **kwargs):
         if hasattr(self, 'keep_pk'):
@@ -1000,7 +1000,7 @@ class LDAPBackendPasswordLost(LDAPBackend):
                 if user_external_id.source != unicode(block['realm']):
                     continue
                 for external_id_tuple in block['external_id_tuples']:
-                    conn = self.backend.get_connection(block)
+                    conn = self.ldap_backend.get_connection(block)
                     try:
                         if external_id_tuple == ('dn:noquote',):
                             dn = external_id
@@ -1022,5 +1022,5 @@ class LDAPBackendPasswordLost(LDAPBackend):
                         continue
                     return self._return_user(dn, None, conn, block)
 
-LDAPUser.backend = LDAPBackend
-LDAPBackendPasswordLost.backend = LDAPBackend
+LDAPUser.ldap_backend = LDAPBackend
+LDAPBackendPasswordLost.ldap_backend = LDAPBackend
