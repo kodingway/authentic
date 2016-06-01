@@ -55,9 +55,10 @@ class BaseUserForm(forms.ModelForm):
         if kwargs.get('instance'):
             instance = kwargs['instance']
             for av in models.AttributeValue.objects.with_owner(instance):
-                if av.verified:
-                    self.declared_fields[av.attribute.name].widget.attrs['readonly'] = 'readonly'
-                initial[av.attribute.name] = av.to_python()
+                if av.attribute.name in self.declared_fields:
+                    if av.verified:
+                        self.declared_fields[av.attribute.name].widget.attrs['readonly'] = 'readonly'
+                    initial[av.attribute.name] = av.to_python()
         super(BaseUserForm, self).__init__(*args, **kwargs)
 
     def clean(self):
