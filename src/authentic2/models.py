@@ -242,6 +242,7 @@ class AttributeValue(models.Model):
     multiple = models.BooleanField(default=False)
 
     content = models.TextField(verbose_name=_('content'))
+    verified = models.BooleanField(default=False)
 
     objects = managers.AttributeValueManager()
 
