@@ -112,6 +112,7 @@ class SerializerTests(TestCase):
                     'attribute': ['phone'],
                     'content': '0101010101',
                     'multiple': False,
+                    'verified': False,
                 }
             }
         ]
