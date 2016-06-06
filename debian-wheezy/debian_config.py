@@ -60,21 +60,45 @@ LOGGING = {
         # even when debugging seeing SQL queries is too much, activate it
         # explicitly using DEBUG_DB
         'django.db': {
-                'handlers': ['syslog_db'],
-                'level': logger.SettingsLogLevel('INFO', debug_setting='DEBUG_DB'),
-                'propagate': False,
+            # use a special handler to prevent recursive loop by the RequestContextFilter
+            # as it does accesses to the database
+            'handlers': ['syslog_db'],
+            'level': logger.SettingsLogLevel('INFO', debug_setting='DEBUG_DB'),
+            'propagate': False,
         },
         'django': {
-                'level': 'INFO',
+            # Override Django default values
+            'handlers': [],
+            'level': 'NOTSET',
+            'propagate': True,
+        },
+        'django.server': {
+            # Override Django 1.8 default values
+            'handlers': [],
+            'level': 'NOTSET',
+            'propagate': True,
+        },
+        'django.request': {
+            # Override Django default values
+            'handlers': [],
+            'level': 'NOTSET',
+            'propagate': True,
+        },
+        'django.security': {
+            # Override Django default values
+            'handlers': [],
+            'level': 'NOTSET',
+            'propagate': True,
         },
         # django_select2 outputs debug message at level INFO
         'django_select2': {
-                'handlers': ['syslog'],
-                'level': 'WARNING',
+            'handlers': [],
+            'level': 'WARNING',
+            'propagate': True,
         },
         '': {
-                'handlers': ['syslog'],
-                'level': logger.SettingsLogLevel('INFO'),
+            'handlers': ['syslog'],
+            'level': logger.SettingsLogLevel('INFO'),
         },
     },
 }
