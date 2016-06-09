@@ -202,6 +202,9 @@ LOGGING = {
         'request_context': {
             '()':  'authentic2.log_filters.RequestContextFilter',
         },
+        'force_debug': {
+            '()': 'authentic2.log_filters.ForceDebugFilter',
+        }
     },
     'formatters': {
         'verbose': {
@@ -243,6 +246,10 @@ LOGGING = {
         # django_select2 outputs debug message at level INFO
         'django_select2': {
                 'level': 'WARNING',
+        },
+        # lasso has the bad habit of logging everything as errors
+        'lasso': {
+            'filters': ['force_debug'],
         },
         '': {
                 'handlers': ['console'],

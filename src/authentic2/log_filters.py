@@ -24,3 +24,9 @@ class RequestContextFilter(logging.Filter):
         record.ip = ip
         record.request_id = request_id
         return True
+
+
+class ForceDebugFilter(logging.Filter):
+    def filter(self, record):
+        record.level = logging.DEBUG
+        return True
