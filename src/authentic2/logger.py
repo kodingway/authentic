@@ -22,3 +22,7 @@ class DjangoLogger(logging.getLoggerClass()):
 
 logging.setLoggerClass(DjangoLogger)
 
+class DjangoRootLogger(DjangoLogger, logging.RootLogger):
+    pass
+
+logging.root.__class__ = DjangoRootLogger
