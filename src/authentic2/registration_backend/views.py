@@ -68,10 +68,12 @@ class RegistrationView(cbv.ValidateCSRFMixin, FormView):
         request_context.push(ctx)
         if django.VERSION >= (1, 8, 0):
             request_context['add_to_blocks'] = collections.defaultdict(lambda: [])
-        registration_frontends = utils.accumulate_from_backends(self.request,
-                                                                'registration_frontend',
-                                                                context_instance=request_context)
-        request_context['registration_frontends'] = registration_frontends
+        parameters = {'request': self.request,
+                      'context_instance': request_context}
+        blocks = [utils.get_backend_method(backend, 'registration', parameters)
+                  for backend in utils.get_backends('AUTH_FRONTENDS')]
+        request_context['frontends'] = collections.OrderedDict((block['id'], block)
+                                                               for block in blocks if block)
         return request_context
 
 

@@ -228,13 +228,6 @@ def login(request, template_name='authentic2/login.html',
 
     frontends = utils.get_backends('AUTH_FRONTENDS')
 
-    # set default priority and name
-    for frontend in frontends:
-        if hasattr(frontend.name, '__call__'):
-            frontend.name = frontend.name()
-        if not hasattr(frontend, 'priority'):
-            frontend.priority = 0
-
     blocks = []
 
     context_instance = RequestContext(request, {
@@ -252,11 +245,9 @@ def login(request, template_name='authentic2/login.html',
 
     # Create blocks
     for frontend in frontends:
-        if not frontend.enabled():
-            continue
         # Legacy API
         if not hasattr(frontend, 'login'):
-            fid = frontend.id()
+            fid = frontend.id
             name = frontend.name
             form_class = frontend.form()
             submit_name = 'submit-%s' % fid
@@ -276,18 +267,15 @@ def login(request, template_name='authentic2/login.html',
                 block['form'] = form_class()
             blocks.append(block)
         else: # New frontends API
-            response = frontend.login(request,
-                                      context_instance=context_instance)
-            if not response:
-                continue
-            if response.status_code != 200:
-                return response
-            blocks.append({
-                    'id': frontend.id(),
-                    'name': frontend.name,
-                    'content': response.content,
-                    'frontend': frontend,
-            })
+            parameters = {'request': request,
+                          'context_instance': context_instance}
+            block = utils.get_backend_method(frontend, 'login', parameters)
+            # If a login frontend method returns an HttpResponse with a status code != 200
+            # this response is returned.
+            if block:
+                if block['status_code'] != 200:
+                    return block['response']
+                blocks.append(block)
         if hasattr(frontend, 'is_hidden'):
             blocks[-1]['is_hidden'] = frontend.is_hidden(request)
         else:
@@ -313,9 +301,6 @@ def login(request, template_name='authentic2/login.html',
                 context_instance=context_instance)
 
     request.session.set_test_cookie()
-
-    # order blocks by their frontend priority
-    blocks.sort(key=lambda block: block['frontend'].priority)
 
     # legacy context variable
     rendered_forms = [(block['name'], block['content']) for block in blocks]
@@ -356,14 +341,6 @@ class ProfileView(cbv.TemplateNamesMixin, TemplateView):
         ctx = super(ProfileView, self).get_context_data(**kwargs)
         frontends = utils.get_backends('AUTH_FRONTENDS')
 
-        # set default priority and name
-        for frontend in frontends:
-            if hasattr(frontend.name, '__call__'):
-                frontend.name = frontend.name()
-            if not hasattr(frontend, 'priority'):
-                frontend.priority = 0
-        frontends.sort(key=lambda f: f.priority)
-
         request = self.request
 
         context_instance = RequestContext(request, ctx)
@@ -371,9 +348,7 @@ class ProfileView(cbv.TemplateNamesMixin, TemplateView):
             context_instance['add_to_blocks'] = collections.defaultdict(lambda: [])
         if request.method == "POST":
             for frontend in frontends:
-                if not frontend.enabled():
-                    continue
-                if 'submit-%s' % frontend.id() in request.POST:
+                if 'submit-%s' % frontend.id in request.POST:
                     form = frontend.form()(data=request.POST)
                     if form.is_valid():
                         if request.session.test_cookie_worked():
@@ -425,15 +400,17 @@ class ProfileView(cbv.TemplateNamesMixin, TemplateView):
                 value = map(unicode, value)
             if value or app_settings.A2_PROFILE_DISPLAY_EMPTY_FIELDS:
                 profile.append((title, value))
+
         # Credentials management
-        blocks = [ frontend.profile(request, context_instance=context_instance) for frontend in frontends \
-                if hasattr(frontend, 'profile') and frontend.enabled() ]
-        blocks_by_id = {}
-        for frontend in frontends:
-            if hasattr(frontend, 'profile') and frontend.enabled():
-                blocks_by_id[frontend.id()] = \
-                    {'name': frontend.name,
-                     'content': frontend.profile(request, context_instance=context_instance)}
+        parameters = {'request': request,
+                      'context_instance': context_instance}
+        profiles = [utils.get_backend_method(frontend, 'profile', parameters)
+                            for frontend in frontends]
+        # Old frontends data structure for templates
+        blocks = [block['content'] for block in profiles if block]
+        # New frontends data structure for templates
+        blocks_by_id = collections.OrderedDict((block['id'], block) for block in profiles if block)
+
         idp_backends = utils.get_backends()
         # Get actions for federation management
         federation_management = []

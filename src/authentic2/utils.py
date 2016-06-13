@@ -12,7 +12,7 @@ from importlib import import_module
 
 import django
 from django.conf import settings
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.http.request import QueryDict
 from django.contrib.auth import (REDIRECT_FIELD_NAME, login as auth_login, SESSION_KEY,
@@ -150,26 +150,60 @@ def load_backend(path):
 
 
 def get_backends(setting_name='IDP_BACKENDS'):
-    '''Return the list of IdP backends'''
+    '''Return the list of enabled cleaned backends.'''
     backends = []
     for backend_path in getattr(app_settings, setting_name):
         kwargs = {}
         if not isinstance(backend_path, six.string_types):
             backend_path, kwargs = backend_path
         backend = load_backend(backend_path)
+        # If no enabled method is defined on the backend, backend enabled by default.
+        if hasattr(backend, 'enabled') and not backend.enabled():
+            continue
         kwargs_settings = getattr(app_settings, setting_name + '_KWARGS', {})
         if backend_path in kwargs_settings:
             kwargs.update(kwargs_settings[backend_path])
+        # Clean id and name for legacy support
         if hasattr(backend, 'id'):
-            if hasattr(backend.id, '__call__'):
-                bid = backend.id()
-            else:
-                bid = backend.id
-            if bid in kwargs_settings:
-                kwargs.update(kwargs_settings[bid])
+            if callable(backend.id):
+                backend.id = backend.id()
+        else:
+            backend.id = None
+        if hasattr(backend, 'name'):
+            if callable(backend.name):
+                backend.name = backend.name()
+        else:
+            backend.name = None
+        if not hasattr(backend, 'priority'):
+            backend.priority = 0
+        if backend.id and backend.id in kwargs_settings:
+            kwargs.update(kwargs_settings[backend.id])
         backend.__dict__.update(kwargs)
         backends.append(backend)
+    # Order backends list with backend priority
+    backends.sort(key=lambda backend: backend.priority)
     return backends
+
+
+def get_backend_method(backend, method, parameters):
+    if not hasattr(backend, method):
+        return None
+    content = response = getattr(backend, method)(**parameters)
+    if not response:
+        return None
+    status_code = 200
+    # Some backend methods return an HttpResponse, others return a string
+    if isinstance(response, HttpResponse):
+        content = response.content
+        status_code = response.status_code
+    return {
+            'id': backend.id,
+            'name': backend.name,
+            'content': content,
+            'response': response,
+            'status_code': status_code,
+            'backend': backend,
+    }
 
 
 def add_arg(url, key, value=None):

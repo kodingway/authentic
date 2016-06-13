@@ -18,11 +18,16 @@
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
-
   <input type="submit" value="{% trans 'Submit' %}" />
 </form>
 
-{% for registration_frontend in registration_frontends %}
-    {{ registration_frontend|safe }}
+{% for id, block in frontends.items %}
+  <div class="registration_frontend">
+    <h2>{{ block.name }}</h2>
+    <p>
+      {{ block.content|safe }}
+    </p>
+  </div>
 {% endfor %}
+
 {% endblock %}
