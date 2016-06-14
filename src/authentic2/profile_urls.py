@@ -1,9 +1,11 @@
 from django.conf.urls import patterns, url
 from django.contrib.auth import views as auth_views, REDIRECT_FIELD_NAME
+from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.utils.translation import ugettext as _
+from django.views.decorators.debug import sensitive_post_parameters
 
 from authentic2.utils import import_module_or_class, redirect
 from . import app_settings, decorators, profile_views
@@ -13,6 +15,8 @@ SET_PASSWORD_FORM_CLASS = import_module_or_class(
 CHANGE_PASSWORD_FORM_CLASS = import_module_or_class(
         app_settings.A2_REGISTRATION_CHANGE_PASSWORD_FORM_CLASS)
 
+@sensitive_post_parameters()
+@login_required
 @decorators.setting_enabled('A2_REGISTRATION_CAN_CHANGE_PASSWORD')
 def password_change_view(request, *args, **kwargs):
     post_change_redirect = kwargs.pop('post_change_redirect', None)
