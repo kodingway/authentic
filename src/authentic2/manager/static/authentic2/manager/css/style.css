@@ -225,9 +225,9 @@ form input[type="checkbox"] {
 }
 
 div.ui-dialog form p select, form p select{
-    background: none repeat scroll 0 0 white;
+    background-color: white;
     border: 1px solid #bbb;
-    box-shadow: 0 1px 3px #ddd inset;
+    box-shadow: none;
     color: black;
     display: inline;
     font-size: 0.99em;
