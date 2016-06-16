@@ -228,7 +228,13 @@ def add_attributes(request, assertion, provider):
         attribute.friendlyName = friendly_name.encode('utf-8')
         attribute.name = name.encode('utf-8')
         attribute.nameFormat = name_format.encode('utf-8')
-    tuples = [tuple(t) for definition in qs for t in definition.to_tuples(ctx) ]
+    verified = set()
+    for definition in qs:
+        verified_attribute_name = definition.attribute_name + '_verified'
+        if ctx.get(verified_attribute_name):
+            verified.add(definition.name)
+    ctx['@verified_attributes@'] = list(verified)
+    tuples = [tuple(t) for definition in qs for t in definition.to_tuples(ctx)]
     seen = set()
     for name, name_format, friendly_name, value in tuples:
         # prevent repeating attribute values

@@ -92,12 +92,22 @@ class Authentic2TestCase(TestCase):
         for xpath, content in constraints:
             nodes = doc.xpath(xpath, namespaces=namespaces)
             self.assertTrue(len(nodes) > 0, 'xpath %s not found' % xpath)
-            for node in nodes:
-                if hasattr(node, 'text'):
-                    self.assertEqual(
-                        node.text, content, 'xpath %s does not contain %s but '
-                        '%s' % (xpath, content, node.text))
+            if isinstance(content, basestring):
+                for node in nodes:
+                    if hasattr(node, 'text'):
+                        self.assertEqual(
+                            node.text, content, 'xpath %s does not contain %s but '
+                            '%s' % (xpath, content, node.text))
+                    else:
+                        self.assertEqual(
+                            node, content, 'xpath %s does not contain %s but %s' %
+                            (xpath, content, node))
+            else:
+                values = [node.text if hasattr(node, 'text') else node for node in nodes]
+                if isinstance(content, set):
+                    self.assertEqual(set(values), content)
+                elif isinstance(content, list):
+                    self.assertEqual(values, content)
                 else:
-                    self.assertEqual(
-                        node, content, 'xpath %s does not contain %s but %s' %
-                        (xpath, content, node))
+                    raise NotImplementedError('comparing xpath result to type %s: %r is not '
+                                              'implemented' % (type(content), content))
