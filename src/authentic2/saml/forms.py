@@ -1,5 +1,7 @@
-import urllib2
 import xml.etree.ElementTree as ET
+
+import requests
+
 from authentic2.compat_lasso import lasso
 
 from django import forms
@@ -12,12 +14,14 @@ from authentic2.a2_rbac.utils import get_default_ou
 
 from django_rbac.utils import get_ou_model
 
+
 class AddLibertyProviderFromUrlForm(forms.Form):
     name = forms.CharField(max_length=140, label=_('Name'))
     slug = forms.SlugField(max_length=140, label=_('Shortcut'),
-            help_text=_("Internal nickname for the service provider"))
+                           help_text=_("Internal nickname for the service provider"))
     url = forms.URLField(label=_("Metadata's URL"))
-    ou = forms.ModelChoiceField(queryset=get_ou_model().objects, label=_('Organizational unit'))
+    ou = forms.ModelChoiceField(queryset=get_ou_model().objects, initial=get_default_ou,
+                                label=_('Organizational unit'))
 
     def clean(self):
         cleaned_data = super(AddLibertyProviderFromUrlForm, self).clean()
@@ -29,24 +33,25 @@ class AddLibertyProviderFromUrlForm(forms.Form):
         self.childs = []
         if name and slug and url:
             try:
-                content = urllib2.urlopen(url).read().decode('utf-8')
-                root = ET.fromstring(content)
-                if root.tag != '{%s}EntityDescriptor' % lasso.SAML2_METADATA_HREF:
-                    raise ValidationError(_('Invalid SAML metadata: %s') % _('missing EntityDescriptor tag'))
-                is_sp = not root.find('{%s}SPSSODescriptor' % lasso.SAML2_METADATA_HREF) is None
-                if not is_sp:
-                    raise ValidationError(_('Invalid SAML metadata: %s') % _('missing SPSSODescriptor tags'))
-                liberty_provider = LibertyProvider(name=name,
-                    slug=slug, metadata=content, metadata_url=url, ou=ou)
-                liberty_provider.full_clean(exclude=
-                        ('entity_id', 'protocol_conformance'))
-                self.childs.append(LibertyServiceProvider(
-                    liberty_provider=liberty_provider,
-                    enabled=True))
-            except ValidationError, e:
-                raise
-            except Exception, e:
-                raise ValidationError('unsupported error: %s' % e)
+                response = requests.get(url)
+                response.raise_for_status()
+                content = response.content
+            except requests.RequestException, e:
+                raise ValidationError(_('Retrieval of %s failed: %s') % (url, e))
+            root = ET.fromstring(content)
+            if root.tag != '{%s}EntityDescriptor' % lasso.SAML2_METADATA_HREF:
+                raise ValidationError(_('Invalid SAML metadata: %s')
+                                      % _('missing EntityDescriptor tag'))
+            is_sp = not root.find('{%s}SPSSODescriptor' % lasso.SAML2_METADATA_HREF) is None
+            if not is_sp:
+                raise ValidationError(_('Invalid SAML metadata: %s')
+                                      % _('missing SPSSODescriptor tags'))
+            liberty_provider = LibertyProvider(name=name, slug=slug, metadata=content,
+                                               metadata_url=url, ou=ou)
+            liberty_provider.full_clean(exclude=('entity_id', 'protocol_conformance'))
+            self.childs.append(LibertyServiceProvider(
+                liberty_provider=liberty_provider,
+                enabled=True))
             self.instance = liberty_provider
         return cleaned_data
 

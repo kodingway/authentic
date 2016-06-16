@@ -1,11 +1,12 @@
 import urlparse
 import os.path
 import urllib
-import urllib2
 import httplib
 import logging
 import re
 import datetime
+
+import requests
 
 from authentic2.compat_lasso import lasso
 from django.template import RequestContext
@@ -448,42 +449,17 @@ class SOAPException(Exception):
     pass
 
 
-def soap_call(url, msg, client_cert=None):
-    if not client_cert:
-        request = urllib2.Request(url, data=msg,
-                                  headers={'Content-Type': 'text/xml'})
-        return urllib2.urlopen(request).read()
-
-    if url.startswith('http://'):
-        host, query = urllib.splithost(url[5:])
-        conn = httplib.HTTPConnection(host)
-    else:
-        host, query = urllib.splithost(url[6:])
-        conn = httplib.HTTPSConnection(host, key_file=client_cert,
-                                       cert_file=client_cert)
-    logger.debug('host %r', host)
-    logger.debug('query %r', query)
-    logger.debug('msg %r', msg)
+def soap_call(url, msg):
+    logger = logging.getLogger(__name__)
     try:
-        conn.request('POST', query, msg, {'Content-Type': 'text/xml'})
-        response = conn.getresponse()
-    except Exception, err:
-        logging.error('SOAP error (on %s): %s' % (url, err))
-        raise SOAPException(url, err)
-    logger.debug('response %r', response)
-    try:
-        data = response.read()
-    except Exception, err:
-        logging.error('SOAP error (on %s): %s' % (url, err))
-        raise SOAPException(url, err)
-    logger.debug('data %r', data)
-    conn.close()
-    if response.status not in (200, 204):  # 204 ok for federation termination
-        logging.warning('SOAP error (%s) (on %s)' % (response.status, url))
-        raise SOAPException(url, 'http status code error', response.status)
-    if not data:
-        raise SOAPException(url, 'no content returned')
-    return data
+        logger.debug('SOAP call to %r with data %r', url, msg[:10000])
+        response = requests.post(url, data=msg, headers={'Content-Type': 'text/xml'})
+        response.raise_for_status()
+    except requests.RequestException, e:
+        logging.error('SOAP call to %r error %s with data %r', url, e, msg[:10000])
+        raise SOAPException(url, e)
+    logger.debug('SOAP call response %r', response.content[:10000])
+    return response.content
 
 
 def send_soap_request(request, profile):
