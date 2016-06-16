@@ -113,7 +113,8 @@ class SAMLAttributeInlineForm(forms.ModelForm):
 
     @to_iter
     def choices(self, ctx):
-        return [('', _('None'))] + get_attribute_names(ctx)
+        return ([('', _('None'))] + get_attribute_names(ctx)
+                + [('@verified_attributes@', _('List of verified attributes'))])
 
     class Meta:
         model = SAMLAttribute

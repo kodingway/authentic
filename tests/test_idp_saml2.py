@@ -15,7 +15,7 @@ from authentic2.saml import models as saml_models
 from authentic2.a2_rbac.models import Role, OrganizationalUnit
 from authentic2.utils import make_url
 from authentic2.constants import NONCE_FIELD_NAME
-from authentic2.idp.saml import app_settings
+from authentic2.models import Attribute
 
 from utils import Authentic2TestCase
 
@@ -23,7 +23,6 @@ try:
     import lasso
 except ImportError:
     lasso = None
-
 
 
 @unittest.skipUnless(lasso is not None, 'lasso is not installed')
@@ -83,11 +82,16 @@ class SamlBaseTestCase(Authentic2TestCase):
         self.first_name = 'John'
         self.last_name = 'Doe'
         self.password = 'T0toto'
+        self.code_attribute = Attribute.objects.create(kind='string', name='code', label='Code')
+        self.mobile_attribute = Attribute.objects.create(kind='string', name='mobile',
+                                                         label='Mobile')
         self.user = get_user_model().objects.create(
             email=self.email,
             username=self.username,
             first_name=self.first_name,
             last_name=self.last_name)
+        self.code_attribute.set_value(self.user, '1234', verified=True)
+        self.mobile_attribute.set_value(self.user, '5678', verified=True)
         self.user.set_password(self.password)
         self.user.save()
         self.default_ou = OrganizationalUnit.objects.get()
@@ -135,6 +139,21 @@ class SamlBaseTestCase(Authentic2TestCase):
             name='superuser',
             friendly_name='Superuser status',
             attribute_name='superuser')
+        self.superuser_attribute = self.liberty_provider.attributes.create(
+            name_format='basic',
+            name='code_code',
+            friendly_name='code',
+            attribute_name='django_user_code')
+        self.superuser_attribute = self.liberty_provider.attributes.create(
+            name_format='basic',
+            name='mobile',
+            friendly_name='mobile',
+            attribute_name='django_user_mobile')
+        self.superuser_attribute = self.liberty_provider.attributes.create(
+            name_format='basic',
+            name='verified_attributes',
+            friendly_name='Verified attributes',
+            attribute_name='@verified_attributes@')
 
     def make_authn_request(
             self, idp=None,
@@ -317,8 +336,8 @@ class SamlSSOTestCase(SamlBaseTestCase):
                             '%s/' % self.base_url),
 
                     )
-                elif format == lasso.SAML2_NAME_IDENTIFIER_FORMAT_EMAIL or \
-                   (not format and default_name_id_format == 'email'):
+                elif (format == lasso.SAML2_NAME_IDENTIFIER_FORMAT_EMAIL or
+                      (not format and default_name_id_format == 'email')):
                     constraints += (
                         ('/saml:Assertion/saml:Subject/saml:NameID',
                             self.email),
@@ -346,6 +365,26 @@ class SamlSSOTestCase(SamlBaseTestCase):
                     "@FriendlyName", 'Superuser status'),
                 ("/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='superuser']/"
                     "saml:AttributeValue", 'true'),
+
+                ("/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='code_code']/"
+                    "@NameFormat", lasso.SAML2_ATTRIBUTE_NAME_FORMAT_BASIC),
+                ("/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='code_code']/"
+                    "@FriendlyName", 'code'),
+                ("/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='code_code']/"
+                    "saml:AttributeValue", '1234'),
+
+                ("/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='mobile']/"
+                    "@NameFormat", lasso.SAML2_ATTRIBUTE_NAME_FORMAT_BASIC),
+                ("/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='mobile']/"
+                    "@FriendlyName", 'mobile'),
+                ("/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='mobile']/"
+                    "saml:AttributeValue", '5678'),
+
+                ("/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='verified_attributes']/"
+                    "@NameFormat", lasso.SAML2_ATTRIBUTE_NAME_FORMAT_BASIC),
+                ("/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='verified_attributes']/"
+                    "@FriendlyName", 'Verified attributes'),
+                ("/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='verified_attributes']/"
+                    "saml:AttributeValue", set(['code_code', 'mobile'])),
             )
             self.assertXPathConstraints(assertion_xml, constraints, namespaces)
-

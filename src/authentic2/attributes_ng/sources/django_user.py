@@ -7,12 +7,14 @@ from ...models import Attribute, AttributeValue
 from ...decorators import to_list
 from ...compat import get_user_model
 
+
 @to_list
 def get_instances(ctx):
     '''
     Retrieve instances from settings
     '''
     return [None]
+
 
 @to_list
 def get_attribute_names(instance, ctx):
@@ -25,8 +27,9 @@ def get_attribute_names(instance, ctx):
         name = 'django_user_' + str(attribute.name)
         description = attribute.label + u' (%s)' % name
         yield name, description
-    yield 'django_user_groups', User._meta.get_field_by_name('groups')[0].verbose_name + u' (django_user_groups)'
-    yield 'django_user_group_names', User._meta.get_field_by_name('groups')[0].verbose_name + u' (django_user_group_names)'
+    group_label = User._meta.get_field_by_name('groups')[0].verbose_name
+    yield 'django_user_groups', group_label + u' (django_user_groups)'
+    yield 'django_user_group_names', group_label + u' (django_user_group_names)'
     yield 'django_user_domain', _('User domain') + u' (django_user_domain)'
     yield 'django_user_identifier', _('User identifier') + u' (django_user_identifier)'
     yield 'django_user_full_name', _('Full name') + u' (django_user_full_name)'
@@ -37,8 +40,10 @@ def get_attribute_names(instance, ctx):
     yield 'a2_service_ou_role_names', _('Role names from same organizational unit as the service')
     yield 'a2_service_ou_role_uuids', _('Role uuids from same organizational unit as the service')
 
+
 def get_dependencies(instance, ctx):
     return ('user',)
+
 
 def get_attributes(instance, ctx):
     user = ctx.get('user')
@@ -48,15 +53,17 @@ def get_attributes(instance, ctx):
     for field in User._meta.fields:
         value = getattr(user, field.name)
         if value is None:
-           continue
+            continue
         ctx['django_user_' + str(field.name)] = getattr(user, field.name)
     for av in AttributeValue.objects.with_owner(user):
         ctx['django_user_' + str(av.attribute.name)] = av.to_python()
+        ctx['django_user_' + str(av.attribute.name) + '_verified'] = av.verified
     ctx['django_user_groups'] = [group for group in user.groups.all()]
     ctx['django_user_group_names'] = [unicode(group) for group in user.groups.all()]
     if user.username:
-        ctx['django_user_domain'] = user.username.rsplit('@', 1)[1] if '@' in user.username else ''
-        ctx['django_user_identifier'] = user.username.rsplit('@', 1)[0] if '@' in user.username else ''
+        splitted = user.username.rsplit('@', 1)
+        ctx['django_user_domain'] = splitted[1] if '@' in user.username else ''
+        ctx['django_user_identifier'] = splitted[0] if '@' in user.username else ''
     ctx['django_user_full_name'] = user.get_full_name()
     Role = get_role_model()
     roles = Role.objects.for_user(user)
