@@ -41,6 +41,11 @@ DEFAULT_ATTRIBUTE_KINDS = [
             'widget': forms.RadioSelect,
         }
     },
+    {
+        'label': _('boolean'),
+        'name': 'boolean',
+        'field_class': forms.BooleanField,
+    },
 ]
 
 
