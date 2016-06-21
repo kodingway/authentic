@@ -166,7 +166,8 @@ class Role(RoleAbstractBase):
         )
 
     def natural_key(self):
-        return [self.slug, self.ou_id, self.service_id]
+        return [self.slug, self.ou and self.ou.natural_key(), self.service and
+                self.service.natural_key()]
 
     def to_json(self):
         return {
