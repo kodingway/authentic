@@ -31,6 +31,8 @@ class OrganizationalUnit(OrganizationalUnitAbstractBase):
     default = fields.UniqueBooleanField(
         verbose_name=_('Default organizational unit'))
 
+    objects = managers.OrganizationalUnitManager()
+
     class Meta:
         verbose_name = _('organizational unit')
         verbose_name_plural = _('organizational units')
@@ -68,6 +70,9 @@ class OrganizationalUnit(OrganizationalUnitAbstractBase):
     def delete(self, *args, **kwargs):
         Permission.objects.filter(ou=self).delete()
         return super(OrganizationalUnitAbstractBase, self).delete(*args, **kwargs)
+
+    def natural_key(self):
+        return [self.slug]
 
 
 class Permission(PermissionAbstractBase):

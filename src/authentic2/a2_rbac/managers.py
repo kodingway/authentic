@@ -1,9 +1,14 @@
 from django.contrib.contenttypes.models import ContentType
 
 from django_rbac.models import ADMIN_OP
-from django_rbac.managers import RoleManager as BaseRoleManager
+from django_rbac.managers import RoleManager as BaseRoleManager, AbstractBaseManager
 from django_rbac.utils import get_operation
 from django_rbac import utils as rbac_utils
+
+
+class OrganizationalUnitManager(AbstractBaseManager):
+    def get_by_natural_key(self, slug):
+        return self.get(slug=slug)
 
 
 class RoleManager(BaseRoleManager):
