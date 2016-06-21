@@ -9,6 +9,7 @@ from django.utils.http import urlquote
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 
+from django_rbac.utils import get_ou_model
 from model_utils import managers
 
 logger = logging.getLogger(__name__)
@@ -127,6 +128,20 @@ class ServiceQuerySet(managers.InheritanceQuerySetMixin, GetBySlugQuerySet):
 
 class BaseServiceManager(models.Manager):
     use_for_related_fields = True
+
+    def get_by_natural_key(self, ou_natural_key, slug):
+        OU = get_ou_model()
+        kwargs = {'slug': slug}
+        if ou_natural_key:
+            try:
+                ou = OU.objects.get_by_natural_key(*ou_natural_key)
+            except OU.DoesNotExist:
+                raise self.model.DoesNotExist
+            kwargs['ou'] = ou
+        else:
+            kwargs['ou__isnull'] = True
+        return self.get(**kwargs)
+
 
 ServiceManager = BaseServiceManager.from_queryset(ServiceQuerySet)
 

@@ -285,6 +285,7 @@ class PasswordReset(models.Model):
     def __unicode__(self):
         return unicode(self.user)
 
+
 class Service(models.Model):
     name = models.CharField(
         verbose_name=_('name'),
@@ -323,6 +324,9 @@ class Service(models.Model):
         unique_together = (
                 ('slug', 'ou'),
         )
+
+    def natural_key(self):
+        return [self.ou and self.ou.natural_key(), self.slug]
 
     def __unicode__(self):
         return self.name
