@@ -160,6 +160,9 @@ class Role(RoleAbstractBase):
             ('admin_scope_ct', 'admin_scope_id'),
         )
 
+    def natural_key(self):
+        return [self.slug, self.ou_id, self.service_id]
+
     def to_json(self):
         return {
             'uuid': self.uuid,
