@@ -1,0 +1,12 @@
+<html>
+<head>
+	{{ form.media }}
+</head>
+<body>
+	<form method="post">
+		{% csrf_token %}
+		{{ form.as_p }}
+		<input type="submit"/>
+	</form>
+	<pre>{{ form.cleaned_data|pprint }}</pre>
+</body>

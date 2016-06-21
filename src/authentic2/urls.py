@@ -12,6 +12,7 @@ urlpatterns = patterns(
     'authentic2.views',
     url(r'^$', 'homepage', name='auth_homepage'),
     url(r'test_redirect/$', views.test_redirect),
+    url(r'list/$', views.test_list_widget),
 )
 
 not_homepage_patterns = patterns('authentic2.views',

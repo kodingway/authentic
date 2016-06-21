@@ -565,3 +565,21 @@ def test_redirect(request):
     messages.warning(request, 'Un warning')
     messages.error(request, 'Une erreur')
     return HttpResponseRedirect(next_url)
+
+from . import widget
+
+from django import forms as djforms
+
+
+class ListWidgetForm(djforms.Form):
+    choice = ['', 'a', 'b', 'c']
+    l = djforms.Field(widget=widget.ListWidget(djforms.Select(choices=zip(choice, choice))))
+
+
+def test_list_widget(request):
+    if request.method == 'POST':
+        f = ListWidgetForm(data=request.POST)
+        f.is_valid()
+    else:
+        f = ListWidgetForm()
+    return render(request, 'list_widget.html', {'form': f})
