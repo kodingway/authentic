@@ -268,9 +268,10 @@ class AttributeValue(models.Model):
             ('content_type', 'object_id', 'attribute', 'multiple', 'content'),
         )
 
+
 class PasswordReset(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-            verbose_name=_('user'), unique=True)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL,
+            verbose_name=_('user'))
 
     def save(self, *args, **kwargs):
         if self.user_id and not self.user.has_usable_password():
