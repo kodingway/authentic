@@ -20,8 +20,9 @@ class Serializer(JSONSerializer):
             if ct is None:
                 continue
             sub_obj = getattr(obj, vfield.name)
-            assert not sub_obj is None, 'should not happen'
-            if not hasattr(sub_obj, 'natural_key'): 
+            if sub_obj is None:
+                continue
+            if not hasattr(sub_obj, 'natural_key'):
                 # abort if no natural key
                 continue
             # delete non natural keys
