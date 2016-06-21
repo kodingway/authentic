@@ -63,3 +63,15 @@ class RoleManager(BaseRoleManager):
             role.slug = slug
             role.save()
         return role
+
+    def get_by_natural_key(self, slug, ou_id, service_id):
+        kwargs = {'slug': slug}
+        if ou_id is None:
+            kwargs['ou_id__isnull'] = True
+        else:
+            kwargs['ou_id'] = ou_id
+        if service_id is None:
+            kwargs['service_id__isnull'] = True
+        else:
+            kwargs['service_id'] = service_id
+        return self.get(**kwargs)
