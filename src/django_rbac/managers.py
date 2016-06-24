@@ -4,13 +4,16 @@ import threading
 from django.db import models
 from django.db.models import query
 from django.contrib.contenttypes.models import ContentType
+from django.db.models.query import Q, Prefetch
+from django.contrib.auth import get_user_model
 
-from . import constants, utils
+from . import utils
 
 
 class AbstractBaseManager(models.Manager):
     def get_by_natural_key(self, uuid):
         return self.get(uuid=uuid)
+
 
 class OperationManager(models.Manager):
     def get_by_natural_key(self, slug):
@@ -27,13 +30,10 @@ class OperationManager(models.Manager):
         if ou:
             ou_query |= query.Q(ou=ou.as_scope())
         ct = ContentType.objects.get_for_model(object_or_model)
-        target_query = query.Q(
-                target_ct=ContentType.objects.get_for_model(ContentType),
-                target_id=ct.pk)
+        target_query = query.Q(target_ct=ContentType.objects.get_for_model(ContentType),
+                               target_id=ct.pk)
         if isinstance(object_or_model, models.Model):
-            target_query |= query.Q(
-                    target_ct=ct,
-                    target_id=object.pk)
+            target_query |= query.Q(target_ct=ct, target_id=object.pk)
         Permission = utils.get_permission_model()
         qs = Permission.objects.for_user(user)
         qs = qs.filter(operation__slug=operation_slug)
@@ -87,6 +87,7 @@ class PermissionQueryset(query.QuerySet):
 
 PermissionManager = PermissionManagerBase.from_queryset(PermissionQueryset)
 
+
 class RoleQuerySet(query.QuerySet):
     def for_user(self, user):
         return self.filter(members=user).parents().distinct()
@@ -109,9 +110,12 @@ class RoleQuerySet(query.QuerySet):
             qs = qs.annotate(direct=models.Max('parent_relation__direct'))
         return qs
 
-    def all_members():
+    def all_members(self):
         User = get_user_model()
-        return User.objects.filter(Q(roles=self)|Q(roles__parent_relation__parent=self))
+        prefetch = Prefetch('roles', queryset=self, to_attr='direct')
+        return (User.objects.filter(Q(roles=self) | Q(roles__parent_relation__parent=self))
+                .distinct()
+                .prefetch_related(prefetch))
 
     def by_admin_scope_ct(self, admin_scope):
         admin_scope_ct = ContentType.objects.get_for_model(admin_scope)
@@ -119,6 +123,7 @@ class RoleQuerySet(query.QuerySet):
 
 
 RoleManager = AbstractBaseManager.from_queryset(RoleQuerySet)
+
 
 class RoleParentingManager(models.Manager):
     class Local(threading.local):
@@ -158,13 +163,13 @@ class RoleParentingManager(models.Manager):
 
         # Start computing new indirect paths
         while True:
-            for (i,j) in ris:
-                for (k,l) in old_new:
+            for (i, j) in ris:
+                for (k, l) in old_new:
                     if j == k and (i, l) not in ris:
                         new.add((i, l))
             if old_new != ris:
-                for (i,j) in old_new:
-                    for (k,l) in ris:
+                for (i, j) in old_new:
+                    for (k, l) in ris:
                         if j == k and (i, l) not in ris:
                             new.add((i, l))
             if not new:
@@ -177,12 +182,13 @@ class RoleParentingManager(models.Manager):
         self.model.objects.bulk_create(self.model(
             parent_id=a,
             child_id=b,
-            direct=False) for a, b in add-old)
+            direct=False) for a, b in add - old)
         # Delete old ones
-        obsolete = old-add
+        obsolete = old - add
         if obsolete:
-	    queries = (query.Q(parent_id=a, child_id=b, direct=False) for a, b in obsolete)
+            queries = (query.Q(parent_id=a, child_id=b, direct=False) for a, b in obsolete)
             self.model.objects.filter(reduce(query.Q.__or__, queries)).delete()
+
 
 @contextlib.contextmanager
 def defer_update_transitive_closure():

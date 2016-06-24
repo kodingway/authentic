@@ -247,3 +247,8 @@ class RoleTestCase(TestCase):
                 self.assertEqual(member.direct, [r1])
             if member == u2:
                 self.assertEqual(member.direct, [])
+        for member in Role.objects.filter(id=r1.id).all_members():
+            if member == u1 or member == u3:
+                self.assertEqual(member.direct, [r1])
+            if member == u2:
+                self.assertEqual(member.direct, [])
