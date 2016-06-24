@@ -147,8 +147,8 @@ class PermissionAbstractBase(models.Model):
     def natural_key(self):
         return [self.operation.slug, self.ou and
                 self.ou.natural_key(),
-                self.target_ct.natural_key(),
-                self.target.natural_key()]
+                self.target and self.target_ct.natural_key(),
+                self.target and self.target.natural_key()]
 
     def __unicode__(self):
         ct = ContentType.objects.get_for_id(self.target_ct_id)

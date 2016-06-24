@@ -40,10 +40,10 @@ class OperationManager(models.Manager):
         qs = qs.filter(ou_query & target_query)
         return qs.exists()
 
+
 class PermissionManagerBase(models.Manager):
-    def get_by_natural_key(self, operation_slug, ou_nk, target_ct,
-            target_nk):
-        qs = self.filter(operation__slug=operation__slug)
+    def get_by_natural_key(self, operation_slug, ou_nk, target_ct, target_nk):
+        qs = self.filter(operation__slug=operation_slug)
         if ou_nk:
             OrganizationalUnit = utils.get_ou_model()
             try:
@@ -51,18 +51,19 @@ class PermissionManagerBase(models.Manager):
             except OrganizationalUnit.DoesNotExist:
                 raise self.model.DoesNotExist
             qs = qs.filter(ou=ou)
+        else:
+            qs = qs.filter(ou__isnull=True)
         try:
             target_ct = ContentType.objects.get_by_natural_key(*target_ct)
         except ContentType.DoesNotExist:
             raise self.model.DoesNotExist
         target_model = target_ct.model_class()
         try:
-            target = target_model.get_by_natural_key(*target_nk)
+            target = target_model.objects.get_by_natural_key(*target_nk)
         except target_model.DoesNotExist:
             raise self.model.DoesNotExist
-        return qs.get(
-                target_ct=ContentType.objects.get_for_model(target),
-                target_id=target.pk)
+        return qs.get(target_ct=ContentType.objects.get_for_model(target), target_id=target.pk)
+
 
 class PermissionQueryset(query.QuerySet):
     def by_target_ct(self, target):
