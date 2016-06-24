@@ -4,8 +4,10 @@ from Crypto.Cipher import AES
 from Crypto.Protocol.KDF import PBKDF2
 from Crypto import Random
 
+
 class DecryptionError(Exception):
     pass
+
 
 def aes_base64_encrypt(key, data):
     '''Generate an AES key from any key material using PBKDF2, and encrypt data using CFB mode. A
@@ -17,17 +19,22 @@ def aes_base64_encrypt(key, data):
     crypted = aes.encrypt(data)
     return '%s$%s' % (base64.b64encode(iv), base64.b64encode(crypted))
 
-def aes_base64_decrypt(key, payload):
+
+def aes_base64_decrypt(key, payload, raise_on_error=True):
     '''Decrypt data encrypted with aes_base64_encrypt'''
     try:
         iv, crypted = payload.split('$')
     except (ValueError, TypeError):
-        raise DecryptionError('bad payload')
+        if raise_on_error:
+            raise DecryptionError('bad payload')
+        return None
     try:
         iv = base64.b64decode(iv)
         crypted = base64.b64decode(crypted)
     except TypeError:
-        raise DecryptionError('incorrect base64 encoding')
+        if raise_on_error:
+            raise DecryptionError('incorrect base64 encoding')
+        return None
     aes_key = PBKDF2(key, iv)
     aes = AES.new(aes_key, AES.MODE_CFB, iv)
     return aes.decrypt(crypted)

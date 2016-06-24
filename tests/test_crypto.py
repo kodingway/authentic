@@ -15,4 +15,6 @@ def test_exceptions():
         crypto.aes_base64_decrypt(key, 'xxxx')
     with pytest.raises(crypto.DecryptionError):
         crypto.aes_base64_decrypt(key, 'xxx$y')
+    assert crypto.aes_base64_decrypt(key, 'xxxx', raise_on_error=False) is None
+    assert crypto.aes_base64_decrypt(key, 'xxx$y', raise_on_error=False) is None
 
