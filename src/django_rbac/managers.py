@@ -85,6 +85,14 @@ class PermissionQueryset(query.QuerySet):
         roles = Role.objects.for_user(user=user)
         return self.filter(roles=roles)
 
+    def cleanup(self):
+        count = 0
+        for p in self:
+            if not p.target and (p.target_ct_id or p.target_id):
+                p.delete()
+                count += 1
+        return count
+
 PermissionManager = PermissionManagerBase.from_queryset(PermissionQueryset)
 
 
@@ -120,6 +128,15 @@ class RoleQuerySet(query.QuerySet):
     def by_admin_scope_ct(self, admin_scope):
         admin_scope_ct = ContentType.objects.get_for_model(admin_scope)
         return self.filter(admin_scope_ct=admin_scope_ct)
+
+    def cleanup(self):
+        count = 0
+        for r in self.filter(
+                Q(admin_scope_ct_id__isnull=False) | Q(admin_scope_id__isnull=False)):
+            if not r.admin_scope:
+                r.delete()
+                count += 1
+        return count
 
 
 RoleManager = AbstractBaseManager.from_queryset(RoleQuerySet)
