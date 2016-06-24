@@ -80,10 +80,6 @@ class AbstractOrganizationalUnitScopedBase(models.Model):
 
 
 class OrganizationalUnitAbstractBase(AbstractBase):
-    admin_perms = GenericRelation(utils.get_permission_model_name(),
-                                  content_type_field='target_ct',
-                                  object_id_field='target_id')
-
     class Meta:
         abstract = True
 
@@ -138,10 +134,6 @@ class PermissionAbstractBase(models.Model):
         'target_ct',
         'target_id')
 
-    admin_roles = GenericRelation(utils.get_role_model_name(),
-                                  content_type_field='admin_scope_ct',
-                                  object_id_field='admin_scope_id')
-
     objects = managers.PermissionManager()
 
     def natural_key(self):
@@ -188,10 +180,6 @@ class RoleAbstractBase(AbstractOrganizationalUnitScopedBase, AbstractBase):
         to=utils.get_permission_model_name(),
         related_name='roles',
         blank=True)
-
-    admin_perms = GenericRelation(utils.get_permission_model_name(),
-                                  content_type_field='target_ct',
-                                  object_id_field='target_id')
 
     objects = managers.RoleQuerySet.as_manager()
 

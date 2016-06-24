@@ -11,10 +11,12 @@ from django_rbac.models import RoleAbstractBase, PermissionAbstractBase, \
 from django_rbac import utils as rbac_utils
 
 try:
-    from django.contrib.contenttypes.fields import GenericForeignKey
+    from django.contrib.contenttypes.fields import GenericForeignKey, \
+        GenericRelation
 except ImportError:
     # Django < 1.8
-    from django.contrib.contenttypes.generic import GenericForeignKey
+    from django.contrib.contenttypes.generic import GenericForeignKey, \
+        GenericRelation
 
 from . import managers, fields
 
@@ -30,6 +32,10 @@ class OrganizationalUnit(OrganizationalUnitAbstractBase):
         verbose_name=_('Email is unique'))
     default = fields.UniqueBooleanField(
         verbose_name=_('Default organizational unit'))
+
+    admin_perms = GenericRelation(rbac_utils.get_permission_model_name(),
+                                  content_type_field='target_ct',
+                                  object_id_field='target_id')
 
     objects = managers.OrganizationalUnitManager()
 
@@ -80,6 +86,10 @@ class Permission(PermissionAbstractBase):
         verbose_name = _('permission')
         verbose_name_plural = _('permissions')
 
+    mirror_roles = GenericRelation(rbac_utils.get_role_model_name(),
+                                   content_type_field='admin_scope_ct',
+                                   object_id_field='admin_scope_id')
+
 
 class Role(RoleAbstractBase):
     admin_scope_ct = models.ForeignKey(
@@ -104,6 +114,10 @@ class Role(RoleAbstractBase):
         verbose_name=_('external id'),
         blank=True,
         db_index=True)
+
+    admin_perms = GenericRelation(rbac_utils.get_permission_model_name(),
+                                  content_type_field='target_ct',
+                                  object_id_field='target_id')
 
     def get_admin_role(self, ou=None):
         from . import utils
@@ -212,3 +226,7 @@ class RoleAttribute(models.Model):
         unique_together = (
             ('role', 'name', 'kind', 'value'),
         )
+
+GenericRelation(Permission,
+                content_type_field='target_ct',
+                object_id_field='target_id').contribute_to_class(ContentType, 'admin_perms')
