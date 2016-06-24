@@ -95,6 +95,34 @@ def test_simple(slapd, settings, client):
 
 
 @pytest.mark.django_db
+def test_simple_with_binddn(slapd, settings, client):
+    settings.LDAP_AUTH_SETTINGS = [{
+        'url': [slapd.ldap_url],
+        'binddn': DN,
+        'bindpw': PASS,
+        'basedn': 'o=orga',
+        'use_tls': False,
+    }]
+    result = client.post('/login/', {'login-password-submit': '1',
+                                     'username': USERNAME,
+                                     'password': PASS}, follow=True)
+    assert result.status_code == 200
+    assert 'Étienne Michu' in str(result)
+    User = get_user_model()
+    assert User.objects.count() == 1
+    user = User.objects.get()
+    assert user.username == u'%s@ldap' % USERNAME
+    assert user.first_name == u'Étienne'
+    assert user.last_name == 'Michu'
+    assert user.is_active is True
+    assert user.is_superuser is False
+    assert user.is_staff is False
+    assert user.groups.count() == 0
+    assert user.ou == get_default_ou()
+    assert not user.check_password(PASS)
+    assert 'password' not in client.session['ldap-data']
+
+@pytest.mark.django_db
 def test_double_login(slapd, simple_user, settings, app):
     settings.LDAP_AUTH_SETTINGS = [{
         'url': [slapd.ldap_url],

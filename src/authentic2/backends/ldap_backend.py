@@ -76,8 +76,24 @@ class LDAPUser(get_user_model()):
         if self.SESSION_LDAP_DATA_KEY in session:
             self.ldap_data = utf8_encode(session[self.SESSION_LDAP_DATA_KEY])
 
+        # retrieve encrypted bind pw if necessary
+        encrypted_bindpw = self.ldap_data.get('block', {}).get('encrypted_bindpw')
+        if encrypted_bindpw:
+            decrypted = crypto.aes_base64_decrypt(settings.SECRET_KEY, encrypted_bindpw,
+                                                  raise_on_error=False)
+            if decrypted:
+                self.ldap_data['block']['bindpw'] = decrypted
+                del self.ldap_data['block']['encrypted_bindpw']
+
     def init_to_session(self, session):
-        session[self.SESSION_LDAP_DATA_KEY] = self.ldap_data
+        # encrypt bind password in sessions
+        data = dict(self.ldap_data)
+        data['block'] = dict(data['block'])
+        if data['block'].get('bindpw'):
+            data['block']['encrypted_bindpw'] = crypto.aes_base64_encrypt(settings.SECRET_KEY,
+                                                                          data['block']['bindpw'])
+            del data['block']['bindpw']
+        session[self.SESSION_LDAP_DATA_KEY] = data
 
     def update_request(self):
         request = StoreRequestMiddleware.get_request()
