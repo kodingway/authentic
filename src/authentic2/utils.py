@@ -27,7 +27,7 @@ from django.shortcuts import resolve_url
 from django.template.loader import render_to_string, TemplateDoesNotExist
 from django.core.mail import send_mail
 from django.core import signing
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, NoReverseMatch
 from django.utils.formats import localize
 from django.contrib import messages
 from django.utils.functional import empty
@@ -244,8 +244,17 @@ def field_names(list_of_field_name_and_titles):
             yield t[0]
 
 
+def is_valid_url(url):
+    try:
+        parsed = urlparse.urlparse(url)
+        if parsed.scheme in ('http', 'https', ''):
+            return True
+    except:
+        return False
+
+
 def make_url(to, args=(), kwargs={}, keep_params=False, params=None, append=None, request=None,
-             include=None, exclude=None, fragment=None, absolute=False):
+             include=None, exclude=None, fragment=None, absolute=False, resolve=True):
     '''Build an URL from a relative or absolute path, a model instance, a view
        name or view function.
 
@@ -253,7 +262,10 @@ def make_url(to, args=(), kwargs={}, keep_params=False, params=None, append=None
        of them or include only a subset of them.
        You can set parameters or append to existing one.
     '''
-    url = resolve_url(to, *args, **kwargs)
+    if resolve:
+        url = resolve_url(to, *args, **kwargs)
+    else:
+        url = to
     scheme, netloc, path, query_string, o_fragment = urlparse.urlsplit(url)
     url = urlparse.urlunsplit((scheme, netloc, path, '', ''))
     fragment = fragment or o_fragment
@@ -603,10 +615,12 @@ else:
 
 
 def get_registration_url(request):
-    next_url = request.GET.get(REDIRECT_FIELD_NAME) \
-        or make_url(settings.LOGIN_REDIRECT_URL)
+    if REDIRECT_FIELD_NAME in request.GET and is_valid_url(request.GET[REDIRECT_FIELD_NAME]):
+        next_url = request.GET.get(REDIRECT_FIELD_NAME)
+    else:
+        next_url = make_url(settings.LOGIN_REDIRECT_URL)
     next_url = make_url(next_url, request=request, keep_params=True,
-                        include=(constants.NONCE_FIELD_NAME,))
+                        include=(constants.NONCE_FIELD_NAME,), resolve=False)
     return make_url('registration_register',
                     params={REDIRECT_FIELD_NAME: next_url})
 

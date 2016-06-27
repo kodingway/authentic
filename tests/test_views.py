@@ -26,3 +26,7 @@ def test_account_delete(app, simple_user):
     assert response.location == 'http://localhost:80/'
     response = response.follow().follow()
     assert response.request.url.startswith('http://localhost/login/')
+
+
+def test_login_invalid_next(app):
+    app.get(reverse('auth_login') + '?next=plop')
