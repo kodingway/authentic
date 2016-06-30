@@ -76,14 +76,14 @@ class LDAPUser(get_user_model()):
         if self.SESSION_LDAP_DATA_KEY in session:
             self.ldap_data = utf8_encode(session[self.SESSION_LDAP_DATA_KEY])
 
-        # retrieve encrypted bind pw if necessary
-        encrypted_bindpw = self.ldap_data.get('block', {}).get('encrypted_bindpw')
-        if encrypted_bindpw:
-            decrypted = crypto.aes_base64_decrypt(settings.SECRET_KEY, encrypted_bindpw,
-                                                  raise_on_error=False)
-            if decrypted:
-                self.ldap_data['block']['bindpw'] = decrypted
-                del self.ldap_data['block']['encrypted_bindpw']
+            # retrieve encrypted bind pw if necessary
+            encrypted_bindpw = self.ldap_data.get('block', {}).get('encrypted_bindpw')
+            if encrypted_bindpw:
+                decrypted = crypto.aes_base64_decrypt(settings.SECRET_KEY, encrypted_bindpw,
+                                                      raise_on_error=False)
+                if decrypted:
+                    self.ldap_data['block']['bindpw'] = decrypted
+                    del self.ldap_data['block']['encrypted_bindpw']
 
     def init_to_session(self, session):
         # encrypt bind password in sessions
@@ -419,7 +419,7 @@ class LDAPBackend(object):
                 del conn
         return None
 
-    def get_user(self, user_id):
+    def get_user(self, user_id, session=None):
         try:
             try:
                 user_id = int(user_id)
@@ -427,7 +427,10 @@ class LDAPBackend(object):
                 return None
             user = LDAPUser.objects.get(pk=user_id)
             # retrieve data from current request
-            user.init_from_request()
+            if session:
+                user.init_from_session(session)
+            else:
+                user.init_from_request()
             return user
         except LDAPUser.DoesNotExist:
             return None
