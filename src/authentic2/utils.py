@@ -1,3 +1,4 @@
+import inspect
 import random
 import time
 import logging
@@ -479,7 +480,10 @@ def get_user_from_session_key(session_key):
         backend_path = session[BACKEND_SESSION_KEY]
         assert backend_path in settings.AUTHENTICATION_BACKENDS
         backend = load_backend(backend_path)
-        user = backend.get_user(user_id, session) or AnonymousUser()
+        if 'session' in inspect.getargspec(backend.get_user)[0]:
+            user = backend.get_user(user_id, session) or AnonymousUser()
+        else:
+            user = backend.get_user(user_id) or AnonymousUser()
     except (KeyError, AssertionError):
         user = AnonymousUser()
     return user
