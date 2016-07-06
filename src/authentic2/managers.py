@@ -14,19 +14,20 @@ from model_utils import managers
 
 logger = logging.getLogger(__name__)
 
+
 class GetBySlugQuerySet(QuerySet):
     def get_by_natural_key(self, slug):
         return self.get(slug=slug)
 
-GetBySlugManager = managers.PassThroughManager \
-        .for_queryset_class(GetBySlugQuerySet)
+GetBySlugManager = managers.PassThroughManager.for_queryset_class(GetBySlugQuerySet)
+
 
 class GetByNameQuerySet(QuerySet):
     def get_by_natural_key(self, name):
         return self.get(name=name)
 
-GetByNameManager = managers.PassThroughManager.for_queryset_class(
-        GetByNameQuerySet)
+GetByNameManager = managers.PassThroughManager.for_queryset_class(GetByNameQuerySet)
+
 
 class DeletedUserManager(models.Manager):
     def delete_user(self, user):
@@ -43,15 +44,17 @@ class DeletedUserManager(models.Manager):
             user.delete()
             logger.info(u'deleted account %s', user)
 
+
 class AuthenticationEventManager(models.Manager):
     def cleanup(self):
-        expire = getattr(settings, 'AUTHENTICATION_EVENT_EXPIRATION',
-                3600*24*7)
-        self.filter(when__lt=now()-timedelta(seconds=expire)).delete()
+        # expire after one week
+        expire = getattr(settings, 'AUTHENTICATION_EVENT_EXPIRATION', 3600 * 24 * 7)
+        self.filter(when__lt=now() - timedelta(seconds=expire)).delete()
+
 
 class ExpireManager(models.Manager):
     def cleanup(self):
-        self.filter(created__lt=now()-timedelta(days=7)).delete()
+        self.filter(created__lt=now() - timedelta(days=7)).delete()
 
 LOCAL_PROVIDER_URN = 'urn:oid:1.3.6.1.4.1.36560.1.1:local-provider'
 LOCAL_USER_URN = 'urn:oid:1.3.6.1.4.1.36560.1.1:local-user'
@@ -66,13 +69,11 @@ class FederatedIdQuerySet(QuerySet):
         return self.filter(service=FederatedIdManager.local_service_id(service))
 
     def for_local_user_and_service(self, user, service):
-        return self.filter(provider=LOCAL_PROVIDER_URN) \
-                .about_local_user(user) \
-                .for_service_model(service)
+        return (self.filter(provider=LOCAL_PROVIDER_URN).about_local_user(user)
+                .for_service_model(service))
 
-class FederatedIdManager(managers.PassThroughManager \
-        .for_queryset_class(FederatedIdQuerySet)):
 
+class FederatedIdManager(managers.PassThroughManager.for_queryset_class(FederatedIdQuerySet)):
     @classmethod
     def local_user_id(cls, user):
         return '%s %s' % (LOCAL_USER_URN, urlquote(user.username))
@@ -84,20 +85,21 @@ class FederatedIdManager(managers.PassThroughManager \
 
     def get_or_create_for_local_user_and_service(self, user, service, id_format, id_value):
         return self.get_or_create(
-                provider=LOCAL_PROVIDER_URN,
-                about=self.local_user_id(user),
-                service=self.local_service_id(service),
-                defaults={
-                    'id_format': id_format,
-                    'id_value': id_value})
+            provider=LOCAL_PROVIDER_URN,
+            about=self.local_user_id(user),
+            service=self.local_service_id(service),
+            defaults={
+                'id_format': id_format,
+                'id_value': id_value})
+
 
 class GenericQuerySet(QuerySet):
     def for_generic_object(self, model):
         content_type = ContentType.objects.get_for_model(model)
         return self.filter(content_type=content_type, object_id=model.pk)
 
-GenericManager = managers.PassThroughManager \
-        .for_queryset_class(GenericQuerySet)
+GenericManager = managers.PassThroughManager.for_queryset_class(GenericQuerySet)
+
 
 class AttributeValueQuerySet(QuerySet):
     def with_owner(self, owner):
@@ -144,7 +146,4 @@ class BaseServiceManager(models.Manager):
 
 
 ServiceManager = BaseServiceManager.from_queryset(ServiceQuerySet)
-
-
-AttributeValueManager = managers.PassThroughManager \
-        .for_queryset_class(AttributeValueQuerySet)
+AttributeValueManager = managers.PassThroughManager.for_queryset_class(AttributeValueQuerySet)
