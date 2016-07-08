@@ -1,7 +1,8 @@
 {% extends "authentic2/manager/sidebar.html" %}
 {% load i18n staticfiles django_tables2 %}
 
-{% block title %}{{ block.super }} - {% trans "Services" %}{% endblock %}
+{% block page-title %}{{ block.super }} - {% trans "Services" %}{% endblock %}
+{% block page_title %}{% trans "Services" %}{% endblock %}
 
 {% block breadcrumb %}
   {{ block.super }}
