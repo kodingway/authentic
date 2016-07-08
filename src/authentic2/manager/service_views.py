@@ -6,7 +6,7 @@ from authentic2.models import Service
 from . import tables, views, forms, role_views
 
 
-class ServicesView(views.BaseTableView):
+class ServicesView(views.HideOUColumnMixin, views.BaseTableView):
     model = Service
     template_name = 'authentic2/manager/services.html'
     table_class = tables.ServiceTable
