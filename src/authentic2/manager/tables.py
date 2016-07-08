@@ -137,6 +137,8 @@ class ServiceTable(tables.Table):
         models = Service
         attrs = {'class': 'main', 'id': 'service-table'}
         empty_text = _('None')
+        order_by = ('name', 'slug')
+
 
 class ServiceRolesTable(tables.Table):
     name = tables.Column(accessor='name', verbose_name=_('name'))
