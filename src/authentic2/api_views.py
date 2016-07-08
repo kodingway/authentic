@@ -400,3 +400,19 @@ class RolesAPI(APIView):
                         status=status.HTTP_200_OK)
 
 roles = RolesAPI.as_view()
+
+
+class BaseOrganizationalUnitSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_ou_model()
+
+
+class OrganizationalUnitAPI(ModelViewSet):
+    serializer_class = BaseOrganizationalUnitSerializer
+    lookup_field = 'uuid'
+
+    def get_queryset(self):
+        return get_ou_model().objects.all()
+
+router = SimpleRouter()
+router.register(r'ous', OrganizationalUnitAPI, base_name='a2-api-ous')
