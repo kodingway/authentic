@@ -65,8 +65,8 @@ def get_http_binding(request):
         return 'GET'
     elif request.method == 'POST':
         # disambiguate SOAP and form POST
-        if request.META['CONTENT_TYPE'] in \
-                ('application/x-www-form-urlencoded', 'multipart/form-data'):
+        if request.META.get('CONTENT_TYPE') in ['application/x-www-form-urlencoded',
+                                                'multipart/form-data']:
             return 'POST'
         else:
             return 'SOAP'
