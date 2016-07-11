@@ -54,7 +54,7 @@ class ModelBackend(ModelBackend):
         users = UserModel.objects.filter(query)
         # order by username to make username without realm come before usernames with realms
         # i.e. "toto" should come before "toto@example.com"
-        users = users.order_by(UserModel.USERNAME_FIELD)
+        users = users.order_by('-is_active', UserModel.USERNAME_FIELD)
         for user in users:
             if user.check_password(password):
                 user_login_success(user.get_username())
