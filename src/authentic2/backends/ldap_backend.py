@@ -4,6 +4,7 @@ try:
     import ldap.sasl
     from ldap.filter import filter_format
     from ldap.dn import escape_dn_chars
+    from ldap.ldapobject import ReconnectLDAPObject
 except ImportError:
     ldap = None
 import logging
@@ -862,7 +863,7 @@ class LDAPBackend(object):
         for url in block['url']:
             for key, value in block['global_ldap_options'].iteritems():
                 ldap.set_option(key, value)
-            conn = ldap.initialize(url)
+            conn = ReconnectLDAPObject(url)
             if block['timeout'] > 0:
                 conn.set_option(ldap.OPT_NETWORK_TIMEOUT, block['timeout'])
             conn.set_option(ldap.OPT_X_TLS_REQUIRE_CERT,
