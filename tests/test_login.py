@@ -15,13 +15,13 @@ def test_login_inactive_user(db, app):
     user2.save()
 
     login(app, user1)
-    assert app.session['_auth_user_id'] in [user1.id, user2.id]
+    assert int(app.session['_auth_user_id']) in [user1.id, user2.id]
     app.get('/logout/').form.submit()
     assert '_auth_user_id' not in app.session
     user1.is_active = False
     user1.save()
     login(app, user1)
-    assert app.session['_auth_user_id'] == user2.id
+    assert int(app.session['_auth_user_id']) == user2.id
     app.get('/logout/').form.submit()
     assert '_auth_user_id' not in app.session
     user2.is_active = False
