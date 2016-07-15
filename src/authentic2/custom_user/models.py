@@ -4,7 +4,7 @@ from django.db.models.fields import NOT_PROVIDED
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.utils.translation import ugettext_lazy as _
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, MultipleObjectsReturned
 
 from django_rbac.backends import DjangoRBACBackend
 from django_rbac.models import PermissionMixin
@@ -141,20 +141,26 @@ class User(AbstractBaseUser, PermissionMixin):
             qs = qs.filter(ou__isnull=True)
         if self.username and app_settings.A2_USERNAME_IS_UNIQUE:
             try:
-                qs.get(username=self.username)
+                try:
+                    qs.get(username=self.username)
+                except MultipleObjectsReturned:
+                    pass
             except model.DoesNotExist:
                 pass
             else:
                 errors['username'] = _('This username is already in '
-                                        'use. Please supply a different username.')
+                                       'use. Please supply a different username.')
         if self.email and app_settings.A2_EMAIL_IS_UNIQUE:
             try:
-                qs.get(email__iexact=self.email)
+                try:
+                    qs.get(email__iexact=self.email)
+                except MultipleObjectsReturned:
+                    pass
             except model.DoesNotExist:
                 pass
             else:
                 errors['email'] = _('This email address is already in '
-                                        'use. Please supply a different email address.')
+                                    'use. Please supply a different email address.')
         if errors:
             raise ValidationError(errors)
 
