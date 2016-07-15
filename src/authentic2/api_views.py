@@ -325,7 +325,8 @@ class BaseUserSerializer(serializers.ModelSerializer):
         attributes = validated_data.pop('attributes', {})
         # Double check: to move an user from one ou into another you must be administrator of both
         self.check_perm('custom_user.change_user', instance.ou)
-        self.check_perm('custom_user.change_user', validated_data.get('ou'))
+        if 'ou' in validated_data:
+            self.check_perm('custom_user.change_user', validated_data.get('ou'))
         super(BaseUserSerializer, self).update(instance, validated_data)
         for key, value in attributes.iteritems():
             setattr(instance.attributes, key, value)
