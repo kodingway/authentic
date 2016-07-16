@@ -79,8 +79,13 @@ class RegistrationView(cbv.ValidateCSRFMixin, FormView):
 
 class RegistrationCompletionView(CreateView):
     model = get_user_model()
-    template_name = 'registration/registration_completion_form.html'
     success_url = 'auth_homepage'
+
+    def get_template_names(self):
+        if self.users and not 'create' in self.request.GET:
+            return ['registration/registration_completion_choose.html']
+        else:
+            return ['registration/registration_completion_form.html']
 
     def get_success_url(self):
         if self.token and self.token.get(REDIRECT_FIELD_NAME):
