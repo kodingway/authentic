@@ -238,6 +238,14 @@ class RegistrationCompletionView(CreateView):
         return super(RegistrationCompletionView, self).post(request, *args, **kwargs)
 
     def form_valid(self, form):
+
+        # remove verified fields from form, this allows an authentication
+        # method to provide verified data fields and to present it to the user,
+        # while preventing the user to modify them.
+        for av in models.AttributeValue.objects.with_owner(form.instance):
+            if av.verified and av.attribute.name in form.fields:
+                del form.fields[av.attribute.name]
+
         if 'email' in self.request.POST and (not 'email' in self.token or
                                              self.request.POST['email'] !=
                                              self.token['email']) and not self.token.get('skip_email_check'):
