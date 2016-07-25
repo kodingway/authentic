@@ -37,6 +37,7 @@ mail: etienne.michu@example.net
 dn: cn=group1,o=orga
 objectClass: groupOfNames
 member: {dn}
+
 '''.format(dn=DN, uid=UID, password=PASS))
     for i in range(100):
         slapd.add_ldif('''dn: uid=michu{i},o=orga
@@ -46,7 +47,9 @@ uid: michu{i}
 cn: Étienne Michu
 sn: Michu
 gn: Étienne
-mail: etienne.michu@example.net'''.format(i=i, password=PASS))
+mail: etienne.michu@example.net
+
+'''.format(i=i, password=PASS))
     group_ldif = '''dn: cn=group2,o=orga
 gidNumber: 10
 objectClass: posixGroup
@@ -54,6 +57,7 @@ memberUid: {uid}
 '''.format(uid=UID)
     for i in range(100):
         group_ldif += 'memberUid: michu{i}\n'.format(i=i)
+    group_ldif += '\n\n'
     slapd.add_ldif(group_ldif)
 
     def finalize():
