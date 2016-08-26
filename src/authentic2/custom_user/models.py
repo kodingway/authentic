@@ -167,6 +167,9 @@ class User(AbstractBaseUser, PermissionMixin):
     def natural_key(self):
         return (self.uuid,)
 
+    def has_verified_attributes(self):
+        return AttributeValue.objects.with_owner(self).filter(verified=True).exists()
+
     def to_json(self):
         d = {}
         for av in AttributeValue.objects.with_owner(self):
