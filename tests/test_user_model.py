@@ -50,3 +50,16 @@ def test_user_has_verified_attributes(db, settings):
     attribute_value.verified = True
     attribute_value.save()
     assert user.has_verified_attributes() is True
+
+
+def test_sync_first_name(db, settings):
+    attribute = Attribute.objects.create(name='first_name', label='First Name', kind='string')
+
+    user = User(username='john.doe', email='john.doe2@example.net')
+    user.save()
+    user.first_name = 'John'
+    user.save()
+    assert Attribute.objects.get(name='first_name').get_value(user) == 'John'
+
+    Attribute.objects.get(name='first_name').set_value(user, 'John Paul')
+    assert User.objects.get(id=user.id).first_name == 'John Paul'

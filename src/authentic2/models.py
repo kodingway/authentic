@@ -261,6 +261,15 @@ class AttributeValue(models.Model):
         return (self.content_type.natural_key(), self.owner.natural_key(),
                 self.attribute.natural_key())
 
+    def save(self, *args, **kwargs):
+        changed = False
+        if self.attribute.name in ('first_name', 'last_name'):
+            setattr(self.owner, self.attribute.name, self.to_python())
+            changed = True
+        if changed:
+            self.owner.save(nosync=True)
+        return super(AttributeValue, self).save(*args, **kwargs)
+
     class Meta:
         verbose_name = _('attribute value')
         verbose_name_plural = _('attribute values')

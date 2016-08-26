@@ -189,3 +189,17 @@ class User(AbstractBaseUser, PermissionMixin):
             'services': [service.to_json(roles=self.roles_and_parents()) for service in Service.objects.all()],
         })
         return d
+
+    def save(self, *args, **kwargs):
+        sync = not(kwargs.pop('nosync', False))
+        rc = super(User, self).save(*args, **kwargs)
+        if sync:
+            for attr_name in ('first_name', 'last_name'):
+                try:
+                    attribute = Attribute.objects.get(name=attr_name)
+                except Attribute.DoesNotExist:
+                    pass
+                else:
+                    if attribute.get_value(self) != getattr(self, attr_name, None):
+                        attribute.set_value(self, getattr(self, attr_name, None))
+        return rc
