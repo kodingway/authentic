@@ -373,13 +373,14 @@ class ProfileView(cbv.TemplateNamesMixin, TemplateView):
                 if len(field_name) > 1:
                     title = field_name[1]
                 field_name = field_name[0]
+
             try:
-                field = request.user._meta.get_field(field_name)
-            except FieldDoesNotExist:
-                try:
-                    attribute = models.Attribute.objects.get(
-                            name=field_name, user_visible=True)
-                except models.Attribute.DoesNotExist:
+                attribute = models.Attribute.objects.get(name=field_name)
+            except models.Attribute.DoesNotExist:
+                attribute = None
+
+            if attribute:
+                if not attribute.user_visible:
                     continue
                 qs = models.AttributeValue.objects.with_owner(request.user)
                 qs = qs.filter(attribute=attribute)
@@ -389,9 +390,15 @@ class ProfileView(cbv.TemplateNamesMixin, TemplateView):
                 if not title:
                     title = unicode(attribute)
             else:
+                # fallback to model attributes
+                try:
+                    field = request.user._meta.get_field(field_name)
+                except FieldDoesNotExist:
+                    continue
                 if not title:
                     title = field.verbose_name
                 value = getattr(self.request.user, field_name, None)
+
             if value:
                 if callable(value):
                     value = value()
