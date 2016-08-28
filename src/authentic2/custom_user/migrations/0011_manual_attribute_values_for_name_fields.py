@@ -56,6 +56,7 @@ def create_attribute_value_for_names(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
+        ('contenttypes', '__first__'),
         ('custom_user', '0010_auto_20160307_1418'),
     ]
 
