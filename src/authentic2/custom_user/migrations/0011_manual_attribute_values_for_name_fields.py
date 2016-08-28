@@ -2,11 +2,12 @@
 from __future__ import unicode_literals
 
 from django.conf import settings
-from django.db import migrations, models
+from django.db import migrations
 from django.utils import translation
 from django.utils.translation import ugettext_lazy as _
 
 from authentic2.attribute_kinds import get_kind
+
 
 def create_attribute_value_for_names(apps, schema_editor):
     translation.activate(settings.LANGUAGE_CODE)
@@ -20,24 +21,24 @@ def create_attribute_value_for_names(apps, schema_editor):
 
     attrs = {}
     attrs['first_name'], created = Attribute.objects.get_or_create(
-            name='first_name',
-            defaults={'kind': 'string',
-                      'label': _('First name'),
-                      'required': True,
-                      'asked_on_registration': True,
-                      'user_editable': True,
-                      'user_visible': True})
+        name='first_name',
+        defaults={'kind': 'string',
+                  'label': _('First name'),
+                  'required': True,
+                  'asked_on_registration': True,
+                  'user_editable': True,
+                  'user_visible': True})
     if created:
         attrs['first_name'].save()
 
     attrs['last_name'], created = Attribute.objects.get_or_create(
-            name='last_name',
-            defaults={'kind': 'string',
-                      'label': _('Last name'),
-                      'required': True,
-                      'asked_on_registration': True,
-                      'user_editable': True,
-                      'user_visible': True})
+        name='last_name',
+        defaults={'kind': 'string',
+                  'label': _('Last name'),
+                  'required': True,
+                  'asked_on_registration': True,
+                  'user_editable': True,
+                  'user_visible': True})
 
     if created:
         attrs['last_name'].save()
@@ -46,12 +47,13 @@ def create_attribute_value_for_names(apps, schema_editor):
     for user in User.objects.all():
         for attr_name in ('first_name', 'last_name'):
             av, created = AttributeValue.objects.get_or_create(
-                    content_type=content_type_id,
-                    object_id=user.id,
-                    attribute=attrs[attr_name],
-                    content=serialize(getattr(user, attr_name, None)))
+                content_type=content_type_id,
+                object_id=user.id,
+                attribute=attrs[attr_name],
+                content=serialize(getattr(user, attr_name, None)))
             if created:
                 av.save()
+
 
 class Migration(migrations.Migration):
 
