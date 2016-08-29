@@ -69,8 +69,13 @@ class BaseUserForm(forms.ModelForm):
         super(BaseUserForm, self).clean()
 
     def save_attributes(self):
+        verified_attributes = {}
+        for av in models.AttributeValue.objects.with_owner(
+                self.instance).filter(verified=True):
+            verified_attributes[av.attribute.name] = True
+
         for attribute in self.attributes:
-            if attribute.name in self.fields:
+            if attribute.name in self.fields and not attribute.name in verified_attributes:
                 attribute.set_value(self.instance,
                         self.cleaned_data[attribute.name])
 

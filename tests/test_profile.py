@@ -5,6 +5,10 @@ import pytest
 from django.core import mail
 from django.core.urlresolvers import reverse
 
+from authentic2.models import Attribute, AttributeValue
+
+import utils
+
 pytestmark = pytest.mark.django_db
 
 
@@ -45,3 +49,25 @@ def test_password_reset_view(app, simple_user):
     resp.form.set('new_password2', '1234aA')
     resp = resp.form.submit().follow()
     assert str(app.session['_auth_user_id']) == str(simple_user.pk)
+
+def test_account_edit_view(app, simple_user):
+    utils.login(app, simple_user)
+    url = reverse('profile_edit')
+    resp = app.get(url, status=200)
+
+    attribute = Attribute.objects.create(name='phone', label='phone',
+            kind='string', user_visible=True, user_editable=True)
+    resp = app.get(url, status=200)
+    resp.form.set('edit-profile-phone', '0123456789')
+    resp = resp.form.submit().follow()
+    assert attribute.get_value(simple_user) == '0123456789'
+
+    attribute.set_value(simple_user, '0123456789', verified=True)
+    resp = app.get(url, status=200)
+    resp.form.set('edit-profile-phone', '1234567890')
+    assert 'readonly' in resp.form['edit-profile-phone'].attrs
+    resp = resp.form.submit().follow()
+    assert attribute.get_value(simple_user) == '0123456789'
+
+    resp = app.get(url, status=200)
+    assert 'readonly' in resp.form['edit-profile-phone'].attrs
