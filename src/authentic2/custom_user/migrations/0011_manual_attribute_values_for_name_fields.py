@@ -50,6 +50,8 @@ def create_attribute_value_for_names(apps, schema_editor):
                 content_type=content_type_id,
                 object_id=user.id,
                 attribute=attrs[attr_name],
+                multiple=False,
+                verified=False,
                 content=serialize(getattr(user, attr_name, None)))
             if created:
                 av.save()
@@ -60,6 +62,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ('contenttypes', '__first__'),
         ('custom_user', '0010_auto_20160307_1418'),
+        ('authentic2', '0015_auto_20160621_1711'),
     ]
 
     operations = [
