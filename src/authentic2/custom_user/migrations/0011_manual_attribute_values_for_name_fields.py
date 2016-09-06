@@ -17,7 +17,13 @@ def create_attribute_value_for_names(apps, schema_editor):
     User = apps.get_model('custom_user', 'User')
     ContentType = apps.get_model('contenttypes', 'ContentType')
 
-    content_type_id = ContentType.objects.get(model='user', app_label='custom_user')
+    # django.contrib.contenttypes.management.update_contenttypes cannot be used
+    # as we don't have a real app_config object.  Therefore we insert an entry
+    # in content type table if it didn't exist.
+    content_type, created = ContentType.objects.get_or_create(
+            model='user', app_label='custom_user')
+    if created:
+        content_type.save()
 
     attrs = {}
     attrs['first_name'], created = Attribute.objects.get_or_create(
@@ -47,7 +53,7 @@ def create_attribute_value_for_names(apps, schema_editor):
     for user in User.objects.all():
         for attr_name in ('first_name', 'last_name'):
             av, created = AttributeValue.objects.get_or_create(
-                content_type=content_type_id,
+                content_type=content_type,
                 object_id=user.id,
                 attribute=attrs[attr_name],
                 multiple=False,
