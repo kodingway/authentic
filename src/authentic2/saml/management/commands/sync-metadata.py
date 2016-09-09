@@ -164,14 +164,15 @@ def load_one_entity(tree, options, sp_policy=None, afp=None):
         return
     if sp:
         # build an unique slug
-        baseslug = slug = slugify(name)
+        baseslug = slug = slugify(name)[:120]
         n = 1
         while LibertyProvider.objects.filter(slug=slug).exclude(entity_id=entity_id):
             n += 1
             slug = '%s-%d' % (baseslug, n)
         # get or create the provider
         provider, created = LibertyProvider.objects.get_or_create(
-            entity_id=entity_id, protocol_conformance=3, defaults={'name': name, 'slug': slug})
+            entity_id=entity_id, protocol_conformance=3,
+            defaults={'name': name[:128], 'slug': slug})
         if verbosity > 1:
             if created:
                 what = 'Creating'
@@ -179,7 +180,7 @@ def load_one_entity(tree, options, sp_policy=None, afp=None):
                 what = 'Updating'
             print '%(what)s %(name)s, %(id)s' % {
                 'what': what, 'name': name.encode('utf8'), 'id': entity_id}
-        provider.name = name
+        provider.name = name[:128]
         provider.metadata = etree.tostring(tree, encoding='utf-8').decode('utf-8').strip()
         provider.protocol_conformance = 3
         provider.federation_source = options['source']
