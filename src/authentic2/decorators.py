@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.debug import technical_404_response
 from django.http import Http404, HttpResponseForbidden, HttpResponse, HttpResponseBadRequest
 from django.core.cache import cache as django_cache
+from django.core.exceptions import ValidationError
 
 from . import utils, app_settings, middleware
 from .utils import to_list, to_iter
