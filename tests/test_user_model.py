@@ -9,33 +9,39 @@ from authentic2.models import Attribute, AttributeValue
 def test_user_clean_username(db, settings):
     settings.A2_USERNAME_IS_UNIQUE = True
     u1 = User.objects.create(username='john.doe', email='john.doe@example.net')
+    u1.set_password('blank')
     # DoesNotExist
-    u1.clean()
+    u1.full_clean()
     u2 = User(username='john.doe', email='john.doe2@example.net')
+    u2.set_password('blank')
     # found
     with pytest.raises(ValidationError):
-        u2.clean()
+        u2.full_clean()
     u2.save()
     u3 = User(username='john.doe', email='john.doe3@example.net')
+    u3.set_password('blank')
     # MultipleObjectsReturned
     with pytest.raises(ValidationError):
-        u3.clean()
+        u3.full_clean()
 
 
 def test_user_clean_email(db, settings):
     settings.A2_EMAIL_IS_UNIQUE = True
     u1 = User.objects.create(username='john.doe', email='john.doe@example.net')
+    u1.set_password('blank')
     # DoesNotExist
-    u1.clean()
+    u1.full_clean()
     u2 = User(username='john.doe2', email='john.doe@example.net')
+    u2.set_password('blank')
     # found
     with pytest.raises(ValidationError):
-        u2.clean()
+        u2.full_clean()
     u2.save()
     u3 = User(username='john.doe3', email='john.doe@example.net')
+    u3.set_password('blank')
     # MultipleObjectsReturned
     with pytest.raises(ValidationError):
-        u3.clean()
+        u3.full_clean()
 
 
 def test_user_has_verified_attributes(db, settings):

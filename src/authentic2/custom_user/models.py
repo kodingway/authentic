@@ -126,10 +126,13 @@ class User(AbstractBaseUser, PermissionMixin):
     def __repr__(self):
         return '<User: %r>' % unicode(self)
 
-    def clean(self):
+    def clean_fields(self, exclude=None):
         errors = {}
+
         with errorcollector(errors):
-            super(User, self).clean()
+            super(User, self).clean_fields(exclude=exclude)
+
+        exclude = exclude or []
 
         model = self.__class__
         qs = model.objects
@@ -139,7 +142,8 @@ class User(AbstractBaseUser, PermissionMixin):
             qs = qs.filter(ou_id=self.ou_id)
         else:
             qs = qs.filter(ou__isnull=True)
-        if self.username and app_settings.A2_USERNAME_IS_UNIQUE:
+
+        if 'username' not in exclude and self.username and app_settings.A2_USERNAME_IS_UNIQUE:
             try:
                 try:
                     qs.get(username=self.username)
@@ -148,9 +152,9 @@ class User(AbstractBaseUser, PermissionMixin):
             except model.DoesNotExist:
                 pass
             else:
-                errors['username'] = _('This username is already in '
-                                       'use. Please supply a different username.')
-        if self.email and app_settings.A2_EMAIL_IS_UNIQUE:
+                errors.setdefault('username', []).append(
+                    _('This username is already in use. Please supply a different username.'))
+        if 'email' not in exclude and self.email and app_settings.A2_EMAIL_IS_UNIQUE:
             try:
                 try:
                     qs.get(email__iexact=self.email)
@@ -159,8 +163,9 @@ class User(AbstractBaseUser, PermissionMixin):
             except model.DoesNotExist:
                 pass
             else:
-                errors['email'] = _('This email address is already in '
-                                    'use. Please supply a different email address.')
+                errors.setdefault('email', []).append(
+                    _('This email address is already in use. Please supply a different email '
+                      'address.'))
         if errors:
             raise ValidationError(errors)
 
