@@ -10,7 +10,7 @@
   <script src="{% xstatic 'jquery' 'jquery.min.js' %}"></script>
   <script>
     window.iframe_count = 1;
-    $(function () {window.iframe_count -= 1});
+    $(window).on('load', function () {window.iframe_count -= 1});
   </script>
 {% endblock %}
 
