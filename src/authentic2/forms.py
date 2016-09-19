@@ -130,4 +130,5 @@ def modelform_factory(model, **kwargs):
         d['__init__'] = __init__
     modelform = type(model.__name__ + 'ModelForm', (form,), d)
     kwargs['form'] = modelform
+    modelform.required_css_class = 'form-field-required'
     return django_modelform_factory(model, **kwargs)
