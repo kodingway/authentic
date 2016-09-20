@@ -19,14 +19,14 @@ class GetBySlugQuerySet(QuerySet):
     def get_by_natural_key(self, slug):
         return self.get(slug=slug)
 
-GetBySlugManager = managers.PassThroughManager.for_queryset_class(GetBySlugQuerySet)
+GetBySlugManager = GetBySlugQuerySet.as_manager
 
 
 class GetByNameQuerySet(QuerySet):
     def get_by_natural_key(self, name):
         return self.get(name=name)
 
-GetByNameManager = managers.PassThroughManager.for_queryset_class(GetByNameQuerySet)
+GetByNameManager = GetByNameQuerySet.as_manager
 
 
 class DeletedUserManager(models.Manager):
@@ -73,7 +73,7 @@ class FederatedIdQuerySet(QuerySet):
                 .for_service_model(service))
 
 
-class FederatedIdManager(managers.PassThroughManager.for_queryset_class(FederatedIdQuerySet)):
+class FederatedIdManager(models.Manager.from_queryset(FederatedIdQuerySet)):
     @classmethod
     def local_user_id(cls, user):
         return '%s %s' % (LOCAL_USER_URN, urlquote(user.username))
@@ -98,7 +98,7 @@ class GenericQuerySet(QuerySet):
         content_type = ContentType.objects.get_for_model(model)
         return self.filter(content_type=content_type, object_id=model.pk)
 
-GenericManager = managers.PassThroughManager.for_queryset_class(GenericQuerySet)
+GenericManager = models.Manager.from_queryset(GenericQuerySet)
 
 
 class AttributeValueQuerySet(QuerySet):
@@ -145,5 +145,9 @@ class BaseServiceManager(models.Manager):
         return self.get(**kwargs)
 
 
+class AttributeManager(managers.QueryManager.from_queryset(GetByNameQuerySet)):
+    use_for_related_fields = False
+
+
 ServiceManager = BaseServiceManager.from_queryset(ServiceQuerySet)
-AttributeValueManager = managers.PassThroughManager.for_queryset_class(AttributeValueQuerySet)
+AttributeValueManager = models.Manager.from_queryset(AttributeValueQuerySet)

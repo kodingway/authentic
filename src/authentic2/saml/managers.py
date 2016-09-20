@@ -12,8 +12,6 @@ from importlib import import_module
 from django.contrib.contenttypes.models import ContentType
 
 
-from model_utils import managers
-
 from . import lasso_helper
 from ..managers import GetBySlugQuerySet, GenericManager
 
@@ -28,8 +26,7 @@ class SessionLinkedQuerySet(QuerySet):
             if not store.exists(key):
                 o.delete()
 
-SessionLinkedManager = managers.PassThroughManager \
-        .for_queryset_class(SessionLinkedQuerySet)
+SessionLinkedManager = models.Manager.from_queryset(SessionLinkedQuerySet)
 
 class LibertyFederationManager(models.Manager):
     def cleanup(self):
@@ -80,8 +77,7 @@ class LibertyProviderQueryset(GetBySlugQuerySet):
     def without_federation(self, user):
         return self.exclude(identity_provider__libertyfederation__user=user)
 
-LibertyProviderManager = managers.PassThroughManager \
-        .for_queryset_class(LibertyProviderQueryset)
+LibertyProviderManager = models.Manager.from_queryset(LibertyProviderQueryset)
 
 class LibertySessionQuerySet(SessionLinkedQuerySet):
     def to_session_dump(self):
@@ -93,8 +89,7 @@ class LibertySessionQuerySet(SessionLinkedQuerySet):
                 'name_id_sp_name_qualifier')
         return lasso_helper.build_session_dump(sessions)
 
-LibertySessionManager = managers.PassThroughManager \
-        .for_queryset_class(LibertySessionQuerySet)
+LibertySessionManager = models.Manager.from_queryset(LibertySessionQuerySet)
 
 class GetByLibertyProviderManager(models.Manager):
     def get_by_natural_key(self, slug):

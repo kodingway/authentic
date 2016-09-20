@@ -1,3 +1,5 @@
+from django.db import connection
+
 from authentic2.models import Attribute, AttributeValue
 
 import threading
@@ -8,8 +10,12 @@ from utils import skipif_no_partial_index
 @skipif_no_partial_index
 def test_attribute_value_uniqueness(migrations, transactional_db, simple_user, concurrency):
     from django.db.transaction import set_autocommit
+    # disabled default attributes
+    Attribute.objects.update(disabled=True)
 
     set_autocommit(True)
+    acount = Attribute.objects.count()
+
     single_at = Attribute.objects.create(
         name='single',
         label='single',
@@ -20,7 +26,7 @@ def test_attribute_value_uniqueness(migrations, transactional_db, simple_user, c
         label='multiple',
         kind='string',
         multiple=True)
-    assert Attribute.objects.count() == 2
+    assert Attribute.objects.count() == acount + 2
 
     def map_threads(f, l):
         threads = []

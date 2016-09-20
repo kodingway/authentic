@@ -1,11 +1,9 @@
-import datetime
 import urlparse
 from datetime import timedelta
 
+from django.db import models
 from django.db.models import query
 from django.utils.timezone import now
-
-from model_utils import managers
 
 
 class TicketQuerySet(query.QuerySet):
@@ -37,6 +35,6 @@ class ServiceQuerySet(query.QuerySet):
         return matches[0][1]
 
 
-ServiceManager = managers.PassThroughManager.for_queryset_class(ServiceQuerySet)
+ServiceManager = models.Manager.from_queryset(ServiceQuerySet)
 
-TicketManager = managers.PassThroughManager.for_queryset_class(TicketQuerySet)
+TicketManager = models.Manager.from_queryset(TicketQuerySet)

@@ -160,8 +160,12 @@ class Attribute(models.Model):
             blank=True, default=False)
     kind = models.CharField(max_length=16,
             verbose_name=_('kind'))
+    disabled = models.BooleanField(verbose_name=_('disabled'),
+                                   blank=True, default=False)
 
-    objects = managers.GetByNameManager()
+    objects = managers.AttributeManager(disabled=False)
+    all_objects = managers.AttributeManager()
+
     registration_attributes = QueryManager(asked_on_registration=True)
     user_attributes = QueryManager(user_editable=True)
 

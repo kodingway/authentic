@@ -15,7 +15,6 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext as _
-from django.utils.html import format_html
 
 from rest_framework import test
 from rest_framework import status
@@ -23,7 +22,6 @@ from rest_framework import status
 from django_rbac.utils import get_role_model, get_ou_model
 
 from authentic2 import hashers, utils, models, attribute_kinds
-from authentic2.custom_user.models import User
 
 from utils import Authentic2TestCase, get_response_form
 
@@ -54,22 +52,25 @@ class SerializerTests(TestCase):
         from authentic2.models import Attribute, AttributeValue
         from django.core import serializers
         User = get_user_model()
+        ucount = User.objects.count()
+        acount = Attribute.objects.count()
         u = User.objects.create(username='john.doe')
+        avcount = AttributeValue.objects.count()
         a = Attribute.objects.create(name='phone', label='phone',
                                      kind='string')
         av = AttributeValue.objects.create(owner=u, attribute=a,
                                            content='0101010101')
-        self.assertEqual(User.objects.count(), 1)
-        self.assertEqual(Attribute.objects.count(), 1)
-        self.assertEqual(AttributeValue.objects.count(), 1)
+        self.assertEqual(User.objects.count(), ucount + 1)
+        self.assertEqual(Attribute.objects.count(), acount + 1)
+        self.assertEqual(AttributeValue.objects.count(), avcount + 1)
         s = serializers.get_serializer('json')()
         s.serialize([u, a, av], use_natural_foreign_keys=True,
                     use_natural_primary_keys=True)
         result = s.getvalue()
         u.delete()
         a.delete()
-        self.assertEqual(User.objects.count(), 0)
-        self.assertEqual(Attribute.objects.count(), 0)
+        self.assertEqual(User.objects.count(), ucount)
+        self.assertEqual(Attribute.objects.count(), acount)
         self.assertEqual(AttributeValue.objects.count(), 0)
         expected = [
             {
@@ -103,6 +104,7 @@ class SerializerTests(TestCase):
                     'multiple': False,
                     'user_visible': False,
                     'required': False,
+                    'disabled': False,
                 }
             },
             {
@@ -120,8 +122,9 @@ class SerializerTests(TestCase):
         for obj in serializers.deserialize('json', result):
             obj.save()
         self.assertEqual(json.loads(result), expected)
-        self.assertEqual(User.objects.count(), 1)
-        self.assertEqual(Attribute.objects.count(), 1)
+        self.assertEqual(User.objects.count(), ucount + 1)
+        self.assertEqual(Attribute.objects.count(), acount + 1)
+        # first_name and last_name attribute value not recreated since they were not dumped
         self.assertEqual(AttributeValue.objects.count(), 1)
 
 
@@ -257,6 +260,9 @@ class RegistrationTests(TestCase):
                              ['This field is required.'])
 
     def test_registration(self):
+        # disable existing attributes
+        models.Attribute.objects.update(disabled=True)
+
         User = get_user_model()
         next_url = 'http://relying-party.org/'
         url = utils.make_url('registration_register',
@@ -298,6 +304,9 @@ class RegistrationTests(TestCase):
     @override_settings(A2_REGISTRATION_REALM='realm',
                        A2_REQUIRED_FIELDS=['username'])
     def test_registration_realm(self):
+        # disable existing attributes
+        models.Attribute.objects.update(disabled=True)
+
         User = get_user_model()
         next_url = 'http://relying-party.org/'
         url = utils.make_url('registration_register',
@@ -335,6 +344,9 @@ class RegistrationTests(TestCase):
                        A2_REGISTRATION_FIELDS=['username'],
                        A2_REQUIRED_FIELDS=['username'])
     def test_username_settings(self):
+        # disable existing attributes
+        models.Attribute.objects.update(disabled=True)
+
         response = self.client.post(reverse('registration_register'),
                                     {'email': 'testbot@entrouvert.com'})
         self.assertRedirects(response, reverse('registration_complete'))
@@ -379,6 +391,9 @@ class RegistrationTests(TestCase):
                        A2_REQUIRED_FIELDS=['username'],
                        A2_USERNAME_IS_UNIQUE=True)
     def test_username_is_unique(self):
+        # disable existing attributes
+        models.Attribute.objects.update(disabled=True)
+
         client = Client()
         response = client.post(
             reverse('registration_register'),
@@ -424,6 +439,9 @@ class RegistrationTests(TestCase):
 
     @override_settings(A2_EMAIL_IS_UNIQUE=True)
     def test_email_is_unique(self):
+        # disable existing attributes
+        models.Attribute.objects.update(disabled=True)
+
         response = self.client.post(reverse('registration_register'),
                                     {'email': 'testbot@entrouvert.com'})
         self.assertRedirects(response, reverse('registration_complete'))
@@ -465,6 +483,9 @@ class RegistrationTests(TestCase):
              'email address.'])
 
     def test_attribute_model(self):
+        # disable existing attributes
+        models.Attribute.objects.update(disabled=True)
+
         models.Attribute.objects.create(
             label=u'Prénom',
             name='prenom',
@@ -537,6 +558,8 @@ class UserProfileTests(TestCase):
         self.client = Client()
 
     def test_edit_profile_attributes(self):
+        # disable existing attributes
+        models.Attribute.objects.update(disabled=True)
 
         models.Attribute.objects.create(
             label=u'custom',
@@ -580,6 +603,8 @@ class UserProfileTests(TestCase):
         """
         tests if user non editable attributes do not appear in profile form
         """
+        # disable existing attributes
+        models.Attribute.objects.update(disabled=True)
 
         models.Attribute.objects.create(
             label=u'custom',
@@ -765,6 +790,10 @@ class APITest(TestCase):
         from django.contrib.auth import get_user_model
         from rest_framework import test
         from rest_framework import status
+
+        # disable existing attributes
+        models.Attribute.objects.update(disabled=True)
+
         User = get_user_model()
         user_count = User.objects.count()
         client = test.APIClient()
@@ -876,6 +905,9 @@ class APITest(TestCase):
         from django.contrib.auth import get_user_model
         from rest_framework import test
         from rest_framework import status
+
+        # disable existing attributes
+        models.Attribute.objects.update(disabled=True)
 
         user = self.reguser3
         cred = self.reguser3_cred
@@ -1003,6 +1035,9 @@ class APITest(TestCase):
         from django.contrib.auth import get_user_model
         from rest_framework import test
         from rest_framework import status
+
+        # disable existing attributes
+        models.Attribute.objects.update(disabled=True)
 
         user = self.reguser3
         cred = self.reguser3_cred

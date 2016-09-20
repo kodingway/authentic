@@ -191,9 +191,9 @@ def test_api_users_create(app, user):
         assert new_user.email == resp.json['email']
         assert new_user.first_name == resp.json['first_name']
         assert new_user.last_name == resp.json['last_name']
-        assert AttributeValue.objects.with_owner(new_user).count() == 1
-        assert AttributeValue.objects.with_owner(new_user)[0].attribute == at
-        assert (json.loads(AttributeValue.objects.with_owner(new_user)[0].content) ==
+        assert AttributeValue.objects.with_owner(new_user).count() == 3
+        assert AttributeValue.objects.with_owner(new_user).filter(attribute=at).exists()
+        assert (json.loads(AttributeValue.objects.with_owner(new_user).get(attribute=at).content) ==
                 payload['title'])
         resp2 = app.get('/api/users/%s/' % resp.json['uuid'])
         assert resp.json == resp2.json
@@ -201,6 +201,11 @@ def test_api_users_create(app, user):
                         'username': 'foobar'})
         resp = app.post_json('/api/users/', payload, status=status)
         assert resp.json['uuid'] == '1234567890'
+        assert 'title' in resp.json
+        at.disabled = True
+        at.save()
+        resp = app.get('/api/users/1234567890/')
+        assert 'title' not in resp.json
 
 
 def test_api_users_create_send_mail(app, settings, superuser):

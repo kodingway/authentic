@@ -70,4 +70,11 @@ def test_account_edit_view(app, simple_user):
     assert attribute.get_value(simple_user) == '0123456789'
 
     resp = app.get(url, status=200)
+    assert 'phone' in resp
     assert 'readonly' in resp.form['edit-profile-phone'].attrs
+
+    attribute.disabled = True
+    attribute.save()
+    resp = app.get(url, status=200)
+    assert 'phone' not in resp
+    assert attribute.get_value(simple_user) == '0123456789'
