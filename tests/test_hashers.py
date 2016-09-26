@@ -21,3 +21,12 @@ coin {MD5}lqlRm4/d0X6MxLugQI///Q=='''.splitlines())
     for password, oldap_hash in VECTORS:
         dj_hash = hashers.olap_password_to_dj(oldap_hash)
         assert check_password(password, dj_hash)
+
+
+def test_joomla_hasher():
+    encoded = '8dd0adb5669160965fdd0291e1e03b92:uNkoculs9Y7zDaHtLBxVq71BuPP1fO5o'
+    pwd = 'sournois'
+    dj_encoded = hashers.JoomlaPasswordHasher.from_joomla(encoded)
+
+    assert hashers.JoomlaPasswordHasher().verify(pwd, dj_encoded)
+    assert hashers.JoomlaPasswordHasher.to_joomla(dj_encoded) == encoded

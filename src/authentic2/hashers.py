@@ -174,6 +174,7 @@ class SMD5PasswordHasher(OpenLDAPPasswordHasher):
     algorithm = 'smd5-oldap'
     digest = hashlib.md5
 
+
 class SHA1OLDAPPasswordHasher(OpenLDAPPasswordHasher):
     algorithm = 'sha-oldap'
     digest = hashlib.sha1
@@ -181,9 +182,56 @@ class SHA1OLDAPPasswordHasher(OpenLDAPPasswordHasher):
     def salt(self):
         return ''
 
+
 class MD5OLDAPPasswordHasher(OpenLDAPPasswordHasher):
     algorithm = 'md5-oldap'
     digest = hashlib.md5
 
     def salt(self):
         return ''
+
+
+class JoomlaPasswordHasher(CommonPasswordHasher):
+    algorithm = 'joomla'
+    digest = hashlib.md5
+
+    def encode(self, password, salt):
+        assert password
+        assert '$' not in salt
+        hash = self.digest(force_bytes(password + salt)).hexdigest()
+        return "%s$md5$%s$%s" % (self.algorithm, salt.encode('hex'), hash)
+
+    def verify(self, password, encoded):
+        algorithm, subalgo, salt, hash = encoded.split('$', 3)
+        salt = salt.decode('hex')
+        if algorithm != self.algorithm:
+            raise ValueError('not a joomla encoded password')
+        encoded_2 = self.encode(password, salt)
+        return constant_time_compare(encoded, encoded_2)
+
+    @classmethod
+    def from_joomla(cls, encoded):
+        if encoded.startswith('$P$'):
+            raise NotImplementedError
+        elif encoded.startswith('$'):
+            raise NotImplementedError
+        elif encoded.startswith('{SHA256}'):
+            raise NotImplementedError
+        else:
+            if ':' in encoded:
+                h, salt = encoded.split(':', 1)
+            else:
+                h, salt = encoded, ''
+            return '%s$md5$%s$%s' % (cls.algorithm, salt.encode('hex'), h)
+
+    @classmethod
+    def to_joomla(cls, encoded):
+        algorithm, subalgo, salt, _hash = encoded.split('$', 4)
+        if algorithm != cls.algorithm:
+            raise ValueError('not a joomla encoded password')
+        if subalgo != 'md5':
+            raise NotImplementedError
+        if salt:
+            return '%s:%s' % (_hash, salt.decode('hex'))
+        else:
+            return _hash
