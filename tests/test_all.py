@@ -8,7 +8,6 @@ from django.core import mail
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import Client
-from django.contrib.auth.hashers import check_password
 from django.test.utils import override_settings
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.core.serializers.json import DjangoJSONEncoder
@@ -21,29 +20,9 @@ from rest_framework import status
 
 from django_rbac.utils import get_role_model, get_ou_model
 
-from authentic2 import hashers, utils, models, attribute_kinds
+from authentic2 import utils, models, attribute_kinds
 
 from utils import Authentic2TestCase, get_response_form
-
-
-class HashersTests(TestCase):
-    def test_sha256_hasher(self):
-        hasher = hashers.SHA256PasswordHasher()
-        hashed = hasher.encode('admin', '')
-        assert hasher.verify('admin', hashed)
-        assert hashed == 'sha256$$8c6976e5b5410415b' \
-            'de908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'
-
-    def test_openldap_hashers(self):
-        VECTORS = map(str.split, '''\
-coin {SHA}NHj+acfc68FPYrMipEBZ3t8ABGY=
-250523 {SHA}4zuJhPW1w0upqG7beAlxDcvtBj0=
-coin {SSHA}zLPxfZ3RSNkIwVdHWEyB4Tpr6fT9LiVX
-coin {SMD5}+x9QkU2T/wlPp6NK3bfYYxPYwaE=
-coin {MD5}lqlRm4/d0X6MxLugQI///Q=='''.splitlines())
-        for password, oldap_hash in VECTORS:
-            dj_hash = hashers.olap_password_to_dj(oldap_hash)
-            self.assertTrue(check_password(password, dj_hash))
 
 
 class SerializerTests(TestCase):
@@ -1155,4 +1134,3 @@ class APITest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(User.objects.get(username='john.doe')
                         .check_password('password2'))
-
