@@ -78,9 +78,22 @@ class EditProfile(cbv.TemplateNamesMixin, UpdateView):
 
     @classmethod
     def get_fields(cls):
+        editable_profile_fields = []
+        for field in app_settings.A2_PROFILE_FIELDS:
+            if isinstance(field, (list, tuple)):
+                field_name = field[0]
+            else:
+                field_name = field
+            try:
+                attribute = models.Attribute.objects.get(name=field_name)
+            except models.Attribute.DoesNotExist:
+                editable_profile_fields.append(field)
+            else:
+                if attribute.user_editable:
+                    editable_profile_fields.append(field)
         default_fields = list(models.Attribute.objects.filter(user_editable=True).values_list('name', flat=True))
         return utils.get_fields_and_labels(
-            app_settings.A2_PROFILE_FIELDS,
+            editable_profile_fields,
             default_fields)
 
     def get_form_class(self):
