@@ -271,13 +271,19 @@ class AuthenticUserAdmin(UserAdmin):
             insertion_idx = 1
         if qs.exists():
             fieldsets = list(fieldsets)
-            fieldsets.insert(insertion_idx, 
-                    (_('Attributes'), {'fields': [at.name for at in qs]}))
+            fieldsets.insert(
+                insertion_idx,
+                (_('Attributes'), {'fields': [at.name for at in qs if at.name not in
+                                              ['first_name', 'last_name']]}))
         return fieldsets
 
     def get_form(self, request, obj=None, **kwargs):
-        self.form = modelform_factory(self.model, form=UserChangeForm)
-        self.add_form = modelform_factory(self.model, form=UserCreationForm)
+        self.form = modelform_factory(self.model, form=UserChangeForm,
+                                      fields=models.Attribute.objects.values_list('name',
+                                                                                  flat=True))
+        self.add_form = modelform_factory(self.model, form=UserCreationForm,
+                                          fields=models.Attribute.objects.filter(required=True)
+                                          .values_list('name', flat=True))
         if 'fields' in kwargs:
             fields = kwargs.pop('fields')
         else:
@@ -286,10 +292,11 @@ class AuthenticUserAdmin(UserAdmin):
             qs = models.Attribute.objects.all()
         else:
             qs = models.Attribute.objects.filter(required=True)
-        non_model_fields = [a.name for a in qs]
+        non_model_fields = set([a.name for a in qs]) - set(['first_name', 'last_name'])
         fields = list(set(fields) - set(non_model_fields))
         kwargs['fields'] = fields
         return super(AuthenticUserAdmin, self).get_form(request, obj=obj, **kwargs)
+
 
 class AttributeForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
