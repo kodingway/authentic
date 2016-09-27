@@ -10,18 +10,17 @@ from . import app_settings
 
 
 class SAMLFrontend(object):
+    id = 'saml'
+
     def enabled(self):
         return app_settings.enable and list(get_idps())
 
     def name(self):
         return gettext_noop('SAML')
 
-    def id(self):
-        return 'saml'
-
     def login(self, request, *args, **kwargs):
         context_instance = kwargs.pop('context_instance', None) or RequestContext(request)
-        submit_name = 'login-%s' % self.id()
+        submit_name = 'login-%s' % self.id
         if request.method == 'POST' and submit_name in request.POST:
             return redirect_to_login(request, login_url='mellon_login')
         return render(request, 'authentic2_auth_saml/login.html', {'submit_name': submit_name},
