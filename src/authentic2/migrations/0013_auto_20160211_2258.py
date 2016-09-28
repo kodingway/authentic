@@ -20,5 +20,5 @@ class Migration(migrations.Migration):
         CreatePartialIndexes('AttributeValue', 'authentic2_attributevalue',
                              'authentic2_attribute_value_partial_unique_idx',
                              (), ('content_type_id', 'object_id', 'attribute_id'),
-                             where=("multiple = '0'",))
+                             where=(('multiple = %s', (False,)),))
     ]

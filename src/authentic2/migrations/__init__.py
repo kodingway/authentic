@@ -34,14 +34,10 @@ class CreatePartialIndexes(Operation):
                 return False
         if schema_editor.connection.vendor == 'postgresql':
             return True
-        # Partial indexed were introduced in sqlite 3.8.0
-        if schema_editor.connection.vendor == 'sqlite' and \
-                schema_editor.connection.Database.sqlite_version_info >= (3, 8):
-            return True
         return False
 
     def indexes(self):
-        for i in range(0, len(self.nullable_columns)+1):
+        for i in range(0, len(self.nullable_columns) + 1):
             for null_columns in itertools.combinations(sorted(self.nullable_columns), i):
                 non_null_columns = self.non_null_columns | (self.nullable_columns - set(null_columns))
                 where = self.where.copy()
@@ -59,11 +55,23 @@ class CreatePartialIndexes(Operation):
         for i, (where, non_null_columns) in enumerate(self.indexes()):
             index = ', '.join(non_null_columns)
             if where:
-                where_clause = ' AND '.join(where)
+                clauses = []
+                for clause in where:
+                    if isinstance(clause, tuple):
+                        clause, params = clause
+                        assert isinstance(clause, basestring)
+                        assert isinstance(params, tuple)
+                        clause = clause % tuple(schema_editor.quote_value(param) for param in
+                                                 params)
+                    assert isinstance(clause, basestring)
+                    clauses.append(clause)
+                where_clause = ' AND '.join(clauses)
+                # SQLite does not accept parameters in partial index creations, don't ask why :/
                 schema_editor.execute('CREATE UNIQUE INDEX "%s_%s" ON %s (%s) WHERE %s' %
                                       (self.index_name, i, self.table_name, index, where_clause))
             else:
-                schema_editor.execute('CREATE UNIQUE INDEX "%s_%s" ON %s (%s)' % (self.index_name, i, self.table_name, index))
+                schema_editor.execute('CREATE UNIQUE INDEX "%s_%s" ON %s (%s)' %
+                                      (self.index_name, i, self.table_name, index))
 
     def database_backwards(self, app_label, schema_editor, from_state, to_state):
         if not self.allowed(app_label, schema_editor, to_state):

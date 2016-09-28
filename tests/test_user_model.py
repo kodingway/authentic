@@ -59,7 +59,8 @@ def test_user_has_verified_attributes(db, settings):
 
 
 def test_sync_first_name(db, settings):
-    attribute = Attribute.objects.create(name='first_name', label='First Name', kind='string')
+    Attribute.objects.get_or_create(name='first_name', defaults={'label': 'First Name', 'kind':
+                                                                 'string'})
 
     user = User(username='john.doe', email='john.doe2@example.net')
     user.save()

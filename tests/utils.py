@@ -1,6 +1,5 @@
 import base64
 import urlparse
-import sqlite3
 
 from lxml import etree
 import pytest
@@ -10,9 +9,8 @@ from django.conf import settings
 
 from authentic2 import utils
 
-skipif_no_partial_index = pytest.mark.skipif(
-    sqlite3.sqlite_version_info < (3, 8) and 'sqlite' in settings.DATABASES['default']['ENGINE'],
-    reason='partial indexes do not work with sqlite < 3.8')
+skipif_no_partial_index = pytest.mark.skipif('sqlite' in settings.DATABASES['default']['ENGINE'],
+                                             reason='partial indexes do not work with sqlite')
 
 
 def login(app, user, path=None, password=None):
