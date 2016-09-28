@@ -38,11 +38,13 @@ def test_attribute_value_uniqueness(migrations, transactional_db, simple_user, c
 
     def f(i):
         multiple_at.set_value(simple_user, [str(i)])
+        connection.close()
     map_threads(f, range(concurrency))
     map_threads(f, range(concurrency))
     assert AttributeValue.objects.filter(attribute=multiple_at).count() == concurrency
 
     def f(i):
         single_at.set_value(simple_user, str(i))
+        connection.close()
     map_threads(f, range(concurrency))
     assert AttributeValue.objects.filter(attribute=single_at).count() == 1
