@@ -5,6 +5,10 @@ from django.utils import timezone
 from django.core.mail import send_mail
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError, MultipleObjectsReturned
+try:
+    from django.contrib.contenttypes.fields import GenericRelation
+except ImportError:
+    from django.contrib.contenttypes.generic import GenericRelation
 
 from django_rbac.backends import DjangoRBACBackend
 from django_rbac.models import PermissionMixin
@@ -72,6 +76,8 @@ class User(AbstractBaseUser, PermissionMixin):
 
     objects = UserManager()
     attributes = AttributesDescriptor()
+
+    attribute_values = GenericRelation('authentic2.AttributeValue')
 
     USERNAME_FIELD = 'uuid'
     REQUIRED_FIELDS = ['username', 'email']
