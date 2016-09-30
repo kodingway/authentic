@@ -1,13 +1,18 @@
 # -*- coding: utf-8 -*-
+import re
+
 import pytest
 import mock
 
 import ldap
 from ldap.dn import escape_dn_chars
+import ldap
 
 from ldaptools.slapd import Slapd, has_slapd
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ImproperlyConfigured
+from django.core import mail
+
 from authentic2.a2_rbac.utils import get_default_ou
 from django_rbac.utils import get_ou_model
 from authentic2.backends import ldap_backend
@@ -22,6 +27,7 @@ UID = 'etienne.michu'
 CN = 'Étienne Michu'
 DN = 'cn=%s,o=orga' % escape_dn_chars(CN)
 PASS = 'passé'
+EMAIL = 'etienne.michu@example.net'
 
 
 @pytest.fixture
@@ -435,3 +441,52 @@ def test_no_connect_with_user_credentials(slapd_strict_acl, db, settings, app):
     response.form.set('password', PASS)
     response = response.form.submit('login-password-submit').follow()
     assert 'Étienne Michu' in response.body
+
+
+def test_reset_password_ldap_user(slapd, settings, app, db):
+    settings.LDAP_AUTH_SETTINGS = [{
+        'url': [slapd.ldap_url],
+        'binddn': slapd.root_bind_dn,
+        'bindpw': slapd.root_bind_password,
+        'basedn': 'o=orga',
+        'use_tls': False,
+    }]
+    User = get_user_model()
+    assert User.objects.count() == 0
+    # first login
+    response = app.get('/login/')
+    response.form['username'] = USERNAME
+    response.form['password'] = PASS
+    response = response.form.submit('login-password-submit').follow()
+    assert User.objects.count() == 1
+    assert 'Étienne Michu' in str(response)
+    user = User.objects.get()
+    assert user.email == EMAIL
+    # logout
+    response = response.click('Logout')
+    if response.status_code == 200:  # Django 1.7, same_origin is bugged; localhost != localhost:80
+        response = response.form.submit().maybe_follow()
+    else:
+        response = response.maybe_follow()
+    response = response.click('Reset it!')
+    response.form['email'] = EMAIL
+    assert len(mail.outbox) == 0
+    response = response.form.submit().maybe_follow()
+    assert len(mail.outbox) == 1
+    m = re.search('https?://[^\n ]*', mail.outbox[0].body)
+    assert m
+    reset_email_url = m.group()
+    response = app.get(reset_email_url, status=302)
+    response = response.maybe_follow()
+    assert 'login-password-submit' in response.content
+    settings.LDAP_AUTH_SETTINGS[0]['can_reset_password'] = True
+    response = app.get(reset_email_url, status=200)
+    new_password = 'Aa1xxxxx'
+    response.form['new_password1'] = new_password
+    response.form['new_password2'] = new_password
+    response = response.form.submit(status=302).maybe_follow()
+    # verify password has changed
+    slapd.get_connection().bind_s(DN, new_password)
+    with pytest.raises(ldap.INVALID_CREDENTIALS):
+        slapd.get_connection().bind_s(DN, PASS)
+    assert not User.objects.get().has_usable_password()

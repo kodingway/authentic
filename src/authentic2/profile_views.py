@@ -2,7 +2,7 @@ import logging
 
 from django.views.generic import FormView
 from django.contrib import messages
-from django.contrib.auth import get_user_model, REDIRECT_FIELD_NAME
+from django.contrib.auth import get_user_model, REDIRECT_FIELD_NAME, authenticate
 from django.utils.translation import ugettext as _
 from django.utils.http import urlsafe_base64_decode
 
@@ -64,7 +64,8 @@ class PasswordResetConfirmView(cbv.RedirectToNextURLViewMixin, FormView):
         assert uidb64 is not None and token is not None
         try:
             uid = urlsafe_base64_decode(uidb64)
-            self.user = UserModel._default_manager.get(pk=uid)
+            # use authenticate to eventually get an LDAPUser
+            self.user = authenticate(user=UserModel._default_manager.get(pk=uid))
         except (TypeError, ValueError, OverflowError,
                 UserModel.DoesNotExist):
             validlink = False
@@ -76,9 +77,10 @@ class PasswordResetConfirmView(cbv.RedirectToNextURLViewMixin, FormView):
                                         'or has expired'))
         if not validlink:
             return utils.redirect(request, self.get_success_url())
-        if not self.user.has_usable_password():
-            messages.warning(request, _('Account has no password, you cannot reset it.'))
-            return self.finish()
+        if not self.user.can_reset_password():
+            messages.warning(request, _('It\'s not possible to reset your password. Please '
+                                        'contact an administrator.'))
+            return utils.redirect(request, self.get_success_url())
         return super(PasswordResetConfirmView, self).dispatch(request, *args,
                                                               **kwargs)
 
