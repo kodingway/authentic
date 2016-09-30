@@ -203,6 +203,9 @@ class LDAPUser(get_user_model()):
         if hasattr(self, 'keep_pk'):
             self.pk = pk
 
+    def can_reset_password(self):
+        return self.block['can_reset_password']
+
 
 class LDAPBackend(object):
     _DEFAULTS = {
@@ -296,6 +299,8 @@ class LDAPBackend(object):
         'ou_slug': '',
         # use user credentials when we have them to connect to the LDAP
         'connect_with_user_credentials': True,
+        # can reset password
+        'can_reset_password': False,
     }
     _REQUIRED = ('url', 'basedn')
     _TO_ITERABLE = ('url', 'groupsu', 'groupstaff', 'groupactive')

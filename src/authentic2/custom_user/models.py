@@ -244,3 +244,6 @@ class User(AbstractBaseUser, PermissionMixin):
                     if attribute.get_value(self) != getattr(self, attr_name, None):
                         attribute.set_value(self, getattr(self, attr_name, None))
         return rc
+
+    def can_reset_password(self):
+        return self.has_usable_password()
