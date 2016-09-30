@@ -167,7 +167,7 @@ class LDAPUser(get_user_model()):
     def set_password(self, new_password):
         # Allow change password to work in all cases, as the form does a check_password() first
         # if the verify pass, we have the old password stored in self.old_password
-        old_password = getattr(self, 'old_password') or self.get_password_in_session()
+        old_password = getattr(self, 'old_password', None) or self.get_password_in_session()
         if old_password != new_password:
             conn = self.get_connection()
             self.ldap_backend.modify_password(conn, self.block, self.dn, old_password, new_password)
