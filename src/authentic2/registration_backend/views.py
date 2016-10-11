@@ -38,7 +38,7 @@ legacy_template_names = {
 def valid_token(method):
     def f(request, *args, **kwargs):
         try:
-            request.token = signing.loads(kwargs['registration_token'],
+            request.token = signing.loads(kwargs['registration_token'].replace(' ', ''),
                                                 max_age=settings.ACCOUNT_ACTIVATION_DAYS*3600*24)
         except signing.SignatureExpired:
             messages.warning(request, _('Your activation key is expired'))

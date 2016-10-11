@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from .views import RegistrationView, registration_completion, DeleteView
 
 urlpatterns = patterns('',
-    url(r'^activate/(?P<registration_token>[\w:-]+)/$',
+    url(r'^activate/(?P<registration_token>[\w: -]+)/$',
 	registration_completion, name='registration_activate'),
     url(r'^register/$',
         RegistrationView.as_view(),
