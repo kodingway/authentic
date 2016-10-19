@@ -110,6 +110,11 @@ class EditProfile(cbv.TemplateNamesMixin, UpdateView):
         kwargs['prefix'] = 'edit-profile'
         return kwargs
 
+    def post(self, request, *args, **kwargs):
+        if 'cancel' in request.POST:
+            return utils.redirect(request, 'account_management')
+        return super(EditProfile, self).post(request, *args, **kwargs)
+
 edit_profile = decorators.setting_enabled('A2_PROFILE_CAN_EDIT_PROFILE')(
     login_required(EditProfile.as_view()))
 
@@ -147,6 +152,11 @@ class EmailChangeView(cbv.TemplateNamesMixin, FormView):
             'user': self.request.user,
         })
         return kwargs
+
+    def post(self, request, *args, **kwargs):
+        if 'cancel' in request.POST:
+            return utils.redirect(request, 'account_management')
+        return super(EmailChangeView, self).post(request, *args, **kwargs)
 
     def form_valid(self, form):
         email = form.cleaned_data['email']

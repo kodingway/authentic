@@ -62,6 +62,11 @@ def test_account_edit_view(app, simple_user):
     resp = resp.form.submit().follow()
     assert attribute.get_value(simple_user) == '0123456789'
 
+    resp = app.get(url, status=200)
+    resp.form.set('edit-profile-phone', '9876543210')
+    resp = resp.form.submit('cancel').follow()
+    assert attribute.get_value(simple_user) == '0123456789'
+
     attribute.set_value(simple_user, '0123456789', verified=True)
     resp = app.get(url, status=200)
     resp.form.set('edit-profile-phone', '1234567890')

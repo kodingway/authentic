@@ -26,6 +26,8 @@ def password_change_view(request, *args, **kwargs):
         post_change_redirect = request.GET[REDIRECT_FIELD_NAME]
     elif post_change_redirect is None:
         post_change_redirect = reverse('account_management')
+    if 'cancel' in request.POST:
+        return redirect(request, post_change_redirect)
     kwargs['post_change_redirect'] = post_change_redirect
     extra_context = kwargs.setdefault('extra_context', {})
     extra_context[REDIRECT_FIELD_NAME] = post_change_redirect

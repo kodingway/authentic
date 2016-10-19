@@ -13,6 +13,13 @@ def test_profile(app, simple_user):
     assert simple_user.first_name in page
     assert simple_user.last_name in page
 
+def test_email_change(app, simple_user):
+    page = login(app, simple_user, path=reverse('email-change'))
+    page = page.form.submit('cancel').follow()
+
+def test_password_change(app, simple_user):
+    page = login(app, simple_user, path=reverse('auth_password_change'))
+    page = page.form.submit('cancel').follow()
 
 def test_account_delete(app, simple_user):
     assert simple_user.is_active
