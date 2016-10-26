@@ -787,3 +787,14 @@ def utf8_encode(v):
     if isinstance(v, unicode):
         return v.encode('utf-8')
     return v
+
+
+def good_next_url(request, next_url):
+    '''Check if an URL is a good next_url'''
+    if not next_url:
+        return False
+    if (next_url.startswith('/') and (len(next_url) == 1 or next_url[1] != '/')):
+        return True
+    if http.same_origin(request.build_absolute_uri(), next_url):
+        return True
+    return False
