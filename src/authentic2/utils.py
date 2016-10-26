@@ -6,6 +6,7 @@ import urllib
 import six
 import urlparse
 import uuid
+import datetime
 from functools import wraps
 from itertools import islice, chain
 
@@ -798,3 +799,9 @@ def good_next_url(request, next_url):
     if http.same_origin(request.build_absolute_uri(), next_url):
         return True
     return False
+
+
+def timestamp_from_datetime(dt):
+    '''Convert an aware datetime as an Unix timestamp'''
+    utc_naive = dt.replace(tzinfo=None) - dt.utcoffset()
+    return int((utc_naive - datetime.datetime(1970, 1, 1)).total_seconds())
