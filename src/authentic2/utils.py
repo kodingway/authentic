@@ -307,13 +307,13 @@ def make_url(to, args=(), kwargs={}, keep_params=False, params=None, append=None
 # improvement over django.shortcuts.redirect
 def redirect(request, to, args=(), kwargs={}, keep_params=False, params=None,
              append=None, include=None, exclude=None, permanent=False,
-             fragment=None, status=302):
+             fragment=None, status=302, resolve=True):
     '''Build a redirect response to an absolute or relative URL, eventually
        adding params from the request or new, see make_url().
     '''
     url = make_url(to, args=args, kwargs=kwargs, keep_params=keep_params,
                    params=params, append=append, request=request,
-                   include=include, exclude=exclude, fragment=fragment)
+                   include=include, exclude=exclude, fragment=fragment, resolve=resolve)
     if permanent:
         status = 301
     return HttpResponseRedirect(url, status=status)
