@@ -1,5 +1,6 @@
 import base64
 import urlparse
+from contextlib import contextmanager
 
 from lxml import etree
 import pytest
@@ -109,3 +110,11 @@ class Authentic2TestCase(TestCase):
                 else:
                     raise NotImplementedError('comparing xpath result to type %s: %r is not '
                                               'implemented' % (type(content), content))
+
+
+@contextmanager
+def check_log(caplog, msg):
+    idx = len(caplog.records())
+    yield
+    assert any(msg in record.msg for record in caplog.records()[idx:]), \
+        '%r not found in log records' % msg
