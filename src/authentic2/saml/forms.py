@@ -37,7 +37,10 @@ class AddLibertyProviderFromUrlForm(forms.Form):
                 response.raise_for_status()
                 content = response.content
             except requests.RequestException, e:
-                raise ValidationError(_('Retrieval of %s failed: %s') % (url, e))
+                raise ValidationError(_('Retrieval of %(url)s failed: %(exception)s') % {
+                    'url': url,
+                    'exception': e
+                })
             root = ET.fromstring(content)
             if root.tag != '{%s}EntityDescriptor' % lasso.SAML2_METADATA_HREF:
                 raise ValidationError(_('Invalid SAML metadata: %s')

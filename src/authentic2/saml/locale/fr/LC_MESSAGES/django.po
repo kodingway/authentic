@@ -17,74 +17,108 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n>1;\n"
 
-#: authentic2/saml/admin.py:94
+#: src/authentic2/saml/admin.py:94
 #, python-format
 msgid "Updating SAML provider %(name)s failed: %(error_msg)s"
 msgstr ""
 "La mise à jour du fournisseur SAML « %(name)s » a échoué: %(error_msg)s"
 
-#: authentic2/saml/admin.py:98
+#: src/authentic2/saml/admin.py:98
 #, python-format
 msgid "%(count)d on %(total)d SAML providers updated"
 msgstr "%(count)d fournisseurs SAML mis à jour sur un total de %(total)d"
 
-#: authentic2/saml/admin.py:116 authentic2/saml/models.py:98
+#: src/authentic2/saml/admin.py:116 src/authentic2/saml/models.py:98
 msgid "None"
 msgstr "Aucun"
 
-#: authentic2/saml/admin.py:150
+#: src/authentic2/saml/admin.py:117
+msgid "List of verified attributes"
+msgstr ""
+
+#: src/authentic2/saml/admin.py:151
 msgid "Metadata files"
 msgstr "Fichiers de metadonnées"
 
-#: authentic2/saml/app_settings.py:14
+#: src/authentic2/saml/app_settings.py:14
 msgid "explicit"
 msgstr "explicite"
 
-#: authentic2/saml/app_settings.py:15
+#: src/authentic2/saml/app_settings.py:15
 msgid "implicit"
 msgstr "implicite"
 
-#: authentic2/saml/forms.py:16
+#: src/authentic2/saml/forms.py:19
 msgid "Name"
 msgstr "Nom"
 
-#: authentic2/saml/forms.py:17
+#: src/authentic2/saml/forms.py:20
 msgid "Shortcut"
 msgstr "Raccourci"
 
-#: authentic2/saml/forms.py:18
+#: src/authentic2/saml/forms.py:21
 msgid "Internal nickname for the service provider"
 msgstr "Nom local du fournisseur de service"
 
-#: authentic2/saml/forms.py:19
+#: src/authentic2/saml/forms.py:22
 msgid "Metadata's URL"
 msgstr "URL des métadonnées"
 
-#: authentic2/saml/forms.py:20
+#: src/authentic2/saml/forms.py:24
 msgid "Organizational unit"
 msgstr ""
 
-#: authentic2/saml/forms.py:35 authentic2/saml/forms.py:38
+#: src/authentic2/saml/forms.py:40
+msgid "Retrieval of %(url)s failed: %(exception)s"
+msgstr "La récupération des métadonnées à l'URL %(url)s a échouée: %(exception)s"
+
+#: src/authentic2/saml/forms.py:46 src/authentic2/saml/forms.py:50
 #, python-format
 msgid "Invalid SAML metadata: %s"
 msgstr "Métadonnées SAML incorrectes: %s"
 
-#: authentic2/saml/forms.py:35
+#: src/authentic2/saml/forms.py:47
 msgid "missing EntityDescriptor tag"
 msgstr "Au moins un tag XML EntityDescriptor est nécessaire"
 
-#: authentic2/saml/forms.py:38
+#: src/authentic2/saml/forms.py:51
 msgid "missing SPSSODescriptor tags"
 msgstr "Au moins un tag XML SPSSODescriptor est nécessaire"
 
-#: authentic2/saml/management/commands/sync-metadata.py:122
-#: authentic2/saml/management/commands/sync-metadata.py:204
+#: src/authentic2/saml/management/commands/mapping.py:903
+#, fuzzy
+#| msgid "name"
+msgid "Last name"
+msgstr "nom"
+
+#: src/authentic2/saml/management/commands/mapping.py:1000
+msgid "Organization"
+msgstr ""
+
+#: src/authentic2/saml/management/commands/mapping.py:1040
+msgid "Postal address"
+msgstr ""
+
+#: src/authentic2/saml/management/commands/mapping.py:1085
+msgid "Phone"
+msgstr ""
+
+#: src/authentic2/saml/management/commands/mapping.py:1247
+msgid "First name"
+msgstr ""
+
+#: src/authentic2/saml/management/commands/mapping.py:1385
+msgid "Email Address"
+msgstr ""
+
+#: src/authentic2/saml/management/commands/sync-metadata.py:131
+#: src/authentic2/saml/management/commands/sync-metadata.py:213
 #, python-format
 msgid "Created new attribute %(name)s for %(provider)s"
 msgstr ""
 "Création d'un nouvel attribut %(name)s pour le fournisseur %(provider)s"
 
-#: authentic2/saml/management/commands/sync-metadata.py:194
+#: src/authentic2/saml/management/commands/sync-metadata.py:203
 #, python-format
 msgid ""
 "Unable to find an LDAP definition for attribute %(name)s on %(provider)s"
