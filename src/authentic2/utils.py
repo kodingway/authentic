@@ -771,7 +771,7 @@ def switch_back(request):
 
 def datetime_to_utc(dt):
     if timezone.is_naive(dt):
-        dt = timezone.make_aware(dt)
+        dt = timezone.make_aware(dt, timezone.get_current_timezone())
     return dt.astimezone(timezone.utc)
 
 
