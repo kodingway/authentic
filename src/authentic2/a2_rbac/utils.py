@@ -8,7 +8,10 @@ from . import models
 
 
 def get_default_ou():
-    return models.OrganizationalUnit.objects.get(default=True)
+    try:
+        return models.OrganizationalUnit.objects.get(default=True)
+    except models.OrganizationalUnit.DoesNotExist:
+        return None
 
 
 def get_view_user_perm(ou=None):
@@ -20,6 +23,7 @@ def get_view_user_perm(ou=None):
         target_id=ContentType.objects.get_for_model(User).pk,
         ou__isnull=ou is None, ou=ou)
     return view_user_perm
+
 
 def get_view_ou_perm(ou=None):
     if ou:
