@@ -1,0 +1,6 @@
+{% for provider in providers %}
+  <p id="oidc-p-{{ provider.name|slugify }}">
+    <a id="oidc-a-{{ provider.name|slugify }}"
+       href="{% url "oidc-login" pk=provider.pk %}?{{ request.GET.urlencode }}">{{ provider.name }}</a>
+  </p>
+{% endfor %}

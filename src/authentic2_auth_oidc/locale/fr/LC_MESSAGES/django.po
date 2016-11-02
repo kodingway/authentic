@@ -1,0 +1,259 @@
+# Authentic2 Mon.service-public.fr plugin french translations
+# Copyright (C) 2014 Entr'ouvert
+# This file is distributed under the same license as the authentic2-auth-fc package.
+# Benjamin Dauvergne <bdauvergne@entrouvert.com, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: authentic2-auth-fc 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-11-03 14:24+0100\n"
+"PO-Revision-Date: 2016-02-29 19:56+0100\n"
+"Last-Translator: Benjamin Dauvergne <bdauvergne@entrouvert.com>\n"
+"Language-Team: french <fr@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: src/authentic2_auth_oidc/__init__.py:24
+msgid "OpenID Connect authentication"
+msgstr ""
+
+#: src/authentic2_auth_oidc/auth_frontends.py:19
+msgid "OpenIDConnect"
+msgstr "OpenID Connect"
+
+#: src/authentic2_auth_oidc/models.py:24
+#, python-format
+msgid "Invalid JWKSet: %s"
+msgstr "Ensemble de clé JWK invalide: %s"
+
+#: src/authentic2_auth_oidc/models.py:32
+msgid "create"
+msgstr "créer"
+
+#: src/authentic2_auth_oidc/models.py:33 src/authentic2_auth_oidc/models.py:39
+msgid "none"
+msgstr "Aucun(e)"
+
+#: src/authentic2_auth_oidc/models.py:40
+msgid "RSA"
+msgstr ""
+
+#: src/authentic2_auth_oidc/models.py:41
+msgid "HMAC"
+msgstr ""
+
+#: src/authentic2_auth_oidc/models.py:47
+msgid "name"
+msgstr "nom"
+
+#: src/authentic2_auth_oidc/models.py:50
+msgid "issuer"
+msgstr ""
+
+#: src/authentic2_auth_oidc/models.py:56
+msgid "client id"
+msgstr ""
+
+#: src/authentic2_auth_oidc/models.py:60
+msgid "client secret"
+msgstr ""
+
+#: src/authentic2_auth_oidc/models.py:64
+msgid "authorization endpoint"
+msgstr ""
+
+#: src/authentic2_auth_oidc/models.py:67
+msgid "token endpoint"
+msgstr ""
+
+#: src/authentic2_auth_oidc/models.py:70
+msgid "userinfo endpoint"
+msgstr ""
+
+#: src/authentic2_auth_oidc/models.py:75
+msgid "end session endpoint"
+msgstr ""
+
+#: src/authentic2_auth_oidc/models.py:79
+msgid "scopes"
+msgstr ""
+
+#: src/authentic2_auth_oidc/models.py:81
+msgid "JSON WebKey set"
+msgstr ""
+
+#: src/authentic2_auth_oidc/models.py:88
+msgid "IDToken signature algorithm"
+msgstr ""
+
+#: src/authentic2_auth_oidc/models.py:94
+msgid "strategy"
+msgstr ""
+
+#: src/authentic2_auth_oidc/models.py:98
+msgid "organizational unit"
+msgstr "unité d'organisation"
+
+#: src/authentic2_auth_oidc/models.py:102
+msgid "max authentication age"
+msgstr "délai depuis la dernière authentification"
+
+#: src/authentic2_auth_oidc/models.py:108
+#: src/authentic2_auth_oidc/models.py:162
+#: src/authentic2_auth_oidc/models.py:191
+msgid "created"
+msgstr "date de création"
+
+#: src/authentic2_auth_oidc/models.py:111
+#: src/authentic2_auth_oidc/models.py:165
+#: src/authentic2_auth_oidc/models.py:194
+msgid "modified"
+msgstr "date de dernière modification"
+
+#: src/authentic2_auth_oidc/models.py:134
+msgid "not verified"
+msgstr "déclaratif"
+
+#: src/authentic2_auth_oidc/models.py:135
+msgid "verified claim"
+msgstr "accompagné d'un claim de certification"
+
+#: src/authentic2_auth_oidc/models.py:136
+msgid "always verified"
+msgstr "certifié"
+
+#: src/authentic2_auth_oidc/models.py:141
+#: src/authentic2_auth_oidc/models.py:198
+msgid "provider"
+msgstr "fournisseur"
+
+#: src/authentic2_auth_oidc/models.py:145
+msgid "claim"
+msgstr ""
+
+#: src/authentic2_auth_oidc/models.py:148
+msgid "attribute"
+msgstr "attribut"
+
+#: src/authentic2_auth_oidc/models.py:152
+msgid "verified"
+msgstr "vérifié"
+
+#: src/authentic2_auth_oidc/models.py:156
+msgid "required"
+msgstr "requis"
+
+#: src/authentic2_auth_oidc/models.py:158
+msgid "idtoken claim"
+msgstr "claim de l'idtoken"
+
+#: src/authentic2_auth_oidc/models.py:202
+msgid "user"
+msgstr "utilisateur"
+
+#: src/authentic2_auth_oidc/models.py:205
+msgid "sub"
+msgstr "sub"
+
+#: src/authentic2_auth_oidc/utils.py:198
+#, python-format
+msgid ""
+"Unable to reach the OpenID Connect configuration for %(issuer)s: %(error)s"
+msgstr ""
+"Impossible d'atteindre la configuration OpenID Connect pour %(issuer)ss : "
+"%(error)s"
+
+#: src/authentic2_auth_oidc/utils.py:207
+msgid "MUST be a dictionnary"
+msgstr "DOIT être un dictionnaire"
+
+#: src/authentic2_auth_oidc/utils.py:210
+#, python-format
+msgid "missing keys %s"
+msgstr "clé manquante %s"
+
+#: src/authentic2_auth_oidc/utils.py:214
+#, python-format
+msgid "%(key)s is not an https:// URL; %(value)s"
+msgstr "%(key)s n'est pas une URL https://; %(value)s"
+
+#: src/authentic2_auth_oidc/utils.py:219
+#, python-format
+msgid "Invalid OpenID Connect configuration for %(issuer)s: %(error)s"
+msgstr "Configuration OpenID Connect invalide pour %(issuer)s: %(error)s"
+
+#: src/authentic2_auth_oidc/utils.py:222
+msgid ""
+"authorization code flow is unsupported: code response type is unsupported"
+msgstr ""
+"Le flot 'authorization code' n'est pas supporté, aucune des 'code response "
+"type' n'est supporté."
+
+#: src/authentic2_auth_oidc/utils.py:228
+#, python-format
+msgid ""
+"Unable to reach the OpenID Connect JWKSet for %(issuer)s: %(url)s %(error)s"
+msgstr ""
+"Impossible d'atteindre l'ensemble de clés JWL pour %(issuer)s: %(url)s "
+"%(error)s"
+
+#: src/authentic2_auth_oidc/utils.py:237
+#, python-format
+msgid "Invalid JSKSet document: %s"
+msgstr "Ensemble de clés JWK invalide: %s"
+
+#: src/authentic2_auth_oidc/utils.py:249
+#, python-format
+msgid "no common algorithm found for signing idtokens: %s"
+msgstr "aucun algorithme commun trouvé pour signé les idtokens: %s"
+
+#: src/authentic2_auth_oidc/utils.py:270
+msgid ""
+"invalid issuer URL, it must use the https:// scheme and not have a query or "
+"fragment"
+msgstr ""
+"URL d'issuer invalide, elle doit utiliser le protocole https:// and n'avoir "
+"ni paramtère ni fragment"
+
+#: src/authentic2_auth_oidc/views.py:89
+msgid "Login with OpenIDConnect failed, state lost."
+msgstr "Connexion avec OpenID Connect échouée, état perdu."
+
+#: src/authentic2_auth_oidc/views.py:96
+msgid "Unknown OpenID connect issuer"
+msgstr "Fournisseur OpenID Connect inconnu"
+
+#: src/authentic2_auth_oidc/views.py:113
+#, python-format
+msgid "Login with %(name)s failed, report %(request_id)s to an administrator."
+msgstr ""
+"La connexion depuis %(name)s a échouée, signaler l'erreur %(request_id)s à "
+"un administrateur."
+
+#: src/authentic2_auth_oidc/views.py:120
+#, python-format
+msgid "Login with OpenIDConnect failed, report %s to an administrator"
+msgstr ""
+"La connexion OpenID Connect a échouée, signaler l'erreur %s à un "
+"administrateur."
+
+#: src/authentic2_auth_oidc/views.py:124
+#, python-format
+msgid "Missing code, report %s to an administrator"
+msgstr "Code absent, signaler l'erreur %s à un administrateur."
+
+#: src/authentic2_auth_oidc/views.py:144 src/authentic2_auth_oidc/views.py:156
+#: src/authentic2_auth_oidc/views.py:167
+#, python-format
+msgid "Provider %(name)s is down, report %(request_id)s to an administrator. "
+msgstr ""
+"Le fournisseur OpenID Connect %(name)s est défaillant, signaler l'erreur "
+"%(request_id)s à une administrateur"
+
+#: src/authentic2_auth_oidc/views.py:179
+msgid "No user found"
+msgstr "Aucun utilisateur trouvé"
