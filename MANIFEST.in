@@ -22,6 +22,7 @@ recursive-include src/authentic2/auth2_auth/auth2_oath/templates *.html *.txt *.
 recursive-include src/authentic2/manager/templates *.html
 recursive-include src/authentic2_auth_saml/templates/authentic2_auth_saml *.html
 recursive-include src/authentic2_auth_oidc/templates/authentic2_auth_oidc *.html
+recursive-include src/authentic2_idp_oidc/templates/authentic2_idp_oidc *.html
 
 recursive-include src/authentic2/vendor/totp_js/js *.js
 recursive-include src/authentic2/saml/fixtures *.json
@@ -41,6 +42,7 @@ recursive-include src/authentic2/a2_rbac/locale *.po *.mo
 recursive-include src/django_rbac/locale *.po *.mo
 recursive-include src/authentic2_auth_saml/locale *.po *.mo
 recursive-include src/authentic2_auth_oidc/locale *.po *.mo
+recursive-include src/authentic2_idp_oidc/locale *.po *.mo
 
 recursive-include src/authentic2 README  xrds.xml *.txt yadis.xrdf
 recursive-include src/authentic2_provisionning_ldap/tests *.ldif

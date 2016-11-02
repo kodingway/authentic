@@ -164,6 +164,7 @@ setup(name="authentic2",
               'authentic2-idp-saml2 = authentic2.idp.saml:Plugin',
               'authentic2-idp-openid = authentic2_idp_openid:Plugin',
               'authentic2-idp-cas = authentic2_idp_cas:Plugin',
+              'authentic2-idp-oidc = authentic2_idp_oidc:Plugin',
               'authentic2-provisionning-ldap = authentic2_provisionning_ldap:Plugin',
           ],
       })
