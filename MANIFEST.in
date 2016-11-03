@@ -1,5 +1,9 @@
 recursive-include data *
-recursive-include tests *
+recursive-include tests *.py
+recursive-include tests_rbac *.py
+recursive-exclude tests *.pyc
+recursive-exclude tests_rbac *.pyc
+include tox.ini .coveragerc
 
 # static
 recursive-include src/authentic2/static *.css *.js *.ico *.gif *.png *.jpg
