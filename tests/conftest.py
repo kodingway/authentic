@@ -23,7 +23,7 @@ def app(request):
     wtm = django_webtest.WebTestMixin()
     wtm._patch_settings()
     request.addfinalizer(wtm._unpatch_settings)
-    return django_webtest.DjangoTestApp()
+    return django_webtest.DjangoTestApp(extra_environ={'HTTP_HOST': 'localhost'})
 
 
 @pytest.fixture
