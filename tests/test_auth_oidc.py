@@ -70,8 +70,8 @@ def test_idtoken():
     assert token.iss == payload_decoded['iss']
     assert token.aud == payload_decoded['aud']
     assert token.nonce == payload_decoded['nonce']
-    assert token.iat == datetime.datetime(2011, 7, 21, 22, 42, 50, tzinfo=UTC())
-    assert token.exp == datetime.datetime(2011, 7, 21, 22, 59, 30, tzinfo=UTC())
+    assert token.iat == datetime.datetime(2011, 7, 21, 20, 42, 50, tzinfo=UTC())
+    assert token.exp == datetime.datetime(2011, 7, 21, 20, 59, 30, tzinfo=UTC())
 
 
 @pytest.fixture

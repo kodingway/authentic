@@ -101,8 +101,7 @@ KEY_TYPES = {
 def parse_timestamp(tstamp):
     if not isinstance(tstamp, int):
         raise ValueError('%s' % tstamp)
-    tstamp = datetime.datetime.fromtimestamp(tstamp)
-    return make_aware(tstamp, timezone=UTC())
+    return datetime.datetime.fromtimestamp(tstamp, UTC())
 
 
 class IDToken(str):
