@@ -2,8 +2,7 @@
 {% load i18n %}
 {% block content %}
   <form method="post" id="a2-oidc-authorization-form">
-    <p>{% blocktrans with client_name=client.name %}Do you want to be authenticated on service {{
-    client_name }} ?{% endblocktrans %}</p>
+    <p>{% blocktrans with client_name=client.name %}Do you want to be authenticated on service {{ client_name }} ?{% endblocktrans %}</p>
     {% if scopes %}
       <p>{% trans "The following informations will be sent to the service:" %}</p>
       <ul>
