@@ -201,7 +201,7 @@ def authorize(request, *args, **kwargs):
             return render(request, 'authentic2_idp_oidc/authorization.html',
                           {
                               'client': client,
-                              'scopes': scopes,
+                              'scopes': scopes - set(['openid']),
                           })
     if response_type == 'code':
         code = models.OIDCCode.objects.create(
