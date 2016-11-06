@@ -58,7 +58,7 @@ class Migration(migrations.Migration):
                 ('max_auth_age', models.PositiveIntegerField(null=True, verbose_name='max authentication age', blank=True)),
                 ('created', models.DateTimeField(auto_now_add=True, verbose_name='created')),
                 ('modified', models.DateTimeField(auto_now=True, verbose_name='modified')),
-                ('ou', models.ForeignKey(default=authentic2.a2_rbac.utils.get_default_ou, verbose_name='organizational unit', to=settings.RBAC_OU_MODEL)),
+                ('ou', models.ForeignKey(verbose_name='organizational unit', to=settings.RBAC_OU_MODEL)),
             ],
         ),
         migrations.AddField(

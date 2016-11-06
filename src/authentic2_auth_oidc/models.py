@@ -11,7 +11,6 @@ from jsonfield import JSONField
 from jwcrypto.jwk import JWKSet, InvalidJWKValue
 
 from django_rbac.utils import get_ou_model_name
-from authentic2.a2_rbac.utils import get_default_ou
 
 from . import managers
 
@@ -94,7 +93,6 @@ class OIDCProvider(models.Model):
         verbose_name=_('strategy'))
     ou = models.ForeignKey(
         to=get_ou_model_name(),
-        default=get_default_ou,
         verbose_name=_('organizational unit'))
 
     # policy
