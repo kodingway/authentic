@@ -372,6 +372,13 @@ def find_authentication_event(request, nonce):
     return None
 
 
+def last_authentication_event(session):
+    authentication_events = session.get(constants.AUTHENTICATION_EVENTS_SESSION_KEY, [])
+    if authentication_events:
+        return authentication_events[-1]
+    return None
+
+
 def login(request, user, how, **kwargs):
     '''Login a user model, record the authentication event and redirect to next
        URL or settings.LOGIN_REDIRECT_URL.'''
