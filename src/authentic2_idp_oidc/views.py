@@ -213,10 +213,12 @@ def authorize(request, *args, **kwargs):
         logger.info(u'sending code %s for scopes %s for service %s',
                     code.uuid, ' '.join(scopes),
                     client.name)
-        return redirect(request, redirect_uri, params={
+        params = {
             'code': unicode(code.uuid),
-            'state': state
-        }, resolve=False)
+        }
+        if state:
+            params['state'] = state
+        return redirect(request, redirect_uri, params=params, resolve=False)
     else:
         # FIXME: we should probably factorize this part with the token endpoint similar code
         need_access_token = 'token' in response_type.split()
