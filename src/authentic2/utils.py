@@ -346,6 +346,8 @@ def record_authentication_event(request, how):
         'who': unicode(request.user),
         'who_id': getattr(request.user, 'pk', None),
         'how': how,
+        'when': int(time.time()),
+
     }
     kwargs = {
         'who': unicode(request.user)[:80],
