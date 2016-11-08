@@ -21,7 +21,7 @@ def validate_https_url(data):
     errors = []
     for url in data.split():
         try:
-            URLValidator(schemes=['https'])(url)
+            URLValidator(schemes=['http', 'https'])(url)
         except ValidationError as e:
             errors.append(e)
     if errors:
