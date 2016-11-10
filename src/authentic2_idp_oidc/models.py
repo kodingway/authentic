@@ -172,6 +172,9 @@ class OIDCCode(models.Model):
     def scope_set(self):
         return utils.scope_set(self.scopes)
 
+    def is_valid(self):
+        return self.expired >= now() and self.session is not None
+
     def __repr__(self):
         return '<OIDCAccessToken uuid:%s client:%s user:%s expired:%s scopes:%s>' % (
             self.uuid,

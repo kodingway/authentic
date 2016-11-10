@@ -307,6 +307,8 @@ def token(request, *args, **kwargs):
         oidc_code = models.OIDCCode.objects.select_related().get(uuid=code)
     except models.OIDCCode.DoesNotExist:
         return invalid_request('invalid code')
+    if not oidc_code.is_valid():
+        return invalid_request('invalid code', desc='code has expired or user is disconnected')
     client = authenticate_client(request, client=oidc_code.client)
     if client is None:
         return HttpResponse('unauthenticated', status=401)
