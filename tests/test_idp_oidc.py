@@ -534,3 +534,47 @@ def test_expired_manager(db, simple_user):
     assert OIDCAccessToken.objects.count() == 2
     OIDCAccessToken.objects.cleanup()
     assert OIDCAccessToken.objects.count() == 1
+
+
+@pytest.fixture
+def simple_oidc_client(db):
+    return OIDCClient.objects.create(
+        name='client',
+        slug='client',
+        ou=get_default_ou(),
+        redirect_uris='https://example.com/')
+
+
+def test_client_secret_post_authentication(oidc_settings, app, simple_oidc_client, simple_user):
+    utils.login(app, simple_user)
+    redirect_uri = simple_oidc_client.redirect_uris.split()[0]
+
+    params = {
+        'client_id': simple_oidc_client.client_id,
+        'scope': 'openid profile email',
+        'redirect_uri': redirect_uri,
+        'state': 'xxx',
+        'nonce': 'yyy',
+        'response_type': 'code',
+    }
+
+    authorize_url = make_url('oidc-authorize', params=params)
+    response = app.get(authorize_url)
+    response = response.form.submit('accept')
+    location = urlparse.urlparse(response['Location'])
+    query = urlparse.parse_qs(location.query)
+    code = query['code'][0]
+    token_url = make_url('oidc-token')
+    response = app.post(token_url, {
+        'grant_type': 'authorization_code',
+        'code': code,
+        'redirect_uri': redirect_uri,
+        'client_id': simple_oidc_client.client_id,
+        'client_secret': simple_oidc_client.client_secret,
+    })
+
+    assert 'error' not in response.json
+    assert 'access_token' in response.json
+    assert 'expires_in' in response.json
+    assert 'id_token' in response.json
+    assert response.json['token_type'] == 'Bearer'

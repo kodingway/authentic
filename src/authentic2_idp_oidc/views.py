@@ -27,6 +27,9 @@ def openid_configuration(request, *args, **kwargs):
         'jwks_uri': request.build_absolute_uri(reverse('oidc-certs')),
         'response_types_supported': ['code'],
         'subject_types_supported': ['public', 'pairwise'],
+        'token_endpoint_auth_methods_supported': [
+            'clien_secret_post', 'client_secret_basic',
+        ],
         'id_token_signing_alg_values_supported': [
             'RS256', 'HS256',
         ],
@@ -261,24 +264,31 @@ def authorize(request, *args, **kwargs):
 
 
 def authenticate_client(request, client=None):
-    if 'HTTP_AUTHORIZATION' not in request.META:
-        return None
-    authorization = request.META['HTTP_AUTHORIZATION'].split()
-    if authorization[0] != 'Basic' or len(authorization) != 2:
-        return None
-    try:
-        decoded = base64.b64decode(authorization[1])
-    except TypeError:
-        return None
-    parts = decoded.split(':')
-    if len(parts) != 2:
+    '''Authenticate client on the token endpoint'''
+
+    if 'HTTP_AUTHORIZATION' in request.META:
+        authorization = request.META['HTTP_AUTHORIZATION'].split()
+        if authorization[0] != 'Basic' or len(authorization) != 2:
+            return None
+        try:
+            decoded = base64.b64decode(authorization[1])
+        except TypeError:
+            return None
+        parts = decoded.split(':')
+        if len(parts) != 2:
+            return None
+        client_id, client_secret = parts
+    elif 'client_id' in request.POST:
+        client_id = request.POST['client_id']
+        client_secret = request.POST.get('client_secret', '')
+    else:
         return None
     if not client:
         try:
-            client = models.OIDCClient.objects.get(client_id=parts[0])
+            client = models.OIDCClient.objects.get(client_id=client_id)
         except models.OIDCClient.DoesNotExist:
             return None
-    if client.client_secret != parts[1]:
+    if client.client_secret != client_secret:
         return None
     return client
 
