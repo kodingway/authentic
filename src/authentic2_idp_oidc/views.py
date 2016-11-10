@@ -366,6 +366,7 @@ def authenticate_access_token(request):
 
 
 @setting_enabled('ENABLE', settings=app_settings)
+@csrf_exempt
 def user_info(request, *args, **kwargs):
     access_token = authenticate_access_token(request)
     if access_token is None:
