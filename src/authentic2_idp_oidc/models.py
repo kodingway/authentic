@@ -10,7 +10,7 @@ from django.utils.timezone import now
 
 from authentic2.models import Service
 
-from . import utils
+from . import utils, managers
 
 
 def generate_uuid():
@@ -118,6 +118,8 @@ class OIDCAuthorization(models.Model):
     expired = models.DateTimeField(
         verbose_name=_('expire'))
 
+    objects = managers.OIDCExpiredManager()
+
     def scope_set(self):
         return utils.scope_set(self.scopes)
 
@@ -161,6 +163,8 @@ class OIDCCode(models.Model):
         auto_now_add=True)
     expired = models.DateTimeField(
         verbose_name=_('expire'))
+
+    objects = managers.OIDCExpiredManager()
 
     @property
     def session(self):
@@ -209,6 +213,8 @@ class OIDCAccessToken(models.Model):
         auto_now_add=True)
     expired = models.DateTimeField(
         verbose_name=_('expire'))
+
+    objects = managers.OIDCExpiredManager()
 
     def scope_set(self):
         return utils.scope_set(self.scopes)

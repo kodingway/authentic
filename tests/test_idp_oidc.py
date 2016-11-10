@@ -475,3 +475,62 @@ def test_invalid_request(oidc_settings, oidc_client, simple_user, app):
     assert OIDCAuthorization.objects.count() == 1
     # old authorizations have been deleted
     assert OIDCAuthorization.objects.get().pk != authorize.pk
+
+
+def test_expired_manager(db, simple_user):
+    expired = now() - datetime.timedelta(seconds=1)
+    not_expired = now() + datetime.timedelta(days=1)
+    client = OIDCClient.objects.create(
+        name='client',
+        slug='client',
+        ou=get_default_ou(),
+        redirect_uris='https://example.com/')
+    OIDCAuthorization.objects.create(
+        client=client,
+        user=simple_user,
+        scopes='openid',
+        expired=expired)
+    OIDCAuthorization.objects.create(
+        client=client,
+        user=simple_user,
+        scopes='openid',
+        expired=not_expired)
+    assert OIDCAuthorization.objects.count() == 2
+    OIDCAuthorization.objects.cleanup()
+    assert OIDCAuthorization.objects.count() == 1
+
+    OIDCCode.objects.create(
+        client=client,
+        user=simple_user,
+        scopes='openid',
+        redirect_uri='https://example.com/',
+        session_key='xxx',
+        auth_time=now(),
+        expired=expired)
+    OIDCCode.objects.create(
+        client=client,
+        user=simple_user,
+        scopes='openid',
+        redirect_uri='https://example.com/',
+        session_key='xxx',
+        auth_time=now(),
+        expired=not_expired)
+    assert OIDCCode.objects.count() == 2
+    OIDCCode.objects.cleanup()
+    assert OIDCCode.objects.count() == 1
+
+    OIDCAccessToken.objects.create(
+        client=client,
+        user=simple_user,
+        scopes='openid',
+        session_key='xxx',
+        expired=expired)
+    OIDCAccessToken.objects.create(
+        client=client,
+        user=simple_user,
+        scopes='openid',
+        session_key='xxx',
+        expired=not_expired)
+    assert OIDCAccessToken.objects.count() == 2
+    OIDCAccessToken.objects.cleanup()
+    assert OIDCAccessToken.objects.count() == 1
