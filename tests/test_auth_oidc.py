@@ -17,6 +17,7 @@ from authentic2_auth_oidc.utils import base64url_decode, parse_id_token, IDToken
 from authentic2_auth_oidc.models import OIDCProvider, OIDCClaimMapping
 from authentic2.models import Attribute, AttributeValue
 from authentic2.utils import timestamp_from_datetime
+from authentic2.a2_rbac.utils import get_default_ou
 
 import utils
 
@@ -85,6 +86,7 @@ def oidc_provider_jwkset():
 @pytest.fixture
 def oidc_provider(db, oidc_provider_jwkset):
     provider = OIDCProvider.objects.create(
+        ou=get_default_ou(),
         name='OIDIDP',
         issuer='https://idp.example.com/',
         authorization_endpoint='https://idp.example.com/authorize',
