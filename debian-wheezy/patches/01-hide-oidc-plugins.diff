@@ -1,0 +1,25 @@
+diff --git a/setup.py b/setup.py
+index 5e0c5c8..fa58682 100755
+--- a/setup.py
++++ b/setup.py
+@@ -127,8 +127,6 @@ setup(name="authentic2",
+           'django-mellon',
+           'ldaptools',
+           'django-jsonfield < 1.0.0',
+-          'jwcrypto>=0.3.1,<1',
+-          'cryptography',
+       ],
+       extras_require = {
+           'idp-openid': ['python-openid'],
+@@ -160,11 +158,9 @@ setup(name="authentic2",
+           'authentic2.plugin': [
+               'authentic2-auth-ssl = authentic2.auth2_auth.auth2_ssl:Plugin',
+               'authentic2-auth-saml = authentic2_auth_saml:Plugin',
+-              'authentic2-auth-oidc = authentic2_auth_oidc:Plugin',
+               'authentic2-idp-saml2 = authentic2.idp.saml:Plugin',
+               'authentic2-idp-openid = authentic2_idp_openid:Plugin',
+               'authentic2-idp-cas = authentic2_idp_cas:Plugin',
+-              'authentic2-idp-oidc = authentic2_idp_oidc:Plugin',
+               'authentic2-provisionning-ldap = authentic2_provisionning_ldap:Plugin',
+           ],
+       })
