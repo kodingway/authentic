@@ -137,7 +137,7 @@ class ServiceTable(tables.Table):
         models = Service
         attrs = {'class': 'main', 'id': 'service-table'}
         empty_text = _('None')
-        order_by = ('name', 'slug')
+        order_by = ('ou', 'name', 'slug')
 
 
 class ServiceRolesTable(tables.Table):
