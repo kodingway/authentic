@@ -13,14 +13,11 @@
 {% block sidebar %}
    {% include "authentic2/manager/search_form.html" %}
    <div id="details">
-     <h3>{{ object }}</h3>
      <dl>
        {% if object.ou %}
          <dt>{% trans "Organizational unit" %}</dt>
          <dd>{{ object.ou }}</dd>
        {% endif %}
-       <dt>{% trans "Name" %}</dt>
-       <dd>{{ object.name }}</dd>
        <dt>{% trans "Slug" %}</dt>
        <dd>{{ object.slug }}</dd>
      </dl>

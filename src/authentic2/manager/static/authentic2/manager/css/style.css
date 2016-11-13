@@ -81,6 +81,9 @@ table.users tbody tr td:nth-child(2):hover {
   float: right;
 }
 
+#details {
+	margin-top: 2em;
+}
 
 .form-inner-container {
   width: 100%;
