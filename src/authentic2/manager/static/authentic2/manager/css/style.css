@@ -14,14 +14,11 @@ div.content {
 	margin-bottom: 2em;
 }
 
-#sidebar input {
-	max-width: calc(100% - 20px);
-}
-
+#sidebar input,
+#sidebar select,
 #sidebar button {
        width: 100%;
 }
-
 
 #sidebar ul.roles {
 	padding: 0;
@@ -224,15 +221,8 @@ form input[type="checkbox"] {
   font-size: inherit;
 }
 
-div.ui-dialog form p select, form p select{
-    background-color: white;
-    border: 1px solid #bbb;
-    box-shadow: none;
-    color: black;
-    display: inline;
-    font-size: 0.99em;
-    padding: 6px 8px;
-    width: calc(100% - 6px);
+div.ui-dialog form p select, form p select {
+  width: calc(100% - 28px);
 }
 
 #id_generate_password_p label, #id_reset_password_at_next_login_p label,
