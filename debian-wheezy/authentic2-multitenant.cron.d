@@ -1,4 +1,5 @@
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=root
 
 0 * * * * authentic-multitenant authentic2-multitenant-manage tenant_command clearsessions --all-tenants
 5 * * * * authentic-multitenant authentic2-multitenant-manage tenant_command cleanupauthentic --all-tenants
