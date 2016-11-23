@@ -6,7 +6,7 @@ from django.conf import settings
 from django.shortcuts import render, get_object_or_404
 from django.utils.translation import ugettext as _
 from django.contrib import messages
-from django.contrib.auth import login as django_login, logout, REDIRECT_FIELD_NAME
+from django.contrib.auth import logout, REDIRECT_FIELD_NAME
 from django.core import signing
 from django.views.generic.edit import FormView, CreateView
 from django.views.generic.base import TemplateView
@@ -15,7 +15,8 @@ from django.forms import CharField, Form
 from django.core.urlresolvers import reverse_lazy
 from django.template import RequestContext
 
-from authentic2.utils import import_module_or_class, redirect, make_url, get_fields_and_labels
+from authentic2.utils import (import_module_or_class, redirect, make_url, get_fields_and_labels,
+                              login)
 from authentic2.a2_rbac.utils import get_default_ou
 
 from django_rbac.utils import get_ou_model
@@ -49,9 +50,10 @@ def valid_token(method):
         return method(request, *args, **kwargs)
     return f
 
-def login(request, user):
+
+def email_login(request, user):
     user.backend = 'authentic2.backends.models_backend.ModelBackend'
-    django_login(request, user)
+    login(request, user, 'email')
 
 
 class RegistrationView(cbv.ValidateCSRFMixin, FormView):
@@ -208,7 +210,7 @@ class RegistrationCompletionView(CreateView):
     def get(self, request, *args, **kwargs):
         if len(self.users) == 1 and self.email_is_unique:
             # Found one user, EMAIL is unique, log her in
-            login(request, self.users[0])
+            email_login(request, self.users[0])
             return redirect(request, self.get_success_url())
         if all(field in self.token for field in self.fields) \
                 and not self.token.get('confirm_data', False):
@@ -224,7 +226,7 @@ class RegistrationCompletionView(CreateView):
             form = form_class(**form_kwargs)
             if form.is_valid():
                 user = form.save()
-                login(request, user)
+                email_login(request, user)
                 return redirect(request, self.get_success_url())
             self.get_form = lambda *args, **kwargs: form
         return super(RegistrationCompletionView, self).get(request, *args,
@@ -239,7 +241,7 @@ class RegistrationCompletionView(CreateView):
             uid = request.POST['uid']
             for user in self.users:
                 if str(user.id) == uid:
-                    login(request, user)
+                    email_login(request, user)
                     return redirect(request, self.get_success_url())
         return super(RegistrationCompletionView, self).post(request, *args, **kwargs)
 
@@ -265,7 +267,7 @@ class RegistrationCompletionView(CreateView):
                                    **data)
             return redirect(self.request, 'registration_complete')
         ret = super(RegistrationCompletionView, self).form_valid(form)
-        login(self.request, self.object)
+        email_login(self.request, self.object)
         return ret
 
 class DeleteView(FormView):
