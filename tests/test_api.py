@@ -233,7 +233,6 @@ def test_api_users_create_send_mail(app, settings, superuser):
     assert re.findall('http://[^ ]*/', mail.outbox[0].body)
     url = re.findall('http://[^ ]*/', mail.outbox[0].body)[0]
     relative_url = url.split('localhost')[1]
-    print relative_url
     resp = app.get(relative_url, status=200)
     resp.form.set('new_password1', '1234aA')
     resp.form.set('new_password2', '1234aA')
@@ -404,7 +403,6 @@ def test_register_ou_no_email_validation(app, admin, django_user_model):
     response = app.post_json(reverse('a2-api-register'), payload, headers=headers)
     assert len(mail.outbox) == 0
     assert response.status_code == 201
-    print response.json
     assert response.json['result'] == 1
     assert response.json['user']['username'] == username
     assert response.json['user']['email'] == email
