@@ -171,9 +171,17 @@ class LoginCallback(View):
                                  'request_id': request.request_id,
             })
             return self.continue_to_next_url()
+        logger.info(u'got token response %s', result)
         access_token = result.get('access_token')
         user = authenticate(access_token=access_token, id_token=result['id_token'])
         if user:
+            # remember last tokens for logout
+            tokens = request.session.setdefault('auth_oidc', {}).setdefault('tokens', [])
+            tokens.append({
+                'token_response': result,
+                'provider_pk': provider.pk,
+            })
+            request.session.modified = True
             login(request, user, 'oidc')
         else:
             messages.warning(request, _('No user found'))
@@ -181,8 +189,3 @@ class LoginCallback(View):
 
 
 login_callback = setting_enabled('ENABLE', settings=app_settings)(LoginCallback.as_view())
-
-
-@setting_enabled('ENABLE', settings=app_settings)
-def logout(request, *args, **kwargs):
-    return

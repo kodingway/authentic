@@ -91,6 +91,7 @@ def oidc_provider(db, oidc_provider_jwkset):
         issuer='https://idp.example.com/',
         authorization_endpoint='https://idp.example.com/authorize',
         token_endpoint='https://idp.example.com/token',
+        end_session_endpoint='https://idp.example.com/logout',
         userinfo_endpoint='https://idp.example.com/user_info',
         max_auth_age=10,
         strategy=OIDCProvider.STRATEGY_CREATE,
@@ -270,3 +271,7 @@ def test_sso(app, caplog, code, oidc_provider, login_url, login_callback_url):
         response = app.get(login_callback_url, {'code': code, 'state': query['state']})
     assert AttributeValue.objects.filter(content='"Doe"', verified=False).count() == 0
     assert AttributeValue.objects.filter(content='"Doe"', verified=True).count() == 1
+
+    response = app.get(reverse('account_management'))
+    response = response.click(href='logout')
+    assert 'https://idp.example.com/logout' in response.content

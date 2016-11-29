@@ -67,7 +67,6 @@ def parse_id_token(id_token):
         raise ValueError('JOSE header is not a dict %r' % headers)
     if 'typ' in headers and headers.get('typ') != 'JWT':
         raise ValueError('JOSE type is not JWT: %s' % headers)
-    print 'headers', headers
     try:
         payload = base64url_decode(payload[1])
     except TypeError as e:
