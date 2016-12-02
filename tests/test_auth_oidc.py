@@ -15,7 +15,7 @@ from django.utils.timezone import now
 
 from authentic2_auth_oidc.utils import base64url_decode, parse_id_token, IDToken
 from authentic2_auth_oidc.models import OIDCProvider, OIDCClaimMapping
-from authentic2.models import Attribute, AttributeValue
+from authentic2.models import AttributeValue
 from authentic2.utils import timestamp_from_datetime
 from authentic2.a2_rbac.utils import get_default_ou
 
@@ -93,6 +93,7 @@ def oidc_provider(db, oidc_provider_jwkset):
         token_endpoint='https://idp.example.com/token',
         end_session_endpoint='https://idp.example.com/logout',
         userinfo_endpoint='https://idp.example.com/user_info',
+        token_revocation_endpoint='https://idp.example.com/revoke',
         max_auth_age=10,
         strategy=OIDCProvider.STRATEGY_CREATE,
         jwkset_json=oidc_provider_jwkset.export(),
@@ -136,6 +137,7 @@ def oidc_provider_mock(oidc_provider, code, extra_id_token=None,
                        extra_user_info=None):
     token_endpoint = urlparse.urlparse(oidc_provider.token_endpoint)
     userinfo_endpoint = urlparse.urlparse(oidc_provider.userinfo_endpoint)
+    token_revocation_endpoint = urlparse.urlparse(oidc_provider.token_revocation_endpoint)
     sub = 'john.doe'
 
     jwkset = oidc_provider.jwkset
@@ -195,7 +197,13 @@ def oidc_provider_mock(oidc_provider, code, extra_id_token=None,
                 'content-type': 'application/json',
             },
         }
-    return HTTMock(token_endpoint_mock, user_info_endpoint_mock)
+
+    @urlmatch(netloc=token_revocation_endpoint.netloc, path=token_revocation_endpoint.path)
+    def token_revocation_endpoint_mock(url, request):
+        query = urlparse.parse_qs(request.body)
+        assert 'token' in query
+        return {}
+    return HTTMock(token_endpoint_mock, user_info_endpoint_mock, token_revocation_endpoint_mock)
 
 
 @pytest.fixture
@@ -273,5 +281,7 @@ def test_sso(app, caplog, code, oidc_provider, login_url, login_callback_url):
     assert AttributeValue.objects.filter(content='"Doe"', verified=True).count() == 1
 
     response = app.get(reverse('account_management'))
-    response = response.click(href='logout')
+    with utils.check_log(caplog, 'revoked token from OIDC'):
+        with oidc_provider_mock(oidc_provider, code):
+            response = response.click(href='logout')
     assert 'https://idp.example.com/logout' in response.content

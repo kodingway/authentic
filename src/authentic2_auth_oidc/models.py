@@ -72,6 +72,11 @@ class OIDCProvider(models.Model):
         blank=True,
         null=True,
         verbose_name=_('end session endpoint'))
+    token_revocation_endpoint = models.URLField(
+        max_length=128,
+        blank=True,
+        null=True,
+        verbose_name=_('token revocation endpoint'))
     scopes = models.CharField(
         max_length=128,
         blank=True,
