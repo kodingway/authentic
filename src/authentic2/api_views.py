@@ -370,9 +370,6 @@ class UsersAPI(ModelViewSet):
         self.check_perm('custom_user.delete_user', instance.ou)
         super(UsersAPI, self).perform_destroy(instance)
 
-router = SimpleRouter()
-router.register(r'users', UsersAPI, base_name='a2-api-users')
-
 
 class RolesAPI(APIView):
     permission_classes = (permissions.IsAuthenticated,)
@@ -415,4 +412,5 @@ class OrganizationalUnitAPI(ModelViewSet):
         return get_ou_model().objects.all()
 
 router = SimpleRouter()
+router.register(r'users', UsersAPI, base_name='a2-api-users')
 router.register(r'ous', OrganizationalUnitAPI, base_name='a2-api-ous')
