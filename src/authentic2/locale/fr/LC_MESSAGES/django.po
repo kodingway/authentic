@@ -1084,8 +1084,8 @@ msgstr "Enregistrement réussi"
 #: authentic2/templates/registration/registration_complete.html:9
 msgid "Thank you for registering. Activation email sent."
 msgstr ""
-"Vous êtes maintenant enregistré. Un courriel d'activation vient de vous être "
-"envoyé."
+"Vous allez recevoir un mail permettant de valider votre compte. Vous pourrez ensuite compléter"
+" votre profil"
 
 #: authentic2/templates/registration/registration_completion_form.html:6
 #: authentic2/templates/registration/registration_completion_form.html:50
