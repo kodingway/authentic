@@ -10,6 +10,7 @@ from authentic2.compat import atomic
 
 from authentic2_auth_oidc.utils import register_issuer
 from authentic2_auth_oidc.models import OIDCClaimMapping, OIDCProvider
+from django_rbac.utils import get_ou_model
 
 
 class Command(BaseCommand):
@@ -32,6 +33,7 @@ class Command(BaseCommand):
                     help='do not verify TLS certificates'),
         make_option('--show', default=False, action='store_true',
                     help='show provider configuration'),
+        make_option('--ou-slug', help='slug of the ou, if absent default ou is used'),
     )
     args = '<name>'
     help = 'Register an OpenID Connect OP'
@@ -44,9 +46,14 @@ class Command(BaseCommand):
             openid_configuration = json.load(open(openid_configuration))
         if issuer or openid_configuration:
             try:
+                ou = None
+                if options.get('ou_slug'):
+                    OU = get_ou_model()
+                    ou = OU.objects.get(slug=options['ou_slug'])
                 provider = register_issuer(name, issuer=issuer,
                                            openid_configuration=openid_configuration,
-                                           verify=not options['no_verify'])
+                                           verify=not options['no_verify'],
+                                           ou=ou)
             except ValueError as e:
                 raise CommandError(e)
         else:

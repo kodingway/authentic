@@ -11,6 +11,7 @@ from django.utils.translation import ugettext as _
 
 from authentic2.decorators import GlobalCache
 from authentic2.models import Attribute
+from authentic2.a2_rbac.utils import get_default_ou
 
 TIMEOUT = 1
 
@@ -184,7 +185,8 @@ def check_https(url):
     return urlparse.urlparse(url).scheme == 'https'
 
 
-def register_issuer(name, issuer=None, openid_configuration=None, verify=True, timeout=None):
+def register_issuer(name, issuer=None, openid_configuration=None, verify=True, timeout=None,
+                    ou=None):
     from . import models
 
     if issuer and not openid_configuration:
@@ -247,6 +249,7 @@ def register_issuer(name, issuer=None, openid_configuration=None, verify=True, t
         raise ValueError(_('no common algorithm found for signing idtokens: %s') %
                          openid_configuration['id_token_signing_alg_values_supported'])
     kwargs = dict(
+        ou=ou or get_default_ou(),
         name=name,
         issuer=openid_configuration['issuer'],
         authorization_endpoint=openid_configuration['authorization_endpoint'],
