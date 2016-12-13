@@ -1,0 +1,153 @@
+# authentic2 french l10n
+# Copyright (C) 2016 Entr'ouvert
+# This file is distributed under the same license as the Authentic package.
+# Benjamin Dauvergne <bdauvergne@entrouvert.com>, 2016.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Authentic\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-12-13 19:18+0100\n"
+"PO-Revision-Date: 2016-12-13 19:18+0100\n"
+"Last-Translator: Benjamin Dauvergne <bdauvergne@entrouvert.com>\n"
+"Language-Team: None\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: src/authentic2_idp_oidc/__init__.py:18
+msgid "OpenID Connect authentication"
+msgstr "Authentification OpenID Connect"
+
+#: src/authentic2_idp_oidc/models.py:41 src/authentic2_idp_oidc/models.py:136
+#: src/authentic2_idp_oidc/models.py:196
+msgid "uuid"
+msgstr ""
+
+#: src/authentic2_idp_oidc/models.py:42
+msgid "pairwise"
+msgstr "par paire"
+
+#: src/authentic2_idp_oidc/models.py:43
+msgid "email"
+msgstr ""
+
+#: src/authentic2_idp_oidc/models.py:49
+msgid "RSA"
+msgstr ""
+
+#: src/authentic2_idp_oidc/models.py:50
+msgid "HMAC"
+msgstr ""
+
+#: src/authentic2_idp_oidc/models.py:55
+msgid "authorization code"
+msgstr ""
+
+#: src/authentic2_idp_oidc/models.py:56
+msgid "implicit/native"
+msgstr ""
+
+#: src/authentic2_idp_oidc/models.py:61
+msgid "client id"
+msgstr ""
+
+#: src/authentic2_idp_oidc/models.py:66
+msgid "client secret"
+msgstr ""
+
+#: src/authentic2_idp_oidc/models.py:69
+msgid "authorization flow"
+msgstr ""
+
+#: src/authentic2_idp_oidc/models.py:73
+msgid "redirect URIs"
+msgstr "URIs de redirection"
+
+#: src/authentic2_idp_oidc/models.py:76
+msgid "sector identifier URI"
+msgstr "URI d'identifiant de secteur"
+
+#: src/authentic2_idp_oidc/models.py:79
+msgid "identifier policy"
+msgstr "politique des identifiants"
+
+#: src/authentic2_idp_oidc/models.py:85
+msgid "IDToken signature algorithm"
+msgstr "algorithme de signature de l'IDToken"
+
+#: src/authentic2_idp_oidc/models.py:89 src/authentic2_idp_oidc/models.py:116
+#: src/authentic2_idp_oidc/models.py:162 src/authentic2_idp_oidc/models.py:212
+msgid "created"
+msgstr "créé"
+
+#: src/authentic2_idp_oidc/models.py:92
+msgid "modified"
+msgstr "modifié"
+
+#: src/authentic2_idp_oidc/models.py:106 src/authentic2_idp_oidc/models.py:140
+#: src/authentic2_idp_oidc/models.py:200
+msgid "client"
+msgstr ""
+
+#: src/authentic2_idp_oidc/models.py:109 src/authentic2_idp_oidc/models.py:143
+#: src/authentic2_idp_oidc/models.py:203
+msgid "user"
+msgstr ""
+
+#: src/authentic2_idp_oidc/models.py:112 src/authentic2_idp_oidc/models.py:145
+#: src/authentic2_idp_oidc/models.py:205
+msgid "scopes"
+msgstr ""
+
+#: src/authentic2_idp_oidc/models.py:119 src/authentic2_idp_oidc/models.py:165
+#: src/authentic2_idp_oidc/models.py:215
+msgid "expire"
+msgstr "expiration"
+
+#: src/authentic2_idp_oidc/models.py:148
+msgid "state"
+msgstr ""
+
+#: src/authentic2_idp_oidc/models.py:151
+msgid "nonce"
+msgstr ""
+
+#: src/authentic2_idp_oidc/models.py:153
+msgid "redirect URI"
+msgstr ""
+
+#: src/authentic2_idp_oidc/models.py:155 src/authentic2_idp_oidc/models.py:207
+msgid "session key"
+msgstr ""
+
+#: src/authentic2_idp_oidc/models.py:158
+msgid "auth time"
+msgstr ""
+
+#: src/authentic2_idp_oidc/templates/authentic2_idp_oidc/authorization.html:5
+#, python-format
+msgid "Do you want to be authenticated on service %(client_name)s ?"
+msgstr "Souhaitez vous être authentifié sur le service %(client_name)s&nbsp;?"
+
+#: src/authentic2_idp_oidc/templates/authentic2_idp_oidc/authorization.html:7
+msgid "The following informations will be sent to the service:"
+msgstr "Les informations suivantes seront envoyées au service&nbsp;:"
+
+#: src/authentic2_idp_oidc/templates/authentic2_idp_oidc/authorization.html:11
+msgid "Your first and last name, your username,"
+msgstr "Vos prénom, nom et identifiants."
+
+#: src/authentic2_idp_oidc/templates/authentic2_idp_oidc/authorization.html:13
+msgid "Your email"
+msgstr "Votre email."
+
+#: src/authentic2_idp_oidc/templates/authentic2_idp_oidc/authorization.html:19
+msgid "Accept"
+msgstr "Accepter"
+
+#: src/authentic2_idp_oidc/templates/authentic2_idp_oidc/authorization.html:20
+msgid "Refuse"
+msgstr "Refuser"
