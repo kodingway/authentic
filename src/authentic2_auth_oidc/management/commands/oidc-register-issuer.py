@@ -85,10 +85,15 @@ class Command(BaseCommand):
             claim, attribute = tup[:2]
             claim_options = map(str.strip, tup[2:])
             extra = {
-                'verified': 'verified' in claim_options,
                 'required': 'required' in claim_options,
                 'idtoken_claim': 'idtoken' in claim_options,
             }
+            if 'always_verified' in claim_options:
+                extra['verified'] = OIDCClaimMapping.ALWAYS_VERIFIED
+            elif 'verified' in claim_options:
+                extra['verified'] = OIDCClaimMapping.VERIFIED_CLAIM
+            else:
+                extra['verified'] = OIDCClaimMapping.NOT_VERIFIED
             o, created = OIDCClaimMapping.objects.get_or_create(
                 provider=provider,
                 claim=claim,
