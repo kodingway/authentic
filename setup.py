@@ -7,6 +7,7 @@
 import subprocess
 import sys
 import os
+import glob
 
 from setuptools import setup, find_packages
 from setuptools.command.install_lib import install_lib as _install_lib
@@ -30,8 +31,7 @@ class compile_translations(Command):
         try:
             os.environ.pop('DJANGO_SETTINGS_MODULE', None)
             from django.core.management import call_command
-            for dir in ('src/authentic2', 'src/authentic2_idp_openid', 'src/authentic2_idp_cas',
-                        'src/django_rbac'):
+            for dir in glob.glob('src/*'):
                 for path, dirs, files in os.walk(dir):
                     if 'locale' not in dirs:
                         continue
