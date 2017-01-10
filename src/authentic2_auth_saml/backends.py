@@ -2,8 +2,15 @@ from mellon.backends import SAMLBackend
 
 from authentic2.middleware import StoreRequestMiddleware
 
+from . import app_settings
+
 
 class SAMLBackend(SAMLBackend):
+    def authenticate(self, **credentials):
+        if not app_settings.enable:
+            return None
+        return super(SAMLBackend, self).authenticate(**credentials)
+
     def get_saml2_authn_context(self):
         # Pass AuthnContextClassRef from the previous IdP
         request = StoreRequestMiddleware.get_request()
