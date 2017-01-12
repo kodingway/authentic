@@ -21,7 +21,7 @@ from . import app_settings, models, utils
 @setting_enabled('ENABLE', settings=app_settings)
 def openid_configuration(request, *args, **kwargs):
     metadata = {
-        'issuer': request.build_absolute_uri(''),
+        'issuer': request.build_absolute_uri('/'),
         'authorization_endpoint': request.build_absolute_uri(reverse('oidc-authorize')),
         'token_endpoint': request.build_absolute_uri(reverse('oidc-token')),
         'jwks_uri': request.build_absolute_uri(reverse('oidc-certs')),
@@ -237,7 +237,7 @@ def authorize(request, *args, **kwargs):
         if nonce and last_auth.get('nonce') == nonce:
             acr = 1
         id_token = {
-            'iss': request.build_absolute_uri(''),
+            'iss': request.build_absolute_uri('/'),
             'sub': utils.make_sub(client, request.user),
             'aud': client.client_id,
             'exp': timestamp_from_datetime(
@@ -340,7 +340,7 @@ def token(request, *args, **kwargs):
             oidc_code.nonce):
         acr = 1
     id_token = {
-        'iss': request.build_absolute_uri(''),
+        'iss': request.build_absolute_uri('/'),
         'sub': utils.make_sub(client, oidc_code.user),
         'aud': client.client_id,
         'exp': timestamp_from_datetime(
