@@ -14,10 +14,18 @@ div.content {
 	margin-bottom: 2em;
 }
 
+#sidebar label {
+        display: inline;
+}
+
 #sidebar input,
 #sidebar select,
 #sidebar button {
        width: 100%;
+}
+
+#sidebar input[type="checkbox"] {
+       width: auto;
 }
 
 #sidebar ul.roles {

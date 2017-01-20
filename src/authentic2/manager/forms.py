@@ -273,10 +273,16 @@ class ServiceRoleSearchForm(CssClass, PrefixFormMixin, forms.Form):
     text = forms.CharField(
         label=_('Name'),
         required=False)
+    internals = forms.BooleanField(
+        initial=False,
+        label=_('Show internal roles'),
+        required=False)
 
     def filter(self, qs):
         if self.cleaned_data.get('text'):
             qs = qs.filter(name__icontains=self.cleaned_data['text'])
+        if not self.cleaned_data.get('internals'):
+            qs = qs.exclude(slug__startswith='_a2')
         return qs
 
 
