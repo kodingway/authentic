@@ -19,6 +19,9 @@ def generate_uuid():
 
 def validate_https_url(data):
     errors = []
+    data = data.strip()
+    if not data:
+        return
     for url in data.split():
         try:
             URLValidator(schemes=['http', 'https'])(url)
@@ -72,6 +75,10 @@ class OIDCClient(Service):
     redirect_uris = models.TextField(
         verbose_name=_('redirect URIs'),
         validators=[validate_https_url])
+    post_logout_redirect_uris = models.TextField(
+        verbose_name=_('post logout redirect URIs'),
+        default='',
+        validators=[validate_https_url])
     sector_identifier_uri = models.URLField(
         verbose_name=_('sector identifier URI'),
         blank=True)
@@ -94,6 +101,7 @@ class OIDCClient(Service):
 
     def clean(self):
         self.redirect_uris = strip_words(self.redirect_uris)
+        self.post_logout_redirect_uris = strip_words(self.post_logout_redirect_uris)
 
     def __repr__(self):
         return ('<OIDCClient name:%r client_id:%s identifier_policy:%s>' %

@@ -19,6 +19,9 @@ __patterns = [
     url(r'^idp/oidc/user_info/$',
         views.user_info,
         name='oidc-user-info'),
+    url(r'^idp/oidc/logout/$',
+        views.logout,
+        name='oidc-logout'),
 ]
 
 urlpatterns = patterns('', *__patterns)

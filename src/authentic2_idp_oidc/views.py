@@ -10,10 +10,15 @@ from django.utils.http import urlencode
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.core.urlresolvers import reverse
+from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.contrib import messages
+from django.conf import settings
+from django.utils.translation import ugettext as _
 
 from authentic2.decorators import setting_enabled
 from authentic2.utils import (login_require, redirect, timestamp_from_datetime,
                               last_authentication_event)
+from authentic2.views import logout as a2_logout
 
 from . import app_settings, models, utils
 
@@ -25,6 +30,7 @@ def openid_configuration(request, *args, **kwargs):
         'authorization_endpoint': request.build_absolute_uri(reverse('oidc-authorize')),
         'token_endpoint': request.build_absolute_uri(reverse('oidc-token')),
         'jwks_uri': request.build_absolute_uri(reverse('oidc-certs')),
+        'end_session_endpoint': request.build_absolute_uri(reverse('oidc-logout')),
         'response_types_supported': ['code'],
         'subject_types_supported': ['public', 'pairwise'],
         'token_endpoint_auth_methods_supported': [
@@ -397,3 +403,23 @@ def user_info(request, *args, **kwargs):
         user_info['email'] = user.email
         user_info['email_verified'] = True
     return HttpResponse(json.dumps(user_info), content_type='application/json')
+
+
+@setting_enabled('ENABLE', settings=app_settings)
+def logout(request):
+    post_logout_redirect_uri = request.GET['post_logout_redirect_uri']
+    providers = models.OIDCClient.objects.filter(
+        post_logout_redirect_uris__contains=post_logout_redirect_uri)
+    for provider in providers:
+        if post_logout_redirect_uri in provider.post_logout_redirect_uris.split():
+            break
+    else:
+        messages.warning(request, _('Invalid post logout URI'))
+        return redirect(request, settings.LOGIN_REDIRECT_URL)
+    id_token_hint = request.GET.get('id_token_hint')
+    # FIXME: do something with id_token_hint
+    params = {}
+    if post_logout_redirect_uri:
+        params[REDIRECT_FIELD_NAME] = post_logout_redirect_uri
+    return a2_logout(request, next_url=post_logout_redirect_uri, do_local=False,
+                     check_referer=False)

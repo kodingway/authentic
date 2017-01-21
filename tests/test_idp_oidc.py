@@ -72,6 +72,7 @@ def oidc_client(request, superuser, app):
     response.form.set('slug', 'oidcclient')
     response.form.set('ou', get_default_ou().pk)
     response.form.set('redirect_uris', 'https://example.com/callback')
+    response.form.set('post_logout_redirect_uris', 'https://example.com/')
     for key, value in request.param.iteritems():
         response.form.set(key, value)
     response = response.form.submit().follow()
@@ -204,6 +205,15 @@ def test_authorization_code_sso(login_first, oidc_settings, oidc_client, simple_
     assert response.json['family_name'] == simple_user.last_name
     assert response.json['email'] == simple_user.email
     assert response.json['email_verified'] is True
+
+    # Now logout
+    logout_url = make_url('oidc-logout', params={
+        'post_logout_redirect_uri': 'https://example.com/',
+    })
+    response = app.get(logout_url)
+    assert 'You have been logged out' in response.content
+    assert 'https://example.com' in response.content
+    assert '_auth_user_id' not in app.session
 
 
 def assert_oidc_error(response, error, error_description=None, fragment=False):
@@ -475,6 +485,14 @@ def test_invalid_request(oidc_settings, oidc_client, simple_user, app):
     assert OIDCAuthorization.objects.count() == 1
     # old authorizations have been deleted
     assert OIDCAuthorization.objects.get().pk != authorize.pk
+
+    # invalid logout
+    logout_url = make_url('oidc-logout', params={
+        'post_logout_redirect_uri': 'https://whatever.com/',
+    })
+    response = app.get(logout_url)
+    assert '_auth_user_id' in app.session
+    assert 'Location' in response.headers
 
 
 def test_expired_manager(db, simple_user):
