@@ -921,6 +921,12 @@ class LDAPBackend(object):
                 log.error('admin bind failed on %s: invalid dn syntax %r', url, who)
                 if block['replicas']:
                     break
+            except (ldap.TIMEOUT, ldap.CONNECT_ERROR, ldap.SERVER_DOWN):
+                if block['replicas']:
+                    log.warning('ldap %r is down', url)
+                else:
+                    log.error('ldap %r is down', url)
+                continue
 
     @classmethod
     def get_connection(cls, block, credentials=()):
