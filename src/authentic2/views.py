@@ -137,7 +137,7 @@ def su(request, username, redirect_url='/'):
 class EmailChangeView(cbv.TemplateNamesMixin, FormView):
     template_names = [
         'profiles/email_change.html',
-        'authentic2//change_email.html'
+        'authentic2/change_email.html'
     ]
     success_url = '..'
 
