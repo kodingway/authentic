@@ -173,6 +173,7 @@ class EmailChangeView(cbv.TemplateNamesMixin, FormView):
                'user': self.request.user,
                'link': link,
                'domain': self.request.get_host(),
+               'token_lifetime': utils.human_duration(app_settings.A2_EMAIL_CHANGE_TOKEN_LIFETIME),
         }
 
         utils.send_templated_mail(
@@ -199,7 +200,8 @@ class EmailChangeVerifyView(TemplateView):
         if 'token' in request.GET:
             User = compat.get_user_model()
             try:
-                token = signing.loads(request.GET['token'], max_age=7200)
+                token = signing.loads(request.GET['token'],
+                                      max_age=app_settings.A2_EMAIL_CHANGE_TOKEN_LIFETIME)
                 user_pk = token['user_pk']
                 email = token['email']
                 user = User.objects.get(pk=user_pk)

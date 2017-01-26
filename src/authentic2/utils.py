@@ -24,7 +24,7 @@ from django.forms.util import ErrorList
 from django.forms.utils import to_current_timezone
 from django.utils import timezone
 from django.utils import html, http
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as _, ungettext
 from django.shortcuts import resolve_url
 from django.template.loader import render_to_string, TemplateDoesNotExist
 from django.core.mail import send_mail
@@ -814,3 +814,23 @@ def timestamp_from_datetime(dt):
     '''Convert an aware datetime as an Unix timestamp'''
     utc_naive = dt.replace(tzinfo=None) - dt.utcoffset()
     return int((utc_naive - datetime.datetime(1970, 1, 1)).total_seconds())
+
+
+def human_duration(seconds):
+    day = (24 * 3600)
+    hour = 3600
+    minute = 60
+    days, seconds = seconds // day, seconds % day
+    hours, seconds = seconds // hour, seconds % hour
+    minutes, seconds = seconds // minute, seconds % minute
+
+    s = []
+    if days:
+        s.append(ungettext('%s day', '%s days', days) % days)
+    if hours:
+        s.append(ungettext('%s hour', '%s hours', hours) % hours)
+    if minutes:
+        s.append(ungettext('%s minute', '%s minutes', minutes) % minutes)
+    if seconds:
+        s.append(ungettext('%s second', '%s seconds', seconds) % seconds)
+    return ', '.join(s)

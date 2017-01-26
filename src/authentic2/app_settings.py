@@ -162,6 +162,8 @@ default_settings = dict(
     A2_VERIFY_SSL=Setting(default=True, definition='Verify SSL certificate in HTTP requests'),
     A2_ATTRIBUTE_KIND_TITLE_CHOICES=Setting(default=(), definition='Choices for the title attribute kind'),
     A2_CORS_WHITELIST=Setting(default=(), definition='List of origin URL to whitelist, must be scheme://netloc[:port]'),
+    A2_EMAIL_CHANGE_TOKEN_LIFETIME=Setting(default=7200, definition='Lifetime in seconds of the '
+                                           'token sent to verify email adresses'),
 )
 
 app_settings = AppSettings(default_settings)
