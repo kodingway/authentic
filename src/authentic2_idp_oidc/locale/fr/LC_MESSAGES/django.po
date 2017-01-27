@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-13 19:18+0100\n"
+"POT-Creation-Date: 2017-01-27 14:19+0100\n"
 "PO-Revision-Date: 2016-12-13 19:18+0100\n"
 "Last-Translator: Benjamin Dauvergne <bdauvergne@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -21,109 +21,113 @@ msgstr ""
 msgid "OpenID Connect authentication"
 msgstr "Authentification OpenID Connect"
 
-#: src/authentic2_idp_oidc/models.py:41 src/authentic2_idp_oidc/models.py:136
-#: src/authentic2_idp_oidc/models.py:196
+#: src/authentic2_idp_oidc/models.py:44 src/authentic2_idp_oidc/models.py:144
+#: src/authentic2_idp_oidc/models.py:204
 msgid "uuid"
 msgstr ""
 
-#: src/authentic2_idp_oidc/models.py:42
+#: src/authentic2_idp_oidc/models.py:45
 msgid "pairwise"
 msgstr "par paire"
 
-#: src/authentic2_idp_oidc/models.py:43
+#: src/authentic2_idp_oidc/models.py:46
 msgid "email"
 msgstr ""
 
-#: src/authentic2_idp_oidc/models.py:49
+#: src/authentic2_idp_oidc/models.py:52
 msgid "RSA"
 msgstr ""
 
-#: src/authentic2_idp_oidc/models.py:50
+#: src/authentic2_idp_oidc/models.py:53
 msgid "HMAC"
 msgstr ""
 
-#: src/authentic2_idp_oidc/models.py:55
+#: src/authentic2_idp_oidc/models.py:58
 msgid "authorization code"
 msgstr ""
 
-#: src/authentic2_idp_oidc/models.py:56
+#: src/authentic2_idp_oidc/models.py:59
 msgid "implicit/native"
 msgstr ""
 
-#: src/authentic2_idp_oidc/models.py:61
+#: src/authentic2_idp_oidc/models.py:64
 msgid "client id"
 msgstr ""
 
-#: src/authentic2_idp_oidc/models.py:66
+#: src/authentic2_idp_oidc/models.py:69
 msgid "client secret"
 msgstr ""
 
-#: src/authentic2_idp_oidc/models.py:69
+#: src/authentic2_idp_oidc/models.py:72
 msgid "authorization flow"
 msgstr ""
 
-#: src/authentic2_idp_oidc/models.py:73
+#: src/authentic2_idp_oidc/models.py:76
 msgid "redirect URIs"
 msgstr "URIs de redirection"
 
-#: src/authentic2_idp_oidc/models.py:76
+#: src/authentic2_idp_oidc/models.py:79
+msgid "post logout redirect URIs"
+msgstr "URIs de redirection après déconnexion"
+
+#: src/authentic2_idp_oidc/models.py:83
 msgid "sector identifier URI"
 msgstr "URI d'identifiant de secteur"
 
-#: src/authentic2_idp_oidc/models.py:79
+#: src/authentic2_idp_oidc/models.py:86
 msgid "identifier policy"
 msgstr "politique des identifiants"
 
-#: src/authentic2_idp_oidc/models.py:85
+#: src/authentic2_idp_oidc/models.py:92
 msgid "IDToken signature algorithm"
 msgstr "algorithme de signature de l'IDToken"
 
-#: src/authentic2_idp_oidc/models.py:89 src/authentic2_idp_oidc/models.py:116
-#: src/authentic2_idp_oidc/models.py:162 src/authentic2_idp_oidc/models.py:212
+#: src/authentic2_idp_oidc/models.py:96 src/authentic2_idp_oidc/models.py:124
+#: src/authentic2_idp_oidc/models.py:170 src/authentic2_idp_oidc/models.py:220
 msgid "created"
 msgstr "créé"
 
-#: src/authentic2_idp_oidc/models.py:92
+#: src/authentic2_idp_oidc/models.py:99
 msgid "modified"
 msgstr "modifié"
 
-#: src/authentic2_idp_oidc/models.py:106 src/authentic2_idp_oidc/models.py:140
-#: src/authentic2_idp_oidc/models.py:200
+#: src/authentic2_idp_oidc/models.py:114 src/authentic2_idp_oidc/models.py:148
+#: src/authentic2_idp_oidc/models.py:208
 msgid "client"
 msgstr ""
 
-#: src/authentic2_idp_oidc/models.py:109 src/authentic2_idp_oidc/models.py:143
-#: src/authentic2_idp_oidc/models.py:203
+#: src/authentic2_idp_oidc/models.py:117 src/authentic2_idp_oidc/models.py:151
+#: src/authentic2_idp_oidc/models.py:211
 msgid "user"
 msgstr ""
 
-#: src/authentic2_idp_oidc/models.py:112 src/authentic2_idp_oidc/models.py:145
-#: src/authentic2_idp_oidc/models.py:205
+#: src/authentic2_idp_oidc/models.py:120 src/authentic2_idp_oidc/models.py:153
+#: src/authentic2_idp_oidc/models.py:213
 msgid "scopes"
 msgstr ""
 
-#: src/authentic2_idp_oidc/models.py:119 src/authentic2_idp_oidc/models.py:165
-#: src/authentic2_idp_oidc/models.py:215
+#: src/authentic2_idp_oidc/models.py:127 src/authentic2_idp_oidc/models.py:173
+#: src/authentic2_idp_oidc/models.py:223
 msgid "expire"
 msgstr "expiration"
 
-#: src/authentic2_idp_oidc/models.py:148
+#: src/authentic2_idp_oidc/models.py:156
 msgid "state"
 msgstr ""
 
-#: src/authentic2_idp_oidc/models.py:151
+#: src/authentic2_idp_oidc/models.py:159
 msgid "nonce"
 msgstr ""
 
-#: src/authentic2_idp_oidc/models.py:153
+#: src/authentic2_idp_oidc/models.py:161
 msgid "redirect URI"
 msgstr ""
 
-#: src/authentic2_idp_oidc/models.py:155 src/authentic2_idp_oidc/models.py:207
+#: src/authentic2_idp_oidc/models.py:163 src/authentic2_idp_oidc/models.py:215
 msgid "session key"
 msgstr ""
 
-#: src/authentic2_idp_oidc/models.py:158
+#: src/authentic2_idp_oidc/models.py:166
 msgid "auth time"
 msgstr ""
 
@@ -151,3 +155,7 @@ msgstr "Accepter"
 #: src/authentic2_idp_oidc/templates/authentic2_idp_oidc/authorization.html:20
 msgid "Refuse"
 msgstr "Refuser"
+
+#: src/authentic2_idp_oidc/views.py:417
+msgid "Invalid post logout URI"
+msgstr "URI de retour après déconnexion invalide"
