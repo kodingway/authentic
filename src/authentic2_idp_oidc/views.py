@@ -398,7 +398,7 @@ def user_info(request, *args, **kwargs):
         user_info['family_name'] = user.last_name
         user_info['given_name'] = user.first_name
         if user.username:
-            user_info['preferred_username'] = user.username
+            user_info['preferred_username'] = user.username.split('@', 1)[0]
     if 'email' in scope_set:
         user_info['email'] = user.email
         user_info['email_verified'] = True
