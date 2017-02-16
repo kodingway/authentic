@@ -305,7 +305,7 @@ def invalid_request(desc=None):
     }
     if desc:
         content['desc'] = desc
-    return HttpResponseBadRequest(json.dumps(content))
+    return HttpResponseBadRequest(json.dumps(content), content_type='application/json')
 
 
 @setting_enabled('ENABLE', settings=app_settings)
@@ -324,7 +324,7 @@ def token(request, *args, **kwargs):
     except models.OIDCCode.DoesNotExist:
         return invalid_request('invalid code')
     if not oidc_code.is_valid():
-        return invalid_request('invalid code', desc='code has expired or user is disconnected')
+        return invalid_request('code has expired or user is disconnected')
     client = authenticate_client(request, client=oidc_code.client)
     if client is None:
         return HttpResponse('unauthenticated', status=401)

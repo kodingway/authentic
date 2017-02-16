@@ -473,6 +473,7 @@ def test_invalid_request(oidc_settings, oidc_client, simple_user, app):
     assert OIDCAuthorization.objects.count() == 0
 
     # authorization has expired
+    OIDCCode.objects.all().delete()
     authorize.expired = now() - datetime.timedelta(days=2)
     authorize.save()
     response = app.get(authorize_url)
@@ -486,6 +487,30 @@ def test_invalid_request(oidc_settings, oidc_client, simple_user, app):
     # old authorizations have been deleted
     assert OIDCAuthorization.objects.get().pk != authorize.pk
 
+    # check expired codes
+    if oidc_client.authorization_flow == oidc_client.FLOW_AUTHORIZATION_CODE:
+        assert OIDCCode.objects.count() == 1
+        code = OIDCCode.objects.get()
+        assert code.is_valid()
+        # make code expire
+        code.expired = now() - datetime.timedelta(seconds=120)
+        assert not code.is_valid()
+        code.save()
+        location = urlparse.urlparse(response['Location'])
+        query = urlparse.parse_qs(location.query)
+        assert set(query.keys()) == set(['code'])
+        assert query['code'] == [code.uuid]
+        code = query['code'][0]
+        token_url = make_url('oidc-token')
+        response = app.post(token_url, {
+            'grant_type': 'authorization_code',
+            'code': code,
+            'redirect_uri': oidc_client.redirect_uris.split()[0],
+        }, headers=client_authentication_headers(oidc_client), status=400)
+        assert 'error' in response.json
+        assert response.json['error'] == 'invalid_request'
+        assert response.json['desc'] == 'code has expired or user is disconnected'
+
     # invalid logout
     logout_url = make_url('oidc-logout', params={
         'post_logout_redirect_uri': 'https://whatever.com/',
@@ -493,6 +518,24 @@ def test_invalid_request(oidc_settings, oidc_client, simple_user, app):
     response = app.get(logout_url)
     assert '_auth_user_id' in app.session
     assert 'Location' in response.headers
+
+    # check code expiration after logout
+    if oidc_client.authorization_flow == oidc_client.FLOW_AUTHORIZATION_CODE:
+        code = OIDCCode.objects.get()
+        code.expired = now() + datetime.timedelta(seconds=120)
+        code.save()
+        assert code.is_valid()
+        utils.logout(app)
+        code = OIDCCode.objects.get()
+        assert not code.is_valid()
+        response = app.post(token_url, {
+            'grant_type': 'authorization_code',
+            'code': code.uuid,
+            'redirect_uri': oidc_client.redirect_uris.split()[0],
+        }, headers=client_authentication_headers(oidc_client), status=400)
+        assert 'error' in response.json
+        assert response.json['error'] == 'invalid_request'
+        assert response.json['desc'] == 'code has expired or user is disconnected'
 
 
 def test_expired_manager(db, simple_user):

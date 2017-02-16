@@ -179,6 +179,7 @@ class OIDCCode(models.Model):
         if not hasattr(self, '_session'):
             engine = import_module(settings.SESSION_ENGINE)
             session = engine.SessionStore(session_key=self.session_key)
+            session.load()
             if session._session_key == self.session_key:
                 self._session = session
         return getattr(self, '_session', None)
