@@ -6,10 +6,10 @@ from . import app_settings
 
 
 class SAMLBackend(SAMLBackend):
-    def authenticate(self, **credentials):
+    def authenticate(self, saml_attributes, **credentials):
         if not app_settings.enable:
             return None
-        return super(SAMLBackend, self).authenticate(**credentials)
+        return super(SAMLBackend, self).authenticate(saml_attributes, **credentials)
 
     def get_saml2_authn_context(self):
         # Pass AuthnContextClassRef from the previous IdP
