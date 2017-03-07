@@ -129,6 +129,8 @@ setup(name="authentic2",
           'django-jsonfield < 1.0.0',
           'jwcrypto>=0.3.1,<1',
           'cryptography',
+          'XStatic-jQuery',
+          'XStatic-jquery-ui',
       ],
       extras_require = {
           'idp-openid': ['python-openid'],

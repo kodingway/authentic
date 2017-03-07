@@ -119,6 +119,8 @@ INSTALLED_APPS = (
     'authentic2.a2_rbac',
     'gadjo',
     'rest_framework',
+    'xstatic.pkg.jquery',
+    'xstatic.pkg.jquery_ui',
 )
 
 INSTALLED_APPS = tuple(plugins.register_plugins_installed_apps(INSTALLED_APPS))
