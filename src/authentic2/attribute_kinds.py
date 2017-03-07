@@ -1,5 +1,6 @@
 import string
 import json
+import datetime
 
 from itertools import chain
 
@@ -14,7 +15,7 @@ from rest_framework import serializers
 
 from .decorators import to_iter
 from .plugins import collect_from_plugins
-from . import app_settings
+from . import app_settings, widgets
 
 capfirst = allow_lazy(capfirst, unicode)
 
@@ -49,6 +50,17 @@ DEFAULT_ATTRIBUTE_KINDS = [
         'field_class': forms.BooleanField,
         'serialize': lambda x: str(int(bool(x))),
         'deserialize': lambda x: bool(int(x)),
+    },
+    {
+        'label': _('date'),
+        'name': 'date',
+        'field_class': forms.DateField,
+        'kwargs': {
+            'widget': widgets.DateWidget,
+        },
+        'serialize': lambda x: x.isoformat(),
+        'deserialize': lambda x: x and datetime.datetime.strptime(x, '%Y-%m-%d').date(),
+        'rest_framework_field_class': serializers.DateField,
     },
 ]
 
