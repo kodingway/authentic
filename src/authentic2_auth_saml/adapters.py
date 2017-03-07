@@ -3,6 +3,8 @@ import logging
 from mellon.adapters import DefaultAdapter
 from mellon.utils import get_setting
 
+from authentic2 import utils
+
 
 class AuthenticAdapter(DefaultAdapter):
     def create_user(self, user_class):
@@ -55,3 +57,6 @@ class AuthenticAdapter(DefaultAdapter):
             setattr(user, attribute, value)
         else:
             setattr(user.attributes, attribute, value)
+
+    def auth_login(self, request, user):
+        utils.login(request, user, 'saml')
