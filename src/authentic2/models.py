@@ -203,6 +203,11 @@ class Attribute(models.Model):
 
     def set_value(self, owner, value, verified=False):
         serialize = self.get_kind()['serialize']
+        # setting to None is to delete
+        if value is None:
+            AttributeValue.objects.with_owner(owner).filter(attribute=self).delete()
+            return
+
         if self.multiple:
             assert isinstance(value, (list, set, tuple))
             values = value
