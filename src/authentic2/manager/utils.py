@@ -19,6 +19,7 @@ def get_users(search=None):
         qs = filter_user(qs, search)
     return qs
 
+
 def label_from_user(user):
     labels = []
     if user.first_name or user.last_name:
@@ -35,6 +36,7 @@ def label_from_user(user):
             labels.append(u' - ')
         labels.append(user.username)
     return u''.join(labels)
+
 
 def search_user(term):
     User = get_user_model()

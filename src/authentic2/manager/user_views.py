@@ -96,7 +96,7 @@ class UserEditView(PassRequestToFormMixin, OtherActionsMixin,
 
     @property
     def title(self):
-        return  _('Edit user %s') % self.object.get_full_name()
+        return _('Edit user %s') % self.object.get_full_name()
 
     def get_fields(self):
         fields = list(self.fields)

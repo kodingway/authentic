@@ -1,9 +1,7 @@
 from django import forms
 from django.forms.models import modelform_factory as django_modelform_factory
-from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import REDIRECT_FIELD_NAME
-from django.core.exceptions import ValidationError
 
 from authentic2.compat import get_user_model
 
@@ -16,6 +14,7 @@ class EmailChangeFormNoPassword(forms.Form):
     def __init__(self, user, *args, **kwargs):
         self.user = user
         super(EmailChangeFormNoPassword, self).__init__(*args, **kwargs)
+
 
 class EmailChangeForm(EmailChangeFormNoPassword):
     password = forms.CharField(label=_("Password"),
@@ -30,6 +29,7 @@ class EmailChangeForm(EmailChangeFormNoPassword):
             )
         return password
 
+
 class NextUrlFormMixin(forms.Form):
     next_url = forms.CharField(widget=forms.HiddenInput(), required=False)
 
@@ -43,6 +43,7 @@ class NextUrlFormMixin(forms.Form):
         super(NextUrlFormMixin, self).__init__(*args, **kwargs)
         if next_url:
             self.fields['next_url'].initial = next_url
+
 
 class BaseUserForm(forms.ModelForm):
     error_messages = {
