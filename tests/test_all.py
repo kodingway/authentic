@@ -532,6 +532,45 @@ class RegistrationTests(TestCase):
         self.assertNotContains(response, 'John')
 
 
+def test_registration_confirm_data(app, settings, db, rf):
+    # make first name not required
+    models.Attribute.objects.filter(
+        name='first_name').update(
+            required=False)
+
+    activation_url = utils.build_activation_url(
+        rf.post('/accounts/register/'),
+        email='john.doe@example.com',
+        next_url='/',
+        first_name='John',
+        last_name='Doe',
+        no_password=True,
+        confirm_data=False)
+
+    response = app.get(activation_url, status=302)
+
+    activation_url = utils.build_activation_url(
+        rf.post('/accounts/register/'),
+        email='john.doe@example.com',
+        next_url='/',
+        last_name='Doe',
+        no_password=True,
+        confirm_data=False)
+
+    response = app.get(activation_url, status=200)
+    assert 'form' in response.context
+    assert set(response.context['form'].fields.keys()) == set(['first_name', 'last_name'])
+
+    activation_url = utils.build_activation_url(
+        rf.post('/accounts/register/'),
+        email='john.doe@example.com',
+        next_url='/',
+        last_name='Doe',
+        no_password=True,
+        confirm_data='required')
+    response = app.get(activation_url, status=302)
+
+
 class UserProfileTests(TestCase):
     def setUp(self):
         User = get_user_model()

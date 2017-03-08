@@ -208,8 +208,14 @@ class RegistrationCompletionView(CreateView):
             # Found one user, EMAIL is unique, log her in
             simulate_authentication(request, self.users[0], method='email')
             return redirect(request, self.get_success_url())
-        if all(field in self.token for field in self.fields) \
-                and not self.token.get('confirm_data', False):
+        confirm_data = self.token.get('confirm_data', False)
+
+        if confirm_data == 'required':
+            fields_to_confirm = self.required
+        else:
+            fields_to_confirm = self.fields
+        if (all(field in self.token for field in fields_to_confirm)
+                and (not confirm_data or confirm_data == 'required')):
             # We already have every fields
             form_kwargs = self.get_form_kwargs()
             form_class = self.get_form_class()
