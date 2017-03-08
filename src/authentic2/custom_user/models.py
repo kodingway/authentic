@@ -23,26 +23,30 @@ from .base_user import AbstractBaseUser
 
 
 class Attributes(object):
-    def __init__(self, owner):
+    def __init__(self, owner, verified=None):
         super(Attributes, self).__setattr__('owner', owner)
+        super(Attributes, self).__setattr__('verified', verified)
 
     def __setattr__(self, name, value):
         try:
             at = Attribute.objects.get(name=name)
-            at.set_value(self.owner, value)
+            at.set_value(self.owner, value, verified=bool(self.verified))
         except Attribute.DoesNotExist:
             raise AttributeError(name)
 
     def __getattr__(self, name):
         try:
-            return Attribute.objects.get(name=name).get_value(self.owner)
+            return Attribute.objects.get(name=name).get_value(self.owner, verified=self.verified)
         except Attribute.DoesNotExist:
             raise AttributeError(name)
 
 
 class AttributesDescriptor(object):
+    def __init__(self, verified=None):
+        self.verified = verified
+
     def __get__(self, obj, objtype):
-        return Attributes(obj)
+        return Attributes(obj, verified=self.verified)
 
 
 class User(AbstractBaseUser, PermissionMixin):
@@ -80,9 +84,9 @@ class User(AbstractBaseUser, PermissionMixin):
         db_index=True,
         auto_now=True)
 
-
     objects = UserManager()
     attributes = AttributesDescriptor()
+    verified_attributes = AttributesDescriptor(verified=True)
 
     attribute_values = GenericRelation('authentic2.AttributeValue')
 

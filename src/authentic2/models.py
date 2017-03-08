@@ -184,10 +184,12 @@ class Attribute(models.Model):
     def contribute_to_form(self, form, **kwargs):
         form.fields[self.name] = self.get_form_field(**kwargs)
 
-    def get_value(self, owner):
+    def get_value(self, owner, verified=None):
         kind = self.get_kind()
         deserialize = kind['deserialize']
         atvs = AttributeValue.objects.with_owner(owner)
+        if verified is True or verified is False:
+            atvs = atvs.filter(verified=verified)
         if self.multiple:
             result = []
             for atv in atvs.filter(attribute=self, multiple=True):
@@ -199,7 +201,6 @@ class Attribute(models.Model):
                 return deserialize(atv.content)
             except AttributeValue.DoesNotExist:
                 return kind['default']
-
 
     def set_value(self, owner, value, verified=False):
         serialize = self.get_kind()['serialize']
