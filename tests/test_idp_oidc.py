@@ -378,6 +378,19 @@ def test_invalid_request(oidc_settings, oidc_client, simple_user, app):
     response = app.get(authorize_url)
     assert_oidc_error(response, 'invalid_scope', fragment=fragment)
 
+    # restriction on scopes
+    oidc_settings.A2_IDP_OIDC_SCOPES = ['openid']
+    authorize_url = make_url('oidc-authorize', params={
+        'client_id': oidc_client.client_id,
+        'redirect_uri': redirect_uri,
+        'response_type': response_type,
+        'scope': 'openid email',
+    })
+
+    response = app.get(authorize_url)
+    assert_oidc_error(response, 'invalid_scope', fragment=fragment)
+    del oidc_settings.A2_IDP_OIDC_SCOPES
+
     # cancel
     authorize_url = make_url('oidc-authorize', params={
         'client_id': oidc_client.client_id,

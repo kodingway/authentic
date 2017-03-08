@@ -22,6 +22,10 @@ class AppSettings(object):
     def JWKSET(self):
         return self._setting('JWKSET', [])
 
+    @property
+    def SCOPES(self):
+        return self._setting('SCOPES', [])
+
 import sys
 
 app_settings = AppSettings('A2_IDP_OIDC_')

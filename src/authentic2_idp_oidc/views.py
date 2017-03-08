@@ -136,10 +136,12 @@ def authorize(request, *args, **kwargs):
                                    error_description='openid scope is missing',
                                    state=state,
                                    fragment=fragment)
-    if not (scopes <= set(['openid', 'profile', 'email'])):
+    allowed_scopes = app_settings.SCOPES or ['openid', 'email', 'profile']
+    if not (scopes <= set(allowed_scopes)):
+        message = 'only "%s" scope(s) are supported, but "%s" requested' % (
+            ', '.join(allowed_scopes), ', '.join(scopes))
         return authorization_error(request, redirect_uri, 'invalid_scope',
-                                   error_description='only openid, profile and email scopes are '
-                                   'supported',
+                                   error_description=message,
                                    state=state,
                                    fragment=fragment)
 
