@@ -190,7 +190,11 @@ class RegistrationCompletionView(CreateView):
         if self.token.get('user_id'):
             kwargs['instance'] = User.objects.get(id=self.token.get('user_id'))
         else:
-            kwargs['instance'] = get_user_model()(**attributes)
+            init_kwargs = {}
+            for key in ('email', 'first_name', 'last_name', 'ou'):
+                if key in attributes:
+                    init_kwargs[key] = attributes[key]
+            kwargs['instance'] = get_user_model()(**init_kwargs)
 
         return kwargs
 
