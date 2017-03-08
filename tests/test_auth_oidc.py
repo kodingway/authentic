@@ -272,13 +272,13 @@ def test_sso(app, caplog, code, oidc_provider, login_url, login_callback_url):
     assert user.email == 'john.doe@example.com'
     assert user.attributes.first_name == 'John'
     assert user.attributes.last_name == 'Doe'
-    assert AttributeValue.objects.filter(content='"John"', verified=True).count() == 1
-    assert AttributeValue.objects.filter(content='"Doe"', verified=False).count() == 1
+    assert AttributeValue.objects.filter(content='John', verified=True).count() == 1
+    assert AttributeValue.objects.filter(content='Doe', verified=False).count() == 1
 
     with oidc_provider_mock(oidc_provider, code, extra_user_info={'family_name_verified': True}):
         response = app.get(login_callback_url, params={'code': code, 'state': query['state']})
-    assert AttributeValue.objects.filter(content='"Doe"', verified=False).count() == 0
-    assert AttributeValue.objects.filter(content='"Doe"', verified=True).count() == 1
+    assert AttributeValue.objects.filter(content='Doe', verified=False).count() == 0
+    assert AttributeValue.objects.filter(content='Doe', verified=True).count() == 1
 
     response = app.get(reverse('account_management'))
     with utils.check_log(caplog, 'revoked token from OIDC'):

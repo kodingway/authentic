@@ -45,6 +45,8 @@ DEFAULT_ATTRIBUTE_KINDS = [
         'label': _('boolean'),
         'name': 'boolean',
         'field_class': forms.BooleanField,
+        'serialize': lambda x: str(int(bool(x))),
+        'deserialize': lambda x: bool(int(x)),
     },
 ]
 
@@ -105,6 +107,6 @@ def get_form_field(kind, **kwargs):
 def get_kind(kind):
     d = get_attribute_kinds()[kind]
     d.setdefault('default', None)
-    d.setdefault('serialize', json.dumps)
-    d.setdefault('deserialize', json.loads)
+    d.setdefault('serialize', lambda x: x)
+    d.setdefault('deserialize', lambda x: x)
     return d

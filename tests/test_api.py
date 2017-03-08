@@ -193,7 +193,7 @@ def test_api_users_create(app, user):
         assert new_user.last_name == resp.json['last_name']
         assert AttributeValue.objects.with_owner(new_user).count() == 3
         assert AttributeValue.objects.with_owner(new_user).filter(attribute=at).exists()
-        assert (json.loads(AttributeValue.objects.with_owner(new_user).get(attribute=at).content) ==
+        assert (AttributeValue.objects.with_owner(new_user).get(attribute=at).content ==
                 payload['title'])
         resp2 = app.get('/api/users/%s/' % resp.json['uuid'])
         assert resp.json == resp2.json
