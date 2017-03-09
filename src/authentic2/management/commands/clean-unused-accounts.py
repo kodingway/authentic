@@ -2,7 +2,7 @@ from optparse import make_option
 import logging
 import datetime
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand, CommandError
 from django.core.mail import send_mail
 from django.utils.timezone import now
@@ -74,7 +74,7 @@ class Command(BaseCommand):
         self.from_email = options['from_email']
         if self.fake:
             log.info('fake call to clean-unused-accounts')
-        users = User.objects.all()
+        users = get_user_model().objects.all()
         if options['filter']:
             for f in options['filter']:
                 key, value = f.split('=', 1)
