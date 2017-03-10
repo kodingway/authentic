@@ -349,7 +349,7 @@ class BaseUserSerializer(serializers.ModelSerializer):
 
 
 class UsersAPI(ModelViewSet):
-    filter_fields = ['username', 'first_name', 'last_name']
+    filter_fields = ['username', 'first_name', 'last_name', 'email']
     ordering_fields = ['username', 'first_name', 'last_name']
     lookup_field = 'uuid'
     serializer_class = BaseUserSerializer
