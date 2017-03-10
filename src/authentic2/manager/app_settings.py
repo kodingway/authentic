@@ -7,6 +7,7 @@ class AppSettings(object):
         'HOMEPAGE_URL': None,
         'ROLE_FORM_CLASS': None,
         'ROLES_SHOW_PERMISSIONS': False,
+        'ROLE_MEMBERS_FROM_OU': False,
     }
 
     def __getattr__(self, name):

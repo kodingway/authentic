@@ -4,6 +4,8 @@ import pytest
 from django.core.urlresolvers import reverse
 from django.core import mail
 
+from authentic2.a2_rbac.utils import get_default_ou
+
 from django_rbac.utils import get_ou_model, get_role_model
 from django.contrib.auth import get_user_model
 from utils import login
@@ -128,3 +130,14 @@ def test_manager_stress_create_user(superuser_or_admin, app, mailoutbox):
         app.get('/logout/').form.submit()
     assert User.objects.filter(ou_id=new_ou.id).count() == 100
     assert len(mailoutbox) == 100
+
+
+def test_role_members_from_ou(app, superuser, settings):
+    Role = get_role_model()
+    r = Role.objects.create(name='role', slug='role', ou=get_default_ou())
+    url = reverse('a2-manager-role-members', kwargs={'pk': r.pk})
+    response = login(app, superuser, url)
+    assert not response.context['form'].fields['user'].queryset.query.where
+    settings.A2_MANAGER_ROLE_MEMBERS_FROM_OU = True
+    response = app.get(url)
+    assert response.context['form'].fields['user'].queryset.query.where

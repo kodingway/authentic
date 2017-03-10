@@ -81,6 +81,12 @@ class ChooseUserForm(CssClass, forms.Form):
     user = fields.ChooseUserField(label=_('Add an user'))
     action = forms.CharField(initial='add', widget=forms.HiddenInput)
 
+    def __init__(self, *args, **kwargs):
+        ou = kwargs.pop('ou', None)
+        super(ChooseUserForm, self).__init__(*args, **kwargs)
+        if ou and app_settings.ROLE_MEMBERS_FROM_OU and ou:
+            self.fields['user'].queryset = self.fields['user'].queryset.filter(ou=ou)
+
 
 class ChooseRoleForm(CssClass, forms.Form):
     role = fields.ChooseRoleField(label=_('Add a role'))

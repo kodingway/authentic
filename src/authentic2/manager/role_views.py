@@ -128,6 +128,11 @@ class RoleMembersView(views.HideOUColumnMixin, RoleViewMixin, views.BaseSubTable
             messages.warning(self.request, _('You are not authorized'))
         return super(RoleMembersView, self).form_valid(form)
 
+    def get_form_kwargs(self):
+        kwargs = super(RoleMembersView, self).get_form_kwargs()
+        kwargs['ou'] = self.object.ou
+        return kwargs
+
     def get_context_data(self, **kwargs):
         ctx = super(RoleMembersView, self).get_context_data(**kwargs)
         ctx['children'] = views.filter_view(self.request,
