@@ -244,25 +244,25 @@ def test_sso(app, caplog, code, oidc_provider, login_url, login_callback_url):
 
     with utils.check_log(caplog, 'invalid token endpoint response'):
         with oidc_provider_mock(oidc_provider, code):
-            response = app.get(login_callback_url, {'code': 'yyyy', 'state': query['state']})
+            response = app.get(login_callback_url, params={'code': 'yyyy', 'state': query['state']})
     with utils.check_log(caplog, 'invalid id_token %r'):
         with oidc_provider_mock(oidc_provider, code, extra_id_token={'iss': None}):
-            response = app.get(login_callback_url, {'code': code, 'state': query['state']})
+            response = app.get(login_callback_url, params={'code': code, 'state': query['state']})
     with utils.check_log(caplog, 'invalid id_token %r'):
         with oidc_provider_mock(oidc_provider, code, extra_id_token={'sub': None}):
-            response = app.get(login_callback_url, {'code': code, 'state': query['state']})
+            response = app.get(login_callback_url, params={'code': code, 'state': query['state']})
     with utils.check_log(caplog, 'authentication is too old'):
         with oidc_provider_mock(oidc_provider, code, extra_id_token={'iat': 1}):
-            response = app.get(login_callback_url, {'code': code, 'state': query['state']})
+            response = app.get(login_callback_url, params={'code': code, 'state': query['state']})
     with utils.check_log(caplog, 'id_token expired'):
         with oidc_provider_mock(oidc_provider, code, extra_id_token={'exp': 1}):
-            response = app.get(login_callback_url, {'code': code, 'state': query['state']})
+            response = app.get(login_callback_url, params={'code': code, 'state': query['state']})
     with utils.check_log(caplog, 'invalid id_token audience'):
         with oidc_provider_mock(oidc_provider, code, extra_id_token={'aud': 'zz'}):
-            response = app.get(login_callback_url, {'code': code, 'state': query['state']})
+            response = app.get(login_callback_url, params={'code': code, 'state': query['state']})
     with utils.check_log(caplog, 'created user'):
         with oidc_provider_mock(oidc_provider, code):
-            response = app.get(login_callback_url, {'code': code, 'state': query['state']})
+            response = app.get(login_callback_url, params={'code': code, 'state': query['state']})
     assert urlparse.urlparse(response['Location']).path == '/admin/'
     assert User.objects.count() == 1
     user = User.objects.get()
@@ -276,7 +276,7 @@ def test_sso(app, caplog, code, oidc_provider, login_url, login_callback_url):
     assert AttributeValue.objects.filter(content='"Doe"', verified=False).count() == 1
 
     with oidc_provider_mock(oidc_provider, code, extra_user_info={'family_name_verified': True}):
-        response = app.get(login_callback_url, {'code': code, 'state': query['state']})
+        response = app.get(login_callback_url, params={'code': code, 'state': query['state']})
     assert AttributeValue.objects.filter(content='"Doe"', verified=False).count() == 0
     assert AttributeValue.objects.filter(content='"Doe"', verified=True).count() == 1
 

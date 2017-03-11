@@ -152,7 +152,7 @@ def test_authorization_code_sso(login_first, oidc_settings, oidc_client, simple_
         assert query['state'] == ['xxx']
 
         token_url = make_url('oidc-token')
-        response = app.post(token_url, {
+        response = app.post(token_url, params={
             'grant_type': 'authorization_code',
             'code': code,
             'redirect_uri': oidc_client.redirect_uris.split()[0],
@@ -502,7 +502,7 @@ def test_invalid_request(oidc_settings, oidc_client, simple_user, app):
         assert query['code'] == [code.uuid]
         code = query['code'][0]
         token_url = make_url('oidc-token')
-        response = app.post(token_url, {
+        response = app.post(token_url, params={
             'grant_type': 'authorization_code',
             'code': code,
             'redirect_uri': oidc_client.redirect_uris.split()[0],
@@ -528,7 +528,7 @@ def test_invalid_request(oidc_settings, oidc_client, simple_user, app):
         utils.logout(app)
         code = OIDCCode.objects.get()
         assert not code.is_valid()
-        response = app.post(token_url, {
+        response = app.post(token_url, params={
             'grant_type': 'authorization_code',
             'code': code.uuid,
             'redirect_uri': oidc_client.redirect_uris.split()[0],
@@ -626,7 +626,7 @@ def test_client_secret_post_authentication(oidc_settings, app, simple_oidc_clien
     query = urlparse.parse_qs(location.query)
     code = query['code'][0]
     token_url = make_url('oidc-token')
-    response = app.post(token_url, {
+    response = app.post(token_url, params={
         'grant_type': 'authorization_code',
         'code': code,
         'redirect_uri': redirect_uri,
