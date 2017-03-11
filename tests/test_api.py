@@ -168,7 +168,7 @@ def test_api_users_create(app, user):
     else:
         status = 403
 
-    resp = app.post_json('/api/users/', payload, status=status)
+    resp = app.post_json('/api/users/', params=payload, status=status)
     if user.is_superuser or user.roles.exists():
         assert set(['ou', 'id', 'uuid', 'is_staff', 'is_superuser', 'first_name', 'last_name',
                     'date_joined', 'last_login', 'username', 'password', 'email', 'is_active',
@@ -199,7 +199,7 @@ def test_api_users_create(app, user):
         assert resp.json == resp2.json
         payload.update({'uuid': '1234567890', 'email': 'foo@example.com',
                         'username': 'foobar'})
-        resp = app.post_json('/api/users/', payload, status=status)
+        resp = app.post_json('/api/users/', params=payload, status=status)
         assert resp.json['uuid'] == '1234567890'
         assert 'title' in resp.json
         at.disabled = True
@@ -226,7 +226,7 @@ def test_api_users_create_send_mail(app, settings, superuser):
         'send_registration_email': True,
     }
     assert len(mail.outbox) == 0
-    resp = app.post_json('/api/users/', payload, status=201)
+    resp = app.post_json('/api/users/', params=payload, status=201)
     user_id = resp.json['id']
     assert len(mail.outbox) == 1
     # Follow activation link
@@ -252,7 +252,7 @@ def test_api_users_create_force_password_reset(app, client, settings, superuser)
         'password': '1234',
         'force_password_reset': True,
     }
-    app.post_json('/api/users/', payload, status=201)
+    app.post_json('/api/users/', params=payload, status=201)
     # Verify password reset is enforced on next login
     resp = login(app, 'john.doe', path='/', password='1234').follow()
     resp.form.set('old_password', '1234')
@@ -278,8 +278,8 @@ def test_api_role_add_member(app, user, role, member):
     else:
         status = 403
 
-    resp = app.post_json('/api/roles/{0}/members/{1}/'.format(role.uuid, member.uuid), payload,
-                         status=status)
+    resp = app.post_json('/api/roles/{0}/members/{1}/'.format(role.uuid, member.uuid),
+                         params=payload, status=status)
     if status == 404:
         pass
     elif authorized:
@@ -327,7 +327,7 @@ def test_register_no_email_validation(app, admin, django_user_model):
     }
     headers = basic_authorization_header(admin)
     assert len(mail.outbox) == 0
-    response = app.post_json(reverse('a2-api-register'), payload, headers=headers, status=400)
+    response = app.post_json(reverse('a2-api-register'), params=payload, headers=headers, status=400)
     assert 'errors' in response.json
     assert response.json['result'] == 0
     assert response.json['errors'] == {
@@ -345,7 +345,7 @@ def test_register_no_email_validation(app, admin, django_user_model):
         'return_url': return_url,
     }
     assert len(mail.outbox) == 0
-    response = app.post_json(reverse('a2-api-register'), payload, headers=headers)
+    response = app.post_json(reverse('a2-api-register'), params=payload, headers=headers)
     assert len(mail.outbox) == 0
     assert response.status_code == 201
     assert response.json['result'] == 1
@@ -381,7 +381,7 @@ def test_register_ou_no_email_validation(app, admin, django_user_model):
     }
     headers = basic_authorization_header(admin)
     assert len(mail.outbox) == 0
-    response = app.post_json(reverse('a2-api-register'), payload, headers=headers, status=400)
+    response = app.post_json(reverse('a2-api-register'), params=payload, headers=headers, status=400)
     assert 'errors' in response.json
     assert response.json['result'] == 0
     assert response.json['errors'] == {
@@ -400,7 +400,7 @@ def test_register_ou_no_email_validation(app, admin, django_user_model):
         'ou': ou,
     }
     assert len(mail.outbox) == 0
-    response = app.post_json(reverse('a2-api-register'), payload, headers=headers)
+    response = app.post_json(reverse('a2-api-register'), params=payload, headers=headers)
     assert len(mail.outbox) == 0
     assert response.status_code == 201
     assert response.json['result'] == 1
