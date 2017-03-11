@@ -232,7 +232,7 @@ def test_api_users_create_send_mail(app, settings, superuser):
     # Follow activation link
     assert re.findall('http://[^ ]*/', mail.outbox[0].body)
     url = re.findall('http://[^ ]*/', mail.outbox[0].body)[0]
-    relative_url = url.split('localhost')[1]
+    relative_url = url.split('testserver')[1]
     resp = app.get(relative_url, status=200)
     resp.form.set('new_password1', '1234aA')
     resp.form.set('new_password2', '1234aA')
@@ -355,7 +355,7 @@ def test_register_no_email_validation(app, admin, django_user_model):
     assert response.json['user']['last_name'] == last_name
     assert check_password(password, response.json['user']['password'])
     assert response.json['token']
-    assert response.json['validation_url'].startswith('http://localhost/accounts/activate/')
+    assert response.json['validation_url'].startswith('http://testserver/accounts/activate/')
     assert User.objects.count() == 2
     user = User.objects.latest('id')
     assert user.username == username
@@ -410,7 +410,7 @@ def test_register_ou_no_email_validation(app, admin, django_user_model):
     assert response.json['user']['last_name'] == last_name
     assert check_password(password, response.json['user']['password'])
     assert response.json['token']
-    assert response.json['validation_url'].startswith('http://localhost/accounts/activate/')
+    assert response.json['validation_url'].startswith('http://testserver/accounts/activate/')
     assert User.objects.count() == 2
     user = User.objects.latest('id')
     assert user.username == username

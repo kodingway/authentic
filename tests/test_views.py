@@ -41,9 +41,9 @@ def test_account_delete(app, simple_user):
     response = page.form.submit(name='submit').follow()
     response = response.form.submit()
     assert not User.objects.get(pk=simple_user.pk).is_active
-    assert response.location == 'http://localhost/'
+    assert response.location == 'http://testserver/'
     response = response.follow().follow()
-    assert response.request.url.startswith('http://localhost/login/')
+    assert response.request.url.startswith('http://testserver/login/')
 
 
 def test_login_invalid_next(app):

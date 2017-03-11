@@ -89,7 +89,7 @@ def test_manager_user_password_reset(app, superuser, simple_user):
     body = mail.outbox[0].body
     assert re.findall('http://[^ ]*/', body)
     url = re.findall('http://[^ ]*/', body)[0]
-    relative_url = url.split('localhost')[1]
+    relative_url = url.split('testserver')[1]
     resp = app.get('/logout/').maybe_follow()
     resp = app.get(relative_url, status=200)
     resp.form.set('new_password1', '1234aA')
