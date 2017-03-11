@@ -237,7 +237,7 @@ def test_sso(app, caplog, code, oidc_provider, login_url, login_callback_url):
     assert query['response_type'] == 'code'
     assert query['client_id'] == str(oidc_provider.client_id)
     assert query['scope'] == 'openid'
-    assert query['redirect_uri'] == 'http://localhost' + reverse('oidc-login-callback')
+    assert query['redirect_uri'] == 'http://testserver' + reverse('oidc-login-callback')
 
     User = get_user_model()
     assert User.objects.count() == 0
