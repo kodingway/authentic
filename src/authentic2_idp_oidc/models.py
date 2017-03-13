@@ -153,10 +153,10 @@ class OIDCCode(models.Model):
     scopes = models.TextField(
         verbose_name=_('scopes'))
     state = models.TextField(
-        default='',
+        null=True,
         verbose_name=_('state'))
     nonce = models.TextField(
-        default='',
+        null=True,
         verbose_name=_('nonce'))
     redirect_uri = models.URLField(
         verbose_name=_('redirect URI'))

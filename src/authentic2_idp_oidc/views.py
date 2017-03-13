@@ -59,7 +59,7 @@ def authorization_error(request, redirect_uri, error, error_description=None, er
         params['error_description'] = error_description
     if error_uri:
         params['error_uri'] = error_uri
-    if state:
+    if state is not None:
         params['state'] = state
     if fragment:
         return redirect(request, redirect_uri + '#%s' % urlencode(params), resolve=False)
@@ -83,7 +83,7 @@ def authorize(request, *args, **kwargs):
         return HttpResponseBadRequest('invalid request: unknown client_id')
     fragment = client.authorization_flow == client.FLOW_IMPLICIT
 
-    state = request.GET.get('state', '')
+    state = request.GET.get('state')
 
     try:
         response_type = request.GET['response_type']
@@ -95,7 +95,7 @@ def authorize(request, *args, **kwargs):
                                    fragment=fragment)
 
     prompt = set(filter(None, request.GET.get('prompt', '').split()))
-    nonce = request.GET.get('nonce', '')
+    nonce = request.GET.get('nonce')
     scopes = utils.scope_set(scope)
 
     max_age = request.GET.get('max_age')
@@ -159,7 +159,10 @@ def authorize(request, *args, **kwargs):
                                        error_description='login is required but prompt is none',
                                        state=state,
                                        fragment=fragment)
-        return login_require(request, params={'nonce': nonce})
+        params = {}
+        if nonce is not None:
+            params['nonce'] = nonce
+        return login_require(request, params=params)
 
     # if user not authorized, a ServiceAccessDenied exception
     # is raised and handled by ServiceAccessMiddleware
@@ -172,7 +175,10 @@ def authorize(request, *args, **kwargs):
                                        error_description='login is required but prompt is none',
                                        state=state,
                                        fragment=fragment)
-        return login_require(request, params={'nonce': nonce})
+        params = {}
+        if nonce is not None:
+            params['nonce'] = nonce
+        return login_require(request, params=params)
 
     qs = models.OIDCAuthorization.objects.filter(client=client, user=request.user)
     if 'consent' in prompt:
@@ -231,7 +237,7 @@ def authorize(request, *args, **kwargs):
         params = {
             'code': unicode(code.uuid),
         }
-        if state:
+        if state is not None:
             params['state'] = state
         return redirect(request, redirect_uri, params=params, resolve=False)
     else:
@@ -246,7 +252,7 @@ def authorize(request, *args, **kwargs):
                 session_key=request.session.session_key,
                 expired=start + datetime.timedelta(seconds=expires_in))
         acr = 0
-        if nonce and last_auth.get('nonce') == nonce:
+        if nonce is not None and last_auth.get('nonce') == nonce:
             acr = 1
         id_token = utils.create_user_info(client, request.user, scopes, id_token=True)
         id_token.update({
@@ -259,12 +265,12 @@ def authorize(request, *args, **kwargs):
             'auth_time': last_auth['when'],
             'acr': acr,
         })
-        if nonce:
+        if nonce is not None:
             id_token['nonce'] = nonce
         params = {
             'id_token': utils.make_idtoken(client, id_token),
         }
-        if state:
+        if state is not None:
             params['state'] = state
         if need_access_token:
             params.update({
@@ -349,7 +355,7 @@ def token(request, *args, **kwargs):
         expired=oidc_code.created + datetime.timedelta(seconds=expires_in))
     start = now()
     acr = 0
-    if (oidc_code.nonce and last_authentication_event(oidc_code.session).get('nonce') ==
+    if (oidc_code.nonce is not None and last_authentication_event(oidc_code.session).get('nonce') ==
             oidc_code.nonce):
         acr = 1
     # prefill id_token with user info
@@ -364,7 +370,7 @@ def token(request, *args, **kwargs):
         'auth_time': timestamp_from_datetime(oidc_code.auth_time),
         'acr': acr,
     })
-    if oidc_code.nonce:
+    if oidc_code.nonce is not None:
         id_token['nonce'] = oidc_code.nonce
     response = HttpResponse(json.dumps({
         'access_token': unicode(access_token.uuid),
