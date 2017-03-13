@@ -72,6 +72,10 @@ class User(AbstractBaseUser, PermissionMixin):
         blank=True,
         null=True,
         swappable=False)
+    modified = models.DateTimeField(
+        verbose_name=_('Last modification time'),
+        db_index=True,
+        auto_now=True)
 
 
     objects = UserManager()

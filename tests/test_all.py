@@ -65,6 +65,7 @@ class SerializerTests(TestCase):
                     'is_superuser': False,
                     'last_login': u.last_login,
                     'date_joined': u.date_joined,
+                    'modified': u.modified,
                     'groups': [],
                     'user_permissions': [],
                     'password': '',

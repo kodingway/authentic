@@ -6,7 +6,7 @@ from django.conf import settings
 from django.db import models
 from django.db.models.query import Q
 from django.utils.translation import ugettext_lazy as _
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, FieldDoesNotExist
 from django.contrib.contenttypes.models import ContentType
 
 from model_utils.managers import QueryManager
@@ -228,6 +228,13 @@ class Attribute(models.Model):
                 av.content = content
                 av.verified = verified
                 av.save()
+
+        # if owner has a modified field, update it
+        try:
+            modified = owner.__class__._meta.get_field('modified')
+        except FieldDoesNotExist:
+            if getattr(modified, 'auto_now', False):
+                owner.save(update_fields=['modified'])
 
     def natural_key(self):
         return (self.name,)
