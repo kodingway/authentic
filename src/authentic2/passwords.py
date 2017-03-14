@@ -13,8 +13,8 @@ def generate_password():
     upper = string.uppercase
     punc = string.punctuation
 
-    min_len = max(app_settings.A2_PASSWORD_POLICY_MIN_LENGTH, 6)
-    min_class_count = max(app_settings.A2_PASSWORD_POLICY_MIN_CLASSES, 2)
+    min_len = max(app_settings.A2_PASSWORD_POLICY_MIN_LENGTH, 8)
+    min_class_count = max(app_settings.A2_PASSWORD_POLICY_MIN_CLASSES, 3)
     new_password = []
 
     while len(new_password) < min_len:
@@ -22,4 +22,3 @@ def generate_password():
             new_password.append(random.choice(cls))
     random.shuffle(new_password)
     return ''.join(new_password)
-
