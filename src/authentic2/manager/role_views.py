@@ -237,7 +237,7 @@ class RoleAddChildView(views.AjaxFormViewMixin, views.TitleMixin,
     form_class = forms.RolesForm
     success_url = '..'
     template_name = 'authentic2/manager/form.html'
-    permissions = 'a2_rbac.change_role'
+    permissions = ['a2_rbac.change_role']
 
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -279,7 +279,7 @@ class RoleRemoveChildView(views.AjaxFormViewMixin, SingleObjectMixin,
     model = get_role_model()
     success_url = '../..'
     template_name = 'authentic2/manager/role_remove_child.html'
-    permissions = 'a2_rbac.change_role'
+    permissions = ['a2_rbac.change_role']
 
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -333,7 +333,7 @@ class RoleAddAdminRoleView(views.AjaxFormViewMixin, views.TitleMixin,
     form_class = forms.RolesForm
     success_url = '..'
     template_name = 'authentic2/manager/form.html'
-    permissions = 'a2_rbac.change_role'
+    permissions = ['a2_rbac.change_role']
 
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -353,7 +353,7 @@ class RoleRemoveAdminRoleView(views.TitleMixin, views.AjaxFormViewMixin, SingleO
     model = get_role_model()
     success_url = '../..'
     template_name = 'authentic2/manager/role_remove_admin_role.html'
-    permissions = 'a2_rbac.change_role'
+    permissions = ['a2_rbac.change_role']
 
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -379,7 +379,7 @@ class RoleAddAdminUserView(views.AjaxFormViewMixin, views.TitleMixin,
     form_class = forms.UsersForm
     success_url = '..'
     template_name = 'authentic2/manager/form.html'
-    permissions = 'a2_rbac.change_role'
+    permissions = ['a2_rbac.change_role']
 
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -399,7 +399,7 @@ class RoleRemoveAdminUserView(views.TitleMixin, views.AjaxFormViewMixin, SingleO
     model = get_role_model()
     success_url = '../..'
     template_name = 'authentic2/manager/role_remove_admin_user.html'
-    permissions = 'a2_rbac.change_role'
+    permissions = ['a2_rbac.change_role']
 
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()

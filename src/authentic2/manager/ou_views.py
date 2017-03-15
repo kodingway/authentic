@@ -18,7 +18,7 @@ listing = OrganizationalUnitView.as_view()
 
 class OrganizationalUnitAddView(views.BaseAddView):
     model = get_ou_model()
-    permissions = 'a2_rbac.add_organizationalunit'
+    permissions = ['a2_rbac.add_organizationalunit']
     form_class = forms.OUEditForm
 
     def get_success_url(self):
