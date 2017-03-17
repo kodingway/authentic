@@ -234,8 +234,8 @@ def test_api_users_create_send_mail(app, settings, superuser):
     url = re.findall('http://[^ ]*/', mail.outbox[0].body)[0]
     relative_url = url.split('testserver')[1]
     resp = app.get(relative_url, status=200)
-    resp.form.set('new_password1', '1234aA')
-    resp.form.set('new_password2', '1234aA')
+    resp.form.set('new_password1', '1234==aA')
+    resp.form.set('new_password2', '1234==aA')
     resp = resp.form.submit().follow()
     # Check user was properly logged in
     assert str(app.session['_auth_user_id']) == str(user_id)
@@ -256,8 +256,8 @@ def test_api_users_create_force_password_reset(app, client, settings, superuser)
     # Verify password reset is enforced on next login
     resp = login(app, 'john.doe', path='/', password='1234').follow()
     resp.form.set('old_password', '1234')
-    resp.form.set('new_password1', '1234aB')
-    resp.form.set('new_password2', '1234aB')
+    resp.form.set('new_password1', '1234==aB')
+    resp.form.set('new_password2', '1234==aB')
     resp = resp.form.submit('Submit').follow()
     assert 'Password changed' in resp
 

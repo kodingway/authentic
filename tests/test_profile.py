@@ -27,8 +27,8 @@ def test_send_password_reset_email(app, simple_user):
     url = re.findall('http://[^ ]*/', body)[0]
     relative_url = url.split('testserver')[1]
     resp = app.get(relative_url, status=200)
-    resp.form.set('new_password1', '1234aA')
-    resp.form.set('new_password2', '1234aA')
+    resp.form.set('new_password1', '1234==aA')
+    resp.form.set('new_password2', '1234==aA')
     resp = resp.form.submit().follow()
     assert str(app.session['_auth_user_id']) == str(simple_user.pk)
 
@@ -45,8 +45,8 @@ def test_password_reset_view(app, simple_user):
     url = re.findall('http://[^ ]*/', body)[0]
     relative_url = url.split('testserver')[1]
     resp = app.get(relative_url, status=200)
-    resp.form.set('new_password1', '1234aA')
-    resp.form.set('new_password2', '1234aA')
+    resp.form.set('new_password1', '1234==aA')
+    resp.form.set('new_password2', '1234==aA')
     resp = resp.form.submit().follow()
     assert str(app.session['_auth_user_id']) == str(simple_user.pk)
 

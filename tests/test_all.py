@@ -258,15 +258,15 @@ class RegistrationTests(TestCase):
                                            'password2': 'toto'})
         self.assertEqual(response.status_code, 200)
         self.assertFormError(response, 'form', 'password1',
-                             ['password must contain at least 6 characters'])
+                             ['password must contain at least 8 characters'])
 
-        response = self.client.post(link, {'password1': 'T0toto',
-                                           'password2': 'T0toto'})
+        response = self.client.post(link, {'password1': 'T0==toto',
+                                           'password2': 'T0==toto'})
         new_user = User.objects.get()
         self.assertRedirects(response, next_url)
         self.assertEqual(new_user.email, 'testbot@entrouvert.com')
         self.assertIsNone(new_user.username)
-        self.assertTrue(new_user.check_password('T0toto'))
+        self.assertTrue(new_user.check_password('T0==toto'))
         self.assertTrue(new_user.is_active)
         self.assertFalse(new_user.is_staff)
         self.assertFalse(new_user.is_superuser)
@@ -275,7 +275,7 @@ class RegistrationTests(TestCase):
         client = Client()
         response = client.post('/login/', {
             'username': 'testbot@entrouvert.com',
-            'password': 'T0toto',
+            'password': 'T0==toto',
             'login-password-submit': '1'
         })
         self.assertRedirects(response, '/')
@@ -297,13 +297,13 @@ class RegistrationTests(TestCase):
         self.assertIsInstance(links, list) and self.assertIsNot(links, [])
         link = links[0]
         response = self.client.post(link, {'username': 'toto',
-                                           'password1': 'T0toto',
-                                           'password2': 'T0toto'})
+                                           'password1': 'T0==toto',
+                                           'password2': 'T0==toto'})
         new_user = User.objects.get()
         self.assertRedirects(response, next_url)
         self.assertEqual(new_user.username, 'toto@realm')
         self.assertEqual(new_user.email, 'testbot@entrouvert.com')
-        self.assertTrue(new_user.check_password('T0toto'))
+        self.assertTrue(new_user.check_password('T0==toto'))
         self.assertTrue(new_user.is_active)
         self.assertFalse(new_user.is_staff)
         self.assertFalse(new_user.is_superuser)
@@ -312,7 +312,7 @@ class RegistrationTests(TestCase):
         client = Client()
         response = client.post('/login/', {
             'username': 'testbot@entrouvert.com',
-            'password': 'T0toto',
+            'password': 'T0==toto',
             'login-password-submit': '1'
         })
         self.assertRedirects(response, '/')
@@ -348,8 +348,8 @@ class RegistrationTests(TestCase):
             link,
             {
                 'username': 'abx',
-                'password1': 'Coucou1',
-                'password2': 'Coucou1'
+                'password1': 'Coucou=1',
+                'password2': 'Coucou=1'
             }
         )
         self.assertEqual(response.status_code, 200)
@@ -359,8 +359,8 @@ class RegistrationTests(TestCase):
             link,
             {
                 'username': 'abab',
-                'password1': 'Coucou1',
-                'password2': 'Coucou1'
+                'password1': 'Coucou=1',
+                'password2': 'Coucou=1'
             }
         )
         self.assertEqual(response.status_code, 302)
@@ -394,8 +394,8 @@ class RegistrationTests(TestCase):
             link,
             {
                 'username': 'john.doe',
-                'password1': 'Coucou1',
-                'password2': 'Coucou1'
+                'password1': 'Coucou=1',
+                'password2': 'Coucou=1'
             }
         )
         self.assertEqual(response.status_code, 302)
@@ -406,8 +406,8 @@ class RegistrationTests(TestCase):
             link,
             {
                 'username': 'john.doe',
-                'password1': 'Coucou1',
-                'password2': 'Coucou1'
+                'password1': 'Coucou=1',
+                'password2': 'Coucou=1'
             }
         )
         self.assertEqual(response.status_code, 200)
@@ -438,8 +438,8 @@ class RegistrationTests(TestCase):
         response = self.client.post(
             link,
             {
-                'password1': 'Coucou1',
-                'password2': 'Coucou1'
+                'password1': 'Coucou=1',
+                'password2': 'Coucou=1'
             }
         )
         self.assertRedirects(response, reverse('auth_homepage'))
@@ -447,8 +447,8 @@ class RegistrationTests(TestCase):
         response = client.post(
             link,
             {
-                'password1': 'Coucou1',
-                'password2': 'Coucou1'
+                'password1': 'Coucou=1',
+                'password2': 'Coucou=1'
             }
         )
         self.assertRedirects(response, link, fetch_redirect_response=False)
@@ -501,8 +501,8 @@ class RegistrationTests(TestCase):
             {
                 'prenom': 'John',
                 'nom': 'Doe',
-                'password1': 'Coucou1',
-                'password2': 'Coucou1'
+                'password1': 'Coucou=1',
+                'password2': 'Coucou=1'
             }
         )
         self.assertEqual(response.status_code, 302)
@@ -776,7 +776,7 @@ class APITest(TestCase):
         User = get_user_model()
         user_count = User.objects.count()
         client = test.APIClient()
-        password = '12XYab'
+        password = '12=XY=ab'
         username = 'john.doe'
         email = 'john.doe@example.com'
         return_url = 'http://sp.org/register/'
@@ -861,7 +861,7 @@ class APITest(TestCase):
 
     def test_register_reguser2_wrong_ou(self):
         client = test.APIClient()
-        password = '12XYab'
+        password = '12=XY=ab'
         username = 'john.doe'
         email = 'john.doe@example.com'
         return_url = 'http://sp.org/register/'
@@ -893,7 +893,7 @@ class APITest(TestCase):
         User = get_user_model()
         user_count = User.objects.count()
         client = test.APIClient()
-        password = '12XYab'
+        password = '12=XY=ab'
         username = 'john.doe'
         email = 'john.doe@example.com'
         return_url = 'http://sp.org/register/'
@@ -1023,7 +1023,7 @@ class APITest(TestCase):
         User = get_user_model()
         user_count = User.objects.count()
         client = test.APIClient()
-        password = '12XYab'
+        password = '12=XY=ab'
         username = 'john.doe'
         email = 'john.doe@example.com'
         return_url = 'http://sp.org/register/'

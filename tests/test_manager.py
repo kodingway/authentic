@@ -92,7 +92,7 @@ def test_manager_user_password_reset(app, superuser, simple_user):
     relative_url = url.split('testserver')[1]
     resp = app.get('/logout/').maybe_follow()
     resp = app.get(relative_url, status=200)
-    resp.form.set('new_password1', '1234aA')
-    resp.form.set('new_password2', '1234aA')
+    resp.form.set('new_password1', '1234==aA')
+    resp.form.set('new_password2', '1234==aA')
     resp = resp.form.submit().follow()
     assert str(app.session['_auth_user_id']) == str(simple_user.pk)
