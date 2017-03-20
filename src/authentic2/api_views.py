@@ -283,7 +283,7 @@ class BaseUserSerializer(serializers.ModelSerializer):
             kind = attribute_kinds.get_kind(at.kind)
             field_class = kind['rest_framework_field_class']
             self.fields[at.name] = field_class(source='attributes.%s' % at.name,
-                                               required=at.required, allow_blank=True)
+                                               required=at.required)
 
     def check_perm(self, perm, ou):
         self.context['view'].check_perm(perm, ou)
