@@ -124,7 +124,7 @@ class Authentic2TestCase(TestCase):
 
 @contextmanager
 def check_log(caplog, msg):
-    idx = len(caplog.records())
+    idx = len(caplog.records)
     yield
-    assert any(msg in record.msg for record in caplog.records()[idx:]), \
+    assert any(msg in record.msg for record in caplog.records[idx:]), \
         '%r not found in log records' % msg
