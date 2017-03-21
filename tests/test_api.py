@@ -131,17 +131,9 @@ def test_api_users_list(app, user):
     app.authorization = ('Basic', (user.username, user.username))
     resp = app.get('/api/users/')
     assert isinstance(resp.json, dict)
-    assert set(['count', 'previous', 'next', 'results']) == set(resp.json.keys())
+    assert set(['previous', 'next', 'results']) == set(resp.json.keys())
     assert resp.json['previous'] is None
     assert resp.json['next'] is None
-    if user.is_superuser:
-        count = 7
-    elif user.roles.exists():
-        count = 2
-    else:
-        count = 0
-    assert resp.json['count'] == count
-    assert len(resp.json['results']) == count
 
 
 def test_api_users_create(app, user):
@@ -327,7 +319,8 @@ def test_register_no_email_validation(app, admin, django_user_model):
     }
     headers = basic_authorization_header(admin)
     assert len(mail.outbox) == 0
-    response = app.post_json(reverse('a2-api-register'), params=payload, headers=headers, status=400)
+    response = app.post_json(reverse('a2-api-register'), params=payload, headers=headers,
+                             status=400)
     assert 'errors' in response.json
     assert response.json['result'] == 0
     assert response.json['errors'] == {
@@ -381,7 +374,8 @@ def test_register_ou_no_email_validation(app, admin, django_user_model):
     }
     headers = basic_authorization_header(admin)
     assert len(mail.outbox) == 0
-    response = app.post_json(reverse('a2-api-register'), params=payload, headers=headers, status=400)
+    response = app.post_json(reverse('a2-api-register'), params=payload, headers=headers,
+                             status=400)
     assert 'errors' in response.json
     assert response.json['result'] == 0
     assert response.json['errors'] == {
