@@ -89,7 +89,7 @@ def get_version():
         else:
             result = '0.0.0-%s' % len(subprocess.check_output(
                 ['git', 'rev-list', 'HEAD']).splitlines())
-        return result.replace('-', '.')
+        return result.replace('-', '.').replace('.g', '+g')
     return '0.0.0'
 
 
