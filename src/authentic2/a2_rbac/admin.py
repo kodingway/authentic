@@ -36,7 +36,7 @@ class RoleAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
     filter_horizontal = ('members', 'permissions')
     list_display = ('__unicode__', 'slug', 'ou', 'service', 'admin_scope')
-    list_select_related = ('name', 'slug', 'ou')
+    list_select_related = True
     list_filter = ['ou', 'service']
     inlines = [RoleAttributeInline]
 
@@ -52,7 +52,7 @@ class OrganizationalUnitAdmin(admin.ModelAdmin):
 class PermissionAdmin(admin.ModelAdmin):
     fields = ('operation', 'ou', 'target_ct', 'target_id')
     list_display = ('name', 'operation', 'ou', 'target')
-    list_select_related = ('operation', 'ou', 'target')
+    list_select_related = True
 
     def name(self, obj):
         return unicode(obj)
