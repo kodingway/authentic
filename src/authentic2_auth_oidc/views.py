@@ -71,7 +71,7 @@ def login_initiate(request, *args, **kwargs):
         provider = get_provider_by_issuer(issuer)
     except models.OIDCProvider.DoesNotExist:
         return HttpResponseBadRequest(u'unknown issuer %s' % issuer)
-    return login(request, pk=provider.pk, next_url=request.GET.get('target_link_uri'))
+    return oidc_login(request, pk=provider.pk, next_url=request.GET.get('target_link_uri'))
 
 
 class LoginCallback(View):
