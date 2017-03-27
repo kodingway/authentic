@@ -349,7 +349,7 @@ class Service(models.Model):
         return '<%s %r>' % (self.__class__.__name__, unicode(self))
 
     def to_json(self, roles=None):
-        if not roles:
+        if roles is None:
             roles = Role.objects.all()
         roles = roles.filter(Q(service=self)|Q(ou=self.ou, service__isnull=True))
         return {
