@@ -56,6 +56,7 @@ OIDC_CLIENT_PARAMS = [
     },
     {
         'identifier_policy': OIDCClient.POLICY_EMAIL,
+        'post_logout_redirect_uris': '',
     },
     {
         'idtoken_algo': OIDCClient.ALGO_HMAC,
@@ -207,13 +208,22 @@ def test_authorization_code_sso(login_first, oidc_settings, oidc_client, simple_
     assert response.json['email_verified'] is True
 
     # Now logout
-    logout_url = make_url('oidc-logout', params={
-        'post_logout_redirect_uri': 'https://example.com/',
-    })
+    params = {}
+    if oidc_client.post_logout_redirect_uris:
+        params = {
+            'post_logout_redirect_uri': oidc_client.post_logout_redirect_uris,
+        }
+    logout_url = make_url('oidc-logout', params=params)
     response = app.get(logout_url)
-    assert 'You have been logged out' in response.content
-    assert 'https://example.com' in response.content
-    assert '_auth_user_id' not in app.session
+    if oidc_client.post_logout_redirect_uris:
+        assert 'You have been logged out' in response.content
+        assert 'https://example.com' in response.content
+        assert '_auth_user_id' not in app.session
+    else:
+        response = response.maybe_follow()
+        assert 'You have been logged out' in response.content
+        assert response.request.environ['HTTP_HOST'] == 'testserver'
+        assert response.request.environ['PATH_INFO'] == '/login/'
 
 
 def assert_oidc_error(response, error, error_description=None, fragment=False):

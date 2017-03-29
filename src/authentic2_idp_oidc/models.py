@@ -77,6 +77,7 @@ class OIDCClient(Service):
         validators=[validate_https_url])
     post_logout_redirect_uris = models.TextField(
         verbose_name=_('post logout redirect URIs'),
+        blank=True,
         default='',
         validators=[validate_https_url])
     sector_identifier_uri = models.URLField(

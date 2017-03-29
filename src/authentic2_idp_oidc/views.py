@@ -407,19 +407,19 @@ def user_info(request, *args, **kwargs):
 
 @setting_enabled('ENABLE', settings=app_settings)
 def logout(request):
-    post_logout_redirect_uri = request.GET['post_logout_redirect_uri']
-    providers = models.OIDCClient.objects.filter(
-        post_logout_redirect_uris__contains=post_logout_redirect_uri)
-    for provider in providers:
-        if post_logout_redirect_uri in provider.post_logout_redirect_uris.split():
-            break
-    else:
-        messages.warning(request, _('Invalid post logout URI'))
-        return redirect(request, settings.LOGIN_REDIRECT_URL)
-    id_token_hint = request.GET.get('id_token_hint')
-    # FIXME: do something with id_token_hint
     params = {}
+    post_logout_redirect_uri = request.GET.get('post_logout_redirect_uri')
     if post_logout_redirect_uri:
+        providers = models.OIDCClient.objects.filter(
+            post_logout_redirect_uris__contains=post_logout_redirect_uri)
+        for provider in providers:
+            if post_logout_redirect_uri in provider.post_logout_redirect_uris.split():
+                break
+        else:
+            messages.warning(request, _('Invalid post logout URI'))
+            return redirect(request, settings.LOGIN_REDIRECT_URL)
         params[REDIRECT_FIELD_NAME] = post_logout_redirect_uri
+    # FIXME: do something with id_token_hint
+    id_token_hint = request.GET.get('id_token_hint')
     return a2_logout(request, next_url=post_logout_redirect_uri, do_local=False,
                      check_referer=False)
