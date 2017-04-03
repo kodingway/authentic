@@ -320,6 +320,10 @@ class BaseUserSerializer(serializers.ModelSerializer):
         if 'password' in validated_data:
             instance.set_password(validated_data['password'])
             instance.save()
+        elif send_registration_email:
+            # set random password so that the password reset form will work
+            instance.set_password(utils.get_hex_uuid())
+            instance.save()
         if force_password_reset:
             PasswordReset.objects.get_or_create(user=instance)
         if send_registration_email and validated_data.get('email'):
