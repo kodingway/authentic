@@ -23,7 +23,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.fields import CreateOnlyDefault
 
 from .custom_user.models import User
-from . import utils, decorators
+from . import utils, decorators, attribute_kinds
 from .models import Attribute, PasswordReset
 from .a2_rbac.utils import get_default_ou
 
@@ -278,8 +278,10 @@ class BaseUserSerializer(serializers.ModelSerializer):
         for at in Attribute.objects.all():
             if at.name in self.fields:
                 continue
-            self.fields[at.name] = serializers.CharField(source='attributes.%s' % at.name,
-                                                         required=at.required, allow_blank=True)
+            kind = attribute_kinds.get_kind(at.kind)
+            field_class = kind['rest_framework_field_class']
+            self.fields[at.name] = field_class(source='attributes.%s' % at.name,
+                                               required=at.required, allow_blank=True)
 
     def check_perm(self, perm, ou):
         self.context['view'].check_perm(perm, ou)

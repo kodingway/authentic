@@ -10,6 +10,8 @@ from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from django.utils.functional import allow_lazy
 from django.template.defaultfilters import capfirst
 
+from rest_framework import serializers
+
 from .decorators import to_iter
 from .plugins import collect_from_plugins
 from . import app_settings
@@ -109,4 +111,5 @@ def get_kind(kind):
     d.setdefault('default', None)
     d.setdefault('serialize', lambda x: x)
     d.setdefault('deserialize', lambda x: x)
+    d.setdefault('rest_framework_field_class', serializers.CharField)
     return d
