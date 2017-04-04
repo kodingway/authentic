@@ -22,6 +22,8 @@ from rest_framework import permissions, status
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.fields import CreateOnlyDefault
 
+from django_filters.rest_framework import FilterSet
+
 from .custom_user.models import User
 from . import utils, decorators, attribute_kinds
 from .models import Attribute, PasswordReset
@@ -350,11 +352,50 @@ class BaseUserSerializer(serializers.ModelSerializer):
         exclude = ('date_joined', 'user_permissions', 'groups', 'last_login')
 
 
+class UsersFilter(FilterSet):
+    class Meta:
+        model = get_user_model()
+        fields = {
+            'username': [
+                'exact',
+                'iexact'
+            ],
+            'first_name': [
+                'exact',
+                'iexact',
+                'icontains',
+                'gte',
+                'lte',
+                'gt',
+                'lt',
+            ],
+            'last_name': [
+                'exact',
+                'iexact',
+                'icontains',
+                'gte',
+                'lte',
+                'gt',
+                'lt',
+            ],
+            'modified': [
+                'gte',
+                'lte',
+                'gt',
+                'lt',
+            ],
+            'email': [
+                'exact',
+                'iexact',
+            ],
+        }
+
+
 class UsersAPI(ModelViewSet):
-    filter_fields = ['username', 'first_name', 'last_name', 'email']
-    ordering_fields = ['username', 'first_name', 'last_name']
+    ordering_fields = ['username', 'first_name', 'last_name', 'modified', 'date_joined']
     lookup_field = 'uuid'
     serializer_class = BaseUserSerializer
+    filter_class = UsersFilter
 
     def get_queryset(self):
         User = get_user_model()
