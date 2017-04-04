@@ -12,7 +12,7 @@ from django.shortcuts import get_object_or_404
 
 from django_rbac.utils import get_ou_model, get_role_model
 
-from rest_framework import serializers
+from rest_framework import serializers, pagination
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.routers import SimpleRouter
@@ -396,6 +396,8 @@ class UsersAPI(ModelViewSet):
     lookup_field = 'uuid'
     serializer_class = BaseUserSerializer
     filter_class = UsersFilter
+    pagination_class = pagination.CursorPagination
+    ordering = ['modified', 'id']
 
     def get_queryset(self):
         User = get_user_model()

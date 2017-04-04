@@ -131,17 +131,9 @@ def test_api_users_list(app, user):
     app.authorization = ('Basic', (user.username, user.username))
     resp = app.get('/api/users/')
     assert isinstance(resp.json, dict)
-    assert set(['count', 'previous', 'next', 'results']) == set(resp.json.keys())
+    assert set(['previous', 'next', 'results']) == set(resp.json.keys())
     assert resp.json['previous'] is None
     assert resp.json['next'] is None
-    if user.is_superuser:
-        count = 7
-    elif user.roles.exists():
-        count = 2
-    else:
-        count = 0
-    assert resp.json['count'] == count
-    assert len(resp.json['results']) == count
 
 
 def test_api_users_create(app, user):
