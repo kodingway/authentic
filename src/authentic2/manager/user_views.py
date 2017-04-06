@@ -103,7 +103,6 @@ class UserEditView(PassRequestToFormMixin, OtherActionsMixin,
     permissions = ['custom_user.change_user']
     fields = ['username', 'ou', 'first_name', 'last_name', 'email']
     success_url = '..'
-    context_object_name = 'person'
     slug_field = 'uuid'
 
     @property

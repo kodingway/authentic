@@ -325,7 +325,7 @@ class SubTableViewMixin(FormatsContextData, ModelNameMixin, PermissionMixin,
                         SearchFormMixin, FilterTableQuerysetByPermMixin,
                         TableQuerysetMixin, SingleObjectMixin,
                         SingleTableMixin, ContextMixin):
-    pass
+    context_object_name = 'object'
 
 
 class SimpleSubTableView(SubTableViewMixin, TemplateView):
@@ -339,6 +339,7 @@ class BaseSubTableView(TitleMixin, SubTableViewMixin, FormView):
 class BaseDeleteView(TitleMixin, ModelNameMixin, PermissionMixin,
                      AjaxFormViewMixin, DeleteView):
     template_name = 'authentic2/manager/delete.html'
+    context_object_name = 'object'
 
     def authorize(self, *args, **kwargs):
         return self.can_delete
@@ -366,6 +367,7 @@ class BaseAddView(TitleMixin, ModelNameMixin, PermissionMixin,
                   AjaxFormViewMixin, ModelFormView, CreateView):
     template_name = 'authentic2/manager/form.html'
     success_view_name = None
+    context_object_name = 'object'
 
     def authorize(self, *args, **kwargs):
         return self.can_add
@@ -380,6 +382,7 @@ class BaseAddView(TitleMixin, ModelNameMixin, PermissionMixin,
 class BaseEditView(SuccessMessageMixin, TitleMixin, ModelNameMixin, PermissionMixin,
                    AjaxFormViewMixin, ModelFormView, UpdateView):
     template_name = 'authentic2/manager/form.html'
+    context_object_name = 'object'
 
     def authorize(self, *args, **kwargs):
         return self.can_change
