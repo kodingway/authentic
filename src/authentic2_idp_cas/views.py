@@ -28,8 +28,8 @@ from constants import (SERVICE_PARAM, RENEW_PARAM, GATEWAY_PARAM,
         CAS10_VALIDATION_SUCCESS, PGT_ELT, PROXIES_ELT, PROXY_ELT,
         PGT_PREFIX, PGT_IOU_PREFIX, PT_PREFIX, TARGET_SERVICE_PARAM,
         BAD_PGT_ERROR, INVALID_TARGET_SERVICE_ERROR, PROXY_UNAUTHORIZED_ERROR,
-        PGT_PARAM, CAS20_PROXY_FAILURE, PROXY_SUCCESS_ELT, PROXY_TICKET_ELT,
-        INTERNAL_ERROR, CAS_NAMESPACE, ATTRIBUTES_ELT)
+        PGT_PARAM, PGT_ID_PARAM, CAS20_PROXY_FAILURE, PROXY_SUCCESS_ELT,
+        PROXY_TICKET_ELT, INTERNAL_ERROR, CAS_NAMESPACE, ATTRIBUTES_ELT)
 from . import app_settings
 
 try:
@@ -310,7 +310,7 @@ class ServiceValidateView(ValidateBaseView):
         # instead store PGT_IOU / PGT association in session
         if app_settings.CHECK_PGT_URL:
             response = requests.get(pgt_url, params={
-               PGT_PARAM: pgt,
+               PGT_ID_PARAM: pgt,
                PGT_IOU_PARAM: pgt_iou})
             if response.status_code != 200:
                 self.logger.warning('pgtUrl %r returned non 200 code: %d',
