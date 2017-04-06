@@ -72,6 +72,7 @@ class ServiceAdmin(admin.ModelAdmin):
                     'ou',
                     'urls',
                     'identifier_attribute',
+                    'proxy',
                 ]
              }),
             (_('Logout'), {

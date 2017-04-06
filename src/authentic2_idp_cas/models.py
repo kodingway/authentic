@@ -18,6 +18,7 @@ class Service(LogoutUrlAbstract, Service):
     identifier_attribute = models.CharField(max_length=64,
             verbose_name=_('attribute name'), blank=False)
     proxy = models.ManyToManyField('self',
+            blank=True,
             verbose_name=_('proxy'),
             help_text=_('services who can request proxy tickets for this service'))
 
