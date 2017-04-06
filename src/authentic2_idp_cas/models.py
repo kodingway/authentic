@@ -10,7 +10,7 @@ from authentic2.utils import check_session_key
 
 from . import managers, utils, constants
 
-url_validator = URLValidator(schemes=['http', 'https'])
+url_validator = URLValidator(schemes=['http', 'https', 'ftp', 'ftps', 'imap', 'imaps', 'sieve', 'smtp', 'smtps', 'ssh'])
 
 class Service(LogoutUrlAbstract, Service):
     urls = models.TextField(max_length=128,
