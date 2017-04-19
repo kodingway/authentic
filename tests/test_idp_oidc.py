@@ -18,6 +18,7 @@ from authentic2_idp_oidc.utils import make_sub
 from authentic2.a2_rbac.utils import get_default_ou
 from authentic2.utils import make_url
 from authentic2_auth_oidc.utils import parse_timestamp
+from django_rbac.utils import get_role_model
 
 JWKSET = {
     "keys": [
@@ -72,6 +73,7 @@ def oidc_client(request, superuser, app):
     response.form.set('name', 'oidcclient')
     response.form.set('slug', 'oidcclient')
     response.form.set('ou', get_default_ou().pk)
+    response.form.set('unauthorized_url', 'https://example.com/southpark/')
     response.form.set('redirect_uris', 'https://example.com/callback')
     response.form.set('post_logout_redirect_uris', 'https://example.com/')
     for key, value in request.param.iteritems():
@@ -649,3 +651,76 @@ def test_client_secret_post_authentication(oidc_settings, app, simple_oidc_clien
     assert 'expires_in' in response.json
     assert 'id_token' in response.json
     assert response.json['token_type'] == 'Bearer'
+
+
+@pytest.mark.parametrize('login_first', [(True,), (False,)])
+def test_role_control_access(login_first, oidc_settings, oidc_client, simple_user, app):
+    # authorized_role
+    role_authorized = get_role_model().objects.create(
+        name='Goth Kids', slug='goth-kids', ou=get_default_ou())
+    oidc_client.add_authorized_role(role_authorized)
+
+    redirect_uri = oidc_client.redirect_uris.split()[0]
+    params = {
+        'client_id': oidc_client.client_id,
+        'scope': 'openid profile email',
+        'redirect_uri': redirect_uri,
+        'state': 'xxx',
+        'nonce': 'yyy',
+    }
+
+    if oidc_client.authorization_flow == oidc_client.FLOW_AUTHORIZATION_CODE:
+        params['response_type'] = 'code'
+    elif oidc_client.authorization_flow == oidc_client.FLOW_IMPLICIT:
+        params['response_type'] = 'token id_token'
+    authorize_url = make_url('oidc-authorize', params=params)
+
+    if login_first:
+        utils.login(app, simple_user)
+
+    # user not authorized
+    response = app.get(authorize_url)
+    assert 'https://example.com/southpark/' in response.content
+
+    # user authorized
+    simple_user.roles.add(role_authorized)
+    simple_user.save()
+    response = app.get(authorize_url)
+
+    if not login_first:
+        response = response.follow()
+        response.form.set('username', simple_user.username)
+        response.form.set('password', simple_user.username)
+        response = response.form.submit(name='login-password-submit')
+        response = response.follow()
+    response = response.form.submit('accept')
+    authz = OIDCAuthorization.objects.get()
+    if oidc_client.authorization_flow == oidc_client.FLOW_AUTHORIZATION_CODE:
+        code = OIDCCode.objects.get()
+    location = urlparse.urlparse(response['Location'])
+    if oidc_client.authorization_flow == oidc_client.FLOW_AUTHORIZATION_CODE:
+        query = urlparse.parse_qs(location.query)
+        code = query['code'][0]
+        token_url = make_url('oidc-token')
+        response = app.post(token_url, params={
+            'grant_type': 'authorization_code',
+            'code': code,
+            'redirect_uri': oidc_client.redirect_uris.split()[0],
+        }, headers=client_authentication_headers(oidc_client))
+        id_token = response.json['id_token']
+    elif oidc_client.authorization_flow == oidc_client.FLOW_IMPLICIT:
+        query = urlparse.parse_qs(location.fragment)
+        id_token = query['id_token'][0]
+
+    if oidc_client.idtoken_algo == oidc_client.ALGO_RSA:
+        key = JWKSet.from_json(app.get(reverse('oidc-certs')).content)
+    elif oidc_client.idtoken_algo == oidc_client.ALGO_HMAC:
+        key = JWK(kty='oct', k=oidc_client.client_secret)
+    else:
+        raise NotImplementedError
+    jwt = JWT(jwt=id_token, key=key)
+    claims = json.loads(jwt.claims)
+    if login_first:
+        assert claims['acr'] == 0
+    else:
+        assert claims['acr'] == 1

@@ -159,6 +159,10 @@ def authorize(request, *args, **kwargs):
                                        fragment=fragment)
         return login_require(request, params={'nonce': nonce})
 
+    # if user not authorized, a ServiceAccessDenied exception
+    # is raised and handled by ServiceAccessMiddleware
+    client.authorize(request.user)
+
     last_auth = last_authentication_event(request.session)
     if max_age is not None and time.time() - last_auth['when'] >= max_age:
         if 'none' in prompt:
