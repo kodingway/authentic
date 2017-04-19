@@ -162,6 +162,10 @@ class ContinueView(CasMixin, View):
         # Renew requested and ticket is unknown ? Try again
         if st.renew and not find_authentication_event(request, st.ticket_id):
             return self.authenticate(request, st)
+        # if user not authorized, a ServiceAccessDenied exception
+        # is raised and handled by ServiceAccessMiddleware
+        st.service.authorize(request.user)
+
         self.validate_ticket(request, st)
         if st.valid():
             return redirect(request, service, params={'ticket': st.ticket_id})

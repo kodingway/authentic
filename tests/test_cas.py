@@ -10,6 +10,7 @@ from authentic2_idp_cas.models import Ticket, Service, Attribute
 from authentic2_idp_cas import constants
 from authentic2.constants import AUTHENTICATION_EVENTS_SESSION_KEY, NONCE_FIELD_NAME
 from authentic2.a2_rbac.utils import get_default_ou
+from django_rbac.utils import get_role_model
 
 from utils import Authentic2TestCase
 
@@ -37,6 +38,7 @@ class CasTests(Authentic2TestCase):
 
     def setUp(self):
         User = get_user_model()
+        Role = get_role_model()
         self.user = User.objects.create_user(self.LOGIN,
                 password=self.PASSWORD, email=self.EMAIL,
                 first_name=self.FIRST_NAME, last_name=self.LAST_NAME)
@@ -54,6 +56,7 @@ class CasTests(Authentic2TestCase):
                 service=self.service2,
                 slug='username',
                 attribute_name='django_user_username')
+        self.authorized_service = Role.objects.create(name='rogue', ou=get_default_ou())
         self.factory = RequestFactory()
 
     def test_service_matching(self):
@@ -77,6 +80,42 @@ class CasTests(Authentic2TestCase):
         response = client.get('/idp/cas/login', {constants.SERVICE_PARAM: self.URL,
             constants.GATEWAY_PARAM: ''})
         self.assertRedirectsComplex(response, self.URL)
+
+    def test_role_access_control_denied(self):
+        client = Client()
+        service = self.service
+        service.add_authorized_role(self.authorized_service)
+        service.unauthorized_url = 'https://casclient.com/loser/'
+        service.save()
+        assert service.authorized_roles.exists() is True
+        response = client.get('/idp/cas/login', {constants.SERVICE_PARAM: self.URL})
+        location = response['Location']
+        query = urlparse.parse_qs(location.split('?')[1])
+        next_url, next_url_query = query['next'][0].split('?')
+        next_url_query = urlparse.parse_qs(next_url_query)
+        response = client.post(location, {'login-password-submit': '',
+                               'username': self.LOGIN, 'password': self.PASSWORD}, follow=False)
+        response = client.get(response.url)
+        self.assertIn('https://casclient.com/loser/', response.content)
+
+    def test_role_access_control_granted(self):
+        client = Client()
+        service = self.service
+        service.add_authorized_role(self.authorized_service)
+        get_user_model().objects.get(username=self.LOGIN).roles.add(self.authorized_service)
+        assert service.authorized_roles.exists() is True
+        response = client.get('/idp/cas/login', {constants.SERVICE_PARAM: self.URL})
+        location = response['Location']
+        query = urlparse.parse_qs(location.split('?')[1])
+        next_url, next_url_query = query['next'][0].split('?')
+        next_url_query = urlparse.parse_qs(next_url_query)
+        response = client.post(location, {'login-password-submit': '',
+                               'username': self.LOGIN, 'password': self.PASSWORD}, follow=False)
+        response = client.get(response.url)
+        client = Client()
+        ticket_id = urlparse.parse_qs(response.url.split('?')[1])[constants.TICKET_PARAM][0]
+        response = client.get('/idp/cas/validate', {constants.TICKET_PARAM:
+                              ticket_id, constants.SERVICE_PARAM: self.URL})
 
     def test_login_validate(self):
         response = self.client.get('/idp/cas/login', {constants.SERVICE_PARAM: self.URL})
