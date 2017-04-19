@@ -30,3 +30,7 @@ def test_login_inactive_user(db, app):
         login(app, user1)
     assert '_auth_user_id' not in app.session
 
+
+def test_registration_url_on_login_page(db, app):
+    response = app.get('/login/?next=/whatever')
+    assert 'register/?next=/whatever"' in response
