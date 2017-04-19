@@ -14,6 +14,7 @@ from model_utils.managers import QueryManager
 from . import attribute_kinds
 from authentic2.a2_rbac.models import Role
 from authentic2.a2_rbac.utils import get_default_ou
+from django_rbac.utils import get_role_model_name
 
 try:
     from django.contrib.contenttypes.fields import GenericForeignKey
@@ -22,6 +23,7 @@ except ImportError:
 from django.contrib.contenttypes.models import ContentType
 
 from . import managers
+from .utils import ServiceAccessDenied
 
 
 class DeletedUser(models.Model):
@@ -320,6 +322,13 @@ class Service(models.Model):
         null=True,
         blank=True,
         swappable=False)
+    authorized_roles = models.ManyToManyField(
+        get_role_model_name(), verbose_name=_('authorized services'),
+        through='AuthorizedRole', through_fields=('service', 'role'),
+        related_name='authorized_roles', blank=True)
+    unauthorized_url = models.URLField(
+        verbose_name=_('callback url when unauthorized'),
+        max_length=256, null=True, blank=True)
 
     objects = managers.ServiceManager()
 
@@ -355,6 +364,26 @@ class Service(models.Model):
     def __repr__(self):
         return '<%s %r>' % (self.__class__.__name__, unicode(self))
 
+    def authorize(self, user):
+        if not self.authorized_roles.exists():
+            return True
+        if user.roles_and_parents().filter(authorized_roles=self).exists():
+            return True
+        raise ServiceAccessDenied(service=self)
+
+    def add_authorized_role(self, role):
+        authorization, created = AuthorizedRole.objects.get_or_create(
+            service=self, role=role)
+        return authorization
+
+    def remove_authorized_role(self, role):
+        try:
+            authorization = AuthorizedRole.objects.get(service=self, role=role)
+            authorization.delete()
+        except AuthorizedRole.DoesNotExist:
+            pass
+        return True
+
     def to_json(self, roles=None):
         if roles is None:
             roles = Role.objects.all()
@@ -368,3 +397,8 @@ class Service(models.Model):
             'ou__slug': self.ou.slug if self.ou else None,
             'roles': [role.to_json() for role in roles],
         }
+
+
+class AuthorizedRole(models.Model):
+    service = models.ForeignKey(Service, on_delete=models.CASCADE)
+    role = models.ForeignKey(get_role_model_name(), on_delete=models.CASCADE)
