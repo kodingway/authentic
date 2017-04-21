@@ -674,6 +674,11 @@ def sso_after_process_request(request, login, consent_obtained=False,
                 lasso.SAML2_STATUS_CODE_NO_PASSIVE)
         return finish_sso(request, login)
 
+    # check if user is authorized through this service
+    service = LibertyServiceProvider.objects.get(
+        liberty_provider__entity_id=login.remoteProviderId).liberty_provider
+    service.authorize(request.user)
+
     #Do not ask consent for federation if a transient nameID is provided
     transient = False
     if nid_format == 'transient':

@@ -154,6 +154,9 @@ class SamlBaseTestCase(Authentic2TestCase):
             name='verified_attributes',
             friendly_name='Verified attributes',
             attribute_name='@verified_attributes@')
+        self.role_authorized = Role.objects.create(name='PC Delta', slug='pc-delta')
+        self.liberty_provider.unauthorized_url = 'https://whatever.com/loser/'
+        self.liberty_provider.save()
 
     def make_authn_request(
             self, idp=None,
@@ -228,8 +231,11 @@ class SamlSSOTestCase(SamlBaseTestCase):
         self.do_test_sso(dict(allow_create=True, name_id_policy=False),
                          check_federation=True, default_name_id_format='uuid')
 
+    def test_sso_unauthorized_role(self):
+        self.do_test_sso(dict(allow_create=True), authorized_service=False)
+
     def do_test_sso(self, make_authn_request_kwargs={}, check_federation=True,
-                    cancel=False, default_name_id_format='persistent'):
+                    cancel=False, default_name_id_format='persistent', authorized_service=True):
         self.setup(default_name_id_format=default_name_id_format)
         client = Client()
         # Launch an AuthnRequest
@@ -279,6 +285,26 @@ class SamlSSOTestCase(SamlBaseTestCase):
                           % saml_response)
             with self.assertRaises(lasso.ProfileRequestDeniedError):
                 assertion = self.parse_authn_response(saml_response)
+        elif not authorized_service:
+            self.liberty_provider.add_authorized_role(self.role_authorized)
+            # User without the authorized role
+            role_goth = Role.objects.create(name='Goth Kids', slug='goth-kids')
+            self.user.roles.all().delete()
+            self.user.roles.add(role_goth)
+            response = client.post(url, {
+                'username': self.email,
+                'password': self.password,
+                'login-password-submit': 1})
+            response = client.get(response['Location'])
+            assert 'https://whatever.com/loser/' in response.content
+            # User with the authorized role
+            self.user.roles.add(self.role_authorized)
+            response = client.post(url, {
+                'username': self.email,
+                'password': self.password,
+                'login-password-submit': 1})
+            response = client.get(response['Location'])
+            assert 'SAMLResponse' in response.content
         else:
             response = client.post(url, {
                 'username': self.email,
