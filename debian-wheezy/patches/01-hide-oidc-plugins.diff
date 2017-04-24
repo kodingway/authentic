@@ -5,7 +5,7 @@ index 2dcf32a..d5d54df 100755
 @@ -127,8 +127,6 @@ setup(name="authentic2",
            'django-mellon',
            'ldaptools',
-           'django-jsonfield < 1.0.0',
+           'django-jsonfield',
 -          'jwcrypto>=0.3.1,<1',
 -          'cryptography',
            'XStatic-jQuery',
