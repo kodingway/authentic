@@ -96,7 +96,7 @@ def oidc_provider(db, oidc_provider_jwkset):
         token_revocation_endpoint='https://idp.example.com/revoke',
         max_auth_age=10,
         strategy=OIDCProvider.STRATEGY_CREATE,
-        jwkset_json=oidc_provider_jwkset.export(),
+        jwkset_json=json.loads(oidc_provider_jwkset.export()),
     )
     provider.full_clean()
     OIDCClaimMapping.objects.create(
