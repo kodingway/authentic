@@ -216,3 +216,11 @@ class DisplayMessageBeforeRedirectMiddleware(object):
             return response
         return render(request, 'authentic2/display_message_and_continue.html',
                       {'url': url, 'only_info': only_info})
+
+
+class ServiceAccessControlMiddleware(object):
+
+    def process_exception(self, request, exception):
+        if not isinstance(exception, (utils.ServiceAccessDenied,)):
+            return None
+        return utils.unauthorized_view(request, exception.service)

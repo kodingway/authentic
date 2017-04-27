@@ -60,6 +60,7 @@ MIDDLEWARE_CLASSES = (
     'authentic2.middleware.StoreRequestMiddleware',
     'authentic2.middleware.RequestIdMiddleware',
     'authentic2.middleware.LoggingCollectorMiddleware',
+    'authentic2.middleware.ServiceAccessControlMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.http.ConditionalGetMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
