@@ -2,7 +2,9 @@
 {% load i18n %}
 
 {% block content %}
-  <a id="a2-continue" href="{{ url }}">{% trans "Continue" %}</a>
+  <div class="a2-continue">
+    <a id="a2-continue" href="{{ url }}">{% trans "Continue" %}</a>
+  </div>
   {% if only_info %}
     <script>
     window.setTimeout(function () {
