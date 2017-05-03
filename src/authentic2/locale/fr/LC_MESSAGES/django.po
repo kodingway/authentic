@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-01-27 14:19+0100\n"
-"PO-Revision-Date: 2015-02-26 17:53+0100\n"
+"PO-Revision-Date: 2017-05-03 17:39+0200\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
 "Language: fr\n"
@@ -562,7 +562,7 @@ msgstr "Utilisateur introuvable"
 
 #: src/authentic2/profile_views.py:69
 msgid "You reset password link is invalid or has expired"
-msgstr "Votre lien de ré-initialisation de mot de passe est invalid ou expiré."
+msgstr "Votre lien de ré-initialisation de mot de passe est invalide ou expiré."
 
 #: src/authentic2/profile_views.py:74
 msgid "Account has no password, you cannot reset it."
