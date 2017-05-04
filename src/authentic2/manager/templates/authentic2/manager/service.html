@@ -26,7 +26,23 @@
 {% endblock %}
 
 {% block main %}
+  <h3>{% trans "Roles of users allowed on this service" %}</h3>
+  <div id="authorized-roles">
   {% with row_link=1  url_name='a2-manager-role-members' %}
+    {% render_table table "authentic2/manager/service_roles_table.html" %}
+  {% endwith %}
+  <form method="post" class="manager-m2m-add-form">
+           {% csrf_token %}
+           {{ form }}
+           <button>{% trans "Add" %}</button>
+   </form>
+   </div>
+
+  <h3>{% trans "Roles solely visible from this service" %}</h3>
+  <div id="restricted-roles">
+  {% with row_link=1  url_name='a2-manager-role-members' table=roles_table%}
     {% render_table table "authentic2/manager/table.html" %}
   {% endwith %}
-{% endblock %}
+  </div>
+
+  {% endblock %}
