@@ -22,6 +22,7 @@ log = logging.getLogger(__name__)
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
 from django.contrib.auth.models import Group
+from authentic2.a2_rbac.models import Role
 
 from authentic2.compat_lasso import lasso
 
@@ -236,6 +237,8 @@ class LDAPBackend(object):
         'is_staff': None,
         # create missing group if needed
         'create_group': False,
+        # create missing role if needed
+        'create_role': False,
         # attributes to retrieve and store with the user object
         'attributes': ['uid'],
         # default value for some attributes
@@ -264,6 +267,8 @@ class LDAPBackend(object):
         'limit_to_realm': False,
         # Assign users mandatorily to some groups
         'set_mandatory_groups': (),
+        # Assign users mandatorily to some roles
+        'set_mandatory_roles': (),
         # Can users change their password ?
         'user_can_change_password': True,
         # Use starttls
@@ -554,6 +559,19 @@ class LDAPBackend(object):
             except Group.DoesNotExist:
                 return None
 
+    def get_role_by_name(self, block, role_name, create=None):
+        '''Obtain a Django role'''
+        if create is None:
+            create = block['create_role']
+        if create:
+            role, created = Role.objects.get_or_create(name=role_name)
+            return role
+        else:
+            try:
+                return Role.objects.get(name=role_name)
+            except Role.DoesNotExist:
+                return None
+
     def populate_mandatory_groups(self, user, block):
         mandatory_groups = block.get('set_mandatory_groups')
         if not mandatory_groups:
@@ -568,6 +586,22 @@ class LDAPBackend(object):
                 continue
             if group not in groups:
                 user.groups.add(group)
+
+
+    def populate_mandatory_roles(self, user, block):
+        mandatory_roles = block.get('set_mandatory_roles')
+        if not mandatory_roles:
+            return
+        if not user.pk:
+            user.save()
+            user._changed = False
+        roles = user.roles.all()
+        for role_name in mandatory_roles:
+            role = self.get_role_by_name(block, role_name)
+            if role is None:
+                continue
+            if role not in roles:
+                user.roles.add(role)
 
     def populate_admin_fields(self, user, block):
         if block['is_staff'] is not None:
@@ -585,6 +619,7 @@ class LDAPBackend(object):
         self.populate_user_ou(user, dn, conn, block, attributes)
         self.update_user_identifiers(user, username, block, attributes)
         self.populate_mandatory_groups(user, block)
+        self.populate_mandatory_roles(user, block)
         self.populate_user_groups(user, dn, conn, block, attributes)
 
     def populate_user_ou(self, user, dn, conn, block, attributes):

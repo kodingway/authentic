@@ -350,3 +350,43 @@ def test_get_users(slapd, settings):
     assert User.objects.count() == 101
     assert save.call_count == 1
     assert bulk_create.call_count == 1
+
+
+@pytest.mark.django_db
+def test_create_mandatory_roles(slapd, settings):
+    User = get_user_model()
+    settings.LDAP_AUTH_SETTINGS = [{
+        'url': [slapd.ldap_url],
+        'basedn': 'o=orga',
+        'use_tls': False,
+        'create_group': True,
+        'group_mapping': [
+            ('cn=group2,o=orga', ['Group2']),
+        ],
+        'group_filter': '(&(memberUid={uid})(objectClass=posixGroup))',
+        'set_mandatory_roles': ['tech', 'admin'],
+        'create_role': True,
+    }]
+
+    users = list(ldap_backend.LDAPBackend.get_users())
+    assert User.objects.first().roles.count() == 2
+
+
+@pytest.mark.django_db
+def test_nocreate_mandatory_roles(slapd, settings):
+    User = get_user_model()
+    settings.LDAP_AUTH_SETTINGS = [{
+        'url': [slapd.ldap_url],
+        'basedn': 'o=orga',
+        'use_tls': False,
+        'create_group': True,
+        'group_mapping': [
+            ('cn=group2,o=orga', ['Group2']),
+        ],
+        'group_filter': '(&(memberUid={uid})(objectClass=posixGroup))',
+        'set_mandatory_roles': ['tech', 'admin'],
+        'create_role': False,
+    }]
+
+    users = list(ldap_backend.LDAPBackend.get_users())
+    assert User.objects.first().roles.count() == 0
