@@ -26,7 +26,7 @@
 {% endblock %}
 
 {% block main %}
-  {% with row_link=1 %}
+  {% with row_link=1  url_name='a2-manager-role-members' %}
     {% render_table table "authentic2/manager/table.html" %}
   {% endwith %}
 {% endblock %}
