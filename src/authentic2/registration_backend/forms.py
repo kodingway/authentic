@@ -29,18 +29,6 @@ class RegistrationForm(Form):
 
     email = EmailField(label=_('Email'))
 
-    def clean_email(self):
-        """
-        Verify if email is unique
-        """
-        User = compat.get_user_model()
-        if (app_settings.A2_EMAIL_IS_UNIQUE or
-               app_settings.A2_REGISTRATION_EMAIL_IS_UNIQUE) and \
-               User.objects.filter(email__iexact=self.cleaned_data['email']).exists():
-            raise ValidationError(_('This email address is already in '
-                                    'use. Please supply a different email address.'))
-        return self.cleaned_data['email']
-
     def save(self, request):
         data = self.cleaned_data
         token = request.GET.get('token', None)
