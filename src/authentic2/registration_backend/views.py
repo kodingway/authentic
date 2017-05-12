@@ -96,7 +96,7 @@ class RegistrationCompletionView(CreateView):
         if 'ou' in self.token:
             self.ou = OrganizationalUnit.objects.get(pk=self.token['ou'])
         else:
-            self.ou = None
+            self.ou = get_default_ou()
         self.users = User.objects.filter(email__iexact=self.email) \
             .order_by('date_joined')
         if self.ou:
