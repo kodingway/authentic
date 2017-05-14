@@ -65,12 +65,12 @@ class ManagerRBACTestCase(TestCase):
         nodes = doc.cssselect('table td.username')
         self.assertEqual(set(node.text for node in nodes),
                          set(['ou1_u1', 'ou1_u2', 'ou2_u1', 'ou2_u2']))
-        response = client.get('/manage/roles/')
+        response = client.get('/manage/roles/', {'search-internals': True})
         self.assertEqual(response.status_code, 200)
         doc = html.fromstring(response.content)
         nodes = doc.cssselect('table td.ou')
         self.assertEqual(set(node.text for node in nodes),
-                         set(['ou1', 'ou2', u'\u2014']))
+                         set(['ou1', 'ou2']))
 
     def test_ou1_u2_access(self):
         client = Client()
@@ -103,12 +103,12 @@ class ManagerRBACTestCase(TestCase):
         nodes = doc.cssselect('table td.username')
         self.assertEqual(set(node.text for node in nodes),
                          set(['ou2_u1', 'ou2_u2']))
-        response = client.get('/manage/roles/')
+        response = client.get('/manage/roles/', {'search-internals': True})
         self.assertEqual(response.status_code, 200)
         doc = html.fromstring(response.content)
         nodes = doc.cssselect('table td.ou')
         self.assertEqual(set(node.text for node in nodes),
-                         set(['ou2', u'\u2014']))
+                         set(['ou2']))
 
     def test_ou2_u1_role_add(self):
         client = Client()
