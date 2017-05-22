@@ -6,13 +6,14 @@ import random
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
+from django.db.models import Q
 
 import authentic2.saml.models as models
 import authentic2.idp.saml.saml2_endpoints as saml2_endpoints
 import authentic2.saml.common as common
 
 from authentic2.decorators import to_list
-from authentic2.utils import Service
+from authentic2.utils import Service, ServiceAccessDenied
 
 
 class SamlBackend(object):
@@ -22,6 +23,7 @@ class SamlBackend(object):
     def service_list(self, request):
         q = models.LibertyServiceProvider.objects.filter(enabled = True) \
                 .select_related()
+        q = q.filter( Q(liberty_provider__authorized_roles__isnull=True) | Q(liberty_provider__authorized_roles__in=request.user.roles_and_parents()))
         ls = []
         sessions = models.LibertySession.objects.filter(
                 django_session_key=request.session.session_key)
@@ -139,6 +141,7 @@ class SamlBackend(object):
         qs = models.LibertyProvider.objects
         qs = qs.filter(service_provider__users_can_manage_federations=True)
         qs = qs.exclude(service_provider__libertyfederation__in=federations)
+        qs = qs.filter(Q(authorized_roles__isnull=True)|Q(authorized_roles__in=request.user.roles_and_parents()))
         qs = qs.select_related()
         for liberty_provider in qs:
             url = reverse('a2-idp-saml2-idp-sso')
