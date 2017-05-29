@@ -30,6 +30,7 @@ def create_base_operations(app_config, verbosity=2, interactive=True,
     utils.get_operation(models.DELETE_OP)
     utils.get_operation(models.VIEW_OP)
     utils.get_operation(models.ADMIN_OP)
+    utils.get_operation(models.SEARCH_OP)
 
 
 def fix_role_parenting_closure(app_config, verbosity=2, interactive=True,

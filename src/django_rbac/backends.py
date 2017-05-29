@@ -39,10 +39,11 @@ else:
 
 class DjangoRBACBackend(object):
     _DEFAULT_DJANGO_RBAC_PERMISSIONS_HIERARCHY = {
-        'admin': ['change', 'delete', 'add', 'view'],
-        'change': ['view'],
-        'delete': ['view'],
-        'add': ['view'],
+        'view': ['search'],
+        'admin': ['change', 'delete', 'add', 'view', 'search'],
+        'change': ['view', 'search'],
+        'delete': ['view', 'search'],
+        'add': ['view', 'search'],
     }
 
     def authenticate(self):

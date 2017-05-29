@@ -30,3 +30,6 @@ class Authentic2RBACConfig(AppConfig):
         post_migrate.connect(
             signal_handlers.create_default_ou,
             sender=self)
+        post_migrate.connect(
+            signal_handlers.create_default_permissions,
+            sender=self)

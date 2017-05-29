@@ -5,9 +5,9 @@ from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import RegexValidator
 
-from django_rbac.models import RoleAbstractBase, PermissionAbstractBase, \
-    OrganizationalUnitAbstractBase, RoleParentingAbstractBase, VIEW_OP, \
-    CHANGE_OP
+from django_rbac.models import (RoleAbstractBase, PermissionAbstractBase,
+                                OrganizationalUnitAbstractBase, RoleParentingAbstractBase, VIEW_OP,
+                                CHANGE_OP, Operation)
 from django_rbac import utils as rbac_utils
 
 try:
@@ -230,3 +230,8 @@ class RoleAttribute(models.Model):
 GenericRelation(Permission,
                 content_type_field='target_ct',
                 object_id_field='target_id').contribute_to_class(ContentType, 'admin_perms')
+
+
+CHANGE_PASSWORD_OP = Operation(name=_('Change password'), slug='change_password')
+RESET_PASSWORD_OP = Operation(name=_('Reset password'), slug='reset_password')
+ACTIVATE_OP = Operation(name=_('Activate'), slug='activate')

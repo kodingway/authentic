@@ -292,6 +292,19 @@ REST_FRAMEWORK = {
 # Authentic2 Auth SAML
 MELLON_ADAPTER = ('authentic2_auth_saml.adapters.AuthenticAdapter',)
 
+# Permissions
+
+DJANGO_RBAC_PERMISSIONS_HIERARCHY = {
+    'view': ['search'],
+    'change_password': ['view', 'search'],
+    'reset_password': ['view', 'search'],
+    'activate': ['view', 'search'],
+    'admin': ['change', 'delete', 'add', 'view', 'change_password', 'reset_password', 'activate',
+              'search'],
+    'change': ['view', 'change_password', 'reset_password', 'activate', 'search'],
+    'delete': ['view', 'search'],
+    'add': ['view', 'search'],
+}
 
 #
 # Load configuration file

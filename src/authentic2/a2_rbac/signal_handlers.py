@@ -5,7 +5,7 @@ from django.utils.translation import override
 from django.db import DEFAULT_DB_ALIAS, router, transaction
 
 from ..utils import get_fk_model
-from django_rbac.utils import get_ou_model, get_role_model
+from django_rbac.utils import get_ou_model, get_role_model, get_operation
 from django_rbac.managers import defer_update_transitive_closure
 
 def create_default_ou(app_config, verbosity=2, interactive=True,
@@ -66,3 +66,16 @@ def update_rbac_on_ou_post_delete(sender, instance, **kwargs):
 
 def update_service_role_ou(sender, instance, created, raw, **kwargs):
     get_role_model().objects.filter(service=instance).update(ou=instance.ou)
+
+
+def create_default_permissions(app_config, verbosity=2, interactive=True, using=DEFAULT_DB_ALIAS,
+                               **kwargs):
+    from .models import CHANGE_PASSWORD_OP, RESET_PASSWORD_OP, ACTIVATE_OP
+
+    if not router.allow_migrate(using, get_ou_model()):
+        return
+
+    with override(settings.LANGUAGE_CODE):
+        get_operation(CHANGE_PASSWORD_OP)
+        get_operation(RESET_PASSWORD_OP)
+        get_operation(ACTIVATE_OP)
