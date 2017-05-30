@@ -114,33 +114,6 @@ table.users tbody tr td:nth-child(2):hover {
   white-space: normal;
 }
 
-ul.messages {
-	position: fixed;
-	width: 30em;
-	top: 10px;
-	right: 10px;
-	padding: 0;
-	z-index: 2000;
-	margin-top: 1em;
-	list-style-type: none;
-	display: table;
-	margin: auto;
-	background: rgba(40, 40, 40, 0.7);
-	color: white;
-	text-shadow: black 1px 1px 1px;
-	border-radius: 10px;
-}
-
-ul.messages li {
-	padding: 1ex;
-	margin: 1ex;
-	border-size: 0px;
-	-moz-border-radius:7px;
-	-webkit-border-radius:7px;
-	border-radius:7px;
-	border: none;
-}
-
 li#roles a { background-image: url(icon-personnes.png); }
 li#roles a:hover { background-image: url(icon-personnes-hover.png); }
 
