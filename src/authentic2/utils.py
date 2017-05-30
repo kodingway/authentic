@@ -36,6 +36,7 @@ from django.utils.functional import empty
 from django.template import RequestContext
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
+from django.shortcuts import render
 
 
 try:
@@ -834,3 +835,14 @@ def human_duration(seconds):
     if seconds:
         s.append(ungettext('%s second', '%s seconds', seconds) % seconds)
     return ', '.join(s)
+
+
+class ServiceAccessDenied(Exception):
+
+    def __init__(self, service):
+        self.service = service
+
+
+def unauthorized_view(request, service):
+    context = {'callback_url': service.unauthorized_url or reverse('a2-homepage')}
+    return render(request, 'authentic2/unauthorized.html', context=context)
