@@ -12,7 +12,7 @@ from authentic2.passwords import generate_password
 from authentic2.utils import send_templated_mail
 
 from django_rbac.models import Operation
-from django_rbac.utils import get_ou_model, get_role_model
+from django_rbac.utils import get_ou_model, get_role_model, get_permission_model
 
 from authentic2.forms import BaseUserForm
 from authentic2.models import PasswordReset
@@ -116,6 +116,7 @@ class ChooseUserRoleForm(CssClass, forms.Form):
 
 class ChoosePermissionForm(CssClass, forms.Form):
     operation = forms.ModelChoiceField(
+        required=False,
         label=_('Operation'),
         queryset=Operation.objects)
     ou = forms.ModelChoiceField(
@@ -124,9 +125,15 @@ class ChoosePermissionForm(CssClass, forms.Form):
         required=False)
     target = forms.ModelChoiceField(
         label=_('Target object'),
+        required=False,
         queryset=ContentType.objects)
     action = forms.CharField(
         initial='add',
+        required=False,
+        widget=forms.HiddenInput)
+    permission = forms.ModelChoiceField(
+        queryset=get_permission_model().objects,
+        required=False,
         widget=forms.HiddenInput)
 
 

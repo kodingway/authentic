@@ -20,7 +20,7 @@
 
 {% block main %}
    <div class="role-info">
-     {% render_table table "authentic2/manager/table.html" %}
+     {% render_table table "authentic2/manager/role_permissions_table.html" %}
    </div>
      {% if perms.a2_rbac.change_role %}
        <form method="post" id="add-role-permission">

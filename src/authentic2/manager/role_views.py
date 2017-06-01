@@ -205,11 +205,11 @@ class RolePermissionsView(RoleViewMixin, views.BaseSubTableView):
 
     def form_valid(self, form):
         if self.can_change:
-            operation = form.cleaned_data['operation']
-            ou = form.cleaned_data['ou']
-            target = form.cleaned_data['target']
-            action = form.cleaned_data['action']
-            if action == 'add':
+            operation = form.cleaned_data.get('operation')
+            ou = form.cleaned_data.get('ou')
+            target = form.cleaned_data.get('target')
+            action = form.cleaned_data.get('action')
+            if action == 'add' and operation and target:
                 Permission = get_permission_model()
                 perm, created = Permission.objects \
                     .get_or_create(operation=operation, ou=ou,
@@ -217,6 +217,14 @@ class RolePermissionsView(RoleViewMixin, views.BaseSubTableView):
                                        target),
                                    target_id=target.pk)
                 self.object.permissions.add(perm)
+            elif action == 'remove':
+                try:
+                    permission_id = int(self.request.POST.get('permission', ''))
+                except ValueError:
+                    pass
+                else:
+                    self.object.permissions.through.objects.filter(
+                        permission_id=permission_id).delete()
         else:
             messages.warning(self.request, _('You are not authorized'))
         return super(RolePermissionsView, self).form_valid(form)
