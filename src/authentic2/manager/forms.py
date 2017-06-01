@@ -13,6 +13,7 @@ from authentic2.utils import send_templated_mail
 
 from django_rbac.models import Operation
 from django_rbac.utils import get_ou_model, get_role_model, get_permission_model
+from django_rbac.backends import DjangoRBACBackend
 
 from authentic2.forms import BaseUserForm
 from authentic2.models import PasswordReset
@@ -147,11 +148,18 @@ class UserEditForm(LimitQuerysetFormMixin, CssClass, BaseUserForm):
         if 'ou' in self.fields and not (request and request.user.is_superuser):
             field = self.fields['ou']
             field.required = True
-            count = field.queryset.count()
+            qs = field.queryset
+            if self.instance and self.instance.pk:
+                perm = 'custom_user.change_user'
+            else:
+                perm = 'custom_user.add_user'
+            qs = DjangoRBACBackend().ous_with_perm(request.user, perm)
+            field.queryset = qs
+            count = qs.count()
             if count == 1:
-                field.initial = field.queryset.get().pk
+                field.initial = qs.get().pk
             if count < 2:
-                field.widget.attrs['readonly'] = 'readonly'
+                field.widget.attrs['disabled'] = ''
 
     def clean(self):
         if not self.cleaned_data.get('username') and \
