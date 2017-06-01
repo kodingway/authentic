@@ -21,21 +21,15 @@
   {% endif %}
   {% if view.can_change and not object.is_internal %}
     <a rel="popup" href="{% url "a2-manager-role-edit" pk=object.pk %}">{% trans "Edit" %}</a>
-    {% if ROLES_SHOW_PERMISSIONS %}
-      <a href="{% url "a2-manager-role-permissions" pk=object.pk %}">{% trans "Permissions" %}</a>
-    {% endif %}
   {% else %}
     {% if not view.can_change %}
       <a class="disabled" title="{% trans "Permission denied" %}" href="#">{% trans "Edit" %}</a>
-      {% if ROLES_SHOW_PERMISSIONS %}
-        <a class="disabled" title="{% trans "Permission denied" %}" href="#">{% trans "Permissions" %}</a>
-      {% endif %}
     {% else %}
       <a class="disabled" title="{% trans "This role is technical, you cannot edit it." %}" href="#">{% trans "Edit" %}</a>
-      {% if ROLES_SHOW_PERMISSIONS %}
-        <a class="disabled" title="{% trans "This role is technical, you cannot modify its permissions." %}" href="#">{% trans "Permissions" %}</a>
-      {% endif %}
     {% endif %}
+  {% endif %}
+  {% if perms.a2_rbac.admin_permission %}
+    <a href="{% url "a2-manager-role-permissions" pk=object.pk %}">{% trans "Permissions" %}</a>
   {% endif %}
 {% endblock %}
 

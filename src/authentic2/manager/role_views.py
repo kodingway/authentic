@@ -198,7 +198,7 @@ class RolePermissionsView(RoleViewMixin, views.BaseSubTableView):
     table_class = tables.PermissionTable
     form_class = forms.ChoosePermissionForm
     success_url = '.'
-    permissions = ['a2_rbac.view_role']
+    permissions = ['a2_rbac.admin_permission']
 
     def get_table_queryset(self):
         return self.object.permissions.all()
