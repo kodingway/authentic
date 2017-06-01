@@ -456,25 +456,25 @@ def menu_json(request):
             'label': force_text(_('Organizational units')),
             'slug': 'organizational-units',
             'url': request.build_absolute_uri(reverse('a2-manager-ous'))
-            })
+        })
     if request.user.has_perm_any('custom_user.view_user'):
         menu_entries.append({
             'label': force_text(_('Users')),
             'slug': 'users',
             'url': request.build_absolute_uri(reverse('a2-manager-users'))
-            })
+        })
     if request.user.has_perm_any('a2_rbac.view_role'):
         menu_entries.append({
             'label': force_text(_('Roles')),
             'slug': 'roles',
             'url': request.build_absolute_uri(reverse('a2-manager-roles'))
-            })
+        })
     if request.user.has_perm_any('a2_rbac.view_service'):
         menu_entries.append({
             'label': force_text(_('Services')),
             'slug': 'services',
             'url': request.build_absolute_uri(reverse('a2-manager-services'))
-            })
+        })
     return menu_entries
 
 
@@ -485,7 +485,7 @@ class HideOUColumnMixin(object):
         OU = get_ou_model()
         exclude_ou = False
         if (hasattr(self, 'search_form') and self.search_form.is_valid() and
-            self.search_form.cleaned_data.get('ou') is not None):
+                self.search_form.cleaned_data.get('ou') is not None):
             exclude_ou = True
         if OU.objects.count() < 2:
             exclude_ou = True
