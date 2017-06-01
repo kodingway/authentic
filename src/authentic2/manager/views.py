@@ -31,6 +31,8 @@ class MediaMixinBase(MediaDefiningClass, FormMixinBase):
 
 
 class MediaMixin(object):
+    '''Expose needed CSS and JS files as a media object'''
+
     __metaclass__ = MediaMixinBase
 
     class Media:
@@ -57,6 +59,7 @@ class MediaMixin(object):
 
 
 class PermissionMixin(object):
+    '''Control access to views based on permissions'''
     permissions = None
 
     def authorize(self, request, *args, **kwargs):
@@ -133,6 +136,8 @@ class TableQuerysetMixin(object):
 
 
 class PassRequestToFormMixin(object):
+    '''Add request to form kwargs'''
+
     def get_form_kwargs(self):
         kwargs = super(PassRequestToFormMixin, self).get_form_kwargs()
         kwargs['request'] = self.request
@@ -140,6 +145,10 @@ class PassRequestToFormMixin(object):
 
 
 class SearchFormMixin(object):
+    '''Handle a search form on the current table view.
+
+       The search form class must implement a .filter(qs) method returning a new queryset.'''
+
     search_form_class = None
 
     def get_search_form_class(self):
@@ -176,6 +185,8 @@ class SearchFormMixin(object):
 
 
 class FormatsContextData(object):
+    '''Export list of supported formats in context'''
+
     formats = ['csv', 'json', 'ods', 'html']
 
     def get_context_data(self, **kwargs):
@@ -185,6 +196,8 @@ class FormatsContextData(object):
 
 
 class Action(object):
+    '''Describe an action for view supporting multiples actions.'''
+
     def __init__(self, name, title, confirm=None, display=True, url_name=None, url=None):
         self.name = name
         self.title = title
@@ -195,6 +208,7 @@ class Action(object):
 
 
 class AjaxFormViewMixin(object):
+    '''Implement a JSON response for view which can be included in an AJAX popup'''
     success_url = '.'
 
     def dispatch(self, request, *args, **kwargs):
@@ -223,6 +237,8 @@ class AjaxFormViewMixin(object):
 
 
 class TitleMixin(object):
+    '''Mixin to provide a title to the view's template'''
+
     title = None
 
     def get_title(self):
@@ -235,6 +251,7 @@ class TitleMixin(object):
 
 
 class ActionMixin(object):
+    '''Describe the main action implementd by a view'''
     action = None
 
     def get_context_data(self, **kwargs):
@@ -245,6 +262,7 @@ class ActionMixin(object):
 
 
 class OtherActionsMixin(object):
+    '''Describe secondary actions possible on a view'''
     other_actions = None
 
     def get_context_data(self, **kwargs):
@@ -274,6 +292,7 @@ class OtherActionsMixin(object):
 
 
 class ExportMixin(object):
+    '''Help in implementd export views'''
     http_method_names = ['get', 'head', 'options']
     export_prefix = ''
 
@@ -306,6 +325,8 @@ class ExportMixin(object):
 
 
 class ModelNameMixin(MediaMixin):
+    '''Mixin to provide a model name to view's template'''
+
     def get_model_name(self):
         return self.model._meta.verbose_name
 
@@ -318,6 +339,7 @@ class ModelNameMixin(MediaMixin):
 class BaseTableView(FormatsContextData, ModelNameMixin, PermissionMixin,
                     SearchFormMixin, FilterQuerysetByPermMixin,
                     TableQuerysetMixin, SingleTableView):
+    '''Base class for views showing a table of objects'''
     pass
 
 
@@ -325,19 +347,24 @@ class SubTableViewMixin(FormatsContextData, ModelNameMixin, PermissionMixin,
                         SearchFormMixin, FilterTableQuerysetByPermMixin,
                         TableQuerysetMixin, SingleObjectMixin,
                         SingleTableMixin, ContextMixin):
+    '''Helper class for views showing a table of objects related to one object'''
     context_object_name = 'object'
 
 
 class SimpleSubTableView(SubTableViewMixin, TemplateView):
+    '''Base class for views showing a simple table of objects related to one object'''
+
     pass
 
 
 class BaseSubTableView(TitleMixin, SubTableViewMixin, FormView):
+    '''Base class for views showing a table of objects related to one object'''
     success_url = '.'
 
 
 class BaseDeleteView(TitleMixin, ModelNameMixin, PermissionMixin,
                      AjaxFormViewMixin, DeleteView):
+    '''Base class for views implementing deletion of an object'''
     template_name = 'authentic2/manager/delete.html'
     context_object_name = 'object'
 
@@ -355,6 +382,7 @@ class BaseDeleteView(TitleMixin, ModelNameMixin, PermissionMixin,
 
 
 class ModelFormView(MediaMixin):
+    '''Base class for views showing a form for a model'''
     fields = None
     form_class = None
 
@@ -368,6 +396,7 @@ class ModelFormView(MediaMixin):
 
 class BaseAddView(TitleMixin, ModelNameMixin, PermissionMixin,
                   AjaxFormViewMixin, ModelFormView, CreateView):
+    '''Base class for views for adding an instance of a model'''
     template_name = 'authentic2/manager/form.html'
     success_view_name = None
     context_object_name = 'object'
@@ -387,6 +416,7 @@ class BaseAddView(TitleMixin, ModelNameMixin, PermissionMixin,
 
 class BaseEditView(SuccessMessageMixin, TitleMixin, ModelNameMixin, PermissionMixin,
                    AjaxFormViewMixin, ModelFormView, UpdateView):
+    '''Base class for views for editing an instance of a model'''
     template_name = 'authentic2/manager/form.html'
     context_object_name = 'object'
 
@@ -449,6 +479,8 @@ def menu_json(request):
 
 
 class HideOUColumnMixin(object):
+    '''Helper class for table views, hiding the OU column from tables if an OU filter exists'''
+
     def get_table(self, **kwargs):
         OU = get_ou_model()
         exclude_ou = False
@@ -463,6 +495,8 @@ class HideOUColumnMixin(object):
 
 
 class Select2View(AutoResponseView):
+    '''Overrided default django-select2 view to enforce security checks on Select2 AJAX requests.'''
+
     def get_widget_or_404(self):
         widget = super(Select2View, self).get_widget_or_404()
         widget.view = self
