@@ -341,8 +341,11 @@ class BaseDeleteView(TitleMixin, ModelNameMixin, PermissionMixin,
     template_name = 'authentic2/manager/delete.html'
     context_object_name = 'object'
 
-    def authorize(self, *args, **kwargs):
-        return self.can_delete
+    @property
+    def permissions(self):
+        app_label = self.model._meta.app_label
+        model_name = self.model._meta.model_name
+        return ['%s.delete_%s' % (app_label, model_name)]
 
     def get_title(self):
         return _('Delete %s') % self.get_model_name()
@@ -369,8 +372,11 @@ class BaseAddView(TitleMixin, ModelNameMixin, PermissionMixin,
     success_view_name = None
     context_object_name = 'object'
 
-    def authorize(self, *args, **kwargs):
-        return self.can_add
+    @property
+    def permissions(self):
+        app_label = self.model._meta.app_label
+        model_name = self.model._meta.model_name
+        return ['%s.add_%s' % (app_label, model_name)]
 
     def get_title(self):
         return _('Add %s') % self.get_model_name()
@@ -384,8 +390,11 @@ class BaseEditView(SuccessMessageMixin, TitleMixin, ModelNameMixin, PermissionMi
     template_name = 'authentic2/manager/form.html'
     context_object_name = 'object'
 
-    def authorize(self, *args, **kwargs):
-        return self.can_change
+    @property
+    def permissions(self):
+        app_label = self.model._meta.app_label
+        model_name = self.model._meta.model_name
+        return ['%s.change_%s' % (app_label, model_name)]
 
     def get_title(self):
         return self.title or _('Edit %s') % self.get_model_name()
@@ -396,8 +405,8 @@ class BaseEditView(SuccessMessageMixin, TitleMixin, ModelNameMixin, PermissionMi
 
 class HomepageView(PermissionMixin, MediaMixin, TemplateView):
     template_name = 'authentic2/manager/homepage.html'
-    permissions = ['a2_rbac.view_role', 'a2_rbac.view_organizationalunit',
-                   'auth.view_group', 'custom_user.view_user']
+    permissions = ['a2_rbac.search_role', 'a2_rbac.search_organizationalunit',
+                   'auth.search_group', 'custom_user.search_user']
 
     def dispatch(self, request, *args, **kwargs):
         if app_settings.HOMEPAGE_URL:
