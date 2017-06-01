@@ -130,7 +130,7 @@ setup(name="authentic2",
           'jwcrypto>=0.3.1,<1',
           'cryptography',
           'XStatic-jQuery',
-          'XStatic-jquery-ui',
+          'XStatic-jquery-ui<1.12',
           'xstatic-select2',
       ],
       extras_require = {
