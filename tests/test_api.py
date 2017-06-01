@@ -3,7 +3,9 @@
 import json
 import pytest
 import re
-import urllib
+import random
+import uuid
+
 
 from django.core.urlresolvers import reverse
 from django.contrib.auth import get_user_model
@@ -412,3 +414,22 @@ def test_register_ou_no_email_validation(app, admin, django_user_model):
     assert user.first_name == first_name
     assert user.last_name == last_name
     assert user.check_password(password)
+
+
+def test_user_synchronization(app, admin):
+    headers = basic_authorization_header(admin)
+
+    User = get_user_model()
+    uuids = []
+    for i in range(100):
+        user = User.objects.create(first_name='ben', last_name='dauve')
+        uuids.append(user.uuid)
+    unknown_uuids = [uuid.uuid4().hex for i in range(100)]
+    url = reverse('a2-api-users-synchronization')
+    content = {
+        'known_uuids': uuids + unknown_uuids,
+    }
+    random.shuffle(content['known_uuids'])
+    response = app.post_json(url, params=content, headers=headers)
+    assert response.json['result'] == 1
+    assert set(response.json['unknown_uuids']) == set(unknown_uuids)

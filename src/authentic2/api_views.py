@@ -21,6 +21,7 @@ from rest_framework.response import Response
 from rest_framework import permissions, status
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.fields import CreateOnlyDefault
+from rest_framework.decorators import list_route
 
 from django_filters.rest_framework import FilterSet
 
@@ -414,6 +415,29 @@ class UsersAPI(ModelViewSet):
     def perform_destroy(self, instance):
         self.check_perm('custom_user.delete_user', instance.ou)
         super(UsersAPI, self).perform_destroy(instance)
+
+    class SynchronizationSerializer(serializers.Serializer):
+        known_uuids = serializers.ListField(child=serializers.CharField())
+
+    def check_uuids(self, uuids):
+        User = get_user_model()
+        known_uuids = User.objects.filter(uuid__in=uuids).values_list('uuid', flat=True)
+        return set(uuids) - set(known_uuids)
+
+    @list_route(methods=['post'])
+    def synchronization(self, request):
+        serializer = self.SynchronizationSerializer(data=request.data)
+        if not serializer.is_valid():
+            response = {
+                'result': 0,
+                'errors': serializer.errors
+            }
+            return Response(response, status.HTTP_400_BAD_REQUEST)
+        unknown_uuids = self.check_uuids(serializer.validated_data.get('known_uuids', []))
+        return Response({
+            'result': 1,
+            'unknown_uuids': unknown_uuids,
+        })
 
 
 class RolesAPI(APIView):
