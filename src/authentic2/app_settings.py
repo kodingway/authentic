@@ -164,6 +164,9 @@ default_settings = dict(
     A2_CORS_WHITELIST=Setting(default=(), definition='List of origin URL to whitelist, must be scheme://netloc[:port]'),
     A2_EMAIL_CHANGE_TOKEN_LIFETIME=Setting(default=7200, definition='Lifetime in seconds of the '
                                            'token sent to verify email adresses'),
+    A2_REDIRECT_WHITELIST=Setting(
+        default=(),
+        definition='List of origins which are authorized to ask for redirection.'),
 )
 
 app_settings = AppSettings(default_settings)

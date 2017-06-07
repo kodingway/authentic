@@ -817,6 +817,9 @@ def good_next_url(request, next_url):
         return True
     if http.same_origin(request.build_absolute_uri(), next_url):
         return True
+    for origin in app_settings.A2_REDIRECT_WHITELIST:
+        if http.same_origin(origin, next_url):
+            return True
     return False
 
 
