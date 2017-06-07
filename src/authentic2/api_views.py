@@ -45,6 +45,7 @@ class RegistrationSerializer(serializers.Serializer):
     ou = serializers.SlugRelatedField(
         queryset=get_ou_model().objects.all(),
         slug_field='slug',
+        default=get_default_ou,
         required=False, allow_null=True)
     username = serializers.CharField(
         required=False, allow_blank=True)
@@ -173,6 +174,7 @@ class Register(BaseRpcView):
             first_name = validated_data.get('first_name')
             last_name = validated_data.get('last_name')
             password = validated_data.get('password')
+            ou = validated_data.get('ou')
             if not email and \
                not username and \
                not (first_name and last_name):
@@ -185,8 +187,8 @@ class Register(BaseRpcView):
                 }
                 response_status = status.HTTP_400_BAD_REQUEST
             else:
-                new_user = User(email=email, username=username,
-                                first_name=first_name, last_name=last_name)
+                new_user = User(email=email, username=username, ou=ou, first_name=first_name,
+                                last_name=last_name)
                 if password:
                     new_user.set_password(password)
                 new_user.save()

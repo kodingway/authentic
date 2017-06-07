@@ -353,11 +353,13 @@ def test_register_no_email_validation(app, admin, django_user_model):
     assert response.json['validation_url'].startswith('http://testserver/accounts/activate/')
     assert User.objects.count() == 2
     user = User.objects.latest('id')
+    assert user.ou == get_default_ou()
     assert user.username == username
     assert user.email == email
     assert user.first_name == first_name
     assert user.last_name == last_name
     assert user.check_password(password)
+
 
 def test_register_ou_no_email_validation(app, admin, django_user_model):
     User = django_user_model
