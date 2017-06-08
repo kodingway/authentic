@@ -49,11 +49,22 @@ class DjangoRBACBackend(object):
         # this method is mandatory
         pass
 
-    def get_all_permissions(self, user_obj, obj=None):
-        if user_obj.is_anonymous():
-            return ()
+    def get_permission_cache(self, user_obj):
+        '''Returns the permission cache for an user
+
+           The permission cache is a dictionnary, key can be of many types:
+           - `'ou.<ou.id>'` ; contains a list of permissions owner by this user as strings
+           (<app_label>.<permission>_<model_name>), those permissions are restricted to objects in
+           this organizational unit,
+           - `'__all__'`: contains a list of global permissions (applicable to any object in any
+           organizaton unit) owner by this user,
+           - `'<content_type.id>.<object.pk>'`: contains permissions restricted to a specific
+           object,
+           - `'<app_label>'`: contains a boolean, it indicates that the user own at least on
+           permision on a model of this application.
+        '''
         if not hasattr(user_obj, '_rbac_perms_cache'):
-            user_obj._rbac_perms_cache = {}
+            perms_cache = {}
             Permission = utils.get_permission_model()
             qs = Permission.objects.for_user(user_obj)
             ct_ct = ContentType.objects.get_for_model(ContentType)
@@ -79,27 +90,36 @@ class DjangoRBACBackend(object):
                 if slug in perm_hierarchy:
                     for other_perm in perm_hierarchy[slug]:
                         perms.append(str('%s.%s_%s' % (app_label, other_perm, model)))
-                permissions = user_obj._rbac_perms_cache.setdefault(key, set())
+                permissions = perms_cache.setdefault(key, set())
                 permissions.update(perms)
                 # optimization for has_module_perms
-                user_obj._rbac_perms_cache[app_label] = True
+                perms_cache[app_label] = True
+            user_obj._rbac_perms_cache = perms_cache
+        return user_obj._rbac_perms_cache
+
+    def get_all_permissions(self, user_obj, obj=None):
+        if user_obj.is_anonymous():
+            return ()
+        perms_cache = self.get_permission_cache(user_obj)
         if obj:
             permissions = set()
             ct = ContentType.objects.get_for_model(obj)
             key = '%s.%s' % (ct.id, obj.pk)
-            if key in user_obj._rbac_perms_cache:
-                permissions.update(user_obj._rbac_perms_cache[key])
-            for permission in user_obj._rbac_perms_cache.get('__all__', set([])):
-                if permission.startswith('%s.' % ct.app_label) and permission.endswith('_%s' % ct.model):
+            if key in perms_cache:
+                permissions.update(perms_cache[key])
+            for permission in perms_cache.get('__all__', set([])):
+                if (permission.startswith('%s.' % ct.app_label)
+                        and permission.endswith('_%s' % ct.model)):
                     permissions.add(permission)
             if hasattr(obj, 'ou_id') and obj.ou_id:
                 key = 'ou.%s' % obj.ou_id
-                for permission in user_obj._rbac_perms_cache.get(key, ()):
-                    if permission.startswith('%s.' % ct.app_label) and permission.endswith('_%s' % ct.model):
+                for permission in perms_cache.get(key, ()):
+                    if (permission.startswith('%s.' % ct.app_label)
+                            and permission.endswith('_%s' % ct.model)):
                         permissions.add(permission)
             return permissions
         else:
-            return user_obj._rbac_perms_cache.get('__all__', [])
+            return perms_cache.get('__all__', [])
 
     def has_perm(self, user_obj, perm, obj=None):
         if user_obj.is_anonymous():
@@ -125,9 +145,7 @@ class DjangoRBACBackend(object):
             return False
         if user_obj.is_superuser:
             return True
-        if not hasattr(user_obj, '_rbac_perms_cache'):
-            self.get_all_permissions(user_obj)
-        return package_name in user_obj._rbac_perms_cache
+        return package_name in self.get_permission_cache(user_obj)
 
     def has_perm_any(self, user_obj, perm_or_perms):
         '''Return True if user has any perm on any object'''
@@ -140,9 +158,7 @@ class DjangoRBACBackend(object):
         if isinstance(perm_or_perms, basestring):
             perm_or_perms = [perm_or_perms]
         perm_or_perms = set(perm_or_perms)
-        if not hasattr(user_obj, '_rbac_perms_cache'):
-            self.get_all_permissions(user_obj)
-        cache = user_obj._rbac_perms_cache
+        cache = self.get_permission_cache(user_obj)
         if perm_or_perms & cache.get('__all__', set()):
             return True
         for key, value in cache.iteritems():
@@ -167,17 +183,14 @@ class DjangoRBACBackend(object):
         if not user_obj.is_active:
             return False
         if user_obj.is_superuser:
-           return True
+            return True
         if isinstance(perm_or_perms, basestring):
             perm_or_perms = [perm_or_perms]
         perm_or_perms = set(perm_or_perms)
-        if not hasattr(user_obj, '_rbac_perms_cache'):
-            self.get_all_permissions(user_obj)
-        cache = user_obj._rbac_perms_cache
+        cache = self.get_permission_cache(user_obj)
         model = qs.model
         OU = utils.get_ou_model()
         has_ou_field = get_fk_model(model, 'ou') == OU
-        ct = ContentType.objects.get_for_model(model)
         if perm_or_perms & cache.get('__all__', set()):
             return True
         q = []
@@ -219,4 +232,4 @@ class DjangoRBACBackend(object):
             return True
         if self.has_perm(user_obj, perm):
             return True
-        return perm in user_obj._rbac_perms_cache.get('ou.%s' % ou.pk, ())
+        return perm in self.get_permission_cache(user_obj).get('ou.%s' % ou.pk, ())
