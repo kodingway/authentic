@@ -1,8 +1,10 @@
 import copy
 
 import django
+from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.query import Q
+
 try:
     from django.core.exceptions import FieldDoesNotExist
 except ImportError:
@@ -11,7 +13,7 @@ except ImportError:
 
 from . import utils
 
-if django.VERSION < (1,8,0):
+if django.VERSION < (1, 8, 0):
     from django.db.models import ForeignKey
 
     def get_fk_model(model, fieldname):
@@ -34,7 +36,15 @@ else:
                 return None
             return field.related_model
 
+
 class DjangoRBACBackend(object):
+    _DEFAULT_DJANGO_RBAC_PERMISSIONS_HIERARCHY = {
+        'admin': ['change', 'delete', 'add', 'view'],
+        'change': ['view'],
+        'delete': ['view'],
+        'add': ['view'],
+    }
+
     def authenticate(self):
         # this method is mandatory
         pass
@@ -64,12 +74,8 @@ class DjangoRBACBackend(object):
                     key = '%s.%s' % (permission.target_ct_id, permission.target_id)
                 slug = permission.operation.slug
                 perms = [str('%s.%s_%s' % (app_label, slug, model))]
-                perm_hierarchy = {
-                    'admin': ['change', 'delete', 'add', 'view'],
-                    'change': ['view'],
-                    'delete': ['view'],
-                    'add': ['view'],
-                }
+                perm_hierarchy = getattr(settings, 'DJANGO_RBAC_PERMISSIONS_HIERARCHY',
+                                         self._DEFAULT_DJANGO_RBAC_PERMISSIONS_HIERARCHY)
                 if slug in perm_hierarchy:
                     for other_perm in perm_hierarchy[slug]:
                         perms.append(str('%s.%s_%s' % (app_label, other_perm, model)))
