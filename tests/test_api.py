@@ -15,6 +15,8 @@ from authentic2.models import Service
 from django.core import mail
 from django.contrib.auth.hashers import check_password
 
+from authentic2_idp_oidc.models import OIDCClient
+
 from utils import login, basic_authorization_header
 
 pytestmark = pytest.mark.django_db
@@ -451,3 +453,30 @@ def test_api_drf_authentication_class(app, admin, user_ou1, oidc_client):
     # test oidc client
     app.authorization = ('Basic', (oidc_client.username, oidc_client.username))
     app.get(url, status=200)
+
+
+def test_api_check_password(app, superuser, user_ou1):
+    app.authorization = ('Basic', (superuser.username, superuser.username))
+    # test with invalid paylaod
+    payload = {'username': 'whatever'}
+    resp = app.post_json(reverse('a2-api-check-password'), params=payload, status=400)
+    assert resp.json['result'] == 0
+    assert resp.json['errors'] == {u'password': [u'This field is required.']}
+    # test with invalid credentials
+    payload = {'username': 'whatever', 'password': 'password'}
+    resp = app.post_json(reverse('a2-api-check-password'), params=payload, status=200)
+    assert resp.json['result'] == 0
+    assert resp.json['errors'] == ["Invalid username/password."]
+    # test with valid credentials
+    payload = {'username': user_ou1.username, 'password': user_ou1.username}
+    resp = app.post_json(reverse('a2-api-check-password'), params=payload, status=200)
+    assert resp.json['result'] == 1
+    # test valid oidc credentials
+    client, created = OIDCClient.objects.get_or_create(
+        client_id='clientid', client_secret='clientpassword', authorization_flow=1,
+        post_logout_redirect_uris='http://example.net/redirect/',
+    )
+    payload = {'username': client.client_id, 'password': client.client_secret}
+    resp = app.post_json(reverse('a2-api-check-password'), params=payload, status=200)
+    assert resp.json['result'] == 1
+    assert resp.json['oidc_client'] is True

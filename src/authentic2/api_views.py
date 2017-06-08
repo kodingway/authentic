@@ -19,7 +19,7 @@ from rest_framework.routers import SimpleRouter
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework import permissions, status
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, AuthenticationFailed
 from rest_framework.fields import CreateOnlyDefault
 from rest_framework.decorators import list_route
 
@@ -485,3 +485,33 @@ class OrganizationalUnitAPI(ModelViewSet):
 router = SimpleRouter()
 router.register(r'users', UsersAPI, base_name='a2-api-users')
 router.register(r'ous', OrganizationalUnitAPI, base_name='a2-api-ous')
+
+
+class CheckPasswordSerializer(serializers.Serializer):
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)
+
+
+class CheckPasswordAPI(BaseRpcView):
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = CheckPasswordSerializer
+
+    def rpc(self, request, serializer):
+        username = serializer.validated_data['username']
+        password = serializer.validated_data['password']
+        result = {}
+        for authenticator in self.get_authenticators():
+            if hasattr(authenticator, 'authenticate_credentials'):
+                try:
+                    user, oidc_client = authenticator.authenticate_credentials(username, password)
+                    result['result'] = 1
+                    if hasattr(user, 'oidc_client'):
+                        result['oidc_client'] = True
+                    break
+                except AuthenticationFailed as exc:
+                    result['result'] = 0
+                    result['errors'] = [exc.detail]
+        return result, status.HTTP_200_OK
+
+
+check_password = CheckPasswordAPI.as_view()
