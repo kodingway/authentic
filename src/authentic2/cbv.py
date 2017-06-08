@@ -12,14 +12,14 @@ class ValidateCSRFMixin(object):
     '''Move CSRF token validation inside the form validation.
 
        This mixin must always be the leftest one and if your class override
-       form_valid() or dispatch() you should move those overrides in a base
+       form_valid() dispatch() you should move those overrides in a base
        class.
     '''
     @method_decorator(csrf_exempt)
+    @method_decorator(ensure_csrf_cookie)
     def dispatch(self, *args, **kwargs):
         return super(ValidateCSRFMixin, self).dispatch(*args, **kwargs)
 
-    @method_decorator(ensure_csrf_cookie)
     def form_valid(self, *args, **kwargs):
         for form in args:
             if isinstance(form, Form):
