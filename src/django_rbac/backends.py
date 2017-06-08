@@ -233,3 +233,22 @@ class DjangoRBACBackend(object):
         if self.has_perm(user_obj, perm):
             return True
         return perm in self.get_permission_cache(user_obj).get('ou.%s' % ou.pk, ())
+
+    def ous_with_perm(self, user_obj, perm, queryset=None):
+        OU = utils.get_ou_model()
+        qs = queryset or OU.objects.all()
+
+        if user_obj.is_anonymous():
+            return qs.empty()
+        if not user_obj.is_active:
+            return qs.empty()
+        if user_obj.is_superuser:
+            return qs
+        cache = self.get_permission_cache(user_obj)
+        ou_ids = []
+        for key in cache:
+            if key == '__all__' and perm in cache[key]:
+                return qs
+            if key.startswith('ou.') and perm in cache[key]:
+                ou_ids.append(int(key.split('.')[1]))
+        return qs.filter(id__in=ou_ids)

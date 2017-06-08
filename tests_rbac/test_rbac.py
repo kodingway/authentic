@@ -1,3 +1,4 @@
+import pytest
 import time
 
 from django.contrib.auth import get_user_model
@@ -117,7 +118,8 @@ def test_rbac_backend(db):
     Permission = utils.get_permission_model()
     User = get_user_model()
     OU = utils.get_ou_model()
-    ou1 = OU.objects.create(name='ou1', slug='ou1')
+    ou1 = OU.objects.create(name=u'ou1', slug=u'ou1')
+    ou2 = OU.objects.create(name=u'ou2', slug=u'ou2')
     user1 = User.objects.create(username='john.doe')
     Role = utils.get_role_model()
     ct_ct = ContentType.objects.get_for_model(ContentType)
@@ -153,12 +155,15 @@ def test_rbac_backend(db):
     ctx = CaptureQueriesContext(connection)
     with ctx:
         assert rbac_backend.get_all_permissions(user1) == set(['django_rbac.change_role',
+                                                               'django_rbac.search_role',
                                                                'django_rbac.view_role'])
         assert rbac_backend.get_all_permissions(user1, obj=role1) == set(['django_rbac.delete_role',
                                                                           'django_rbac.change_role',
+                                                                          'django_rbac.search_role',
                                                                           'django_rbac.view_role'])
         assert rbac_backend.get_all_permissions(user1, obj=role2) == set(['django_rbac.change_role',
                                                                           'django_rbac.view_role',
+                                                                          'django_rbac.search_role',
                                                                           'django_rbac.add_role'])
         assert not rbac_backend.has_perm(user1, 'django_rbac.delete_role', obj=role2)
         assert rbac_backend.has_perm(user1, 'django_rbac.delete_role', obj=role1)
@@ -191,9 +196,15 @@ def test_rbac_backend(db):
     role3.permissions.add(perm5)
     assert rbac_backend.get_all_permissions(user2) == set(['django_rbac.add_role',
                                                            'django_rbac.change_role',
+                                                           'django_rbac.search_role',
                                                            'django_rbac.admin_role',
                                                            'django_rbac.view_role',
                                                            'django_rbac.delete_role'])
+
+    # test ous_with_perm
+    assert set(rbac_backend.ous_with_perm(user1, 'django_rbac.add_role')) == set([ou1])
+    assert set(rbac_backend.ous_with_perm(user1, 'django_rbac.view_role')) == set([ou1, ou2])
+    assert set(rbac_backend.ous_with_perm(user1, 'django_rbac.delete_role')) == set([])
 
 
 def test_all_members(db):
