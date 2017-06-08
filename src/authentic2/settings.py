@@ -274,7 +274,7 @@ if django.VERSION >= (1,8):
 REST_FRAMEWORK = {
     'NON_FIELD_ERRORS_KEY': '__all__',
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.BasicAuthentication',
+        'authentic2.authentication.Authentic2Authentication',
         'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (

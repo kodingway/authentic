@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import pytest
+import mock
 
 import django_webtest
 
@@ -13,6 +14,8 @@ from django.contrib.contenttypes.models import ContentType
 from pytest_django.migrations import DisableMigrations
 
 from authentic2.a2_rbac.utils import get_default_ou
+from authentic2_idp_oidc.models import OIDCClient
+from authentic2.authentication import OIDCUser
 
 import utils
 
@@ -71,7 +74,6 @@ def admin(db):
     Role = get_role_model()
     user.roles.add(Role.objects.get(slug='_a2-manager'))
     return user
-
 
 @pytest.fixture
 def user_ou1(db, ou1):
@@ -165,3 +167,42 @@ def concurrency(settings):
 def migrations():
     if isinstance(settings.MIGRATION_MODULES, DisableMigrations):
         pytest.skip('this test requires native migrations')
+
+
+@pytest.fixture
+def oidc_client(db, ou1):
+    client = OIDCClient.objects.create(
+        name='example', slug='example', client_id='example',
+        client_secret='example', authorization_flow=1,
+        post_logout_redirect_uris='https://example.net/redirect/'
+    )
+
+    class TestOIDCUser(OIDCUser):
+
+        def __init__(self, oidc_client):
+            super(TestOIDCUser, self).__init__(oidc_client)
+
+        @property
+        def username(self):
+            return self.oidc_client.client_id
+
+        @property
+        def is_superuser(self):
+            return False
+
+        @property
+        def roles(self):
+            return mock.Mock(exists=lambda: True)
+
+        @property
+        def ou(self):
+            return ou1
+
+    return TestOIDCUser(client)
+
+
+@pytest.fixture(params=['oidc_client', 'superuser', 'user_ou1', 'user_ou2',
+                        'admin_ou1', 'admin_ou2', 'admin_rando_role', 'member_rando'])
+def api_user(request, oidc_client, superuser, user_ou1, user_ou2,
+         admin_ou1, admin_ou2, admin_rando_role, member_rando):
+    return locals().get(request.param)

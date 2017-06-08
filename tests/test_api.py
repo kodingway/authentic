@@ -138,13 +138,12 @@ def test_api_users_list(app, user):
     assert resp.json['next'] is None
 
 
-def test_api_users_create(app, user):
+def test_api_users_create(app, api_user):
     from django.contrib.auth import get_user_model
     from authentic2.models import Attribute, AttributeValue
 
     at = Attribute.objects.create(kind='title', name='title', label='title')
-
-    app.authorization = ('Basic', (user.username, user.username))
+    app.authorization = ('Basic', (api_user.username, api_user.username))
     payload = {
         'ou': None,
         'username': 'john.doe',
@@ -154,16 +153,16 @@ def test_api_users_create(app, user):
         'password': 'password',
         'title': 'Mr',
     }
-    if user.is_superuser:
+    if api_user.is_superuser:
         status = 201
-    elif user.roles.exists():
+    elif api_user.roles.exists():
         status = 201
-        payload['ou'] = user.ou.slug
+        payload['ou'] = api_user.ou.slug
     else:
         status = 403
 
     resp = app.post_json('/api/users/', params=payload, status=status)
-    if user.is_superuser or user.roles.exists():
+    if api_user.is_superuser or api_user.roles.exists():
         assert set(['ou', 'id', 'uuid', 'is_staff', 'is_superuser', 'first_name', 'last_name',
                     'date_joined', 'last_login', 'username', 'password', 'email', 'is_active',
                     'title', 'modified']) == set(resp.json.keys())
@@ -175,10 +174,10 @@ def test_api_users_create(app, user):
         assert resp.json['uuid']
         assert resp.json['id']
         assert resp.json['date_joined']
-        if user.is_superuser:
+        if api_user.is_superuser:
             assert resp.json['ou'] is None
-        elif user.roles.exists():
-            assert resp.json['ou'] == user.ou.slug
+        elif api_user.roles.exists():
+            assert resp.json['ou'] == api_user.ou.slug
         new_user = get_user_model().objects.get(id=resp.json['id'])
         assert new_user.uuid == resp.json['uuid']
         assert new_user.username == resp.json['username']
@@ -256,14 +255,14 @@ def test_api_users_create_force_password_reset(app, client, settings, superuser)
     assert 'Password changed' in resp
 
 
-def test_api_role_add_member(app, user, role, member):
-    app.authorization = ('Basic', (user.username, user.username))
+def test_api_role_add_member(app, api_user, role, member):
+    app.authorization = ('Basic', (api_user.username, api_user.username))
     payload = {
         'role_uuid': role.uuid,
         'role_member': member.uuid
     }
 
-    authorized = user.has_perm('a2_rbac.change_role', role)
+    authorized = api_user.has_perm('a2_rbac.change_role', role)
 
     if member.username == 'fake' or role.name == 'fake':
         status = 404
@@ -282,10 +281,10 @@ def test_api_role_add_member(app, user, role, member):
         assert resp.json['detail'] == 'User not allowed to change role'
 
 
-def test_api_role_remove_member(app, user, role, member):
-    app.authorization = ('Basic', (user.username, user.username))
+def test_api_role_remove_member(app, api_user, role, member):
+    app.authorization = ('Basic', (api_user.username, api_user.username))
 
-    authorized = user.is_superuser or user.has_perm('a2_rbac.change_role', role)
+    authorized = api_user.is_superuser or api_user.has_perm('a2_rbac.change_role', role)
 
     if member.username == 'fake' or role.name == 'fake':
         status = 404
@@ -435,3 +434,20 @@ def test_user_synchronization(app, admin):
     response = app.post_json(url, params=content, headers=headers)
     assert response.json['result'] == 1
     assert set(response.json['unknown_uuids']) == set(unknown_uuids)
+
+
+def test_api_drf_authentication_class(app, admin, user_ou1, oidc_client):
+    url = '/api/users/%s/' % user_ou1.uuid
+    # test invalid client
+    app.authorization = ('Basic', ('foo', 'bar'))
+    resp = app.get(url, status=401)
+    assert resp.json['detail'] == "Invalid username/password."
+    # test inactive client
+    admin.is_active = False
+    admin.save()
+    app.authorization = ('Basic', (admin.username, admin.username))
+    resp = app.get(url, status=401)
+    assert resp.json['detail'] == "User inactive or deleted."
+    # test oidc client
+    app.authorization = ('Basic', (oidc_client.username, oidc_client.username))
+    app.get(url, status=200)
