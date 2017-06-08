@@ -1,6 +1,5 @@
 {% extends "gadjo/base.html" %}
 {% load i18n staticfiles %}
-{% load django_select2_tags %}
 {% load firstof from future %}
 
 {% block page-title %}{% firstof site_title "Authentic2" %}{% endblock %}
@@ -19,25 +18,8 @@
   <h2>{% block page_title %}{% endblock %}</h2>
 {% endblock %}
 
-{% block css %}
-  {{ block.super }}
-  <link rel="stylesheet" type="text/css" media="all" href="{% static "authentic2/manager/css/style.css" %}"/>
-{% endblock %}
-
 {% block extrascripts %}
   {{ block.super }}
-  {% if debug %}
-    <script src="{% static "jquery/js/jquery.form.js" %}"></script>
-  {% else %}
-    <script src="{% static "jquery/js/jquery.form.min.js" %}"></script>
-  {% endif %}
-  <script type="text/javascript" src="{% static "admin/js/urlify.js" %}"></script>
-  <script type="text/javascript" src="{% static "authentic2/js/purl.js" %}"></script>
-  <script type="text/javascript" src="{% static "authentic2/manager/js/manager.js" %}"></script>
-  {% import_django_select2_js %}
-  {% import_django_select2_css %}
-  <script type="text/javascript" src="{% url 'a2-manager-javascript-catalog' %}"></script>
-  <script type="text/javascript" src="{% static "authentic2/manager/js/select2_locale.js" %}"></script>
   <script>
     window.csrf_token = '{{ csrf_token }}';
   </script>

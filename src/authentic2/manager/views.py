@@ -2,17 +2,20 @@ import json
 
 from django.core.exceptions import PermissionDenied
 from django.views.generic.base import ContextMixin
-from django.views.generic import TemplateView, FormView, UpdateView, \
-    CreateView, DeleteView, TemplateView
+from django.views.generic.edit import FormMixinBase
+from django.views.generic import (FormView, UpdateView, CreateView, DeleteView, TemplateView)
 from django.views.generic.detail import SingleObjectMixin
 from django.http import HttpResponse, Http404
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.contrib.messages.views import SuccessMessageMixin
+from django.forms import MediaDefiningClass
 
 from django_tables2 import SingleTableView, SingleTableMixin
+
+from django_select2.views import AutoResponseView
 
 from django_rbac.utils import get_ou_model
 
@@ -21,6 +24,36 @@ from authentic2.utils import redirect
 from authentic2.decorators import json as json_view
 
 from . import app_settings
+
+
+class MediaMixinBase(MediaDefiningClass, FormMixinBase):
+    pass
+
+
+class MediaMixin(object):
+    __metaclass__ = MediaMixinBase
+
+    class Media:
+        js = (
+            reverse_lazy('a2-manager-javascript-catalog'),
+            'xstatic/jquery.js',
+            'jquery/js/jquery.form.js',
+            'admin/js/urlify.js',
+            'authentic2/js/purl.js',
+            'authentic2/manager/js/manager.js',
+        )
+        css = {
+            'all': (
+                'authentic2/manager/css/style.css',
+            )
+        }
+
+    def get_context_data(self, **kwargs):
+        kwargs['media'] = self.media
+        ctx = super(MediaMixin, self).get_context_data(**kwargs)
+        if 'form' in ctx:
+            ctx['media'] += ctx['form'].media
+        return ctx
 
 
 class PermissionMixin(object):
@@ -266,7 +299,7 @@ class ExportMixin(object):
         return response
 
 
-class ModelNameMixin(object):
+class ModelNameMixin(MediaMixin):
     def get_model_name(self):
         return self.model._meta.verbose_name
 
@@ -281,14 +314,17 @@ class BaseTableView(FormatsContextData, ModelNameMixin, PermissionMixin,
                     TableQuerysetMixin, SingleTableView):
     pass
 
-class SubTableViewMixin(FormatsContextData, PermissionMixin,
+
+class SubTableViewMixin(FormatsContextData, ModelNameMixin, PermissionMixin,
                         SearchFormMixin, FilterTableQuerysetByPermMixin,
                         TableQuerysetMixin, SingleObjectMixin,
                         SingleTableMixin, ContextMixin):
     pass
 
+
 class SimpleSubTableView(SubTableViewMixin, TemplateView):
     pass
+
 
 class BaseSubTableView(TitleMixin, SubTableViewMixin, FormView):
     success_url = '.'
@@ -308,7 +344,7 @@ class BaseDeleteView(TitleMixin, ModelNameMixin, PermissionMixin,
         return '../../'
 
 
-class ModelFormView(object):
+class ModelFormView(MediaMixin):
     fields = None
     form_class = None
 
@@ -349,7 +385,7 @@ class BaseEditView(SuccessMessageMixin, TitleMixin, ModelNameMixin, PermissionMi
         return '..'
 
 
-class HomepageView(PermissionMixin, TemplateView):
+class HomepageView(PermissionMixin, MediaMixin, TemplateView):
     template_name = 'authentic2/manager/homepage.html'
     permissions = ['a2_rbac.view_role', 'a2_rbac.view_organizationalunit',
                    'auth.view_group', 'custom_user.view_user']
@@ -406,3 +442,15 @@ class HideOUColumnMixin(object):
         if exclude_ou:
             kwargs['exclude'] = ['ou']
         return super(HideOUColumnMixin, self).get_table(**kwargs)
+
+
+class Select2View(AutoResponseView):
+    def get_widget_or_404(self):
+        widget = super(Select2View, self).get_widget_or_404()
+        widget.view = self
+        if hasattr(widget, 'security_check'):
+            if not widget.security_check(self.request, *self.args, **self.kwargs):
+                raise PermissionDenied
+        return widget
+
+select2 = Select2View.as_view()

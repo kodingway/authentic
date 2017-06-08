@@ -73,4 +73,11 @@
         {% endif %}
       {% endblock %}
       </div>
+      <script>
+        $(function () {
+          if ($.fn.djangoSelect2) {
+            $('.django-select2').djangoSelect2();
+          }
+        })
+      </script>
 {% endblock %}

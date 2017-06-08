@@ -1,0 +1,63 @@
+{% extends "authentic2/manager/form.html" %}
+{% load firstof from future %}
+{% load i18n %}
+
+{% block page-title %}
+  {{ block.super }} - {% trans "User" %} - {{ object.get_full_name }}
+{% endblock %}
+
+{% block page_title %}
+  {% trans "User" %} - {{ object.get_full_name }}
+{% endblock %}
+
+{% block appbar %}
+  {{ block.super }}
+  {% if view.can_delete %}
+    <a rel="popup" href="{% url "a2-manager-user-delete" pk=object.pk %}">{% trans "Delete" %}</a>
+  {% else %}
+    <a class="disabled" title="{% trans "You do not have the rights to delete this object." %}" href="#">{% trans "Delete" %}</a>
+  {% endif %}
+
+  {% if view.can_change %}
+    <a rel="popup" href="{% url "a2-manager-user-edit" pk=object.pk %}">{% trans "Edit" %}</a>
+  {% else %}
+    <a class="disabled" title="{% trans "You do not have the rights to edit this object." %}" href="#">{% trans "Edit" %}</a>
+  {% endif %}
+{% endblock %}
+
+{% block breadcrumb %}
+  {{ block.super }}
+  <a href="{% url 'a2-manager-users' %}">{% trans 'Users' %}</a>
+  <a href="#">{{ object.get_full_name }}</a>
+{% endblock %}
+
+{% block afterform %}
+  {% if object.passwordreset_set.exists %}
+    <div class="warning-box">{% trans "User must change its password on next access to authentic" %}
+      <input type="submit" name="delete_password_reset" value="{% trans "Cancel this constraint" %}"/>
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block buttons %}
+{% endblock %}
+
+{% block other_actions %}
+  {{ block.super }}
+
+  <strong>{% trans "Roles" %}</strong>
+  <ul>
+    {% for role in object.roles_and_parents %}
+    <li {% if role.description %}title="{{ role.description }}"{% endif %}>
+      <a href="{% url "a2-manager-role-members" pk=role.pk %}">{{ role }}</a>
+    </li>
+    {% endfor %}
+  </ul>
+
+  {% for data in user_data %}
+    <p>{{ data }}</p>
+  {% endfor %}
+  <button onclick="window.location.href = '{% url "a2-manager-user-roles" pk=object.pk %}?search-ou={% firstof object.ou.pk default_ou.pk %}'; return false">{% trans "Modify" %}</button>
+
+
+{% endblock %}

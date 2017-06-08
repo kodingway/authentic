@@ -92,5 +92,5 @@ urlpatterns += patterns('',
         url(r'^jsi18n/$', javascript_catalog,
             {'packages': ('authentic2.manager',)},
             name='a2-manager-javascript-catalog'),
-        url(r'^', include('django_select2.urls')),
+    url(r'^select2.json$', views.select2, name='django_select2-json'),
 )

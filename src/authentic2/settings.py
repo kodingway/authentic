@@ -122,6 +122,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'xstatic.pkg.jquery',
     'xstatic.pkg.jquery_ui',
+    'xstatic.pkg.select2',
 )
 
 INSTALLED_APPS = tuple(plugins.register_plugins_installed_apps(INSTALLED_APPS))

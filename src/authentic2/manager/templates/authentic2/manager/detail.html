@@ -1,0 +1,27 @@
+{% extends "authentic2/manager/base.html" %}
+{% load i18n %}
+
+{% block content %}
+  <div class="a2-manager-details">
+    {% block beforedetails %}
+    {% endblock %}
+
+
+    {% for detail in details %}
+    <div id="id_{{ detail.name }}" {% if detail.class %}class="{{ detail.class }}"{% endif %}>
+      <label for="id_{{ detail.name }}">{{ detail.label }}</label>
+      <input readonly value="{{ detail.value }}">
+    </div>
+    {% endfor %}
+
+    {% block afterdetails %}
+    {% endblock %}
+  </div>
+
+  <div class="other_actions">
+    {% block other_actions %}
+      {% include "authentic2/manager/other_actions.html" %}
+    {% endblock %}
+  </div>
+
+{% endblock %}
