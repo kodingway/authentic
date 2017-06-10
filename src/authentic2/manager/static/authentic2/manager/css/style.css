@@ -53,7 +53,7 @@ div.role-info h3 {
 	margin-top: 2em;
 	margin-bottom: 2em;
 	display: flex;
-	align-items: baseline;
+	align-items: center;
 }
 
 table.main th.name, table.main td.name, #user-table .link, #user-table .username, #user-table
@@ -235,6 +235,8 @@ span.errorlist span {
 
 /* Select2 styling */
 
-.select2-container {
-	width: 100% !important;
+span.select2-container {
+	width: auto !important;
+	flex-grow: 1;
+	margin-right: 1em;
 }
