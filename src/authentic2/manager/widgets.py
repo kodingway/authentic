@@ -77,7 +77,7 @@ class ChooseUsersWidget(SecurityCheckMixin, ModelSelect2MultipleWidget):
 
 
 class ChooseRoleWidget(RoleLabelMixin, SecurityCheckMixin, ModelSelect2Widget):
-    queryset = get_role_model().objects.filter(slug__startswith='_')
+    queryset = get_role_model().objects.exclude(slug__startswith='_')
     search_fields = [
         'name__icontains',
         'service__name__icontains',
@@ -85,7 +85,7 @@ class ChooseRoleWidget(RoleLabelMixin, SecurityCheckMixin, ModelSelect2Widget):
 
 
 class ChooseRolesWidget(RoleLabelMixin, SecurityCheckMixin, ModelSelect2MultipleWidget):
-    queryset = get_role_model().objects.filter(slug__startswith='_')
+    queryset = get_role_model().objects.exclude(slug__startswith='_')
     search_fields = [
         'name__icontains',
         'service__name__icontains',
