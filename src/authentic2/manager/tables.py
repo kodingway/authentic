@@ -147,4 +147,4 @@ class ServiceRolesTable(tables.Table):
         models = get_role_model()
         attrs = {'class': 'main', 'id': 'service-role-table'}
         fields = ('name',)
-        empty_text = _('None')
+        empty_text = _('No access restriction. All users are allowed to connect to this service.')
