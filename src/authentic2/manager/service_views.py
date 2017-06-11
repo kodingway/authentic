@@ -17,7 +17,7 @@ class ServicesView(views.HideOUColumnMixin, views.BaseTableView):
 listing = ServicesView.as_view()
 
 
-class ServiceView(views.SimpleSubTableView, role_views.RoleViewMixin, views.FormView):
+class ServiceView(views.SimpleSubTableView, role_views.RoleViewMixin, views.MediaMixin, views.FormView):
     search_form_class = forms.NameSearchForm
     model = Service
     pk_url_kwarg = 'service_pk'
@@ -52,8 +52,8 @@ class ServiceView(views.SimpleSubTableView, role_views.RoleViewMixin, views.Form
         return super(ServiceView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
+        kwargs['form'] = self.get_form()
         ctx = super(ServiceView, self).get_context_data(**kwargs)
-        ctx['form'] = self.get_form()
         ctx['roles_table'] = tables.RoleTable(self.object.roles.all())
         return ctx
 
