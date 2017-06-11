@@ -472,7 +472,7 @@ def check_referer(request, skip_post=True):
     if skip_post and request.method == 'POST':
         return True
     referer = request.META.get('HTTP_REFERER')
-    return referer and http.same_origin(request.build_absolute_uri(), referer)
+    return referer and same_origin(request.build_absolute_uri(), referer)
 
 
 def check_session_key(session_key):
@@ -815,10 +815,10 @@ def good_next_url(request, next_url):
         return False
     if (next_url.startswith('/') and (len(next_url) == 1 or next_url[1] != '/')):
         return True
-    if http.same_origin(request.build_absolute_uri(), next_url):
+    if same_origin(request.build_absolute_uri(), next_url):
         return True
     for origin in app_settings.A2_REDIRECT_WHITELIST:
-        if http.same_origin(origin, next_url):
+        if same_origin(next_url, origin):
             return True
     return False
 
@@ -858,3 +858,52 @@ class ServiceAccessDenied(Exception):
 def unauthorized_view(request, service):
     context = {'callback_url': service.unauthorized_url or reverse('a2-homepage')}
     return render(request, 'authentic2/unauthorized.html', context=context)
+
+
+PROTOCOLS_TO_PORT = {
+    'http': '80',
+    'https': '443',
+}
+
+
+def netloc_to_host_port(netloc):
+    if not netloc:
+        return None, None
+    splitted = netloc.split(':', 1)
+    if len(splitted) > 1:
+        return splitted[0], splitted[1]
+    return splitted[0], None
+
+
+def same_origin(url1, url2):
+    '''Checks if both URL use the same domain. It understands domain patterns on url2, i.e. .example.com
+    matches www.example.com.
+
+    If not scheme is given in url2, scheme compare is skipped.
+    If not scheme and not port are given, port compare is skipped.
+    The last two rules allow authorizing complete domains easily.
+    '''
+    p1, p2 = urlparse.urlparse(url1), urlparse.urlparse(url2)
+    p1_host, p1_port = netloc_to_host_port(p1.netloc)
+    p2_host, p2_port = netloc_to_host_port(p2.netloc)
+
+    if p2.scheme and p1.scheme != p2.scheme:
+        return False
+
+    if p1_host != p2_host:
+        if p2_host.startswith('.'):
+            # p1 is a sub-domain or the base domain
+            if not p1_host.endswith(p2_host) and not p1_host == p2_host[1:]:
+                return False
+        else:
+            return False
+
+    try:
+        if (p2_port or (p1_port and p2.scheme)) and (
+                (p1_port or PROTOCOLS_TO_PORT[p1.scheme])
+                != (p2_port or PROTOCOLS_TO_PORT[p2.scheme])):
+            return False
+    except (ValueError, KeyError):
+        return False
+
+    return True
