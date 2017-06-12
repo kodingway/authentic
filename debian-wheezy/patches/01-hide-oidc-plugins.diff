@@ -1,7 +1,7 @@
-diff --git a/setup.py b/setup.py
-index 2dcf32a..d5d54df 100755
---- a/setup.py
-+++ b/setup.py
+Index: authentic2/setup.py
+===================================================================
+--- authentic2.orig/setup.py
++++ authentic2/setup.py
 @@ -127,8 +127,6 @@ setup(name="authentic2",
            'django-mellon',
            'ldaptools',
@@ -10,8 +10,8 @@ index 2dcf32a..d5d54df 100755
 -          'cryptography',
            'XStatic-jQuery',
            'XStatic-jquery-ui',
-       ],
-@@ -162,11 +160,9 @@ setup(name="authentic2",
+           'xstatic-select2',
+@@ -163,11 +161,9 @@ setup(name="authentic2",
            'authentic2.plugin': [
                'authentic2-auth-ssl = authentic2.auth2_auth.auth2_ssl:Plugin',
                'authentic2-auth-saml = authentic2_auth_saml:Plugin',
