@@ -37,7 +37,10 @@ LOGGING['loggers']['django_select2'] = {
 A2_USERNAME_LABEL = _('Email')
 
 # Rest Authentication Class for services access
-REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] += ('hobo.rest_authentication.PublikAuthentication',)
+REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] += (
+    'authentic2.authentication.Authentic2Authentication',
+    'rest_framework.authentication.SessionAuthentication',
+)
 HOBO_ANONYMOUS_SERVICE_USER_CLASS = 'hobo.rest_authentication.AnonymousAuthenticServiceUser'
 
 # HOBO Skeletons
