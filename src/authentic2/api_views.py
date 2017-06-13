@@ -442,6 +442,10 @@ class UsersAPI(ExceptionHandlerMixin, ModelViewSet):
         User = get_user_model()
         return self.request.user.filter_by_perm(['custom_user.view_user'], User.objects.all())
 
+    # only do partial updates
+    def put(self, request, *args, **kwargs):
+        return self.patch(request, *args, **kwargs)
+
     def check_perm(self, perm, ou):
         if ou:
             if not self.request.user.has_ou_perm(perm, ou):
