@@ -164,10 +164,14 @@ class SearchFormMixin(object):
             ctx['search_form'] = self.search_form
         return ctx
 
-    def get_table_data(self):
-        qs = super(SearchFormMixin, self).get_table_data()
+    def filter_by_search(self, qs):
         if self.search_form and self.search_form.is_valid():
             qs = self.search_form.filter(qs)
+        return qs
+
+    def get_table_data(self):
+        qs = super(SearchFormMixin, self).get_table_data()
+        qs = self.filter_by_search(qs)
         return qs
 
 

@@ -1,16 +1,29 @@
-from django.contrib.auth.models import Group
 from django.db.models.query import Q
 
 from django.contrib.auth import get_user_model
 
+from authentic2.models import Attribute
+
 
 def filter_user(qs, search):
     terms = search.split()
-    queries = [ Q(username__icontains=term)
-            | Q(first_name__icontains=term)
-            | Q(last_name__icontains=term)
-            | Q(email__icontains=term) for term in terms]
-    return get_user_model().objects.filter(reduce(Q.__and__, queries))
+
+    searchable_attributes = Attribute.objects.filter(searchable=True)
+    queries = []
+    for term in terms:
+        q = (Q(username__icontains=term) | Q(first_name__icontains=term) |
+             Q(last_name__icontains=term) | Q(email__icontains=term))
+        for a in searchable_attributes:
+            if a.name in ('first_name', 'last_name'):
+                continue
+            q = q | Q(attribute_values__content=term, attribute_values__attribute=a)
+        queries.append(q)
+    qs = qs.filter(reduce(Q.__and__, queries))
+    # search by attributes can match multiple times
+    if searchable_attributes:
+        qs = qs.distinct()
+    return qs
+
 
 def get_users(search=None):
     User = get_user_model()

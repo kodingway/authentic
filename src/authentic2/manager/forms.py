@@ -19,7 +19,7 @@ from authentic2.models import PasswordReset
 from authentic2.utils import import_module_or_class
 from authentic2.a2_rbac.utils import get_default_ou
 
-from . import fields, app_settings
+from . import fields, app_settings, utils
 
 
 class CssClass(object):
@@ -323,14 +323,7 @@ class UserSearchForm(HideOUFieldMixin, CssClass, PrefixFormMixin, forms.Form):
         if self.cleaned_data.get('ou'):
             qs = qs.filter(ou=self.cleaned_data['ou'])
         if self.cleaned_data.get('text'):
-            queries = []
-            for term in self.cleaned_data['text'].split():
-                queries.append(
-                    Q(first_name__icontains=term)
-                    | Q(last_name__icontains=term)
-                    | Q(username__icontains=term)
-                    | Q(email__icontains=term))
-            qs = qs.filter(reduce(Q.__and__, queries))
+            qs = utils.filter_user(qs, self.cleaned_data['text'])
         return qs
 
 

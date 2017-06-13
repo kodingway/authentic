@@ -9,7 +9,7 @@ from django.template import loader
 from django.core.urlresolvers import reverse
 from django.contrib.auth import get_user_model
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, QueryDict
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic import View
 
@@ -44,6 +44,16 @@ class UsersView(HideOUColumnMixin, BaseTableView):
         return super(UsersView, self).get_queryset().select_related('ou').prefetch_related('roles',
                                                                       'roles__parent_relation__parent')
 
+    def get_search_form_kwargs(self):
+        kwargs = super(UsersView, self).get_search_form_kwargs()
+        kwargs['initial'] = {'ou': self.request.user.ou_id}
+        return kwargs
+
+    def filter_by_search(self, qs):
+        qs = super(UsersView, self).filter_by_search(qs)
+        if not self.search_form.is_valid():
+            qs = qs.filter(ou=self.request.user.ou)
+        return qs
 
 users = UsersView.as_view()
 
