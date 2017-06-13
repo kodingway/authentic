@@ -9,8 +9,10 @@ import uuid
 
 from django.core.urlresolvers import reverse
 from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.models import ContentType
 from authentic2.a2_rbac.utils import get_default_ou
 from django_rbac.utils import get_role_model
+from django_rbac.models import SEARCH_OP
 from authentic2.models import Service
 from django.core import mail
 from django.contrib.auth.hashers import check_password
@@ -419,10 +421,11 @@ def test_register_ou_no_email_validation(app, admin, django_user_model):
     assert user.check_password(password)
 
 
-def test_user_synchronization(app, admin):
-    headers = basic_authorization_header(admin)
-
+def test_user_synchronization(app, simple_user):
     User = get_user_model()
+    Role = get_role_model()
+
+    headers = basic_authorization_header(simple_user)
     uuids = []
     for i in range(100):
         user = User.objects.create(first_name='ben', last_name='dauve')
@@ -433,6 +436,15 @@ def test_user_synchronization(app, admin):
         'known_uuids': uuids + unknown_uuids,
     }
     random.shuffle(content['known_uuids'])
+    response = app.post_json(url, params=content, headers=headers, status=403)
+
+    # give custom_user.search_user permission to user
+    r = Role.objects.get_admin_role(ContentType.objects.get_for_model(User),
+                                    name='role',
+                                    slug='role',
+                                    operation=SEARCH_OP)
+
+    r.members.add(simple_user)
     response = app.post_json(url, params=content, headers=headers)
     assert response.json['result'] == 1
     assert set(response.json['unknown_uuids']) == set(unknown_uuids)

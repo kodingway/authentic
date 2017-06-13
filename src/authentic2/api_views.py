@@ -38,6 +38,20 @@ class HasUserAddPermission(permissions.BasePermission):
         return True
 
 
+class DjangoPermission(permissions.BasePermission):
+    def __init__(self, perm):
+        self.perm = perm
+
+    def has_permission(self, request, view):
+        return request.user.has_perm(self.perm)
+
+    def has_object_permission(self, request, view, obj):
+        return request.user.has_perm(self.perm, obj=obj)
+
+    def __call__(self):
+        return self
+
+
 class RegistrationSerializer(serializers.Serializer):
     '''Register RPC payload'''
     email = serializers.EmailField(
@@ -426,7 +440,7 @@ class UsersAPI(ModelViewSet):
         known_uuids = User.objects.filter(uuid__in=uuids).values_list('uuid', flat=True)
         return set(uuids) - set(known_uuids)
 
-    @list_route(methods=['post'])
+    @list_route(methods=['post'], permission_classes=(DjangoPermission('custom_user.search_user'),))
     def synchronization(self, request):
         serializer = self.SynchronizationSerializer(data=request.data)
         if not serializer.is_valid():
