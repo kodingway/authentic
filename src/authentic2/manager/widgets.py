@@ -94,7 +94,7 @@ class ChooseRolesWidget(RoleLabelMixin, SecurityCheckMixin, ModelSelect2Multiple
 
 class ChooseRolesForChangeWidget(RoleLabelMixin, SecurityCheckMixin, ModelSelect2MultipleWidget):
     operations = ['change']
-    queryset = get_role_model().objects
+    queryset = get_role_model().objects.all()
     search_fields = [
         'name__icontains',
         'service__name__icontains',
