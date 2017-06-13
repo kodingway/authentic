@@ -26,7 +26,7 @@ from rest_framework.decorators import list_route
 from django_filters.rest_framework import FilterSet
 
 from .custom_user.models import User
-from . import utils, decorators, attribute_kinds
+from . import utils, decorators, attribute_kinds, app_settings
 from .models import Attribute, PasswordReset
 from .a2_rbac.utils import get_default_ou
 
@@ -296,11 +296,15 @@ class BaseUserSerializer(serializers.ModelSerializer):
 
         for at in Attribute.objects.all():
             if at.name in self.fields:
-                continue
-            kind = attribute_kinds.get_kind(at.kind)
-            field_class = kind['rest_framework_field_class']
-            self.fields[at.name] = field_class(source='attributes.%s' % at.name,
-                                               required=at.required)
+                self.fields[at.name].required = at.required
+            else:
+                kind = attribute_kinds.get_kind(at.kind)
+                field_class = kind['rest_framework_field_class']
+                self.fields[at.name] = field_class(source='attributes.%s' % at.name,
+                                                   required=at.required)
+        for key in self.fields:
+            if key in app_settings.A2_REQUIRED_FIELDS:
+                self.fields[at.name].required = True
 
     def check_perm(self, perm, ou):
         self.context['view'].check_perm(perm, ou)

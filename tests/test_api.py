@@ -148,6 +148,18 @@ def test_api_users_create(app, api_user):
 
     at = Attribute.objects.create(kind='title', name='title', label='title')
     app.authorization = ('Basic', (api_user.username, api_user.username))
+    # test missing first_name
+    payload = {
+        'username': 'john.doe',
+        'email': 'john.doe@example.net',
+    }
+    if api_user.roles.exists():
+        status = 400
+        payload['ou'] = api_user.ou.slug
+    resp = app.post_json('/api/users/', params=payload, status=400)
+    assert 'first_name' in resp.json
+    assert 'last_name' in resp.json
+
     payload = {
         'ou': None,
         'username': 'john.doe',
