@@ -86,6 +86,7 @@ class SerializerTests(TestCase):
                     'user_visible': False,
                     'required': False,
                     'disabled': False,
+                    'searchable': False,
                 }
             },
             {

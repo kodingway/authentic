@@ -164,6 +164,9 @@ class Attribute(models.Model):
             verbose_name=_('kind'))
     disabled = models.BooleanField(verbose_name=_('disabled'),
                                    blank=True, default=False)
+    searchable = models.BooleanField(
+        verbose_name=_('searchable'),
+        blank=True, default=False)
 
     objects = managers.AttributeManager(disabled=False)
     all_objects = managers.AttributeManager()
@@ -260,14 +263,15 @@ class AttributeValue(models.Model):
     content_type = models.ForeignKey('contenttypes.ContentType',
             verbose_name=_('content type'))
     object_id = models.PositiveIntegerField(
-            verbose_name=_('object identifier'))
+            verbose_name=_('object identifier'),
+            db_index=True)
     owner = GenericForeignKey('content_type', 'object_id')
 
     attribute = models.ForeignKey('Attribute',
             verbose_name=_('attribute'))
     multiple = models.BooleanField(default=False)
 
-    content = models.TextField(verbose_name=_('content'))
+    content = models.TextField(verbose_name=_('content'), db_index=True)
     verified = models.BooleanField(default=False)
 
     objects = managers.AttributeValueManager()
