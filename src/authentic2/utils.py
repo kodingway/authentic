@@ -329,8 +329,17 @@ def redirect_to_login(request, login_url='auth_login', keep_params=True,
 
 def continue_to_next_url(request, keep_params=True, include=(constants.NONCE_FIELD_NAME,),
                          **kwargs):
-    next_url = request.REQUEST.get(REDIRECT_FIELD_NAME, settings.LOGIN_REDIRECT_URL)
+    next_url = request.POST.get(REDIRECT_FIELD_NAME)
+    next_url = next_url or request.GET.get(REDIRECT_FIELD_NAME)
+    next_url = next_url or settings.LOGIN_REDIRECT_URL
     return redirect(request, to=next_url, keep_params=keep_params, include=include, **kwargs)
+
+
+def get_nonce(request):
+    nonce = request.GET.get(constants.NONCE_FIELD_NAME)
+    if request.method == 'POST':
+        nonce = request.POST.get(constants.NONCE_FIELD_NAME, nonce)
+    return nonce
 
 
 def record_authentication_event(request, how):
@@ -354,8 +363,8 @@ def record_authentication_event(request, how):
         'who': unicode(request.user)[:80],
         'how': how,
     }
-    if constants.NONCE_FIELD_NAME in request.REQUEST:
-        nonce = request.REQUEST[constants.NONCE_FIELD_NAME]
+    nonce = get_nonce(request)
+    if nonce:
         kwargs['nonce'] = nonce
         event['nonce'] = nonce
     authentication_events.append(event)

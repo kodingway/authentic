@@ -410,7 +410,7 @@ class LogoutView(View):
 
     def get(self, request):
         referrer = request.META['HTTP_REFERER']
-        next_url = request.REQUEST.get('service') or make_url('auth_homepage')
+        next_url = request.GET.get('service') or make_url('auth_homepage')
         if referrer:
             model = Service.objects.for_service(referrer)
             if model:

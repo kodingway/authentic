@@ -593,7 +593,7 @@ def continue_sso(request):
         if consent_attribute_answer:
             logger.info("back from the consent page for "
                 "attributes %s" % consent_attribute_answer)
-    nonce = request.REQUEST.get(NONCE_FIELD_NAME, '')
+    nonce = request.GET.get(NONCE_FIELD_NAME, '')
     if not nonce:
         logger.warning('nonce not found')
         return HttpResponseBadRequest()
@@ -965,7 +965,7 @@ def idp_sso(request, provider_id=None, return_profile=False):
     logger = logging.getLogger(__name__)
     User = get_user_model()
     if not provider_id:
-        provider_id = request.REQUEST.get('provider_id')
+        provider_id = request.POST.get('provider_id')
     if not provider_id:
         return error_redirect(request,
                 N_('missing provider identifier'))
@@ -976,7 +976,7 @@ def idp_sso(request, provider_id=None, return_profile=False):
         server=login.server)
     if not liberty_provider:
         return error_redirect(request, N_('provider %r is unknown'), provider_id)
-    username = request.REQUEST.get('username')
+    username = request.POST.get('username')
     if username:
         if not check_delegated_authentication_permission(request):
             return error_redirect(request,
@@ -1026,7 +1026,7 @@ def idp_sso(request, provider_id=None, return_profile=False):
 @never_cache
 def finish_slo(request):
     logger = logging.getLogger(__name__)
-    id = request.REQUEST.get('id')
+    id = request.GET.get('id')
     if not id:
         logger.error('missing id argument')
         return HttpResponseBadRequest('finish_slo: missing id argument')
@@ -1456,8 +1456,8 @@ def idp_slo(request, provider_id=None):
     all - if present, logout all sessions by omitting the SessionIndex element
     """
     logger = logging.getLogger(__name__)
-    all = request.REQUEST.get('all')
-    next = request.REQUEST.get('next')
+    all = request.POST.get('all')
+    next = request.POST.get('next')
 
     logger.debug('provider_id in parameter %s' % str(provider_id))
 
@@ -1554,7 +1554,7 @@ def process_logout_response(request, logout, soap_response, next):
 def slo_return(request):
     logger = logging.getLogger(__name__)
     logger.info('return from redirect')
-    relay_state = request.REQUEST.get('RelayState')
+    relay_state = request.GET.get('RelayState')
     if not relay_state:
         return error_redirect(request, N_('slo no relay state in response'), 
                 default_url=icon_url('ko'))

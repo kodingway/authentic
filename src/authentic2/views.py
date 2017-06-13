@@ -234,13 +234,14 @@ email_change_verify = EmailChangeVerifyView.as_view()
 
 logger = logging.getLogger('authentic2.idp.views')
 
+
 @csrf_exempt
 @ensure_csrf_cookie
 @never_cache
 def login(request, template_name='authentic2/login.html',
           redirect_field_name=REDIRECT_FIELD_NAME):
     """Displays the login form and handles the login action."""
-    redirect_to = request.REQUEST.get(redirect_field_name)
+    redirect_to = request.GET.get(redirect_field_name)
     if not redirect_to or ' ' in redirect_to:
         redirect_to = settings.LOGIN_REDIRECT_URL
     # Heavier security check -- redirects to http://example.com should
@@ -249,7 +250,7 @@ def login(request, template_name='authentic2/login.html',
     # question mark.
     elif '//' in redirect_to and re.match(r'[^\?]*//', redirect_to):
             redirect_to = settings.LOGIN_REDIRECT_URL
-    nonce = request.REQUEST.get(constants.NONCE_FIELD_NAME)
+    nonce = request.GET.get(constants.NONCE_FIELD_NAME)
 
     frontends = utils.get_backends('AUTH_FRONTENDS')
 
@@ -483,7 +484,7 @@ def logout(request, next_url=None, default_next_url='auth_homepage',
     '''
     logger = logging.getLogger(__name__)
     default_next_url = utils.make_url(default_next_url)
-    next_url = next_url or request.REQUEST.get(redirect_field_name,
+    next_url = next_url or request.GET.get(redirect_field_name,
             default_next_url)
     ctx = {}
     ctx['next_url'] = next_url
@@ -492,7 +493,7 @@ def logout(request, next_url=None, default_next_url='auth_homepage',
     if request.user.is_authenticated():
         if check_referer and not utils.check_referer(request):
             return render(request, 'authentic2/logout_confirm.html', ctx)
-        do_local = do_local and 'local' in request.REQUEST
+        do_local = do_local and 'local' in request.GET
         if not do_local:
             l = logout_list(request)
             if l:

@@ -60,7 +60,7 @@ def openid_server(request):
             reverse('openid-provider-root')))
 
     # Cancellation
-    if 'cancel' in request.REQUEST:
+    if 'cancel' in request.GET:
         if 'OPENID_REQUEST' in request.session:
             return oresponse_to_response(server,
                 request.session['OPENID_REQUEST'].answer(False))
@@ -71,7 +71,7 @@ def openid_server(request):
     if request.session.get('AuthorizationInfo', None):
         del request.session['AuthorizationInfo']
 
-    querydict = dict(request.REQUEST.items())
+    querydict = dict(request.GET.items())
     try:
         orequest = server.decodeRequest(querydict)
     except ProtocolError, why:
