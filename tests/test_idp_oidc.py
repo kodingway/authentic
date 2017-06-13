@@ -183,7 +183,7 @@ def test_authorization_code_sso(login_first, oidc_settings, oidc_client, simple_
     if oidc_client.idtoken_algo == oidc_client.ALGO_RSA:
         key = JWKSet.from_json(app.get(reverse('oidc-certs')).content)
     elif oidc_client.idtoken_algo == oidc_client.ALGO_HMAC:
-        key = JWK(kty='oct', k=oidc_client.client_secret)
+        key = JWK(kty='oct', k=base64.b64encode(oidc_client.client_secret.encode('utf-8')))
     else:
         raise NotImplementedError
     jwt = JWT(jwt=id_token, key=key)
@@ -715,7 +715,7 @@ def test_role_control_access(login_first, oidc_settings, oidc_client, simple_use
     if oidc_client.idtoken_algo == oidc_client.ALGO_RSA:
         key = JWKSet.from_json(app.get(reverse('oidc-certs')).content)
     elif oidc_client.idtoken_algo == oidc_client.ALGO_HMAC:
-        key = JWK(kty='oct', k=oidc_client.client_secret)
+        key = JWK(kty='oct', k=base64.b64encode(oidc_client.client_secret.encode('utf-8')))
     else:
         raise NotImplementedError
     jwt = JWT(jwt=id_token, key=key)

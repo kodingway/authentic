@@ -12,6 +12,10 @@ from django.conf import settings
 from . import app_settings
 
 
+def base64url(content):
+    return base64.urlsafe_b64encode(content).strip('=')
+
+
 def get_jwkset():
     try:
         jwkset = json.dumps(app_settings.JWKSET)
@@ -40,7 +44,7 @@ def make_idtoken(client, claims):
     '''Make a serialized JWT targeted for this client'''
     if client.idtoken_algo == client.ALGO_HMAC:
         header = {'alg': 'HS256'}
-        jwk = JWK(kty='oct', k=client.client_secret)
+        jwk = JWK(kty='oct', k=base64url(client.client_secret.encode('utf-8')))
     elif client.idtoken_algo == client.ALGO_RSA:
         header = {'alg': 'RS256'}
         jwk = get_first_rsa_sig_key()
