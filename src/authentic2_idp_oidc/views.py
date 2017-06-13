@@ -246,7 +246,8 @@ def authorize(request, *args, **kwargs):
         acr = 0
         if nonce and last_auth.get('nonce') == nonce:
             acr = 1
-        id_token = {
+        id_token = utils.create_user_info(client, request.user, scopes, id_token=True)
+        id_token.update({
             'iss': request.build_absolute_uri('/'),
             'sub': utils.make_sub(client, request.user),
             'aud': client.client_id,
@@ -255,7 +256,7 @@ def authorize(request, *args, **kwargs):
             'iat': timestamp_from_datetime(start),
             'auth_time': last_auth['when'],
             'acr': acr,
-        }
+        })
         if nonce:
             id_token['nonce'] = nonce
         params = {
@@ -349,7 +350,9 @@ def token(request, *args, **kwargs):
     if (oidc_code.nonce and last_authentication_event(oidc_code.session).get('nonce') ==
             oidc_code.nonce):
         acr = 1
-    id_token = {
+    # prefill id_token with user info
+    id_token = utils.create_user_info(client, oidc_code.user, oidc_code.scope_set(), id_token=True)
+    id_token.update({
         'iss': request.build_absolute_uri('/'),
         'sub': utils.make_sub(client, oidc_code.user),
         'aud': client.client_id,
@@ -358,7 +361,7 @@ def token(request, *args, **kwargs):
         'iat': timestamp_from_datetime(start),
         'auth_time': timestamp_from_datetime(oidc_code.auth_time),
         'acr': acr,
-    }
+    })
     if oidc_code.nonce:
         id_token['nonce'] = oidc_code.nonce
     response = HttpResponse(json.dumps({
@@ -393,19 +396,8 @@ def user_info(request, *args, **kwargs):
     access_token = authenticate_access_token(request)
     if access_token is None:
         return HttpResponse('unauthenticated', status=401)
-    scope_set = access_token.scope_set()
-    user = access_token.user
-    user_info = {
-        'sub': utils.make_sub(access_token.client, access_token.user)
-    }
-    if 'profile' in scope_set:
-        user_info['family_name'] = user.last_name
-        user_info['given_name'] = user.first_name
-        if user.username:
-            user_info['preferred_username'] = user.username.split('@', 1)[0]
-    if 'email' in scope_set:
-        user_info['email'] = user.email
-        user_info['email_verified'] = True
+    user_info = utils.create_user_info(access_token.client, access_token.user,
+                                       access_token.scope_set())
     return HttpResponse(json.dumps(user_info), content_type='application/json')
 
 

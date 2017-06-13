@@ -199,6 +199,12 @@ def test_authorization_code_sso(login_first, oidc_settings, oidc_client, simple_
         assert claims['acr'] == 0
     else:
         assert claims['acr'] == 1
+    assert claims['sub'] == make_sub(oidc_client, simple_user)
+    assert claims['preferred_username'] == simple_user.username
+    assert claims['given_name'] == simple_user.first_name
+    assert claims['family_name'] == simple_user.last_name
+    assert claims['email'] == simple_user.email
+    assert claims['email_verified'] is True
 
     user_info_url = make_url('oidc-user-info')
     response = app.get(user_info_url, headers=bearer_authentication_headers(access_token))

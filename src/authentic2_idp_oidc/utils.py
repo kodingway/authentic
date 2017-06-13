@@ -98,3 +98,19 @@ def make_pairwise_sub(client, user):
     sub = sector_identifier + str(user.uuid) + settings.SECRET_KEY
     sub = base64.b64encode(hashlib.sha256(sub).digest())
     return sub
+
+
+def create_user_info(client, user, scope_set, id_token=False):
+    '''Create user info dictionnary'''
+    user_info = {
+        'sub': make_sub(client, user)
+    }
+    if 'profile' in scope_set:
+        user_info['family_name'] = user.last_name
+        user_info['given_name'] = user.first_name
+        if user.username:
+            user_info['preferred_username'] = user.username.split('@', 1)[0]
+    if 'email' in scope_set:
+        user_info['email'] = user.email
+        user_info['email_verified'] = True
+    return user_info
