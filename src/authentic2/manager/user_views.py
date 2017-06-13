@@ -94,6 +94,7 @@ class UserEditView(PassRequestToFormMixin, OtherActionsMixin,
     fields = ['username', 'ou', 'first_name', 'last_name', 'email']
     success_url = '..'
     context_object_name = 'person'
+    slug_field = 'uuid'
 
     @property
     def title(self):
@@ -218,6 +219,7 @@ class UserChangePasswordView(BaseEditView):
     form_class = UserChangePasswordForm
     title = _('Change user password')
     success_url = '..'
+    slug_field = 'uuid'
 
     def get_success_message(self, cleaned_data):
         if cleaned_data.get('send_mail'):
@@ -234,6 +236,7 @@ class UserRolesView(HideOUColumnMixin, BaseSubTableView):
     form_class = ChooseUserRoleForm
     search_form_class = RoleSearchForm
     success_url = '.'
+    slug_field = 'uuid'
 
     @property
     def template_name(self):

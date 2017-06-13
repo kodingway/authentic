@@ -25,6 +25,15 @@ urlpatterns = required(
         url(r'^users/(?P<pk>\d+)/change-password/$',
             user_views.user_change_password,
             name='a2-manager-user-change-password'),
+        # by uuid
+        url(r'^users/uuid:(?P<slug>[a-z0-9]+)/$', user_views.user_edit,
+            name='a2-manager-user-by-uuid-edit'),
+        url(r'^users/uuid:(?P<slug>[a-z0-9]+)/roles/$',
+            user_views.roles,
+            name='a2-manager-user-by-uuid-roles'),
+        url(r'^users/uuid:(?P<slug>[a-z0-9]+)/change-password/$',
+            user_views.user_change_password,
+            name='a2-manager-user-by-uuid-change-password'),
 
         # Authentic2 roles
         url(r'^roles/$', role_views.listing,

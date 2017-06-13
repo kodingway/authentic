@@ -96,3 +96,9 @@ def test_manager_user_password_reset(app, superuser, simple_user):
     resp.form.set('new_password2', '1234==aA')
     resp = resp.form.submit().follow()
     assert str(app.session['_auth_user_id']) == str(simple_user.pk)
+
+
+def test_manager_user_edit_by_uuid(app, superuser, simple_user):
+    url = reverse('a2-manager-user-by-uuid-edit', kwargs={'slug': simple_user.uuid})
+    resp = login(app, superuser, url)
+    assert simple_user.first_name.encode('utf-8') in resp.content

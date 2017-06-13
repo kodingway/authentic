@@ -69,8 +69,10 @@ class PermissionMixin(object):
             add_perm = '%s.add_%s' % (app_label, model_name)
             self.can_add = request.user.has_perm_any(add_perm)
             if hasattr(self, 'get_object') \
-                    and hasattr(self, 'pk_url_kwarg') \
-                    and self.pk_url_kwarg in self.kwargs:
+                    and ((hasattr(self, 'pk_url_kwarg')
+                          and self.pk_url_kwarg in self.kwargs)
+                         or (hasattr(self, 'slug_url_kwarg')
+                             and self.slug_url_kwarg in self.kwargs)):
                 self.object = self.get_object()
                 view_perm = '%s.view_%s' % (app_label, model_name)
                 change_perm = '%s.change_%s' % (app_label, model_name)
