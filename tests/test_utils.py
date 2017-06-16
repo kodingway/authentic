@@ -1,6 +1,6 @@
 import django
 
-from authentic2.utils import good_next_url, same_origin
+from authentic2.utils import good_next_url, same_origin, select_next_url
 
 
 def test_good_next_url(rf, settings):
@@ -34,3 +34,12 @@ def test_same_origin():
     assert not same_origin('https://example.com/coin/', '//example.com:34')
     assert same_origin('https://example.com:443/coin/', 'https://example.com/')
     assert same_origin('https://example.com:34/coin/', '//example.com')
+
+
+def test_select_next_url(rf, settings):
+    request = rf.get('/accounts/register/', data={'next': '/admin/'})
+    assert select_next_url(request, '/') == '/admin/'
+    request = rf.get('/accounts/register/', data={'next': 'http://example.com/'})
+    assert select_next_url(request, '/') == '/'
+    settings.A2_REDIRECT_WHITELIST = ['//example.com/']
+    assert select_next_url(request, '/') == 'http://example.com/'

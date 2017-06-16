@@ -823,6 +823,14 @@ def good_next_url(request, next_url):
     return False
 
 
+def select_next_url(request, default):
+    '''Select the first valid next URL'''
+    next_url = request.GET.get(REDIRECT_FIELD_NAME)
+    if good_next_url(request, next_url):
+        return next_url
+    return default
+
+
 def timestamp_from_datetime(dt):
     '''Convert an aware datetime as an Unix timestamp'''
     utc_naive = dt.replace(tzinfo=None) - dt.utcoffset()
