@@ -19,7 +19,7 @@ from django.contrib.auth.models import Group, _user_get_all_permissions, \
     _user_has_perm, _user_has_module_perms, Permission as AuthPermission
 from django.contrib import auth
 
-from . import utils, constants, managers
+from . import utils, constants, managers, backends
 
 
 class AbstractBase(models.Model):
@@ -383,6 +383,10 @@ class PermissionMixin(models.Model):
                 if backend.has_ou_perm(self, perm, ou):
                     return True
         return False
+
+    def ous_with_perm(self, perm, queryset=None):
+        return backends.DjangoRBACBackend().ous_with_perm(self, perm, queryset=queryset)
+
 
 ADMIN_OP = Operation(name=_('Management'), slug='admin')
 CHANGE_OP = Operation(name=_('Change'), slug='change')
