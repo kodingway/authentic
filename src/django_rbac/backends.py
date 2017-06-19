@@ -240,9 +240,9 @@ class DjangoRBACBackend(object):
         qs = queryset or OU.objects.all()
 
         if user_obj.is_anonymous():
-            return qs.empty()
+            return qs.none()
         if not user_obj.is_active:
-            return qs.empty()
+            return qs.none()
         if user_obj.is_superuser:
             return qs
         cache = self.get_permission_cache(user_obj)
