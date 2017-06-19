@@ -19,7 +19,7 @@ USERNAME = u'etienne.michu'
 UID = 'etienne.michu'
 CN = 'Étienne Michu'
 DN = 'cn=%s,o=orga' % escape_dn_chars(CN)
-PASS = 'pass'
+PASS = 'passé'
 
 
 @pytest.fixture
@@ -149,7 +149,7 @@ def test_keep_password_in_session(slapd, settings, client):
     }]
     result = client.post('/login/', {'login-password-submit': '1',
                                      'username': USERNAME,
-                                     'password': PASS}, follow=True)
+                                     'password': PASS.decode('utf-8')}, follow=True)
     assert result.status_code == 200
     assert 'Étienne Michu' in str(result)
     User = get_user_model()

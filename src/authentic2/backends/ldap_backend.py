@@ -84,6 +84,7 @@ class LDAPUser(get_user_model()):
                 decrypted = crypto.aes_base64_decrypt(settings.SECRET_KEY, encrypted_bindpw,
                                                       raise_on_error=False)
                 if decrypted:
+                    decrypted = decrypted.decode('utf-8')
                     self.ldap_data['block']['bindpw'] = decrypted
                     del self.ldap_data['block']['encrypted_bindpw']
 
@@ -92,8 +93,8 @@ class LDAPUser(get_user_model()):
         data = dict(self.ldap_data)
         data['block'] = dict(data['block'])
         if data['block'].get('bindpw'):
-            data['block']['encrypted_bindpw'] = crypto.aes_base64_encrypt(settings.SECRET_KEY,
-                                                                          data['block']['bindpw'])
+            data['block']['encrypted_bindpw'] = crypto.aes_base64_encrypt(
+                settings.SECRET_KEY, data['block']['bindpw'].encode('utf-8'))
             del data['block']['bindpw']
         session[self.SESSION_LDAP_DATA_KEY] = data
 
@@ -126,7 +127,7 @@ class LDAPUser(get_user_model()):
         cache = self.ldap_data.setdefault('password', {})
         if password is not None:
             # Prevent eavesdropping of the password through the session storage
-            password = crypto.aes_base64_encrypt(settings.SECRET_KEY, password)
+            password = crypto.aes_base64_encrypt(settings.SECRET_KEY, password.encode('utf-8'))
         cache[self.dn] = password
         # ensure session is marked dirty
         self.update_request()
@@ -142,6 +143,8 @@ class LDAPUser(get_user_model()):
                     logging.getLogger(__name__).error('unable to decrypt a stored LDAP password')
                     self.keep_password_in_session(None)
                     password = None
+                else:
+                    password = password.decode('utf-8')
             return password
         else:
             self.keep_password_in_session(None)
