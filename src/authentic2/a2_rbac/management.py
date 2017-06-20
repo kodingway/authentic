@@ -50,7 +50,7 @@ def update_ou_admin_roles(ou):
             ou_ct_admin_role.remove_child(ou_admin_role)
         if MANAGED_CT[key].get('must_view_user'):
             ou_ct_admin_role.permissions.add(utils.get_view_user_perm(ou))
-        ou_ct_admin_role.permissions.add(utils.get_view_ou_perm(ou))
+        ou_ct_admin_role.permissions.add(utils.get_search_ou_perm(ou))
 
 
 def update_ous_admin_roles():
@@ -93,7 +93,7 @@ def update_content_types_roles():
     cts = ContentType.objects.all()
     Role = get_role_model()
     view_user_perm = utils.get_view_user_perm()
-    view_ou_perm = utils.get_view_ou_perm()
+    search_ou_perm = utils.get_search_ou_perm()
     slug = '_a2-manager'
     if app_settings.MANAGED_CONTENT_TYPES == ():
         Role.objects.filter(slug=slug).delete()
@@ -123,7 +123,7 @@ def update_content_types_roles():
                                                     update_name=True)
         if MANAGED_CT[ct_tuple].get('must_view_user'):
             ct_admin_role.permissions.add(view_user_perm)
-        ct_admin_role.permissions.add(view_ou_perm)
+        ct_admin_role.permissions.add(search_ou_perm)
         ct_admin_role.add_child(admin_role)
 
 post_migrate.connect(

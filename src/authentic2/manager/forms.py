@@ -28,6 +28,12 @@ class CssClass(object):
     required_css_class = 'required'
 
 
+class FormWithRequest(forms.Form):
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request')
+        super(FormWithRequest, self).__init__(*args, **kwargs)
+
+
 class SlugMixin(forms.ModelForm):
     def save(self, commit=True):
         instance = self.instance
@@ -143,9 +149,9 @@ class UserEditForm(LimitQuerysetFormMixin, CssClass, BaseUserForm):
     form_id = "id_user_edit_form"
 
     def __init__(self, *args, **kwargs):
-        request = kwargs.get('request')
+        request = kwargs.pop('request')
         super(UserEditForm, self).__init__(*args, **kwargs)
-        if 'ou' in self.fields and not (request and request.user.is_superuser):
+        if 'ou' in self.fields and not request.user.is_superuser:
             field = self.fields['ou']
             field.required = True
             qs = field.queryset
@@ -286,7 +292,7 @@ class UserAddForm(UserChangePasswordForm, UserEditForm):
         fields = '__all__'
 
 
-class ServiceRoleSearchForm(CssClass, PrefixFormMixin, forms.Form):
+class ServiceRoleSearchForm(CssClass, PrefixFormMixin, FormWithRequest):
     prefix = 'search'
 
     text = forms.CharField(
@@ -318,37 +324,75 @@ class HideOUFieldMixin(object):
         return super(HideOUFieldMixin, self).save(*args, **kwargs)
 
 
-class RoleSearchForm(HideOUFieldMixin, ServiceRoleSearchForm):
+class OUSearchForm(FormWithRequest):
+    ou_permission = None
+
     ou = forms.ModelChoiceField(queryset=get_ou_model().objects,
-                                required=False, label=_('Organizational unit'))
+                                required=True, label=_('Organizational unit'))
+
+    def __init__(self, *args, **kwargs):
+        request = kwargs['request']
+        ou_qs = request.user.ous_with_perm(self.ou_permission).order_by('name')
+        data = kwargs.setdefault('data', {}).copy()
+        kwargs['data'] = data
+        if 'search-ou' not in data:
+            if request.user.ou in ou_qs:
+                data['search-ou'] = request.user.ou.pk
+            elif len(ou_qs):
+                data['search-ou'] = ou_qs[0].pk
+        super(OUSearchForm, self).__init__(*args, **kwargs)
+        if not request.user.is_superuser:
+            self.fields['ou'].empty_label = None
+        else:
+            self.fields['ou'].required = False
+        self.fields['ou'].queryset = ou_qs
+        if len(ou_qs) < 2:
+            self.fields['ou'].widget.attrs['disabled'] = ''
+
+    def filter_no_ou(self, qs):
+        if self.request.user.is_superuser:
+            qs = qs.filter(ou__isnull=True)
+        else:
+            qs = qs.none()
+        return qs
 
     def filter(self, qs):
-        qs = super(RoleSearchForm, self).filter(qs)
+        if hasattr(super(OUSearchForm, self), 'filter'):
+            qs = super(OUSearchForm, self).filter(qs)
         if self.cleaned_data.get('ou'):
             qs = qs.filter(ou=self.cleaned_data['ou'])
+        else:
+            qs = self.filter_no_ou(qs)
         return qs
 
 
-class UserSearchForm(HideOUFieldMixin, CssClass, PrefixFormMixin, forms.Form):
+class RoleSearchForm(OUSearchForm, ServiceRoleSearchForm):
+    ou_permission = 'a2_rbac.search_role'
+
+
+class UserRoleSearchForm(OUSearchForm, ServiceRoleSearchForm):
+    ou_permission = 'a2_rbac.search_role'
+
+    def filter_no_ou(self, qs):
+        return qs
+
+
+class UserSearchForm(OUSearchForm, CssClass, PrefixFormMixin, FormWithRequest):
+    ou_permission = 'custom_user.search_user'
     prefix = 'search'
 
     text = forms.CharField(
         label=_('Name'),
         required=False)
-    ou = forms.ModelChoiceField(
-        queryset=get_ou_model().objects,
-        label=_('Organizational unit'),
-        required=False)
 
     def filter(self, qs):
-        if self.cleaned_data.get('ou'):
-            qs = qs.filter(ou=self.cleaned_data['ou'])
+        qs = super(UserSearchForm, self).filter(qs)
         if self.cleaned_data.get('text'):
             qs = utils.filter_user(qs, self.cleaned_data['text'])
         return qs
 
 
-class NameSearchForm(CssClass, PrefixFormMixin, forms.Form):
+class NameSearchForm(CssClass, PrefixFormMixin, FormWithRequest):
     prefix = 'search'
 
     text = forms.CharField(

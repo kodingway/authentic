@@ -25,7 +25,7 @@ from .views import BaseTableView, BaseAddView, PassRequestToFormMixin, \
     BaseSubTableView, HideOUColumnMixin
 from .tables import UserTable, UserRolesTable, OuUserRolesTable
 from .forms import UserSearchForm, UserAddForm, UserEditForm, \
-    UserChangePasswordForm, ChooseUserRoleForm, RoleSearchForm
+    UserChangePasswordForm, ChooseUserRoleForm, UserRoleSearchForm
 from .resources import UserResource
 
 
@@ -237,7 +237,7 @@ user_change_password = UserChangePasswordView.as_view()
 class UserRolesView(HideOUColumnMixin, BaseSubTableView):
     model = get_user_model()
     form_class = ChooseUserRoleForm
-    search_form_class = RoleSearchForm
+    search_form_class = UserRoleSearchForm
     success_url = '.'
     slug_field = 'uuid'
 

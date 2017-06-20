@@ -1,4 +1,5 @@
 import json
+import inspect
 
 from django.core.exceptions import PermissionDenied
 from django.views.generic.base import ContextMixin
@@ -155,7 +156,7 @@ class SearchFormMixin(object):
         return self.search_form_class
 
     def get_search_form_kwargs(self):
-        return {'data': self.request.GET}
+        return {'request': self.request, 'data': self.request.GET}
 
     def get_search_form(self):
         form_class = self.get_search_form_class()
