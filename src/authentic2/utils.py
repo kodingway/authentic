@@ -760,7 +760,7 @@ def switch_user(request, new_user):
                     constants.LAST_LOGIN_SESSION_KEY):
             switched[key] = request.session[key]
         user = authenticate(user=new_user)
-        auth_login(request, user)
+        login(request, user, 'switch')
         request.session[constants.SWITCH_USER_SESSION_KEY] = switched
         if constants.LAST_LOGIN_SESSION_KEY not in request.session:
             request.session[constants.LAST_LOGIN_SESSION_KEY] = \
