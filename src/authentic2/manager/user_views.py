@@ -89,7 +89,7 @@ class UserAddView(PassRequestToFormMixin, BaseAddView):
         return fields
 
     def get_success_url(self):
-        return reverse('a2-manager-user-edit', kwargs={'pk': self.object.pk})
+        return reverse('a2-manager-user-detail', kwargs={'pk': self.object.pk})
 
 user_add = UserAddView.as_view()
 
