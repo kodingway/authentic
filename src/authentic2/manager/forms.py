@@ -116,9 +116,15 @@ class RolesForChangeForm(CssClass, forms.Form):
     roles = fields.ChooseRolesForChangeField(label=_('Add some roles'))
 
 
-class ChooseUserRoleForm(CssClass, forms.Form):
+class ChooseUserRoleForm(CssClass, FormWithRequest, forms.Form):
     role = fields.ChooseUserRoleField(label=_('Add a role'))
     action = forms.CharField(initial='add', widget=forms.HiddenInput)
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
+        super(ChooseUserRoleForm, self).__init__(*args, **kwargs)
+        if app_settings.ROLE_MEMBERS_FROM_OU and user.ou_id:
+            self.fields['role'].queryset = self.fields['role'].queryset.filter(ou_id=user.ou_id)
 
 
 class ChoosePermissionForm(CssClass, forms.Form):
@@ -337,7 +343,8 @@ class OUSearchForm(FormWithRequest):
 
     def __init__(self, *args, **kwargs):
         request = kwargs['request']
-        ou_qs = request.user.ous_with_perm(self.ou_permission).order_by('name')
+        ou_qs = (kwargs.pop('ou_queryset', None)
+                 or request.user.ous_with_perm(self.ou_permission).order_by('name'))
         data = kwargs.setdefault('data', {}).copy()
         kwargs['data'] = data
         if 'search-ou' not in data:
@@ -376,7 +383,19 @@ class RoleSearchForm(OUSearchForm, ServiceRoleSearchForm):
 
 
 class UserRoleSearchForm(OUSearchForm, ServiceRoleSearchForm):
-    ou_permission = 'a2_rbac.search_role'
+    ou_permission = 'a2_rbac.change_role'
+
+    def __init__(self, *args, **kwargs):
+        # limit ou to target user ou
+        request = kwargs['request']
+        user = kwargs.pop('user')
+        ou_qs = request.user.ous_with_perm(self.ou_permission).order_by('name')
+        if user.ou_id:
+            ou_qs = ou_qs.filter(id=user.ou_id)
+        else:
+            ou_qs = ou_qs.none()
+        kwargs['ou_queryset'] = ou_qs
+        super(UserRoleSearchForm, self).__init__(*args, **kwargs)
 
     def filter_no_ou(self, qs):
         return qs

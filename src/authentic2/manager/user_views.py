@@ -263,7 +263,7 @@ class UserChangePasswordView(BaseEditView):
 user_change_password = UserChangePasswordView.as_view()
 
 
-class UserRolesView(HideOUColumnMixin, BaseSubTableView):
+class UserRolesView(HideOUColumnMixin, PassRequestToFormMixin, BaseSubTableView):
     model = get_user_model()
     form_class = ChooseUserRoleForm
     search_form_class = UserRoleSearchForm
@@ -342,6 +342,17 @@ class UserRolesView(HideOUColumnMixin, BaseSubTableView):
         else:
             messages.warning(self.request, _('You are not authorized'))
         return super(UserRolesView, self).form_valid(form)
+
+    def get_search_form_kwargs(self):
+        kwargs = super(UserRolesView, self).get_search_form_kwargs()
+        kwargs['user'] = self.object
+        return kwargs
+
+    def get_form_kwargs(self):
+        kwargs = super(UserRolesView, self).get_form_kwargs()
+        kwargs['user'] = self.object
+        return kwargs
+
 
 roles = UserRolesView.as_view()
 
