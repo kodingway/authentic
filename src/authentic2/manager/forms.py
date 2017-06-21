@@ -303,10 +303,15 @@ class ServiceRoleSearchForm(CssClass, PrefixFormMixin, FormWithRequest):
         label=_('Show internal roles'),
         required=False)
 
+    def __init__(self, *args, **kwargs):
+        super(ServiceRoleSearchForm, self).__init__(*args, **kwargs)
+        if app_settings.SHOW_INTERNAL_ROLES:
+            del self.fields['internals']
+
     def filter(self, qs):
         if self.cleaned_data.get('text'):
             qs = qs.filter(name__icontains=self.cleaned_data['text'])
-        if not self.cleaned_data.get('internals'):
+        if not app_settings.SHOW_INTERNAL_ROLES and not self.cleaned_data.get('internals'):
             qs = qs.exclude(slug__startswith='_a2')
         return qs
 

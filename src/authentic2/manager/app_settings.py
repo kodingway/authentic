@@ -8,6 +8,7 @@ class AppSettings(object):
         'ROLE_FORM_CLASS': None,
         'ROLES_SHOW_PERMISSIONS': False,
         'ROLE_MEMBERS_FROM_OU': False,
+        'SHOW_INTERNAL_ROLES': False,
     }
 
     def __getattr__(self, name):
