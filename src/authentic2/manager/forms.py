@@ -29,6 +29,8 @@ class CssClass(object):
 
 
 class FormWithRequest(forms.Form):
+    need_request = True
+
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request')
         super(FormWithRequest, self).__init__(*args, **kwargs)
