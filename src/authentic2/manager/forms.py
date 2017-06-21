@@ -382,7 +382,7 @@ class UserSearchForm(OUSearchForm, CssClass, PrefixFormMixin, FormWithRequest):
     prefix = 'search'
 
     text = forms.CharField(
-        label=_('Name'),
+        label=_('Free text'),
         required=False)
 
     def filter(self, qs):

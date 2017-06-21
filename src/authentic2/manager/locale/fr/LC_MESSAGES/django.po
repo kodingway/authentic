@@ -94,6 +94,9 @@ msgstr "Doit changer de mot de passe à la prochaine connexion"
 msgid "Name"
 msgstr "Nom"
 
+msgid "Free text"
+msgstr "Recherche libre"
+
 #: manager/forms.py:278
 msgid "Show internal roles"
 msgstr "Afficher les rôles internes"
