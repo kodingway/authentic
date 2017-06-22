@@ -139,8 +139,12 @@
               return false;
             }
           } else if ($(e.target).data('url')) {
-           e.preventDefault();
-           return displayPopup.apply($(e.target), [e]);
+            e.preventDefault();
+            if ($(e.target).attr('rel') == 'popup') {
+              return displayPopup.apply($(e.target), [e]);
+            } else {
+              window.location.href = $(e.target).data('url');
+            }
           }
         })
         $(document).on('change', '#id_generate_password', function (e) {
