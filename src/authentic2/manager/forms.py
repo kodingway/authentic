@@ -321,6 +321,8 @@ class ServiceRoleSearchForm(CssClass, PrefixFormMixin, FormWithRequest):
             del self.fields['internals']
 
     def filter(self, qs):
+        if hasattr(super(ServiceRoleSearchForm, self), 'filter'):
+            qs = super(ServiceRoleSearchForm, self).filter(qs)
         if self.cleaned_data.get('text'):
             qs = qs.filter(name__icontains=self.cleaned_data['text'])
         if not app_settings.SHOW_INTERNAL_ROLES and not self.cleaned_data.get('internals'):
@@ -384,7 +386,7 @@ class OUSearchForm(FormWithRequest):
         return qs
 
 
-class RoleSearchForm(OUSearchForm, ServiceRoleSearchForm):
+class RoleSearchForm(ServiceRoleSearchForm, OUSearchForm):
     ou_permission = 'a2_rbac.search_role'
 
 
