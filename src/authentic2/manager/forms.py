@@ -171,7 +171,7 @@ class UserEditForm(LimitQuerysetFormMixin, CssClass, BaseUserForm):
             field.queryset = qs
             count = qs.count()
             if count == 1:
-                field.initial = qs.get().pk
+                field.initial = qs[0].pk
             if count < 2:
                 field.widget.attrs['disabled'] = ''
 
