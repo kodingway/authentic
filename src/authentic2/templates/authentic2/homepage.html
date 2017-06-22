@@ -3,7 +3,7 @@
 
 {% block appbar %}
   {{ block.super }}
-  {% if perms.any.a2_rbac.view_organizationalunit or perms.any.custom_user.view_user or perms.any.a2_rbac.view_role or perms.any.authentic2.view_service %}
+  {% if perms.any.a2_rbac.search_organizationalunit or perms.any.custom_user.search_user or perms.any.a2_rbac.search_role or perms.any.authentic2.search_service %}
     <a href="{% url "a2-manager-homepage" %}">{% trans "Administration" %}</a>
   {% endif %}
   {% if account_management %}
