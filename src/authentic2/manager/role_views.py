@@ -49,7 +49,7 @@ class RolesView(views.HideOUColumnMixin, RolesMixin, views.BaseTableView):
     model = get_role_model()
     table_class = tables.RoleTable
     search_form_class = forms.RoleSearchForm
-    permissions = ['a2_rbac.view_role']
+    permissions = ['a2_rbac.search_role']
 
     def get_queryset(self):
         qs = super(RolesView, self).get_queryset()
