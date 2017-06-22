@@ -64,9 +64,6 @@ class PermissionMixin(object):
     permissions = None
 
     def authorize(self, request, *args, **kwargs):
-        return True
-
-    def dispatch(self, request, *args, **kwargs):
         if hasattr(self, 'model'):
             app_label = self.model._meta.app_label
             model_name = self.model._meta.model_name
@@ -98,9 +95,8 @@ class PermissionMixin(object):
                     and not request.user.has_perm_any(self.permissions):
                 raise PermissionDenied
 
-        if not self.authorize(request, *args, **kwargs):
-            raise PermissionDenied
-
+    def dispatch(self, request, *args, **kwargs):
+        self.authorize(request, *args, **kwargs)
         return super(PermissionMixin, self).dispatch(request, *args, **kwargs)
 
 
