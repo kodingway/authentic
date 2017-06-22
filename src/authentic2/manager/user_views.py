@@ -311,6 +311,7 @@ class UserRolesView(HideOUColumnMixin, PassRequestToFormMixin, BaseSubTableView)
             qs2 = self.request.user.filter_by_perm('a2_rbac.change_role', qs)
             managable_ids = map(str, qs2.values_list('pk', flat=True))
             qs = qs.extra(select={'has_perm': 'a2_rbac_role.id in (%s)' % ', '.join(managable_ids)})
+            qs = qs.exclude(slug__startswith='_a2-managers-of-role')
             return qs
         else:
             return self.object.roles_and_parents()
