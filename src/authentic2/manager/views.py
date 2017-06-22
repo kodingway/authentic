@@ -102,7 +102,7 @@ class PermissionMixin(object):
 
 def filter_view(request, qs):
     model = qs.model
-    perm = '%s.view_%s' % (model._meta.app_label, model._meta.model_name)
+    perm = '%s.search_%s' % (model._meta.app_label, model._meta.model_name)
     return request.user.filter_by_perm(perm, qs)
 
 
