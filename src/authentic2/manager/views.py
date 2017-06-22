@@ -4,7 +4,8 @@ import inspect
 from django.core.exceptions import PermissionDenied
 from django.views.generic.base import ContextMixin
 from django.views.generic.edit import FormMixinBase
-from django.views.generic import (FormView, UpdateView, CreateView, DeleteView, TemplateView)
+from django.views.generic import (FormView, UpdateView, CreateView, DeleteView, TemplateView,
+                                  DetailView)
 from django.views.generic.detail import SingleObjectMixin
 from django.http import HttpResponse, Http404
 from django.utils.encoding import force_text
@@ -285,7 +286,10 @@ class OtherActionsMixin(object):
                         return response
                 self.request.method = 'GET'
                 return self.get(request, *args, **kwargs)
-        return super(OtherActionsMixin, self).post(request, *args, **kwargs)
+        parent = super(OtherActionsMixin, self)
+        if hasattr(parent, 'post'):
+            return parent.post(request, *args, **kwargs)
+        return self.get(request, *args, **kwargs)
 
 
 class ExportMixin(object):
@@ -389,6 +393,16 @@ class ModelFormView(MediaMixin):
     def get_form_class(self):
         return modelform_factory(self.model, form=self.form_class,
                                  fields=self.get_fields())
+
+
+class BaseDetailView(TitleMixin, ModelNameMixin, PermissionMixin, ModelFormView, DetailView):
+    context_object_name = 'object'
+
+    @property
+    def permissions(self):
+        app_label = self.model._meta.app_label
+        model_name = self.model._meta.model_name
+        return ['%s.view_%s' % (app_label, model_name)]
 
 
 class BaseAddView(TitleMixin, ModelNameMixin, PermissionMixin,
