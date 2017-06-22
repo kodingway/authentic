@@ -19,6 +19,8 @@ urlpatterns = required(
             name='a2-manager-user-add'),
         url(r'^users/(?P<pk>\d+)/$', user_views.user_edit,
             name='a2-manager-user-edit'),
+        url(r'^users/(?P<pk>\d+)/delete/$', user_views.user_delete,
+            name='a2-manager-user-delete'),
         url(r'^users/(?P<pk>\d+)/roles/$',
             user_views.roles,
             name='a2-manager-user-roles'),

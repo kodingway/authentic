@@ -22,7 +22,7 @@ from django_rbac.utils import get_role_model, get_role_parenting_model, get_ou_m
 
 from .views import BaseTableView, BaseAddView, PassRequestToFormMixin, \
     BaseEditView, ActionMixin, OtherActionsMixin, Action, ExportMixin, \
-    BaseSubTableView, HideOUColumnMixin
+    BaseSubTableView, HideOUColumnMixin, BaseDeleteView
 from .tables import UserTable, UserRolesTable, OuUserRolesTable
 from .forms import UserSearchForm, UserAddForm, UserEditForm, \
     UserChangePasswordForm, ChooseUserRoleForm, UserRoleSearchForm
@@ -315,3 +315,12 @@ class UserRolesView(HideOUColumnMixin, BaseSubTableView):
         return super(UserRolesView, self).form_valid(form)
 
 roles = UserRolesView.as_view()
+
+
+class UserDeleteView(BaseDeleteView):
+    model = get_user_model()
+
+    def get_success_url(self):
+        return reverse('a2-manager-users')
+
+user_delete = UserDeleteView.as_view()
