@@ -174,6 +174,10 @@ class UserEditForm(LimitQuerysetFormMixin, CssClass, BaseUserForm):
                 field.initial = qs[0].pk
             if count < 2:
                 field.widget.attrs['disabled'] = ''
+            if self.is_bound and count == 1:
+                self.data._mutable = True
+                self.data[self.add_prefix('ou')] = qs[0].pk
+                self.data._mutable = False
 
     def clean(self):
         if not self.cleaned_data.get('username') and \
