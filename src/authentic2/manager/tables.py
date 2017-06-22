@@ -10,11 +10,26 @@ from django_rbac.utils import get_role_model, get_permission_model, \
 
 from authentic2.models import Service
 from authentic2.compat import get_user_model
+from authentic2.middleware import StoreRequestMiddleware
+
+
+class PermissionLinkColumn(tables.LinkColumn):
+    def __init__(self, viewname, **kwargs):
+        self.permission = kwargs.pop('permission', None)
+        super(PermissionLinkColumn, self).__init__(viewname, **kwargs)
+
+    def render(self, value, record, bound_column):
+        if self.permission:
+            request = StoreRequestMiddleware.get_request()
+            if request and not request.user.has_perm(self.permission, record):
+                return value
+        return super(PermissionLinkColumn, self).render(value, record, bound_column)
 
 
 class UserTable(tables.Table):
-    link = tables.LinkColumn(
-        viewname='a2-manager-user-edit',
+    link = PermissionLinkColumn(
+        viewname='a2-manager-user-detail',
+        permission='custom_user.view_user',
         verbose_name=_('User'),
         accessor='get_full_name',
         order_by=('first_name', 'last_name', 'email', 'username'),
