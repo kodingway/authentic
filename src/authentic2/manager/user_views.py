@@ -125,7 +125,8 @@ class UserEditView(PassRequestToFormMixin, OtherActionsMixin,
         else:
             yield Action('activate', _('Activate'))
         if PasswordReset.objects.filter(user=self.object).exists():
-            yield Action('delete_password_reset', '', display=False)
+            yield Action('delete_password_reset', _('Do not force password change on next login'),
+                         permission='custom_user.reset_password_user')
         else:
             yield Action('force_password_change', _('Force password change on '
                          'next login'))

@@ -196,13 +196,20 @@ class FormatsContextData(object):
 class Action(object):
     '''Describe an action for view supporting multiples actions.'''
 
-    def __init__(self, name, title, confirm=None, display=True, url_name=None, url=None):
+    def __init__(self, name, title, confirm=None, url_name=None, url=None,
+                 popup=True, permission=None):
         self.name = name
         self.title = title
         self.confirm = confirm
-        self.display = display
         self.url_name = url_name
         self.url = url
+        self.popup = popup
+        self.permission = permission
+
+    def display(self, instance, request):
+        if self.permission:
+            return request.user.has_perm(self.permission, instance)
+        return True
 
 
 class AjaxFormViewMixin(object):
