@@ -33,7 +33,7 @@ class UsersView(HideOUColumnMixin, BaseTableView):
     template_name = 'authentic2/manager/users.html'
     model = get_user_model()
     table_class = UserTable
-    permissions = ['custom_user.view_user']
+    permissions = ['custom_user.search_user']
     search_form_class = UserSearchForm
 
     def is_ou_specified(self):
