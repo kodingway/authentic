@@ -220,6 +220,7 @@ class UserChangePasswordView(BaseEditView):
     template_name = 'authentic2/manager/form.html'
     model = get_user_model()
     form_class = UserChangePasswordForm
+    permissions = ['custom_user.change_password_user']
     title = _('Change user password')
     success_url = '..'
     slug_field = 'uuid'
