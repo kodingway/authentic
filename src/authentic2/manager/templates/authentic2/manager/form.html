@@ -54,10 +54,12 @@
       {% endfor %}
       {% block afterform %}
       {% endblock %}
+      {% block buttons %}
       <div class="buttons">
         <a class="cancel" href="..">{% trans "Cancel" %}</a>
         <button>{% if action %}{{ action }}{% else %}{% trans "Save" %}{% endif %}</button>
       </div>
+      {% endblock %}
     </div>
       <div class="other_actions">
       {% block other_actions %}
