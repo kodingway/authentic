@@ -440,7 +440,8 @@ class UsersAPI(ExceptionHandlerMixin, ModelViewSet):
 
     def get_queryset(self):
         User = get_user_model()
-        return self.request.user.filter_by_perm(['custom_user.view_user'], User.objects.all())
+        qs = User.objects.prefetch_related('attribute_values', 'attribute_values__attribute')
+        return self.request.user.filter_by_perm(['custom_user.view_user'], qs)
 
     # only do partial updates
     def put(self, request, *args, **kwargs):
