@@ -18,11 +18,12 @@ SECRET_KEY = 'please-change-me-with-a-very-long-random-string'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 DEBUG_DB = False
-TEMPLATE_DEBUG = True
+TEMPLATE_DEBUG = False
 MEDIA = 'media'
 
 # See https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = []
+INTERNAL_IPS = ('127.0.0.1',)
 
 DATABASES = {
     'default': {
