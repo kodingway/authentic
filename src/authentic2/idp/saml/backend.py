@@ -46,9 +46,18 @@ class SamlBackend(object):
                 queries.append(q.filter(sp_options_policy__isnull=True,
                     liberty_provider__entity_id__in=sessions_eids))
         qs = reduce(operator.__or__, queries)
+        # do some prefetching
+        qs = qs.prefetch_related('liberty_provider')
+        qs = qs.select_related('sp_options_policy')
         for service_provider in qs:
             liberty_provider = service_provider.liberty_provider
-            policy = common.get_sp_options_policy(liberty_provider)
+            if all_policy:
+                policy = all_policy
+            elif (service_provider.enable_following_sp_options_policy
+                    and service_provider.sp_options_policy):
+                policy = service_provider.sp_options_policy
+            else:
+                policy = default_policy
             if policy:
                 actions = []
                 entity_id = liberty_provider.entity_id
