@@ -495,12 +495,12 @@ class RolesAPI(ExceptionHandlerMixin, APIView):
 
     def post(self, request, *args, **kwargs):
         self.role.members.add(self.member)
-        return Response({'detail': _('User successfully added to role')},
+        return Response({'result': 1, 'detail': _('User successfully added to role')},
                         status=status.HTTP_201_CREATED)
 
     def delete(self, request, *args, **kwargs):
         self.role.members.remove(self.member)
-        return Response({'detail': _('User successfully removed from role')},
+        return Response({'result': 1, 'detail': _('User successfully removed from role')},
                         status=status.HTTP_200_OK)
 
 roles = RolesAPI.as_view()

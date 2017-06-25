@@ -292,6 +292,7 @@ def test_api_role_add_member(app, api_user, role, member):
     if status == 404:
         pass
     elif authorized:
+        assert resp.json['result'] == 1
         assert resp.json['detail'] == 'User successfully added to role'
     else:
         assert resp.json['result'] == 0
@@ -316,6 +317,7 @@ def test_api_role_remove_member(app, api_user, role, member):
     if status == 404:
         pass
     elif authorized:
+        assert resp.json['result'] == 1
         assert resp.json['detail'] == 'User successfully removed from role'
     else:
         assert resp.json['result'] == 0
