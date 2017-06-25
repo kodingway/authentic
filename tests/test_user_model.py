@@ -66,7 +66,7 @@ def test_sync_first_name(db, settings):
     user.save()
     user.first_name = 'John'
     user.save()
-    assert Attribute.objects.get(name='first_name').get_value(user) == 'John'
+    assert user.attributes.first_name == 'John'
 
-    Attribute.objects.get(name='first_name').set_value(user, 'John Paul')
-    assert User.objects.get(id=user.id).first_name == 'John Paul'
+    user.attributes.first_name = 'John Paul'
+    assert user.attributes.first_name == 'John Paul'

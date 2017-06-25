@@ -476,7 +476,6 @@ class LDAPBackend(object):
             if getattr(user, legacy_attribute) != value:
                 setattr(user, legacy_attribute, value)
                 user._changed = True
-        user.attributes = attributes
 
     def populate_admin_flags_by_group(self, user, block, group_dns):
         '''Attribute admin flags based on groups.

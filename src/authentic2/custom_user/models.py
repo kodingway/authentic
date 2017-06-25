@@ -26,19 +26,38 @@ class Attributes(object):
     def __init__(self, owner, verified=None):
         super(Attributes, self).__setattr__('owner', owner)
         super(Attributes, self).__setattr__('verified', verified)
+        attributes = Attribute.objects.all()
+        at_map = {attribute.name: attribute for attribute in attributes}
+        for attribute in attributes:
+            at_map[attribute.id] = attribute
+        super(Attributes, self).__setattr__('attributes', at_map)
+        values = {}
+        super(Attributes, self).__setattr__('values', values)
+        for atv in self.owner.attribute_values.select_related().all():
+            try:
+                attribute = at_map[atv.attribute_id]
+            except KeyError:
+                continue
+            value = atv.to_python()
+            if attribute.multiple:
+                values.setdefault(attribute.name, []).append(value)
+            else:
+                values[attribute.name] = value
 
     def __setattr__(self, name, value):
         try:
-            at = Attribute.objects.get(name=name)
-            at.set_value(self.owner, value, verified=bool(self.verified))
-        except Attribute.DoesNotExist:
+            attribute = self.attributes[name]
+        except KeyError:
             raise AttributeError(name)
+        attribute.set_value(self.owner, value, verified=bool(self.verified))
+        self.values[name] = value
 
     def __getattr__(self, name):
         try:
-            return Attribute.objects.get(name=name).get_value(self.owner, verified=self.verified)
-        except Attribute.DoesNotExist:
+            attribute = self.attributes[name]
+        except KeyError:
             raise AttributeError(name)
+        return self.values.get(name, [] if attribute.multiple else None)
 
 
 class AttributesDescriptor(object):
@@ -46,7 +65,10 @@ class AttributesDescriptor(object):
         self.verified = verified
 
     def __get__(self, obj, objtype):
-        return Attributes(obj, verified=self.verified)
+        cache_name = '_attributes_verified_cache' if self.verified else '_attributes_cache'
+        if not hasattr(obj, cache_name):
+            setattr(obj, cache_name, Attributes(obj, verified=self.verified))
+        return getattr(obj, cache_name)
 
 
 class User(AbstractBaseUser, PermissionMixin):
