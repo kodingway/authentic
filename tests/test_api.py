@@ -157,8 +157,8 @@ def test_api_users_create(app, api_user):
         status = 400
         payload['ou'] = api_user.ou.slug
     resp = app.post_json('/api/users/', params=payload, status=400)
-    assert 'first_name' in resp.json
-    assert 'last_name' in resp.json
+    assert resp.json['result'] == 0
+    assert set(['first_name', 'last_name']) == set(resp.json['errors'])
 
     payload = {
         'ou': None,
@@ -294,7 +294,8 @@ def test_api_role_add_member(app, api_user, role, member):
     elif authorized:
         assert resp.json['detail'] == 'User successfully added to role'
     else:
-        assert resp.json['detail'] == 'User not allowed to change role'
+        assert resp.json['result'] == 0
+        assert resp.json['errors'] == 'User not allowed to change role'
 
 
 def test_api_role_remove_member(app, api_user, role, member):
@@ -317,7 +318,8 @@ def test_api_role_remove_member(app, api_user, role, member):
     elif authorized:
         assert resp.json['detail'] == 'User successfully removed from role'
     else:
-        assert resp.json['detail'] == 'User not allowed to change role'
+        assert resp.json['result'] == 0
+        assert resp.json['errors'] == 'User not allowed to change role'
 
 
 def test_register_no_email_validation(app, admin, django_user_model):
@@ -467,13 +469,15 @@ def test_api_drf_authentication_class(app, admin, user_ou1, oidc_client):
     # test invalid client
     app.authorization = ('Basic', ('foo', 'bar'))
     resp = app.get(url, status=401)
-    assert resp.json['detail'] == "Invalid username/password."
+    assert resp.json['result'] == 0
+    assert resp.json['errors'] == "Invalid username/password."
     # test inactive client
     admin.is_active = False
     admin.save()
     app.authorization = ('Basic', (admin.username, admin.username))
     resp = app.get(url, status=401)
-    assert resp.json['detail'] == "User inactive or deleted."
+    assert resp.json['result'] == 0
+    assert resp.json['errors'] == "User inactive or deleted."
     # test oidc client
     app.authorization = ('Basic', (oidc_client.username, oidc_client.username))
     app.get(url, status=200)

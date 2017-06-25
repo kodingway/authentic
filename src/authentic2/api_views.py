@@ -52,6 +52,23 @@ class DjangoPermission(permissions.BasePermission):
         return self
 
 
+class ExceptionHandlerMixin(object):
+    def handle_exception(self, exc):
+        if hasattr(exc, 'detail'):
+            exc.detail = {
+                'result': 0,
+                'errors': exc.detail,
+            }
+            return super(ExceptionHandlerMixin, self).handle_exception(exc)
+        else:
+            response = super(ExceptionHandlerMixin, self).handle_exception(exc)
+            response.data = {
+                'result': 0,
+                'errors': response.data,
+            }
+            return response
+
+
 class RegistrationSerializer(serializers.Serializer):
     '''Register RPC payload'''
     email = serializers.EmailField(
@@ -113,7 +130,7 @@ class RpcMixin(object):
             return Response(response, status.HTTP_400_BAD_REQUEST)
 
 
-class BaseRpcView(RpcMixin, GenericAPIView):
+class BaseRpcView(ExceptionHandlerMixin, RpcMixin, GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,
                           HasUserAddPermission)
 
@@ -416,7 +433,7 @@ class UsersFilter(FilterSet):
         }
 
 
-class UsersAPI(ModelViewSet):
+class UsersAPI(ExceptionHandlerMixin, ModelViewSet):
     ordering_fields = ['username', 'first_name', 'last_name', 'modified', 'date_joined']
     lookup_field = 'uuid'
     serializer_class = BaseUserSerializer
@@ -464,7 +481,7 @@ class UsersAPI(ModelViewSet):
         })
 
 
-class RolesAPI(APIView):
+class RolesAPI(ExceptionHandlerMixin, APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def initial(self, request, *args, **kwargs):
@@ -497,7 +514,7 @@ class BaseOrganizationalUnitSerializer(serializers.ModelSerializer):
         model = get_ou_model()
 
 
-class OrganizationalUnitAPI(ModelViewSet):
+class OrganizationalUnitAPI(ExceptionHandlerMixin, ModelViewSet):
     serializer_class = BaseOrganizationalUnitSerializer
     lookup_field = 'uuid'
 
