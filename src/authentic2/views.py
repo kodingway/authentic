@@ -343,21 +343,22 @@ def service_list(request):
     '''Compute the service list to show on user homepage'''
     return utils.accumulate_from_backends(request, 'service_list')
 
-def homepage(request):
-    if app_settings.A2_HOMEPAGE_URL:
-        return utils.redirect(request, app_settings.A2_HOMEPAGE_URL)
-    else:
-        return _homepage(request)
 
-@login_required
-def _homepage(request):
-    '''Homepage of the IdP'''
-    tpl_parameters = {}
-    tpl_parameters['account_management'] = 'account_management'
-    tpl_parameters['authorized_services'] = service_list(request)
-    return render_to_response(('idp/homepage.html',
-                               'authentic2/homepage.html'), tpl_parameters,
-                              RequestContext(request))
+class Homepage(cbv.TemplateNamesMixin, TemplateView):
+    template_names = ['idp/homepage.html', 'authentic2/homepage.html']
+
+    def dispatch(self, request, *args, **kwargs):
+        if app_settings.A2_HOMEPAGE_URL:
+            return utils.redirect(request, app_settings.A2_HOMEPAGE_URL)
+        return login_required(super(Homepage, self).dispatch)(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        ctx = super(Homepage, self).get_context_data(**kwargs)
+        ctx['account_management'] = 'account_management'
+        ctx['authorized_services'] = service_list(self.request)
+        return ctx
+
+homepage = Homepage.as_view()
 
 
 class ProfileView(cbv.TemplateNamesMixin, TemplateView):
