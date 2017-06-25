@@ -86,8 +86,8 @@ class User(AbstractBaseUser, PermissionMixin):
 
     attribute_values = GenericRelation('authentic2.AttributeValue')
 
-    USERNAME_FIELD = 'uuid'
-    REQUIRED_FIELDS = ['username', 'email']
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['email']
     USER_PROFILE = ('first_name', 'last_name', 'email')
 
     class Meta:

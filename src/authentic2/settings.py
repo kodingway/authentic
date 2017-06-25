@@ -306,6 +306,8 @@ DJANGO_RBAC_PERMISSIONS_HIERARCHY = {
     'add': ['view', 'search'],
 }
 
+SILENCED_SYSTEM_CHECKS = ["auth.W004"]
+
 #
 # Load configuration file
 #
