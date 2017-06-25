@@ -1,6 +1,4 @@
-from django.utils.http import urlquote
 from django.db import models
-from django.db.models.fields import NOT_PROVIDED
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.utils.translation import ugettext_lazy as _
@@ -10,7 +8,6 @@ try:
 except ImportError:
     from django.contrib.contenttypes.generic import GenericRelation
 
-from django_rbac.backends import DjangoRBACBackend
 from django_rbac.models import PermissionMixin
 from django_rbac.utils import get_role_parenting_model
 
