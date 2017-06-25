@@ -31,13 +31,6 @@ from .models import Attribute, PasswordReset
 from .a2_rbac.utils import get_default_ou
 
 
-class HasUserAddPermission(permissions.BasePermission):
-    def has_permission(self, request, view):
-        if not request.user.has_perm_any('custom_user.add_user'):
-            return False
-        return True
-
-
 class DjangoPermission(permissions.BasePermission):
     def __init__(self, perm):
         self.perm = perm
@@ -131,8 +124,7 @@ class RpcMixin(object):
 
 
 class BaseRpcView(ExceptionHandlerMixin, RpcMixin, GenericAPIView):
-    permission_classes = (permissions.IsAuthenticated,
-                          HasUserAddPermission)
+    pass
 
 
 class Register(BaseRpcView):
@@ -149,10 +141,14 @@ class Register(BaseRpcView):
        authentication of the user and then finish the registration
        process for the received identity.
     '''
+    permission_classes = (permissions.IsAuthenticated,)
     serializer_class = RegistrationSerializer
 
     def rpc(self, request, serializer):
         validated_data = serializer.validated_data
+        if not request.user.has_ou_perm('custom_user.add_user', validated_data['ou']):
+            raise PermissionDenied('You do not have permission to create users in ou %s' %
+                                   validated_data['ou'].slug)
         email = validated_data.get('email')
         registration_data = {}
         for field in ('first_name', 'last_name', 'password', 'username', 'ou'):
@@ -269,6 +265,7 @@ class PasswordChangeSerializer(serializers.Serializer):
 
 
 class PasswordChange(BaseRpcView):
+    permission_classes = (DjangoPermission('custom_user.change_user'),)
     serializer_class = PasswordChangeSerializer
 
     def rpc(self, request, serializer):
@@ -515,6 +512,7 @@ class BaseOrganizationalUnitSerializer(serializers.ModelSerializer):
 
 
 class OrganizationalUnitAPI(ExceptionHandlerMixin, ModelViewSet):
+    permission_classes = (DjangoPermission('a2_rbac.search_organizationalunit'),)
     serializer_class = BaseOrganizationalUnitSerializer
     lookup_field = 'uuid'
 
@@ -532,7 +530,7 @@ class CheckPasswordSerializer(serializers.Serializer):
 
 
 class CheckPasswordAPI(BaseRpcView):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (DjangoPermission('custom_user.search_user'),)
     serializer_class = CheckPasswordSerializer
 
     def rpc(self, request, serializer):

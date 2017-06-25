@@ -301,7 +301,7 @@ def test_api_role_add_member(app, api_user, role, member):
 def test_api_role_remove_member(app, api_user, role, member):
     app.authorization = ('Basic', (api_user.username, api_user.username))
 
-    authorized = api_user.is_superuser or api_user.has_perm('a2_rbac.change_role', role)
+    authorized = api_user.is_superuser or api_user.has_perm('a2_rbac.admin_role', role)
 
     if member.username == 'fake' or role.name == 'fake':
         status = 404
@@ -508,3 +508,41 @@ def test_api_check_password(app, superuser, user_ou1):
     resp = app.post_json(reverse('a2-api-check-password'), params=payload, status=200)
     assert resp.json['result'] == 1
     assert resp.json['oidc_client'] is True
+
+
+def test_password_change(app, ou1, admin):
+    app.authorization = ('Basic', (admin.username, admin.username))
+
+    User = get_user_model()
+    user1 = User(username='john.doe', email='john.doe@example.com', ou=ou1)
+    user1.set_password('password')
+    user1.save()
+    user2 = User(username='john.doe2', email='john.doe@example.com', ou=ou1)
+    user2.set_password('password')
+    user2.save()
+
+    payload = {
+        'email': 'none@example.com',
+        'ou': ou1.slug,
+        'old_password': 'password',
+        'new_password': 'password2',
+    }
+    url = reverse('a2-api-password-change')
+    response = app.post_json(url, params=payload, status=400)
+    assert 'errors' in response.json
+    assert response.json['result'] == 0
+
+    payload = {
+        'email': 'john.doe@example.com',
+        'ou': ou1.slug,
+        'old_password': 'password',
+        'new_password': 'password2',
+    }
+    response = app.post_json(url, params=payload, status=400)
+    assert 'errors' in response.json
+    assert response.json['result'] == 0
+    user2.delete()
+
+    response = app.post_json(url, params=payload)
+    assert response.json['result'] == 1
+    assert User.objects.get(username='john.doe').check_password('password2')
