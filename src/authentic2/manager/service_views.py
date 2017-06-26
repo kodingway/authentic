@@ -12,7 +12,7 @@ class ServicesView(views.HideOUColumnMixin, views.BaseTableView):
     template_name = 'authentic2/manager/services.html'
     table_class = tables.ServiceTable
     search_form_class = forms.NameSearchForm
-    permissions = ['authentic2.view_service']
+    permissions = ['authentic2.search_service']
 
 listing = ServicesView.as_view()
 
