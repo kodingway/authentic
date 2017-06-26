@@ -318,7 +318,7 @@ class BaseUserSerializer(serializers.ModelSerializer):
                                                    required=at.required)
         for key in self.fields:
             if key in app_settings.A2_REQUIRED_FIELDS:
-                self.fields[at.name].required = True
+                self.fields[key].required = True
 
     def check_perm(self, perm, ou):
         self.context['view'].check_perm(perm, ou)
