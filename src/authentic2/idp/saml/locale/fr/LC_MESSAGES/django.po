@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-27 14:19+0100\n"
-"PO-Revision-Date: 2015-12-03 21:34+0100\n"
+"POT-Creation-Date: 2017-06-26 18:15+0200\n"
+"PO-Revision-Date: 2017-06-26 22:15+0200\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
 "Language: fr\n"
@@ -17,19 +17,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n>1;\n"
 
-#: src/authentic2/idp/saml/__init__.py:28
+#: saml/__init__.py:28
 msgid "SAML2"
-msgstr ""
+msgstr "SAML2"
 
-#: src/authentic2/idp/saml/backend.py:136
+#: saml/backend.py:138
 msgid "Delete"
 msgstr "Supprimer"
 
-#: src/authentic2/idp/saml/backend.py:151
+#: saml/backend.py:154
 msgid "Create"
 msgstr "Créer"
 
-#: src/authentic2/idp/saml/saml2_endpoints.py:453
+#: saml/saml2_endpoints.py:453
 #, python-format
 msgid ""
 "SAMLv2 Single Sign On: invalid message for WebSSO profile with HTTP-Redirect "
@@ -38,7 +38,7 @@ msgstr ""
 "SAMLv2 Single Sign On: message invalide pour le profil utilisant le binding "
 "HTTP-Redirect: %r"
 
-#: src/authentic2/idp/saml/saml2_endpoints.py:458
+#: saml/saml2_endpoints.py:458
 msgid ""
 "SAMLv2 Single Sign On: the request cannot be answered because no valid "
 "protocol binding could be found"
@@ -46,49 +46,46 @@ msgstr ""
 "SAMLv2 Single Sign On: la requête ne peut être traitée car elle est "
 "invalide: un binding de protocole n'a pu être trouvé"
 
-#: src/authentic2/idp/saml/saml2_endpoints.py:493
+#: saml/saml2_endpoints.py:493
 msgid "sso: No SP policy defined"
 msgstr "sso: Pas de politique pour les fournisseurs de service définie"
 
-#: src/authentic2/idp/saml/saml2_endpoints.py:613
+#: saml/saml2_endpoints.py:613
 msgid "continue_sso: error loading login"
 msgstr "continnue_sso: erreur au rechargement de l'objet login"
 
-#: src/authentic2/idp/saml/saml2_endpoints.py:617
+#: saml/saml2_endpoints.py:617
 #, python-format
 msgid "continue_sso: unknown provider %s"
 msgstr "continue_sso: fournisseur %s inconnu"
 
-#: src/authentic2/idp/saml/saml2_endpoints.py:716
+#: saml/saml2_endpoints.py:721
 #, python-format
 msgid "Provider %s is unknown"
 msgstr "Le fournisseur %s est inconnu"
 
-#: src/authentic2/idp/saml/saml2_endpoints.py:720
+#: saml/saml2_endpoints.py:725
 msgid "No service provider policy defined"
 msgstr "Pas de politique de fournisseur de service définie"
 
-#: src/authentic2/idp/saml/saml2_endpoints.py:869
-#: src/authentic2/idp/saml/saml2_endpoints.py:1056
-#: src/authentic2/idp/saml/saml2_endpoints.py:1069
-#: src/authentic2/idp/saml/saml2_endpoints.py:1302
-#: src/authentic2/idp/saml/saml2_endpoints.py:1336
-#: src/authentic2/idp/saml/saml2_endpoints.py:1385
-#: src/authentic2/idp/saml/saml2_endpoints.py:1396
+#: saml/saml2_endpoints.py:874 saml/saml2_endpoints.py:1061
+#: saml/saml2_endpoints.py:1074 saml/saml2_endpoints.py:1307
+#: saml/saml2_endpoints.py:1341 saml/saml2_endpoints.py:1390
+#: saml/saml2_endpoints.py:1401
 #, python-format
 msgid "You are being redirected to \"%s\""
 msgstr "Vous allez être redirigé sur \"%s\""
 
-#: src/authentic2/idp/saml/saml2_endpoints.py:1388
+#: saml/saml2_endpoints.py:1393
 msgid "Invalid logout request"
 msgstr "Requête de déconnexion invalide"
 
-#: src/authentic2/idp/saml/templates/idp/saml/logout_fragment.html:2
+#: saml/templates/idp/saml/logout_fragment.html:2
 #, python-format
 msgid "Sending logout to %(name)s..."
 msgstr "Déconnexion avec %(name)s..."
 
-#: src/authentic2/idp/saml/templates/idp/saml/unknown_provider.html:5
+#: saml/templates/idp/saml/unknown_provider.html:5
 #, python-format
 msgid ""
 "We were unable to load provider\n"
@@ -102,7 +99,7 @@ msgstr ""
 "\"\">réessayer</a>.\n"
 "   "
 
-#: src/authentic2/idp/saml/views.py:26
+#: saml/views.py:26
 #, python-brace-format
 msgid "Federation to {0} deleted"
 msgstr "La liaison avec {0} a été supprimée."

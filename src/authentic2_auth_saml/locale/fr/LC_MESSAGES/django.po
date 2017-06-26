@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: authentic2-auth-fc 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-27 14:19+0100\n"
-"PO-Revision-Date: 2014-12-10 16:00+0100\n"
+"POT-Creation-Date: 2017-06-26 18:16+0200\n"
+"PO-Revision-Date: 2017-06-26 22:20+0200\n"
 "Last-Translator: Benjamin Dauvergne <bdauvergne@entrouvert.com>\n"
 "Language-Team: french <fr@li.org>\n"
 "Language: \n"
@@ -17,14 +17,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: src/authentic2_auth_saml/auth_frontends.py:19
+#: auth_frontends.py:19
 msgid "SAML"
-msgstr ""
+msgstr "SAML"
 
-#: src/authentic2_auth_saml/templates/authentic2_auth_saml/login.html:2
+#: templates/authentic2_auth_saml/login.html:2
 msgid "Login"
 msgstr "Connexion"
 
-#: src/authentic2_auth_saml/templates/authentic2_auth_saml/login.html:4
+#: templates/authentic2_auth_saml/login.html:4
 msgid "Cancel"
 msgstr "Annuler"

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-27 14:19+0100\n"
-"PO-Revision-Date: 2013-07-23 17:46+0200\n"
+"POT-Creation-Date: 2017-06-26 18:16+0200\n"
+"PO-Revision-Date: 2017-06-26 22:17+0200\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
 "Language: fr\n"
@@ -17,67 +17,67 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n>1;\n"
 
-#: src/authentic2_idp_openid/__init__.py:34
+#: __init__.py:34
 msgid "OpenID"
 msgstr "Gérer la connexion OpenID"
 
-#: src/authentic2_idp_openid/models.py:35
+#: models.py:35
 msgid "trusted root"
 msgstr "Site de confiance"
 
-#: src/authentic2_idp_openid/models.py:36
+#: models.py:36
 msgid "trusted roots"
 msgstr "Sites de confiance"
 
-#: src/authentic2_idp_openid/models.py:57
+#: models.py:57
 msgid "association"
 msgstr ""
 
-#: src/authentic2_idp_openid/models.py:58
+#: models.py:58
 msgid "associations"
 msgstr ""
 
-#: src/authentic2_idp_openid/models.py:125
+#: models.py:125
 msgid "nonce"
 msgstr ""
 
-#: src/authentic2_idp_openid/models.py:126
+#: models.py:126
 msgid "nonces"
 msgstr ""
 
-#: src/authentic2_idp_openid/templates/django_openid_provider/manage_id.html:5
-#: src/authentic2_idp_openid/templates/django_openid_provider/manage_id_confirm.html:5
+#: templates/django_openid_provider/manage_id.html:5
+#: templates/django_openid_provider/manage_id_confirm.html:5
 msgid "Manage OpenID"
 msgstr "Gérer la connexion OpenID"
 
-#: src/authentic2_idp_openid/templates/django_openid_provider/manage_id.html:23
+#: templates/django_openid_provider/manage_id.html:23
 msgid "Your current OpenID"
 msgstr "Vos identifiants OpenID actuels"
 
-#: src/authentic2_idp_openid/templates/django_openid_provider/manage_id.html:52
+#: templates/django_openid_provider/manage_id.html:52
 msgid "Add a new OpenID identity"
 msgstr "Ajouter une nouvelle identité OpenID"
 
-#: src/authentic2_idp_openid/templates/django_openid_provider/manage_trustroot.html:5
+#: templates/django_openid_provider/manage_trustroot.html:5
 msgid "Manage trusted site"
 msgstr "Gérer vos sites de confiance"
 
-#: src/authentic2_idp_openid/templates/django_openid_provider/manage_trustroot.html:17
+#: templates/django_openid_provider/manage_trustroot.html:17
 msgid "Your trusted site"
 msgstr "Vos sites de confiance"
 
-#: src/authentic2_idp_openid/templates/idp/openid/trustedroot_confirm_delete.html:5
+#: templates/idp/openid/trustedroot_confirm_delete.html:5
 msgid "Remove Link ?"
-msgstr ""
+msgstr "Supprimer le lien ?"
 
-#: src/authentic2_idp_openid/templates/idp/openid/trustedroot_confirm_delete.html:7
+#: templates/idp/openid/trustedroot_confirm_delete.html:7
 msgid "Are you sure you want to delete link with"
-msgstr ""
+msgstr "Êtes-vous sûr de vouloir supprimer le lien avec"
 
-#: src/authentic2_idp_openid/templates/idp/openid/trustedroot_confirm_delete.html:10
+#: templates/idp/openid/trustedroot_confirm_delete.html:10
 msgid "Back"
-msgstr ""
+msgstr "Retour"
 
-#: src/authentic2_idp_openid/views.py:278
+#: views.py:278
 msgid "Trust this site?"
 msgstr "Faire confiance à ce site ?"

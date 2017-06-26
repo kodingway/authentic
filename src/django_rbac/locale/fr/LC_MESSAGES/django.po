@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-rbac\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-27 14:19+0100\n"
-"PO-Revision-Date: 2015-05-13 15:21+0200\n"
+"POT-Creation-Date: 2017-06-26 18:16+0200\n"
+"PO-Revision-Date: 2017-06-26 22:19+0200\n"
 "Last-Translator: Benjamin Dauvergner <bdauvergne@entrouvert.com>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -16,108 +16,115 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: src/django_rbac/models.py:31
+#: models.py:31
 msgid "uuid"
 msgstr "Identifiant unique"
 
-#: src/django_rbac/models.py:36 src/django_rbac/models.py:105
+#: models.py:36 models.py:105
 msgid "name"
 msgstr "nom"
 
-#: src/django_rbac/models.py:39 src/django_rbac/models.py:108
+#: models.py:39 models.py:108
 msgid "slug"
 msgstr "identifiant court"
 
-#: src/django_rbac/models.py:41
+#: models.py:41
 msgid "description"
 msgstr "description"
 
-#: src/django_rbac/models.py:73 src/django_rbac/models.py:97
-#: src/django_rbac/models.py:126
+#: models.py:73 models.py:97 models.py:126
 msgid "organizational unit"
 msgstr "collectivité"
 
-#: src/django_rbac/models.py:98
+#: models.py:98
 msgid "organizational units"
 msgstr "entités"
 
-#: src/django_rbac/models.py:123
+#: models.py:123
 msgid "operation"
 msgstr "opération"
 
-#: src/django_rbac/models.py:155
+#: models.py:155
 #, python-brace-format
 msgid " (scope \"{0}\")"
 msgstr ""
 
-#: src/django_rbac/models.py:169
+#: models.py:169
 msgid "permission"
-msgstr ""
+msgstr "permission"
 
-#: src/django_rbac/models.py:170
+#: models.py:170
 msgid "permissions"
-msgstr ""
+msgstr "permissions"
 
-#: src/django_rbac/models.py:235
+#: models.py:235
 msgid "role"
 msgstr "rôle"
 
-#: src/django_rbac/models.py:236
+#: models.py:236
 msgid "roles"
 msgstr "rôles"
 
-#: src/django_rbac/models.py:268
+#: models.py:268
 msgid "role parenting relation"
 msgstr "relation de parenté entre rôles"
 
-#: src/django_rbac/models.py:269
+#: models.py:269
 msgid "role parenting relations"
 msgstr "relations de parenté entre rôles"
 
-#: src/django_rbac/models.py:279
+#: models.py:279
 msgid "superuser status"
-msgstr ""
+msgstr "statut super-utilisateur"
 
-#: src/django_rbac/models.py:280
+#: models.py:280
 msgid ""
 "Designates that this user has all permissions without explicitly assigning "
 "them."
 msgstr ""
+"Donne à cet utilisateur toutes les permissions sans les lui assigner "
+"de manière explicit."
 
-#: src/django_rbac/models.py:284
+#: models.py:284
 msgid "groups"
 msgstr "groupes"
 
-#: src/django_rbac/models.py:286
+#: models.py:286
 msgid ""
 "The groups this user belongs to. A user will get all permissions granted to "
 "each of his/her group."
 msgstr ""
+"Les groupes auxquels cet utilisateur appartient. Un utitlisateur obtient "
+"toutes les permissions accordées à chacun de ses groupes."
 
-#: src/django_rbac/models.py:291
+#: models.py:291
 msgid "user permissions"
 msgstr "permissions de l'utilisateur"
 
-#: src/django_rbac/models.py:292
+#: models.py:292
 msgid "Specific permissions for this user."
 msgstr "Permission spécifiques pour cet utilisateur."
 
-#: src/django_rbac/models.py:387
+#: models.py:387
 msgid "Management"
 msgstr "Administration"
 
-#: src/django_rbac/models.py:388
+#: models.py:388
 msgid "Change"
 msgstr "Modification"
 
-#: src/django_rbac/models.py:389
+#: models.py:389
 msgid "Delete"
 msgstr "Suppression"
 
-#: src/django_rbac/models.py:390
+#: models.py:390
 msgid "Add"
 msgstr "Ajout"
 
-#: src/django_rbac/models.py:391
+#: models.py:391
 msgid "View"
 msgstr "Visualisation"
+
+#: models.py:392
+msgid "Search"
+msgstr "Recherche"

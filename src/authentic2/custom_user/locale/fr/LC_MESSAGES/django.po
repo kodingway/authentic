@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: authentic2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-27 14:19+0100\n"
-"PO-Revision-Date: 2015-05-04 15:36+0200\n"
+"POT-Creation-Date: 2017-06-26 18:16+0200\n"
+"PO-Revision-Date: 2017-06-26 22:16+0200\n"
 "Last-Translator: Benjamin Dauvergn <bdauvergne@entrouvert.com>\n"
 "Language-Team: French <fr@li.org>\n"
 "Language: French\n"
@@ -17,55 +17,55 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: src/authentic2/custom_user/base_user.py:18
+#: base_user.py:18
 msgid "password"
 msgstr "mot de passe"
 
-#: src/authentic2/custom_user/base_user.py:19
+#: base_user.py:19
 msgid "last login"
 msgstr "dernière connexion"
 
-#: src/authentic2/custom_user/migrations/0011_manual_attribute_values_for_name_fields.py:32
+#: migrations/0011_manual_attribute_values_for_name_fields.py:32
 msgid "First name"
 msgstr "prénom"
 
-#: src/authentic2/custom_user/migrations/0011_manual_attribute_values_for_name_fields.py:43
+#: migrations/0011_manual_attribute_values_for_name_fields.py:43
 msgid "Last name"
 msgstr "nom"
 
-#: src/authentic2/custom_user/models.py:55
+#: models.py:55
 msgid "uuid"
 msgstr "identifiant unique"
 
-#: src/authentic2/custom_user/models.py:57
+#: models.py:57
 msgid "username"
 msgstr "identifiant"
 
-#: src/authentic2/custom_user/models.py:58
+#: models.py:58
 msgid "first name"
 msgstr "prénom"
 
-#: src/authentic2/custom_user/models.py:59
+#: models.py:59
 msgid "last name"
 msgstr "nom"
 
-#: src/authentic2/custom_user/models.py:60
+#: models.py:60
 msgid "email address"
 msgstr "courriel"
 
-#: src/authentic2/custom_user/models.py:62
+#: models.py:62
 msgid "staff status"
 msgstr "statut équipe"
 
-#: src/authentic2/custom_user/models.py:63
+#: models.py:63
 msgid "Designates whether the user can log into this admin site."
 msgstr "Précise si l'utilisateur peut se connecter à ce site d'administration."
 
-#: src/authentic2/custom_user/models.py:65
+#: models.py:65
 msgid "active"
 msgstr "actif"
 
-#: src/authentic2/custom_user/models.py:66
+#: models.py:66
 msgid ""
 "Designates whether this user should be treated as active. Unselect this "
 "instead of deleting accounts."
@@ -73,27 +73,31 @@ msgstr ""
 "Précise si l'utilisateur doit être considéré comme actif. Décochez ceci "
 "plutôt que de supprimer le compte."
 
-#: src/authentic2/custom_user/models.py:68
+#: models.py:68
 msgid "date joined"
 msgstr "date d'inscription"
 
-#: src/authentic2/custom_user/models.py:70
+#: models.py:70
 msgid "organizational unit"
 msgstr "collectivité"
 
-#: src/authentic2/custom_user/models.py:87
+#: models.py:76
+msgid "Last modification time"
+msgstr "Dernière modification"
+
+#: models.py:91
 msgid "user"
 msgstr "utilisateur"
 
-#: src/authentic2/custom_user/models.py:88
+#: models.py:92
 msgid "users"
 msgstr "utilisateurs"
 
-#: src/authentic2/custom_user/models.py:162
+#: models.py:166
 msgid "This username is already in use. Please supply a different username."
 msgstr "Cet identifiant est déjà utilisé. Veuillez en choisir un autre."
 
-#: src/authentic2/custom_user/models.py:173
+#: models.py:177
 msgid ""
 "This email address is already in use. Please supply a different email "
 "address."

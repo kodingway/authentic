@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-27 14:19+0100\n"
+"POT-Creation-Date: 2017-06-26 18:16+0200\n"
 "PO-Revision-Date: 2013-07-23 17:41+0200\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -17,73 +17,71 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n>1;\n"
 
-#: src/authentic2/auth2_auth/auth2_ssl/frontends.py:16
+#: frontends.py:16
 msgid "SSL with certificates"
 msgstr "Certificats SSL"
 
-#: src/authentic2/auth2_auth/auth2_ssl/templates/auth/account_linking_ssl.html:5
-#: src/authentic2/auth2_auth/auth2_ssl/templates/auth/account_linking_ssl.html:9
+#: templates/auth/account_linking_ssl.html:5
+#: templates/auth/account_linking_ssl.html:9
 msgid "Log in to link your certificate with an existing account"
 msgstr "connectez-vous pour lier votre certificat avec un compte existant"
 
-#: src/authentic2/auth2_auth/auth2_ssl/templates/auth/account_linking_ssl.html:18
-#: src/authentic2/auth2_auth/auth2_ssl/templates/auth/account_linking_ssl.html:25
+#: templates/auth/account_linking_ssl.html:18
+#: templates/auth/account_linking_ssl.html:25
 msgid "Username:"
 msgstr "Nom d'utilisateur :"
 
-#: src/authentic2/auth2_auth/auth2_ssl/templates/auth/account_linking_ssl.html:21
-#: src/authentic2/auth2_auth/auth2_ssl/templates/auth/account_linking_ssl.html:29
+#: templates/auth/account_linking_ssl.html:21
+#: templates/auth/account_linking_ssl.html:29
 msgid "Password:"
 msgstr "Mot de passe :"
 
-#: src/authentic2/auth2_auth/auth2_ssl/templates/auth/account_linking_ssl.html:34
+#: templates/auth/account_linking_ssl.html:34
 msgid "Create me a new account"
 msgstr "Me créer un nouveau compte"
 
-#: src/authentic2/auth2_auth/auth2_ssl/templates/auth/account_linking_ssl.html:38
-#: src/authentic2/auth2_auth/auth2_ssl/templates/auth/login_form_ssl.html:9
+#: templates/auth/account_linking_ssl.html:38
+#: templates/auth/login_form_ssl.html:9
 msgid "Log in"
 msgstr "S'identifier"
 
-#: src/authentic2/auth2_auth/auth2_ssl/templates/auth/login_form_ssl.html:4
+#: templates/auth/login_form_ssl.html:4
 msgid "Login using a certificate."
 msgstr "Connexion par certificat."
 
-#: src/authentic2/auth2_auth/auth2_ssl/templates/auth/login_form_ssl.html:11
+#: templates/auth/login_form_ssl.html:11
 msgid "Cancel"
 msgstr "Annuler"
 
-#: src/authentic2/auth2_auth/auth2_ssl/templates/ssl/profile.html:3
+#: templates/ssl/profile.html:3
 msgid "SSL Certificates"
 msgstr "Certificats SSL"
 
-#: src/authentic2/auth2_auth/auth2_ssl/templates/ssl/profile.html:21
+#: templates/ssl/profile.html:21
 msgid "Delete"
 msgstr "Supprimer"
 
-#: src/authentic2/auth2_auth/auth2_ssl/templates/ssl/profile.html:28
+#: templates/ssl/profile.html:28
 msgid "Add a certificate?"
 msgstr "Ajouter un certificat ?"
 
-#: src/authentic2/auth2_auth/auth2_ssl/templates/ssl/profile.html:30
+#: templates/ssl/profile.html:30
 msgid "Add"
 msgstr "Ajouter"
 
-#: src/authentic2/auth2_auth/auth2_ssl/views.py:29
+#: views.py:29
 msgid "SSL Client Authentication failed. No client certificate found."
 msgstr "Echec de l'authentification cliente SSL. Aucun certificat trouvé."
 
-#: src/authentic2/auth2_auth/auth2_ssl/views.py:36
+#: views.py:36
 msgid "SSL Client Authentication failed. Your client certificate is not valid."
 msgstr ""
 "Echec de l'authentification cliente SSL. Votre certificat n'est pas valide."
 
-#: src/authentic2/auth2_auth/auth2_ssl/views.py:55
-#: src/authentic2/auth2_auth/auth2_ssl/views.py:72
-#: src/authentic2/auth2_auth/auth2_ssl/views.py:120
+#: views.py:55 views.py:72 views.py:120
 msgid "SSL Client Authentication failed. Internal server error."
 msgstr "Echec de l'authentification SSL. Erreur interne du serveur."
 
-#: src/authentic2/auth2_auth/auth2_ssl/views.py:144
+#: views.py:144
 msgid "Certificate deleted."
 msgstr "Certificat supprimé."
