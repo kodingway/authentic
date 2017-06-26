@@ -22,7 +22,7 @@ from django_rbac.utils import get_role_model, get_role_parenting_model, get_ou_m
 
 from .views import BaseTableView, BaseAddView, PassRequestToFormMixin, \
     BaseEditView, ActionMixin, OtherActionsMixin, Action, ExportMixin, \
-    BaseSubTableView, HideOUColumnMixin, BaseDeleteView
+    BaseSubTableView, HideOUColumnMixin, BaseDeleteView, BaseDetailView
 from .tables import UserTable, UserRolesTable, OuUserRolesTable
 from .forms import UserSearchForm, UserAddForm, UserEditForm, \
     UserChangePasswordForm, ChooseUserRoleForm, UserRoleSearchForm
@@ -91,52 +91,39 @@ class UserAddView(PassRequestToFormMixin, BaseAddView):
     def get_success_url(self):
         return reverse('a2-manager-user-edit', kwargs={'pk': self.object.pk})
 
-
 user_add = UserAddView.as_view()
 
 
-class UserEditView(PassRequestToFormMixin, OtherActionsMixin,
-                   ActionMixin, BaseEditView):
+class UserDetailView(OtherActionsMixin, BaseDetailView):
     model = get_user_model()
-    template_name = 'authentic2/manager/user_edit.html'
-    form_class = UserEditForm
-    permissions = ['custom_user.change_user']
     fields = ['username', 'ou', 'first_name', 'last_name', 'email']
-    success_url = '..'
+    form_class = UserEditForm
+    template_name = 'authentic2/manager/user_detail.html'
     slug_field = 'uuid'
 
     @property
     def title(self):
-        return _('Edit user %s') % self.object.get_full_name()
-
-    def get_fields(self):
-        fields = list(self.fields)
-        for attribute in Attribute.objects.all():
-            fields.append(attribute.name)
-        if self.request.user.is_superuser and \
-                'is_superuser' not in self.fields:
-            fields.append('is_superuser')
-        return fields
+        return self.object.get_full_name()
 
     def get_other_actions(self):
-        yield Action('password_reset', _('Reset password'))
+        yield Action('password_reset', _('Reset password'),
+                     permission='custom_user.password_reset_user')
         if self.object.is_active:
-            yield Action('deactivate', _('Deactivate'))
+            yield Action('deactivate', _('Deactivate'),
+                         permission='custom_user.activate_user')
         else:
-            yield Action('activate', _('Activate'))
+            yield Action('activate', _('Activate'),
+                         permission='custom_user.activate_user')
         if PasswordReset.objects.filter(user=self.object).exists():
             yield Action('delete_password_reset', _('Do not force password change on next login'),
                          permission='custom_user.reset_password_user')
         else:
             yield Action('force_password_change', _('Force password change on '
-                         'next login'))
+                         'next login'),
+                         permission='custom_user.reset_password_user')
         yield Action('change_password', _('Change user password'),
-                     url_name='a2-manager-user-change-password')
-        if self.request.user.has_perm('custom_user.delete_user', self.object):
-            yield Action('delete',
-                         _('Delete'),
-                         _('Do you really want to delete "%s" ?') %
-                         self.object.username)
+                     url_name='a2-manager-user-change-password',
+                     permission='custom_user.change_password_user')
         if self.request.user.is_superuser:
             yield Action('switch_user', _('Impersonate this user'))
 
@@ -154,10 +141,6 @@ class UserEditView(PassRequestToFormMixin, OtherActionsMixin,
         else:
             self.object.is_active = False
             self.object.save()
-
-    def action_delete(self, request, *args, **kwargs):
-        self.object.delete()
-        return HttpResponseRedirect('..')
 
     def action_password_reset(self, request, *args, **kwargs):
         user = self.object
@@ -189,10 +172,54 @@ class UserEditView(PassRequestToFormMixin, OtherActionsMixin,
         email_message = EmailMultiAlternatives(subject, body, to=[to_email])
         email_message.send()
 
+    def get_fields(self):
+        fields = list(self.fields)
+        for attribute in Attribute.objects.all():
+            fields.append(attribute.name)
+        if self.request.user.is_superuser and \
+                'is_superuser' not in self.fields:
+            fields.append('is_superuser')
+        return fields
+
     def get_context_data(self, **kwargs):
-        ctx = super(UserEditView, self).get_context_data(**kwargs)
-        ctx['default_ou'] = get_default_ou
+        form = self.get_form_class()(prefix='user-detail', request=self.request,
+                                     instance=self.object)
+        for field in form.fields.values():
+            widget = field.widget
+            widget.attrs['disabled'] = ''
+            if 'readonly' in widget.attrs:
+                del widget.attrs['readonly']
+        kwargs['form'] = form
+        kwargs['default_ou'] = get_default_ou
+        kwargs['can_change_roles'] = self.request.user.has_perm_any('a2_rbac.change_role')
+        ctx = super(UserDetailView, self).get_context_data(**kwargs)
         return ctx
+
+user_detail = UserDetailView.as_view()
+
+
+class UserEditView(PassRequestToFormMixin, OtherActionsMixin, ActionMixin, BaseEditView):
+    model = get_user_model()
+    template_name = 'authentic2/manager/user_edit.html'
+    form_class = UserEditForm
+    permissions = ['custom_user.change_user']
+    fields = ['username', 'ou', 'first_name', 'last_name', 'email']
+    success_url = '..'
+    slug_field = 'uuid'
+    action = _('Change')
+
+    @property
+    def title(self):
+        return _('Edit user %s') % self.object.get_full_name()
+
+    def get_fields(self):
+        fields = list(self.fields)
+        for attribute in Attribute.objects.all():
+            fields.append(attribute.name)
+        if self.request.user.is_superuser and \
+                'is_superuser' not in self.fields:
+            fields.append('is_superuser')
+        return fields
 
 user_edit = UserEditView.as_view()
 

@@ -82,9 +82,10 @@ def test_manager_create_role(superuser_or_admin, app):
     assert '---------' in options
     assert 'New OU' in options
 
+
 def test_manager_user_password_reset(app, superuser, simple_user):
-    resp = login(app, superuser, reverse('a2-manager-user-edit',
-                                                  kwargs={'pk': simple_user.pk}))
+    resp = login(app, superuser,
+                 reverse('a2-manager-user-detail', kwargs={'pk': simple_user.pk}))
     assert len(mail.outbox) == 0
     resp = resp.form.submit('password_reset')
     assert 'A mail was sent to' in resp
