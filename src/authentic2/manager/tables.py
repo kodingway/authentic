@@ -27,7 +27,7 @@ class UserTable(tables.Table):
         model = get_user_model()
         attrs = {'class': 'main', 'id': 'user-table'}
         fields = ('username', 'email', 'first_name',
-                  'last_name', 'is_active', 'ou')
+                  'last_name', 'is_active', 'email_verified', 'ou')
         sequence = ('link', '...')
         empty_text = _('None')
         order_by = ('first_name', 'last_name', 'email', 'username')

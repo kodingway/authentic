@@ -181,7 +181,7 @@ def test_api_users_create(app, api_user):
     if api_user.is_superuser or api_user.roles.exists():
         assert set(['ou', 'id', 'uuid', 'is_staff', 'is_superuser', 'first_name', 'last_name',
                     'date_joined', 'last_login', 'username', 'password', 'email', 'is_active',
-                    'title', 'modified']) == set(resp.json.keys())
+                    'title', 'modified', 'email_verified']) == set(resp.json.keys())
         assert resp.json['first_name'] == payload['first_name']
         assert resp.json['last_name'] == payload['last_name']
         assert resp.json['email'] == payload['email']

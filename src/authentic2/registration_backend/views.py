@@ -299,7 +299,8 @@ class DeleteView(FormView):
     def form_valid(self, form):
         models.DeletedUser.objects.delete_user(self.request.user)
         self.request.user.email += '#%d' % random.randint(1, 10000000)
-        self.request.user.save(update_fields=['email'])
+        self.request.user.email_verified = False
+        self.request.user.save(update_fields=['email', 'email_verified'])
         logger.info(u'deletion of account %s requested', self.request.user)
         messages.info(self.request, _('Your account has been scheduled for deletion. You cannot use it anymore.'))
         return super(DeleteView, self).form_valid(form)

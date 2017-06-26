@@ -89,6 +89,8 @@ class PasswordResetConfirmView(cbv.RedirectToNextURLViewMixin, FormView):
         return kwargs
 
     def form_valid(self, form):
+        # Changing password by mail validate the email
+        form.user.email_verified = True
         form.save()
         logging.getLogger(__name__).info(u'user %s resetted its password with '
                                          'token %r...', self.user,

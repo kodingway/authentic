@@ -56,6 +56,7 @@ class SerializerTests(TestCase):
                 'model': 'custom_user.user',
                 'fields': {
                     'uuid': u.uuid,
+                    'email_verified': False,
                     'username': 'john.doe',
                     'email': '',
                     'first_name': '',
