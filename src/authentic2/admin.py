@@ -39,11 +39,6 @@ class AttributeValueAdmin(admin.ModelAdmin):
     list_display = ('content_type', 'owner', 'attribute',
             'content')
 admin.site.register(models.AttributeValue, AttributeValueAdmin)
-class FederatedIdAdmin(admin.ModelAdmin):
-    list_display = ('provider', 'about', 'service', 'id_format', 'id_value')
-    list_filter = ('provider', 'about', 'service', 'id_format')
-
-admin.site.register(models.FederatedId, FederatedIdAdmin)
 class LogoutUrlAdmin(admin.ModelAdmin):
     list_display = ('provider', 'logout_url', 'logout_use_iframe', 'logout_use_iframe_timeout')
 admin.site.register(models.LogoutUrl, LogoutUrlAdmin)

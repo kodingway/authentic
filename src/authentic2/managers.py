@@ -56,42 +56,6 @@ class ExpireManager(models.Manager):
     def cleanup(self):
         self.filter(created__lt=now() - timedelta(days=7)).delete()
 
-LOCAL_PROVIDER_URN = 'urn:oid:1.3.6.1.4.1.36560.1.1:local-provider'
-LOCAL_USER_URN = 'urn:oid:1.3.6.1.4.1.36560.1.1:local-user'
-LOCAL_SERVICE_URN = 'urn:oid:1.3.6.1.4.1.36560.1.1:local-service'
-
-
-class FederatedIdQuerySet(QuerySet):
-    def about_local_user(self, user):
-        return self.filter(about=FederatedIdManager.local_user_id(user))
-
-    def for_local_service(self, service):
-        return self.filter(service=FederatedIdManager.local_service_id(service))
-
-    def for_local_user_and_service(self, user, service):
-        return (self.filter(provider=LOCAL_PROVIDER_URN).about_local_user(user)
-                .for_service_model(service))
-
-
-class FederatedIdManager(models.Manager.from_queryset(FederatedIdQuerySet)):
-    @classmethod
-    def local_user_id(cls, user):
-        return '%s %s' % (LOCAL_USER_URN, urlquote(user.username))
-
-    @classmethod
-    def local_service_id(cls, service):
-        model_id = '%s.%s' % (service._meta.app_label, service._meta.module_name)
-        return '%s %s %s' % (LOCAL_SERVICE_URN, model_id, urlquote(service.pk))
-
-    def get_or_create_for_local_user_and_service(self, user, service, id_format, id_value):
-        return self.get_or_create(
-            provider=LOCAL_PROVIDER_URN,
-            about=self.local_user_id(user),
-            service=self.local_service_id(service),
-            defaults={
-                'id_format': id_format,
-                'id_value': id_value})
-
 
 class GenericQuerySet(QuerySet):
     def for_generic_object(self, model):

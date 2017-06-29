@@ -121,23 +121,6 @@ class LogoutUrl(LogoutUrlAbstract):
         verbose_name = _('logout URL')
         verbose_name_plural = _('logout URL')
 
-class FederatedId(models.Model):
-    provider = models.CharField(max_length=255,
-            verbose_name=_('provider'))
-    about = models.CharField(max_length=255,
-            verbose_name=_('about'))
-    service = models.CharField(max_length=255,
-            verbose_name=_('service'))
-    id_format = models.CharField(max_length=128,
-            verbose_name=_('format identifier'))
-    id_value = models.TextField(
-            verbose_name=_('identifier'))
-
-    objects = managers.FederatedIdManager()
-
-    class Meta:
-        verbose_name = _('federation identifier')
-        verbose_name_plural = _('federation identifiers')
 
 class Attribute(models.Model):
     label = models.CharField(verbose_name=_('label'), max_length=63,

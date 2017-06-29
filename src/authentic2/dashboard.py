@@ -63,7 +63,6 @@ class CustomIndexDashboard(Dashboard):
             models=(
                 'authentic2.models.AttributeValue',
                 'authentic2.nonce.models.Nonce',
-                'authentic2.models.FederatedId',
                 'authentic2.models.LogoutUrl',
                 'authentic2.models.AuthenticationEvent',
                 'authentic2.models.UserExternalId',
