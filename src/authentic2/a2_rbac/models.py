@@ -197,7 +197,7 @@ class Role(RoleAbstractBase):
 
 
 class RoleParenting(RoleParentingAbstractBase):
-    class Meta:
+    class Meta(RoleParentingAbstractBase.Meta):
         verbose_name = _('role parenting relation')
         verbose_name_plural = _('role parenting relations')
 
