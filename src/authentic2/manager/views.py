@@ -24,6 +24,7 @@ from django_rbac.utils import get_ou_model
 from authentic2.forms import modelform_factory
 from authentic2.utils import redirect
 from authentic2.decorators import json as json_view
+from authentic2 import hooks
 
 from . import app_settings
 
