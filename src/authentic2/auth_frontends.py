@@ -36,7 +36,6 @@ class LoginPasswordBackend(object):
         is_secure = request.is_secure
         context = {
             'submit_name': self.submit_name,
-            'registration_url': utils.get_registration_url(request),
         }
         seconds_to_wait = exponential_backoff.seconds_to_wait(request)
         reset = True

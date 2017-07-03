@@ -260,6 +260,7 @@ def login(request, template_name='authentic2/login.html',
         'cancel': nonce is not None,
         'can_reset_password': app_settings.A2_CAN_RESET_PASSWORD,
         'registration_authorized': getattr(settings, 'REGISTRATION_OPEN', True),
+        'registration_url': utils.get_registration_url(request),
     })
     if django.VERSION >= (1, 8, 0):
         context_instance['add_to_blocks'] = collections.defaultdict(lambda: [])
