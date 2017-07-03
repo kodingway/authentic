@@ -111,9 +111,9 @@ def test_manager_user_edit_by_uuid(app, superuser, simple_user):
 def test_manager_stress_create_user(superuser_or_admin, app, mailoutbox):
     User = get_user_model()
     OU = get_ou_model()
-    url = reverse('a2-manager-user-add')
 
     new_ou = OU.objects.create(name='new ou', slug='new-ou')
+    url = reverse('a2-manager-user-add', kwargs={'ou_pk': new_ou.pk})
     # create first user with john.doe@gmail.com ou OU1 : OK
 
     assert len(mailoutbox) == 0
@@ -121,7 +121,6 @@ def test_manager_stress_create_user(superuser_or_admin, app, mailoutbox):
     for i in range(100):
         ou_add = login(app, superuser_or_admin, url)
         form = ou_add.form
-        form.set('ou', str(new_ou.id))
         form.set('first_name', 'John')
         form.set('last_name', 'Doe')
         form.set('email', 'john.doe@gmail.com')

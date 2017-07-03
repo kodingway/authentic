@@ -186,7 +186,7 @@ class UserEditForm(LimitQuerysetFormMixin, CssClass, BaseUserForm):
 
     class Meta:
         model = get_user_model()
-        exclude = ('is_staff', 'groups', 'user_permissions', 'last_login',
+        exclude = ('ou', 'is_staff', 'groups', 'user_permissions', 'last_login',
                    'date_joined', 'password')
 
 
@@ -277,6 +277,10 @@ class UserAddForm(UserChangePasswordForm, UserEditForm):
         label=_('Ask for password reset on next login'),
         required=False)
 
+    def __init__(self, *args, **kwargs):
+        self.ou = kwargs.pop('ou', None)
+        super(UserAddForm, self).__init__(*args, **kwargs)
+
     def clean(self):
         super(UserAddForm, self).clean()
         if not self.cleaned_data.get('username') and \
@@ -285,6 +289,7 @@ class UserAddForm(UserChangePasswordForm, UserEditForm):
                 _('You must set a username or an email.'))
 
     def save(self, commit=True):
+        self.instance.ou = self.ou
         user = super(UserAddForm, self).save(commit=commit)
         if self.cleaned_data.get('reset_password_at_next_login'):
             if commit:

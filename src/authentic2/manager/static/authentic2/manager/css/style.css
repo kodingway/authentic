@@ -177,11 +177,11 @@ form input[type="checkbox"] {
   width: auto;
 }
 
-#id_username_p, .user-form #id_ou_p, #id_first_name_p, #id_last_name_p,
+.user-form #id_ou_p, #id_first_name_p, #id_last_name_p,
 #id_password1_p, #id_password2_p {
   width: 50%;
 }
-#id_username_p, #id_first_name_p, #id_password1_p {
+#id_first_name_p, #id_password1_p {
   float: left;
   clear: both;
 }

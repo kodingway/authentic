@@ -64,7 +64,6 @@ class UserAddView(BaseAddView):
     action = _('Create')
     fields = [
         'username',
-        'ou',
         'first_name',
         'last_name',
         'email',
@@ -75,6 +74,12 @@ class UserAddView(BaseAddView):
         'send_mail']
     form_class = UserAddForm
     permissions = ['custom_user.add_user']
+
+    def get_form_kwargs(self):
+        kwargs = super(UserAddView, self).get_form_kwargs()
+        qs = self.request.user.ous_with_perm('custom_user.add_user')
+        kwargs['ou'] = qs.get(pk=self.kwargs['ou_pk'])
+        return kwargs
 
     def get_fields(self):
         fields = list(self.fields)

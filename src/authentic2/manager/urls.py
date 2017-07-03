@@ -15,7 +15,7 @@ urlpatterns = required(
         url(r'^users/$', user_views.users, name='a2-manager-users'),
         url(r'^users/export/(?P<format>csv|json|html|ods)/$',
             user_views.users_export, name='a2-manager-users-export'),
-        url(r'^users/add/$', user_views.user_add,
+        url(r'^users/(?P<ou_pk>\d+)/add/$', user_views.user_add,
             name='a2-manager-user-add'),
         url(r'^users/(?P<pk>\d+)/$', user_views.user_detail,
             name='a2-manager-user-detail'),

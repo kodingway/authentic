@@ -78,8 +78,11 @@
           $.get(url, function (response_text) {
             var $response = $(response_text);
             var $content = $response.find('#content .content');
+            var $appbar = $response.find('#appbar');
             var $container = $('#content .content');
+            var $old_appbar = $('#appbar');
             $container.replaceWith($content);
+            $old_appbar.replaceWith($appbar);
             $(window.document).trigger('gadjo:content-update');
           });
         }
