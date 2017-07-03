@@ -49,8 +49,9 @@ class SecurityCheckMixin(SplitTermMixin):
 class RoleLabelMixin(object):
     def label_from_instance(self, obj):
         label = unicode(obj)
-        if obj.service:
-            label = label + ' - ' + unicode(obj.service)
+        if obj.ou:
+            label = u'{ou} - {obj}'.format(
+                ou=obj.ou, obj=obj)
         return label
 
 

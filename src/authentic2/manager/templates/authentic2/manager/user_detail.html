@@ -49,7 +49,7 @@
   <ul>
     {% for role in object.roles_and_parents %}
     <li {% if role.description %}title="{{ role.description }}"{% endif %}>
-      <a href="{% url "a2-manager-role-members" pk=role.pk %}">{{ role }}</a>
+      <a href="{% url "a2-manager-role-members" pk=role.pk %}">{% if role.ou %}{{ role.ou }} &#8212; {% endif %}{{ role }}</a>
     </li>
     {% endfor %}
   </ul>
