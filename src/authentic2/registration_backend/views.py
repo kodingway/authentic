@@ -72,7 +72,9 @@ class BaseRegistrationView(FormView):
         return super(BaseRegistrationView, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        email = form.cleaned_data['email']
+        email = form.cleaned_data.pop('email')
+        for field in form.cleaned_data:
+            self.token[field] = form.cleaned_data[field]
 
         self.token.pop(REDIRECT_FIELD_NAME, None)
         self.token.pop('email', None)
@@ -196,6 +198,9 @@ class RegistrationCompletionView(CreateView):
             ou = get_default_ou()
 
         attributes = {'email': self.email, 'ou': ou}
+        for key in self.token:
+            if key in app_settings.A2_PRE_REGISTRATION_FIELDS:
+                attributes[key] = self.token[key]
         logger.debug(u'attributes %s', attributes)
 
         prefilling_list = utils.accumulate_from_backends(self.request, 'registration_form_prefill')

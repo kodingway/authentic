@@ -30,6 +30,16 @@ class RegistrationForm(Form):
 
     email = EmailField(label=_('Email'))
 
+    def __init__(self, *args, **kwargs):
+        super(RegistrationForm, self).__init__(*args, **kwargs)
+        attributes = {a.name: a for a in models.Attribute.objects.all()}
+        for field in app_settings.A2_PRE_REGISTRATION_FIELDS:
+            if field in ('first_name', 'last_name'):
+                self.fields[field] = User._meta.get_field(field).formfield()
+            elif field in attributes:
+                self.fields[field] = attributes[field].get_form_field()
+            self.fields[field].required = True
+
 
 class RegistrationCompletionFormNoPassword(forms.BaseUserForm):
     error_css_class = 'form-field-error'
