@@ -82,6 +82,7 @@ class ChooseRoleWidget(RoleLabelMixin, SecurityCheckMixin, ModelSelect2Widget):
     search_fields = [
         'name__icontains',
         'service__name__icontains',
+        'ou__name__icontains',
     ]
 
 
@@ -90,6 +91,7 @@ class ChooseRolesWidget(RoleLabelMixin, SecurityCheckMixin, ModelSelect2Multiple
     search_fields = [
         'name__icontains',
         'service__name__icontains',
+        'ou__name__icontains',
     ]
 
 
@@ -99,6 +101,7 @@ class ChooseRolesForChangeWidget(RoleLabelMixin, SecurityCheckMixin, ModelSelect
     search_fields = [
         'name__icontains',
         'service__name__icontains',
+        'ou__name__icontains',
     ]
 
 
@@ -122,4 +125,5 @@ class ChooseUserRoleWidget(RoleLabelMixin, SecurityCheckMixin, ModelSelect2Widge
     search_fields = [
         'name__icontains',
         'service__name__icontains',
+        'ou__name__icontains',
     ]
