@@ -60,7 +60,7 @@ class RolesView(views.HideOUColumnMixin, RolesMixin, views.BaseTableView):
 listing = RolesView.as_view()
 
 
-class RoleAddView(views.PassRequestToFormMixin, views.BaseAddView):
+class RoleAddView(views.BaseAddView):
     template_name = 'authentic2/manager/role_add.html'
     model = get_role_model()
     title = _('Add role')

@@ -20,7 +20,7 @@ from authentic2.a2_rbac.utils import get_default_ou
 from django_rbac.utils import get_role_model, get_role_parenting_model, get_ou_model
 
 
-from .views import BaseTableView, BaseAddView, PassRequestToFormMixin, \
+from .views import BaseTableView, BaseAddView, \
     BaseEditView, ActionMixin, OtherActionsMixin, Action, ExportMixin, \
     BaseSubTableView, HideOUColumnMixin, BaseDeleteView, BaseDetailView
 from .tables import UserTable, UserRolesTable, OuUserRolesTable
@@ -58,7 +58,7 @@ class UsersView(HideOUColumnMixin, BaseTableView):
 users = UsersView.as_view()
 
 
-class UserAddView(PassRequestToFormMixin, BaseAddView):
+class UserAddView(BaseAddView):
     model = get_user_model()
     title = _('Create user')
     action = _('Create')
@@ -182,14 +182,6 @@ class UserDetailView(OtherActionsMixin, BaseDetailView):
         return fields
 
     def get_context_data(self, **kwargs):
-        form = self.get_form_class()(prefix='user-detail', request=self.request,
-                                     instance=self.object)
-        for field in form.fields.values():
-            widget = field.widget
-            widget.attrs['disabled'] = ''
-            if 'readonly' in widget.attrs:
-                del widget.attrs['readonly']
-        kwargs['form'] = form
         kwargs['default_ou'] = get_default_ou
         kwargs['can_change_roles'] = self.request.user.has_perm_any('a2_rbac.change_role')
         ctx = super(UserDetailView, self).get_context_data(**kwargs)
@@ -198,7 +190,7 @@ class UserDetailView(OtherActionsMixin, BaseDetailView):
 user_detail = UserDetailView.as_view()
 
 
-class UserEditView(PassRequestToFormMixin, OtherActionsMixin, ActionMixin, BaseEditView):
+class UserEditView(OtherActionsMixin, ActionMixin, BaseEditView):
     model = get_user_model()
     template_name = 'authentic2/manager/user_edit.html'
     form_class = UserEditForm
@@ -263,7 +255,7 @@ class UserChangePasswordView(BaseEditView):
 user_change_password = UserChangePasswordView.as_view()
 
 
-class UserRolesView(HideOUColumnMixin, PassRequestToFormMixin, BaseSubTableView):
+class UserRolesView(HideOUColumnMixin, BaseSubTableView):
     model = get_user_model()
     form_class = ChooseUserRoleForm
     search_form_class = UserRoleSearchForm

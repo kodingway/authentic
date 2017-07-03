@@ -60,16 +60,15 @@ class PrefixFormMixin(object):
         super(PrefixFormMixin, self).__init__(*args, **kwargs)
 
 
-class LimitQuerysetFormMixin(object):
+class LimitQuerysetFormMixin(FormWithRequest):
     '''Limit queryset of all model choice field based on the objects
        viewable by the user.
     '''
     field_view_permisions = None
 
     def __init__(self, *args, **kwargs):
-        self.request = request = kwargs.pop('request', None)
         super(LimitQuerysetFormMixin, self).__init__(*args, **kwargs)
-        if request and not request.user.is_anonymous():
+        if self.request and not self.request.user.is_anonymous():
             for name, field in self.fields.iteritems():
                 qs = getattr(field, 'queryset', None)
                 if not qs:
@@ -81,7 +80,7 @@ class LimitQuerysetFormMixin(object):
                     app_label = qs.model._meta.app_label
                     model_name = qs.model._meta.model_name
                     perm = '%s.view_%s' % (app_label, model_name)
-                qs = request.user.filter_by_perm(perm, qs)
+                qs = self.request.user.filter_by_perm(perm, qs)
                 field.queryset = qs
                 assert qs.exists(), 'user has no view permissions on model %s' % qs.model
 
@@ -157,7 +156,7 @@ class UserEditForm(LimitQuerysetFormMixin, CssClass, BaseUserForm):
     form_id = "id_user_edit_form"
 
     def __init__(self, *args, **kwargs):
-        request = kwargs.pop('request')
+        request = kwargs.get('request')
         super(UserEditForm, self).__init__(*args, **kwargs)
         if 'ou' in self.fields and not request.user.is_superuser:
             field = self.fields['ou']

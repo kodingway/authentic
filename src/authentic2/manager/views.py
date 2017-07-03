@@ -134,15 +134,6 @@ class TableQuerysetMixin(object):
         return self.get_table_queryset()
 
 
-class PassRequestToFormMixin(object):
-    '''Add request to form kwargs'''
-
-    def get_form_kwargs(self):
-        kwargs = super(PassRequestToFormMixin, self).get_form_kwargs()
-        kwargs['request'] = self.request
-        return kwargs
-
-
 class SearchFormMixin(object):
     '''Handle a search form on the current table view.
 
@@ -398,19 +389,51 @@ class ModelFormView(MediaMixin):
     def get_fields(self):
         return self.fields
 
+    def get_form_kwargs(self):
+        kwargs = super(ModelFormView, self).get_form_kwargs()
+        if getattr(self.get_form_class(), 'need_request', False):
+            kwargs['request'] = self.request
+        return kwargs
+
     def get_form_class(self):
         return modelform_factory(self.model, form=self.form_class,
                                  fields=self.get_fields())
 
+    def get_form(self, form_class=None):
+        form = super(ModelFormView, self).get_form(form_class=form_class)
+        hooks.call_hooks('manager_modify_form', self, form)
+        return form
 
-class BaseDetailView(TitleMixin, ModelNameMixin, PermissionMixin, ModelFormView, DetailView):
+
+class BaseDetailView(ModelNameMixin, PermissionMixin, ModelFormView, DetailView):
     context_object_name = 'object'
+    form_class = None
 
     @property
     def permissions(self):
         app_label = self.model._meta.app_label
         model_name = self.model._meta.model_name
         return ['%s.view_%s' % (app_label, model_name)]
+
+    def get_form(self):
+        form_class = self.get_form_class()
+        if getattr(form_class, 'need_request', False):
+            form = form_class(request=self.request, instance=self.object)
+        else:
+            form = form_class(instance=self.object)
+        for field in form.fields.values():
+            widget = field.widget
+            widget.attrs['disabled'] = ''
+            if 'readonly' in widget.attrs:
+                del widget.attrs['readonly']
+        return form
+
+    def get_context_data(self, **kwargs):
+        form = self.get_form()
+        hooks.call_hooks('manager_modify_form', self, form)
+        kwargs['form'] = form
+        ctx = super(BaseDetailView, self).get_context_data(**kwargs)
+        return ctx
 
 
 class BaseAddView(TitleMixin, ModelNameMixin, PermissionMixin,
