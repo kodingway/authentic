@@ -1,8 +1,6 @@
 from django.contrib.auth import forms
-from django.utils.translation import gettext_noop
 from django.shortcuts import render
 from django.utils.translation import ugettext as _, ugettext_lazy
-from django.core.urlresolvers import reverse
 
 from . import views, app_settings, utils
 from .exponential_retry_timeout import ExponentialRetryTimeout
@@ -21,10 +19,11 @@ class LoginPasswordBackend(object):
         return 'password'
 
     def login(self, request, *args, **kwargs):
-        exponential_backoff = ExponentialRetryTimeout(key_prefix='login-exp-retry-timeout-',
-                duration=app_settings.A2_LOGIN_EXPONENTIAL_RETRY_TIMEOUT_DURATION,
-                factor=app_settings.A2_LOGIN_EXPONENTIAL_RETRY_TIMEOUT_FACTOR,
-                max_duration=app_settings.A2_LOGIN_EXPONENTIAL_RETRY_TIMEOUT_MAX_DURATION)
+        exponential_backoff = ExponentialRetryTimeout(
+            key_prefix='login-exp-retry-timeout-',
+            duration=app_settings.A2_LOGIN_EXPONENTIAL_RETRY_TIMEOUT_DURATION,
+            factor=app_settings.A2_LOGIN_EXPONENTIAL_RETRY_TIMEOUT_FACTOR,
+            max_duration=app_settings.A2_LOGIN_EXPONENTIAL_RETRY_TIMEOUT_MAX_DURATION)
         context_instance = kwargs.get('context_instance', None)
         is_post = request.method == 'POST' and self.submit_name in request.POST
         data = request.POST if is_post else None
@@ -56,12 +55,14 @@ class LoginPasswordBackend(object):
             # during a post reset form data to prevent validation
             if is_post and reset:
                 form = forms.AuthenticationForm(initial={'username': data.get('username', '')})
-            msg = _('You made too many login errors recently, you must wait <span class="js-seconds-until">%s</span> seconds to try again.')
+            msg = _('You made too many login errors recently, you must '
+                    'wait <span class="js-seconds-until">%s</span> seconds '
+                    'to try again.')
             msg = msg % int(seconds_to_wait)
             utils.form_add_error(form, msg, safe=True)
         context['form'] = form
         return render(request, 'authentic2/login_password_form.html', context,
-                context_instance=context_instance)
+                      context_instance=context_instance)
 
     def profile(self, request, *args, **kwargs):
         return views.login_password_profile(request, *args, **kwargs)
