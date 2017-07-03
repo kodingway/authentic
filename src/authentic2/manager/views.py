@@ -336,14 +336,25 @@ class ModelNameMixin(MediaMixin):
         return ctx
 
 
-class BaseTableView(FormatsContextData, ModelNameMixin, PermissionMixin,
+class TableHookMixin(object):
+    '''Helper class for table views, hiding the OU column from tables if an OU filter exists'''
+
+    def get_table(self, **kwargs):
+        table = super(TableHookMixin, self).get_table(**kwargs)
+        import copy
+        table = copy.deepcopy(table)
+        hooks.call_hooks('manager_modify_table', self, table)
+        return table
+
+
+class BaseTableView(TableHookMixin, FormatsContextData, ModelNameMixin, PermissionMixin,
                     SearchFormMixin, FilterQuerysetByPermMixin,
                     TableQuerysetMixin, SingleTableView):
     '''Base class for views showing a table of objects'''
     pass
 
 
-class SubTableViewMixin(FormatsContextData, ModelNameMixin, PermissionMixin,
+class SubTableViewMixin(TableHookMixin, FormatsContextData, ModelNameMixin, PermissionMixin,
                         SearchFormMixin, FilterTableQuerysetByPermMixin,
                         TableQuerysetMixin, SingleObjectMixin,
                         SingleTableMixin, ContextMixin):
