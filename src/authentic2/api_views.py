@@ -21,7 +21,7 @@ from rest_framework.response import Response
 from rest_framework import permissions, status
 from rest_framework.exceptions import PermissionDenied, AuthenticationFailed
 from rest_framework.fields import CreateOnlyDefault
-from rest_framework.decorators import list_route
+from rest_framework.decorators import list_route, detail_route
 
 from django_filters.rest_framework import FilterSet
 
@@ -481,6 +481,21 @@ class UsersAPI(ExceptionHandlerMixin, ModelViewSet):
             'result': 1,
             'unknown_uuids': unknown_uuids,
         })
+
+    @detail_route(methods=['post'], url_path='password-reset', permission_classes=(DjangoPermission('custom_user.reset_password_user'),))
+    def password_reset(self, request, uuid):
+        user = self.get_object()
+        # An user without email cannot receive the token
+        if not user.email:
+            return Response({'result': 0, 'reason': 'User has no mail'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        # An user without a password cannot reset it
+        if not user.has_usable_password():
+            user.set_password(uuid.uuid4().hex)
+            user.save()
+
+        utils.send_password_reset_mail(user, request=request)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class RolesAPI(ExceptionHandlerMixin, APIView):

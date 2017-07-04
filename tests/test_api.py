@@ -548,3 +548,24 @@ def test_password_change(app, ou1, admin):
     response = app.post_json(url, params=payload)
     assert response.json['result'] == 1
     assert User.objects.get(username='john.doe').check_password('password2')
+
+
+def test_password_reset(app, ou1, admin, user_ou1, mailoutbox):
+    email = user_ou1.email
+    url = reverse('a2-api-users-password-reset', kwargs={'uuid': user_ou1.uuid})
+    app.authorization = ('Basic', (user_ou1.username, user_ou1.username))
+    app.post(url, status=403)
+    app.authorization = ('Basic', (admin.username, admin.username))
+    app.get(url, status=405)
+    user_ou1.email = ''
+    user_ou1.save()
+    resp = app.post(url, status=500)
+    assert resp.json['result'] == 0
+    assert resp.json['reason'] == 'User has no mail'
+    user_ou1.email = email
+    user_ou1.save()
+    app.post(url, status=204)
+    assert len(mailoutbox) == 1
+    mail = mailoutbox[0]
+    assert mail.to[0] == email
+    assert 'http://testserver/accounts/password/reset/confirm/Mg/' in mail.body
