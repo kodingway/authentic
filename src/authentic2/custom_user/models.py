@@ -119,7 +119,7 @@ class User(AbstractBaseUser, PermissionMixin):
         permissions = (
             ('view_user', 'can see available users'),
         )
-        ordering = ('first_name', 'last_name', 'email', 'username')
+        ordering = ('last_name', 'first_name', 'email', 'username')
 
     def get_full_name(self):
         """
