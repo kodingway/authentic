@@ -568,4 +568,4 @@ def test_password_reset(app, ou1, admin, user_ou1, mailoutbox):
     assert len(mailoutbox) == 1
     mail = mailoutbox[0]
     assert mail.to[0] == email
-    assert 'http://testserver/accounts/password/reset/confirm/Mg/' in mail.body
+    assert 'http://testserver/accounts/password/reset/confirm/' in mail.body
