@@ -151,6 +151,10 @@ class Attribute(models.Model):
         verbose_name=_('searchable'),
         blank=True, default=False)
 
+    order = models.PositiveIntegerField(
+        verbose_name=_('order'),
+        default=0)
+
     objects = managers.AttributeManager(disabled=False)
     all_objects = managers.AttributeManager()
 
@@ -241,6 +245,8 @@ class Attribute(models.Model):
     class Meta:
         verbose_name = _('attribute definition')
         verbose_name_plural = _('attribute definitions')
+        ordering = ('order', 'id')
+
 
 class AttributeValue(models.Model):
     content_type = models.ForeignKey('contenttypes.ContentType',

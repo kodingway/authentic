@@ -310,9 +310,10 @@ class AttributeForm(forms.ModelForm):
 
 class AttributeAdmin(admin.ModelAdmin):
     form = AttributeForm
-    list_display = ('label', 'name', 'kind', 'required',
+    list_display = ('label', 'name', 'kind', 'order', 'required',
             'asked_on_registration', 'user_editable',
             'user_visible')
+    list_editable = ('order',)
 
 admin.site.register(models.Attribute, AttributeAdmin)
 
