@@ -33,6 +33,8 @@ from django.contrib.auth.decorators import login_required
 from django.db.models.fields import FieldDoesNotExist
 from django.db.models.query import Q
 
+from . import hooks
+
 
 # FIXME: this decorator has nothing to do with an idp, should be moved in the
 # a2 package
@@ -462,6 +464,7 @@ class ProfileView(cbv.TemplateNamesMixin, TemplateView):
             'allow_email_change': app_settings.A2_PROFILE_CAN_CHANGE_EMAIL,
             'federation_management': federation_management,
         })
+        hooks.call_hooks('modify_context_data', self, context_instance)
         return context_instance
 
 profile = login_required(ProfileView.as_view())
