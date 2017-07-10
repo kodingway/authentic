@@ -308,7 +308,7 @@ class SAMLAttribute(models.Model):
 
 
 class LibertyProvider(Service):
-    entity_id = models.URLField(unique = True)
+    entity_id = models.URLField(max_length=256, unique = True)
     entity_id_sha1 = models.CharField(max_length = 40, blank=True)
     metadata_url = models.URLField(max_length=256, blank=True)
     protocol_conformance = models.IntegerField(
