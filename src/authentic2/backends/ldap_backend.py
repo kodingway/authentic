@@ -136,7 +136,7 @@ class LDAPUser(get_user_model()):
 
     def get_password_in_session(self):
         if self.block.get('keep_password_in_session', False):
-            cache = self.ldap_data.get('passwords', {})
+            cache = self.ldap_data.get('password', {})
             password = cache.get(self.dn)
             if password is not None:
                 try:
