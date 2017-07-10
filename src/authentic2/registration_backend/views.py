@@ -17,7 +17,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.template import RequestContext
 
 from authentic2.utils import (import_module_or_class, redirect, make_url, get_fields_and_labels,
-                              login)
+                              login, simulate_authentication)
 from authentic2.a2_rbac.utils import get_default_ou
 
 from django_rbac.utils import get_ou_model
@@ -50,11 +50,6 @@ def valid_token(method):
             return redirect(request, 'registration_register')
         return method(request, *args, **kwargs)
     return f
-
-
-def email_login(request, user):
-    user.backend = 'authentic2.backends.models_backend.ModelBackend'
-    login(request, user, 'email')
 
 
 class RegistrationView(cbv.ValidateCSRFMixin, FormView):
@@ -211,7 +206,7 @@ class RegistrationCompletionView(CreateView):
     def get(self, request, *args, **kwargs):
         if len(self.users) == 1 and self.email_is_unique:
             # Found one user, EMAIL is unique, log her in
-            email_login(request, self.users[0])
+            simulate_authentication(request, self.users[0], method='email')
             return redirect(request, self.get_success_url())
         if all(field in self.token for field in self.fields) \
                 and not self.token.get('confirm_data', False):
