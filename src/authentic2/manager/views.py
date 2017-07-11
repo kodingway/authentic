@@ -270,7 +270,7 @@ class OtherActionsMixin(object):
         return ctx
 
     def get_other_actions(self):
-        return self.other_actions or ()
+        return self.other_actions or []
 
     def get_displayed_other_actions(self):
         return [action for action in self.get_other_actions() if
