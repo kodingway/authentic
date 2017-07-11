@@ -7,6 +7,8 @@ import six
 import urlparse
 import uuid
 import datetime
+import copy
+
 from functools import wraps
 from itertools import islice, chain
 
@@ -926,3 +928,12 @@ def same_origin(url1, url2):
         return False
 
     return True
+
+
+def simulate_login(request, user, method,
+                   backend='authentic2.backends.models_backend.ModelBackend'):
+    '''Simulate a normal login by forcing a backend attribute on the user instance'''
+    # do not modify the passed user
+    user = copy.deepcopy(user)
+    user.backend = backend
+    login(request, user, method)
