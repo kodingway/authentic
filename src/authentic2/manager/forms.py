@@ -179,10 +179,11 @@ class UserEditForm(LimitQuerysetFormMixin, CssClass, BaseUserForm):
                 self.data._mutable = False
 
     def clean(self):
-        if not self.cleaned_data.get('username') and \
-           not self.cleaned_data.get('email'):
-            raise forms.ValidationError(
-                _('You must set a username or an email.'))
+        if 'username' in self.fields or 'email' in self.fields:
+            if not self.cleaned_data.get('username') and \
+               not self.cleaned_data.get('email'):
+                raise forms.ValidationError(
+                    _('You must set a username or an email.'))
 
     class Meta:
         model = get_user_model()
