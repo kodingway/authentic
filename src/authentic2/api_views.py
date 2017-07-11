@@ -467,7 +467,11 @@ class UsersAPI(HookMixin, ExceptionHandlerMixin, ModelViewSet):
         qs = User.objects.all()
         if self.request.method == 'GET':
             qs = qs.prefetch_related('attribute_values', 'attribute_values__attribute')
-        return self.request.user.filter_by_perm(['custom_user.view_user'], qs)
+        qs = self.request.user.filter_by_perm(['custom_user.view_user'], qs)
+        new_qs = hooks.call_hooks_first_result('api_modify_queryset', self, qs)
+        if new_qs is not None:
+            return new_qs
+        return qs
 
     # only do partial updates
     def put(self, request, *args, **kwargs):
