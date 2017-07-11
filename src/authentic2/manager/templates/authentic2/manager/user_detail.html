@@ -44,6 +44,24 @@
 
 {% block other_actions %}
 
+  <p class="a2-manager-user-last-login">
+    {% if object.last_login %}
+      {% blocktrans with date=object.last_login %}Last login on {{ date }}.{% endblocktrans %}
+    {% else %}
+      {% trans "Never logged in." %}
+    {% endif %}
+  </p>
+
+  <p class="a2-manager-user-date-joined">
+    {% blocktrans with date=object.date_joined %}Created on {{ date }}{% endblocktrans %}
+  </p>
+
+  {% if object.date_joined != object.modified %}
+    <p class="a2-manager-user-modified">
+      {% blocktrans with date=object.modified %}Modified on {{ date }}{% endblocktrans %}
+    </p>
+  {% endif %}
+
   {% for data in user_data %}
     {{ data }}
   {% endfor %}
