@@ -43,6 +43,11 @@
 {% endblock %}
 
 {% block other_actions %}
+
+  {% for data in user_data %}
+    {{ data }}
+  {% endfor %}
+
   {{ block.super }}
 
   <strong>{% trans "Roles" %}</strong>
@@ -54,9 +59,6 @@
     {% endfor %}
   </ul>
 
-  {% for data in user_data %}
-    <p>{{ data }}</p>
-  {% endfor %}
   <button onclick="window.location.href = '{% url "a2-manager-user-roles" pk=object.pk %}?search-ou={% firstof object.ou.pk default_ou.pk %}'; return false">{% trans "Modify" %}</button>
 
 
