@@ -287,8 +287,16 @@ class OtherActionsMixin(object):
         return self.other_actions or []
 
     def get_displayed_other_actions(self):
-        return [action for action in self.get_other_actions() if
-                action.display]
+        actions = []
+        other_actions = list(self.get_other_actions())
+        hooks.call_hooks('manager_modify_other_actions', self, other_actions)
+        for action in other_actions:
+            if callable(action.display) and not action.display(self.object, self.request):
+                continue
+
+            if action.display:
+                actions.append(action)
+        return actions
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
