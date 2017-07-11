@@ -301,7 +301,7 @@ DJANGO_RBAC_PERMISSIONS_HIERARCHY = {
     'activate': ['view', 'search'],
     'admin': ['change', 'delete', 'add', 'view', 'change_password', 'reset_password', 'activate',
               'search'],
-    'change': ['view', 'change_password', 'reset_password', 'activate', 'search'],
+    'change': ['view', 'search'],
     'delete': ['view', 'search'],
     'add': ['view', 'search'],
 }
