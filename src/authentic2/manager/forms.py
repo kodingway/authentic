@@ -423,8 +423,12 @@ class UserSearchForm(OUSearchForm, CssClass, PrefixFormMixin, FormWithRequest):
 
     def filter(self, qs):
         qs = super(UserSearchForm, self).filter(qs)
-        if self.cleaned_data.get('text'):
+        text = self.cleaned_data.get('text')
+        limit = app_settings.USER_SEARCH_MINIMUM_CHARS
+        if text and len(text) >= limit:
             qs = utils.filter_user(qs, self.cleaned_data['text'])
+        elif limit:
+            qs = qs.none()
         return qs
 
 

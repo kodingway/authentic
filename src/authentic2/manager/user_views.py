@@ -27,6 +27,7 @@ from .tables import UserTable, UserRolesTable, OuUserRolesTable
 from .forms import UserSearchForm, UserAddForm, UserEditForm, \
     UserChangePasswordForm, ChooseUserRoleForm, UserRoleSearchForm
 from .resources import UserResource
+from . import app_settings
 
 
 class UsersView(HideOUColumnMixin, BaseTableView):
@@ -54,6 +55,14 @@ class UsersView(HideOUColumnMixin, BaseTableView):
         if not self.search_form.is_valid():
             qs = qs.filter(ou=self.request.user.ou)
         return qs
+
+    def get_table(self, **kwargs):
+        table = super(UsersView, self).get_table(**kwargs)
+        limit = app_settings.USER_SEARCH_MINIMUM_CHARS
+        text = self.search_form.cleaned_data.get('text')
+        if limit and (not text or len(text) < limit):
+            table.empty_text = _('Enter at least %d characters') % limit
+        return table
 
 users = UsersView.as_view()
 

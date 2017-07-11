@@ -9,6 +9,7 @@ class AppSettings(object):
         'ROLES_SHOW_PERMISSIONS': False,
         'ROLE_MEMBERS_FROM_OU': False,
         'SHOW_INTERNAL_ROLES': False,
+        'USER_SEARCH_MINIMUM_CHARS': 0,
     }
 
     def __getattr__(self, name):
