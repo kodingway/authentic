@@ -67,7 +67,7 @@ def server_error(request, template_name='500.html'):
     return render(request, template_name)
 
 
-class EditProfile(cbv.TemplateNamesMixin, UpdateView):
+class EditProfile(cbv.HookMixin, cbv.TemplateNamesMixin, UpdateView):
     model = compat.get_user_model()
     template_names = ['profiles/edit_profile.html',
                       'authentic2/accounts_edit.html']
