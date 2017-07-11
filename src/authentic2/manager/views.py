@@ -189,16 +189,30 @@ class FormatsContextData(object):
 
 class Action(object):
     '''Describe an action for view supporting multiples actions.'''
+    name = None
+    title = None
+    confirm = None
+    url_name = None
+    url = None
+    popup = True
+    permission = None
 
-    def __init__(self, name, title, confirm=None, url_name=None, url=None,
-                 popup=True, permission=None):
-        self.name = name
-        self.title = title
-        self.confirm = confirm
-        self.url_name = url_name
-        self.url = url
-        self.popup = popup
-        self.permission = permission
+    def __init__(self, name=None, title=None, confirm=None, url_name=None, url=None,
+                 popup=None, permission=None):
+        if name is not None:
+            self.name = name
+        if title is not None:
+            self.title = title
+        if confirm is not None:
+            self.confirm = confirm
+        if url_name is not None:
+            self.url_name = url_name
+        if url is not None:
+            self.url = url
+        if popup is not None:
+            self.popup = popup
+        if permission is not None:
+            self.permission = permission
 
     def display(self, instance, request):
         if self.permission:
