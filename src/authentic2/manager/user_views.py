@@ -124,7 +124,7 @@ class UserDetailView(OtherActionsMixin, BaseDetailView):
         for action in super(UserDetailView, self).get_other_actions():
             yield action
         yield Action('password_reset', _('Reset password'),
-                     permission='custom_user.password_reset_user')
+                     permission='custom_user.reset_password_user')
         if self.object.is_active:
             yield Action('deactivate', _('Deactivate'),
                          permission='custom_user.activate_user')
