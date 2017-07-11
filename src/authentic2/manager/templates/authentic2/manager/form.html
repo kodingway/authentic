@@ -32,7 +32,7 @@
       {% block beforeform %}
       {% endblock %}
       {{ form.non_field_errors }}
-      {% for field in form %}
+      {% for field in form.visible_fields %}
         {% block beforefield %}
         {% endblock %}
         <p id="{{field.id_for_label}}_p" class="{% if field.field.required %}required{% endif %} {% if field.errors %}error{% endif %}">
@@ -51,6 +51,9 @@
         </p>
         {% block afterfield %}
         {% endblock %}
+      {% endfor %}
+      {% for field in form.hidden_fields %}
+        {{ field }}
       {% endfor %}
       {% block afterform %}
       {% endblock %}
