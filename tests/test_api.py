@@ -575,3 +575,26 @@ def test_password_reset(app, ou1, admin, user_ou1, mailoutbox):
     mail = mailoutbox[0]
     assert mail.to[0] == email
     assert 'http://testserver/accounts/password/reset/confirm/' in mail.body
+
+
+def test_users_email(app, ou1, admin, user_ou1, mailoutbox):
+    url = reverse('a2-api-users-email', kwargs={'uuid': user_ou1.uuid})
+    # test access error
+    app.authorization = ('Basic', (user_ou1.username, user_ou1.username))
+    app.post(url, status=403)
+
+    # test method error
+    app.authorization = ('Basic', (admin.username, admin.username))
+    app.get(url, status=405)
+
+    new_email = 'newmail@yopmail.com'
+    resp = app.post_json(url, params={'email': new_email})
+    assert resp.json['result'] == 1
+
+    assert len(mailoutbox) == 1
+    mail = mailoutbox[0]
+    print mail.to
+    print mail.body
+
+    assert mail.to[0] == new_email
+    assert 'http://testserver/accounts/change-email/verify/' in mail.body

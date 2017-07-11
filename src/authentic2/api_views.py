@@ -450,6 +450,10 @@ class UsersFilter(FilterSet):
         }
 
 
+class ChangeEmailSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+
 class UsersAPI(HookMixin, ExceptionHandlerMixin, ModelViewSet):
     ordering_fields = ['username', 'first_name', 'last_name', 'modified', 'date_joined']
     lookup_field = 'uuid'
@@ -518,6 +522,21 @@ class UsersAPI(HookMixin, ExceptionHandlerMixin, ModelViewSet):
 
         utils.send_password_reset_mail(user, request=request)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @detail_route(methods=['post'],
+                  permission_classes=(DjangoPermission('custom_user.change_user'),))
+    def email(self, request, uuid):
+        from authentic2.views import EmailChangeView
+        user = self.get_object()
+        serializer = ChangeEmailSerializer(data=request.data)
+        if not serializer.is_valid():
+            response = {
+                'result': 0,
+                'errors': serializer.errors
+            }
+            return Response(response, status.HTTP_400_BAD_REQUEST)
+        EmailChangeView.send_email_change_email(request, user, serializer.validated_data['email'])
+        return Response({'result': 1})
 
 
 class RolesAPI(ExceptionHandlerMixin, APIView):
