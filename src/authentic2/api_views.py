@@ -26,9 +26,20 @@ from rest_framework.decorators import list_route, detail_route
 from django_filters.rest_framework import FilterSet
 
 from .custom_user.models import User
-from . import utils, decorators, attribute_kinds, app_settings
+from . import utils, decorators, attribute_kinds, app_settings, hooks
 from .models import Attribute, PasswordReset
 from .a2_rbac.utils import get_default_ou
+
+
+class HookMixin(object):
+    def get_serializer(self, *args, **kwargs):
+        serializer = super(HookMixin, self).get_serializer(*args, **kwargs)
+        # if the serializer is a ListSerializer, we modify the child
+        if hasattr(serializer, 'child'):
+            hooks.call_hooks('api_modify_serializer', self, serializer.child)
+        else:
+            hooks.call_hooks('api_modify_serializer', self, serializer)
+        return serializer
 
 
 class DjangoPermission(permissions.BasePermission):
