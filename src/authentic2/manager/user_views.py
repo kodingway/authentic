@@ -17,6 +17,7 @@ from authentic2.constants import SWITCH_USER_SESSION_KEY
 from authentic2.models import Attribute, PasswordReset
 from authentic2.utils import switch_user, send_password_reset_mail
 from authentic2.a2_rbac.utils import get_default_ou
+from authentic2 import hooks
 from django_rbac.utils import get_role_model, get_role_parenting_model, get_ou_model
 
 
