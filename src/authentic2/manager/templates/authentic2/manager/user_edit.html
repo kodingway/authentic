@@ -2,12 +2,9 @@
 {% load firstof from future %}
 {% load i18n %}
 
-{% block page-title %}
-  {{ block.super }} - {% trans "Edit user" %} {{ object }}
-{% endblock %}
-
 {% block breadcrumb %}
   {{ block.super }}
-  <a href="{% url 'a2-manager-users' %}">{% trans 'Users' %}</a>
-  <a href="#">{{ object.get_full_name }}</a>
+  <a href="{% url 'a2-manager-users' %}{% if object.ou %}?search-ou={{ object.ou.pk }}{% endif %}">{% trans 'Users' %}{% if object.ou %}&nbsp;: {{ object.ou }}{% endif %}</a>
+  <a href="{% url 'a2-manager-user-detail' pk=object.pk %}">{{ object.get_full_name }}</a>
+  <a href="#">{% trans "Edit" %}</a>
 {% endblock %}
