@@ -251,15 +251,11 @@ class AjaxFormViewMixin(object):
 
 class TitleMixin(object):
     '''Mixin to provide a title to the view's template'''
-
-    title = None
-
-    def get_title(self):
-        return self.title
+    title = ''
 
     def get_context_data(self, **kwargs):
         ctx = super(TitleMixin, self).get_context_data(**kwargs)
-        ctx['title'] = self.get_title()
+        ctx['title'] = self.get_title() or self.title
         return ctx
 
 
@@ -354,6 +350,11 @@ class ModelNameMixin(MediaMixin):
     def get_model_name(self):
         return self.model._meta.verbose_name
 
+    def get_title(self):
+        if hasattr(self, 'get_object'):
+            return unicode(self.get_object())
+        return u''
+
     def get_context_data(self, **kwargs):
         ctx = super(ModelNameMixin, self).get_context_data(**kwargs)
         ctx['model_name'] = self.get_model_name()
@@ -410,7 +411,7 @@ class BaseDeleteView(TitleMixin, ModelNameMixin, PermissionMixin,
         return ['%s.delete_%s' % (app_label, model_name)]
 
     def get_title(self):
-        return _('Delete %s') % self.get_model_name()
+        return _('Delete %s') % super(BaseDeleteView, self).get_title()
 
     def get_success_url(self):
         return '../../'
@@ -440,7 +441,7 @@ class ModelFormView(MediaMixin):
         return form
 
 
-class BaseDetailView(ModelNameMixin, PermissionMixin, ModelFormView, DetailView):
+class BaseDetailView(TitleMixin, ModelNameMixin, PermissionMixin, ModelFormView, DetailView):
     context_object_name = 'object'
     form_class = None
 
@@ -485,7 +486,7 @@ class BaseAddView(TitleMixin, ModelNameMixin, PermissionMixin,
         return ['%s.add_%s' % (app_label, model_name)]
 
     def get_title(self):
-        return _('Add %s') % self.get_model_name()
+        return self.title or _('Add %s') % super(BaseAddView, self).get_model_name()
 
     def get_success_url(self):
         return reverse(self.success_view_name, kwargs={'pk': self.object.pk})
@@ -504,7 +505,7 @@ class BaseEditView(SuccessMessageMixin, TitleMixin, ModelNameMixin, PermissionMi
         return ['%s.change_%s' % (app_label, model_name)]
 
     def get_title(self):
-        return self.title or _('Edit %s') % self.get_model_name()
+        return _('Edit %s') % super(BaseEditView, self).get_title()
 
     def get_success_url(self):
         return '..'
