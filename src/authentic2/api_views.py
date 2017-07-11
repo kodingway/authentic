@@ -305,7 +305,7 @@ class BaseUserSerializer(serializers.ModelSerializer):
     ou = serializers.SlugRelatedField(
         queryset=get_ou_model().objects.all(),
         slug_field='slug',
-        required=False, allow_null=True, default=get_default_ou)
+        required=False, default=get_default_ou)
     date_joined = serializers.DateTimeField(read_only=True)
     last_login = serializers.DateTimeField(read_only=True)
     send_registration_email = serializers.BooleanField(write_only=True, required=False,

@@ -170,7 +170,6 @@ def test_api_users_create(settings, app, api_user):
     del settings.A2_API_USERS_REQUIRED_FIELDS
 
     payload = {
-        'ou': None,
         'username': 'john.doe',
         'first_name': 'John',
         'last_name': 'Doe',
@@ -200,7 +199,7 @@ def test_api_users_create(settings, app, api_user):
         assert resp.json['id']
         assert resp.json['date_joined']
         if api_user.is_superuser:
-            assert resp.json['ou'] is None
+            assert resp.json['ou'] == 'default'
         elif api_user.roles.exists():
             assert resp.json['ou'] == api_user.ou.slug
         new_user = get_user_model().objects.get(id=resp.json['id'])
@@ -235,7 +234,6 @@ def test_api_users_create_send_mail(app, settings, superuser):
 
     app.authorization = ('Basic', (superuser.username, superuser.username))
     payload = {
-        'ou': None,
         'username': 'john.doe',
         'first_name': 'John',
         'last_name': 'Doe',
@@ -262,7 +260,6 @@ def test_api_users_create_send_mail(app, settings, superuser):
 def test_api_users_create_force_password_reset(app, client, settings, superuser):
     app.authorization = ('Basic', (superuser.username, superuser.username))
     payload = {
-        'ou': None,
         'username': 'john.doe',
         'first_name': 'John',
         'last_name': 'Doe',
