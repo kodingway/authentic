@@ -4,6 +4,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
+from django.utils.html import format_html
 from django.core.mail import EmailMultiAlternatives
 from django.template import loader
 from django.core.urlresolvers import reverse
@@ -197,6 +198,16 @@ class UserDetailView(OtherActionsMixin, BaseDetailView):
                 'is_superuser' not in self.fields:
             fields.append('is_superuser')
         return fields
+
+    def get_form(self, *args, **kwargs):
+        form = super(UserDetailView, self).get_form(*args, **kwargs)
+        if 'email' in form.fields:
+            if self.object.email_verified:
+                comment = _('Email verified')
+            else:
+                comment = _('Email not verified')
+            form.fields['email'].help_text = format_html('<b>{0}</b>', comment)
+        return form
 
     def get_context_data(self, **kwargs):
         kwargs['default_ou'] = get_default_ou
