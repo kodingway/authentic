@@ -5,7 +5,7 @@ from django.forms import Form
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.conf import settings
 
-from . import utils
+from . import utils, hooks
 
 
 class ValidateCSRFMixin(object):
@@ -66,3 +66,10 @@ class TemplateNamesMixin(object):
         if hasattr(self, 'template_names'):
             return self.template_names
         return super(TemplateNamesMixin, self).get_template_names()
+
+
+class HookMixin(object):
+    def get_form(self):
+        form = super(HookMixin, self).get_form()
+        hooks.call_hooks('front_modify_form', self, form)
+        return form
