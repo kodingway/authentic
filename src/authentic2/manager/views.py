@@ -117,7 +117,9 @@ class FilterQuerysetByPermMixin(object):
 class FilterTableQuerysetByPermMixin(object):
     def get_table_data(self):
         qs = super(FilterTableQuerysetByPermMixin, self).get_table_data()
-        return filter_view(self.request, qs)
+        if getattr(self, 'filter_table_by_perm', True):
+            qs = filter_view(self.request, qs)
+        return qs
 
 
 class FilterDatasetQuerysetByPermMixin(object):
