@@ -450,7 +450,7 @@ class UsersFilter(FilterSet):
         }
 
 
-class UsersAPI(ExceptionHandlerMixin, ModelViewSet):
+class UsersAPI(HookMixin, ExceptionHandlerMixin, ModelViewSet):
     ordering_fields = ['username', 'first_name', 'last_name', 'modified', 'date_joined']
     lookup_field = 'uuid'
     serializer_class = BaseUserSerializer
