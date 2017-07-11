@@ -1,4 +1,6 @@
 import hashlib
+import smtplib
+import logging
 
 from django.utils.translation import ugettext_lazy as _
 from django import forms
@@ -19,6 +21,7 @@ from authentic2.forms import BaseUserForm
 from authentic2.models import PasswordReset
 from authentic2.utils import import_module_or_class
 from authentic2.a2_rbac.utils import get_default_ou
+from authentic2.utils import send_password_reset_mail
 
 from . import fields, app_settings, utils
 
@@ -210,38 +213,41 @@ class UserChangePasswordForm(CssClass, forms.ModelForm):
 
     def clean(self):
         if not self.cleaned_data.get('generate_password') \
-                and not self.cleaned_data.get('password1'):
+                and not self.cleaned_data.get('password1') \
+                and not self.cleaned_data.get('send_password_reset'):
             raise forms.ValidationError(
                 _('You must choose password generation or type a new'
-                  '  one'))
+                  '  one or send a password reset mail'))
         if (self.instance and self.instance.pk and not self.instance.email and
             (self.cleaned_data.get('send_mail')
-             or self.cleaned_data.get('generate_password'))):
+             or self.cleaned_data.get('generate_password'
+             or self.cleaned_data.get('send_password_reset')))):
             raise forms.ValidationError(
                 _('User does not have a mail, we cannot send the '
                   'informations to him.'))
 
     def save(self, commit=True):
         user = super(UserChangePasswordForm, self).save(commit=False)
-
-        if self.cleaned_data['generate_password']:
+        new_password = None
+        if self.cleaned_data.get('generate_password'):
             new_password = generate_password()
-        else:
+        elif self.cleaned_data.get('password1'):
             new_password = self.cleaned_data["password1"]
 
-        user.set_password(new_password)
+        if new_password:
+            user.set_password(new_password)
 
         if commit:
             user.save()
             if hasattr(self, 'save_m2m'):
                 self.save_m2m()
 
-        if self.cleaned_data['generate_password'] \
-                or self.cleaned_data['send_mail']:
-            send_templated_mail(
-                user,
-                self.notification_template_prefix,
-                context={'new_password': new_password, 'user': user})
+        if not self.cleaned_data.get('send_password_reset'):
+            if self.cleaned_data['send_mail']:
+                send_templated_mail(
+                    user,
+                    self.notification_template_prefix,
+                    context={'new_password': new_password, 'user': user})
         return user
 
     generate_password = forms.BooleanField(
@@ -278,6 +284,11 @@ class UserAddForm(UserChangePasswordForm, UserEditForm):
         label=_('Ask for password reset on next login'),
         required=False)
 
+    send_password_reset = forms.BooleanField(
+        initial=False,
+        label=_('Send mail to user to make it choose a password'),
+        required=False)
+
     def __init__(self, *args, **kwargs):
         self.ou = kwargs.pop('ou', None)
         super(UserAddForm, self).__init__(*args, **kwargs)
@@ -302,6 +313,21 @@ class UserAddForm(UserChangePasswordForm, UserEditForm):
                     old_save(*args, **kwargs)
                     PasswordReset.objects.get_or_create(user=user)
                 user.save = save
+        if self.cleaned_data.get('send_password_reset'):
+            try:
+                send_password_reset_mail(
+                    user,
+                    template_names=['authentic2/manager/user_create_registration_email',
+                                    'authentic2/password_reset'],
+                    request=self.request,
+                    next_url='/accounts/',
+                    context={
+                        'user': user,
+                    })
+            except smtplib.SMTPException, e:
+                logger = logging.getLogger(__name__)
+                logger.getLogger(__name__).error(u'registration mail could not be sent to user %s '
+                                                 'created through manager: %s', user, e)
         return user
 
     class Meta:
