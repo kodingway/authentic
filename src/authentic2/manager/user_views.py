@@ -212,6 +212,10 @@ class UserDetailView(OtherActionsMixin, BaseDetailView):
     def get_context_data(self, **kwargs):
         kwargs['default_ou'] = get_default_ou
         kwargs['can_change_roles'] = self.request.user.has_perm_any('a2_rbac.change_role')
+        user_data = []
+        user_data += [data for datas in hooks.call_hooks('manager_user_data', self, self.object)
+                      for data in datas]
+        kwargs['user_data'] = user_data
         ctx = super(UserDetailView, self).get_context_data(**kwargs)
         return ctx
 
