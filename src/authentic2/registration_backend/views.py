@@ -1,6 +1,7 @@
 import django
 import collections
 import logging
+import random
 
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404
@@ -297,6 +298,8 @@ class DeleteView(FormView):
 
     def form_valid(self, form):
         models.DeletedUser.objects.delete_user(self.request.user)
+        self.request.user.email += '#%d' % random.randint(1, 10000000)
+        self.request.user.save(update_fields=['email'])
         logger.info(u'deletion of account %s requested', self.request.user)
         messages.info(self.request, _('Your account has been scheduled for deletion. You cannot use it anymore.'))
         return super(DeleteView, self).form_valid(form)
