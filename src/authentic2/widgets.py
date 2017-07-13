@@ -48,11 +48,9 @@ DATE_FORMAT_TO_JS_REGEX = re.compile(r'(?<!\w)(' + '|'.join(DATE_FORMAT_PY_JS_MA
 
 
 BOOTSTRAP_INPUT_TEMPLATE = """
-       <div id="%(id)s"  class="controls input-append date">
-           %(rendered_widget)s
-           %(clear_button)s
-           <span class="add-on"><i class="icon-th"></i></span>
-       </div>
+      %(rendered_widget)s
+      %(clear_button)s
+      <span class="add-on"><i class="icon-th"></i></span>
        <script type="text/javascript">
            $("#%(id)s").datetimepicker({%(options)s});
        </script>
@@ -96,6 +94,7 @@ class PickerWidgetMixin(object):
 
     def render(self, name, value, attrs=None):
         final_attrs = self.build_attrs(attrs)
+        final_attrs['class'] = "controls input-append date"
         rendered_widget = super(PickerWidgetMixin, self).render(name, value, final_attrs)
 
         #if not set, autoclose have to be true.
