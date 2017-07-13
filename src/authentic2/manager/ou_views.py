@@ -27,11 +27,20 @@ class OrganizationalUnitAddView(views.BaseAddView):
 add = OrganizationalUnitAddView.as_view()
 
 
+class OrganizationalUnitDetailView(views.BaseDetailView):
+    model = get_ou_model()
+    permissions = ['a2_rbac.view_ou']
+    form_class = forms.OUEditForm
+    template_name = 'authentic2/manager/ou_detail.html'
+
+detail = OrganizationalUnitDetailView.as_view()
+
+
 class OrganizationalUnitEditView(views.BaseEditView):
     model = get_ou_model()
     permissions = ['a2_rbac.change_ou']
     form_class = forms.OUEditForm
-
+    template_name = 'authentic2/manager/ou_edit.html'
 
 edit = OrganizationalUnitEditView.as_view()
 
@@ -51,6 +60,5 @@ class OrganizationalUnitDeleteView(views.BaseDeleteView):
                 request, HttpResponseRedirect(self.get_success_url()))
         return super(OrganizationalUnitDeleteView, self).dispatch(request, *args,
                                                                   **kwargs)
-
 
 delete = OrganizationalUnitDeleteView.as_view()

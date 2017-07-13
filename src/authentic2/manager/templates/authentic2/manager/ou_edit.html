@@ -1,0 +1,14 @@
+{% extends "authentic2/manager/form.html" %}
+{% load firstof from future %}
+{% load i18n %}
+
+{% block page_title %}
+  {{ object }}
+{% endblock %}
+
+{% block breadcrumb %}
+  {{ block.super }}
+  <a href="{% url 'a2-manager-ous' %}">{% trans 'Organizational unit' %}</a>
+  <a href="{% url 'a2-manager-ou-detail' pk=object.pk %}">{{ object }}</a>
+  <a href="#">{% trans "Edit" %}</a>
+{% endblock %}
