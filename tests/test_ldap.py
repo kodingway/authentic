@@ -331,7 +331,7 @@ def test_get_users(slapd, settings):
     assert len(users) == 101
     assert User.objects.count() == 101
     assert bulk_create.call_count == 101
-    assert save.call_count == 101
+    assert save.call_count == 303
 
     # Check that if nothing changed no save() is made
     save.reset_mock()
@@ -348,7 +348,7 @@ def test_get_users(slapd, settings):
     users = list(ldap_backend.LDAPBackend.get_users())
     assert len(users) == 101
     assert User.objects.count() == 101
-    assert save.call_count == 1
+    assert save.call_count == 3
     assert bulk_create.call_count == 1
 
 

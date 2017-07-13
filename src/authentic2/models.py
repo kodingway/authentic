@@ -241,6 +241,8 @@ class Attribute(models.Model):
         try:
             modified = owner.__class__._meta.get_field('modified')
         except FieldDoesNotExist:
+            pass
+        else:
             if getattr(modified, 'auto_now', False):
                 owner.save(update_fields=['modified'])
 
