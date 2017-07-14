@@ -57,7 +57,7 @@ def get_attributes(instance, ctx):
         ctx['django_user_' + str(field.name)] = getattr(user, field.name)
     for av in AttributeValue.objects.with_owner(user):
         ctx['django_user_' + str(av.attribute.name)] = av.to_python()
-        ctx['django_user_' + str(av.attribute.name) + '_verified'] = av.verified
+        ctx['django_user_' + str(av.attribute.name) + ':verified'] = av.verified
     ctx['django_user_groups'] = [group for group in user.groups.all()]
     ctx['django_user_group_names'] = [unicode(group) for group in user.groups.all()]
     if user.username:

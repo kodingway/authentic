@@ -230,7 +230,7 @@ def add_attributes(request, assertion, provider):
         attribute.nameFormat = name_format.encode('utf-8')
     verified = set()
     for definition in qs:
-        verified_attribute_name = definition.attribute_name + '_verified'
+        verified_attribute_name = definition.attribute_name + ':verified'
         if ctx.get(verified_attribute_name):
             verified.add(definition.name)
     ctx['@verified_attributes@'] = list(verified)
