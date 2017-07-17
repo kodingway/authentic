@@ -486,7 +486,7 @@ class BaseDetailView(MultipleOUMixin, TitleMixin, ModelNameMixin, PermissionMixi
         return ctx
 
 
-class BaseAddView(TitleMixin, ModelNameMixin, PermissionMixin,
+class BaseAddView(MultipleOUMixin, TitleMixin, ModelNameMixin, PermissionMixin,
                   AjaxFormViewMixin, ModelFormView, CreateView):
     '''Base class for views for adding an instance of a model'''
     template_name = 'authentic2/manager/form.html'
@@ -506,8 +506,8 @@ class BaseAddView(TitleMixin, ModelNameMixin, PermissionMixin,
         return reverse(self.success_view_name, kwargs={'pk': self.object.pk})
 
 
-class BaseEditView(MultipleOUMixin, SuccessMessageMixin, TitleMixin, ModelNameMixin, PermissionMixin,
-                   AjaxFormViewMixin, ModelFormView, UpdateView):
+class BaseEditView(MultipleOUMixin, SuccessMessageMixin, TitleMixin, ModelNameMixin,
+                   PermissionMixin, AjaxFormViewMixin, ModelFormView, UpdateView):
     '''Base class for views for editing an instance of a model'''
     template_name = 'authentic2/manager/form.html'
     context_object_name = 'object'

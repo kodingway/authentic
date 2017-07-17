@@ -49,7 +49,7 @@ class SecurityCheckMixin(SplitTermMixin):
 class RoleLabelMixin(object):
     def label_from_instance(self, obj):
         label = unicode(obj)
-        if obj.ou:
+        if obj.ou and utils.get_ou_count() > 1:
             label = u'{ou} - {obj}'.format(
                 ou=obj.ou, obj=obj)
         return label
