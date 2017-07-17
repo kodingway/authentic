@@ -1,7 +1,9 @@
 from django.db.models.query import Q
 
 from django.contrib.auth import get_user_model
+from django_rbac.utils import get_ou_model
 
+from authentic2.decorators import GlobalCache
 from authentic2.models import Attribute
 
 
@@ -54,3 +56,8 @@ def label_from_user(user):
 def search_user(term):
     User = get_user_model()
     return [(u.id, label_from_user(u)) for u in filter_user(User.objects.all(), term)[:10]]
+
+
+@GlobalCache(timeout=10)
+def get_ou_count():
+    return get_ou_model().objects.count()
