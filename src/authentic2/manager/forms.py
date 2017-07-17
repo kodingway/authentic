@@ -364,8 +364,7 @@ class ServiceRoleSearchForm(CssClass, PrefixFormMixin, FormWithRequest):
 class HideOUFieldMixin(object):
     def __init__(self, *args, **kwargs):
         super(HideOUFieldMixin, self).__init__(*args, **kwargs)
-        OU = get_ou_model()
-        if OU.objects.count() < 2:
+        if utils.get_ou_count() < 2:
             del self.fields['ou']
 
     def save(self, *args, **kwargs):

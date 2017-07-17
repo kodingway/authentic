@@ -42,6 +42,10 @@ def test_manager_create_ou(superuser_or_admin, app):
 
 
 def test_manager_create_role(superuser_or_admin, app):
+    # clear cache from previous runs
+    from authentic2.manager.utils import get_ou_count
+    get_ou_count.cache.cache = {}
+
     Role = get_role_model()
     OU = get_ou_model()
 
@@ -71,7 +75,7 @@ def test_manager_create_role(superuser_or_admin, app):
     assert non_admin_roles.get(name='Old role').slug == 'new-role'
 
     # Test multi-ou form
-    ou = OU.objects.create(name='New OU', slug='new-ou')
+    OU.objects.create(name='New OU', slug='new-ou')
     ou_add = app.get(reverse('a2-manager-role-add'))
     form = ou_add.form
     assert 'name' in form.fields
