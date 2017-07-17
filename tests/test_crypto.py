@@ -23,6 +23,15 @@ def test_exceptions():
     assert crypto.aes_base64_decrypt(key, 'xxx$y', raise_on_error=False) is None
 
 
+def test_padding():
+    from Crypto import Random
+
+    for i in range(1, 100):
+        for j in range(2, 32):
+            msg = Random.get_random_bytes(i)
+            assert crypto.remove_padding(crypto.add_padding(msg, j)) == msg
+
+
 def test_deterministic_encryption():
     salt = '4567'
     raw = uuid.uuid4().bytes
@@ -45,5 +54,6 @@ def test_deterministic_encryption():
 
             t = time.time()
             for i in range(1000):
-                assert crypto.aes_base64url_deterministic_decrypt(key, crypted1, salt) == raw
+                assert crypto.aes_base64url_deterministic_decrypt(key, crypted1, salt,
+                                                                  max_count=count) == raw
             print 'Decryption time:', hash_name, count, (time.time() - t) / 1000.0
