@@ -14,7 +14,7 @@
    {% include "authentic2/manager/search_form.html" %}
    <div id="details">
      <dl>
-       {% if object.ou %}
+       {% if multiple_ou and object.ou %}
          <dt>{% trans "Organizational unit" %}</dt>
          <dd>{{ object.ou }}</dd>
        {% endif %}

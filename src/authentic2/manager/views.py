@@ -26,11 +26,18 @@ from authentic2.utils import redirect
 from authentic2.decorators import json as json_view
 from authentic2 import hooks
 
-from . import app_settings
+from . import app_settings, utils
 
 
 class MediaMixinBase(MediaDefiningClass, FormMixinBase):
     pass
+
+
+class MultipleOUMixin(object):
+    '''Tell templates if there are multiple OU for adaptation in breadcrumbs for example'''
+    def get_context_data(self, **kwargs):
+        kwargs['multiple_ou'] = utils.get_ou_count() > 1
+        return super(MultipleOUMixin, self).get_context_data(**kwargs)
 
 
 class MediaMixin(object):
@@ -393,9 +400,15 @@ class SimpleSubTableView(SubTableViewMixin, TemplateView):
     pass
 
 
-class BaseSubTableView(TitleMixin, SubTableViewMixin, FormView):
+class BaseSubTableView(MultipleOUMixin, TitleMixin, SubTableViewMixin, FormView):
     '''Base class for views showing a table of objects related to one object'''
     success_url = '.'
+
+    def get_form_kwargs(self):
+        kwargs = super(BaseSubTableView, self).get_form_kwargs()
+        if getattr(self.get_form_class(), 'need_request', False):
+            kwargs['request'] = self.request
+        return kwargs
 
 
 class BaseDeleteView(TitleMixin, ModelNameMixin, PermissionMixin,
@@ -441,7 +454,8 @@ class ModelFormView(MediaMixin):
         return form
 
 
-class BaseDetailView(TitleMixin, ModelNameMixin, PermissionMixin, ModelFormView, DetailView):
+class BaseDetailView(MultipleOUMixin, TitleMixin, ModelNameMixin, PermissionMixin, ModelFormView,
+                     DetailView):
     context_object_name = 'object'
     form_class = None
 
@@ -492,7 +506,7 @@ class BaseAddView(TitleMixin, ModelNameMixin, PermissionMixin,
         return reverse(self.success_view_name, kwargs={'pk': self.object.pk})
 
 
-class BaseEditView(SuccessMessageMixin, TitleMixin, ModelNameMixin, PermissionMixin,
+class BaseEditView(MultipleOUMixin, SuccessMessageMixin, TitleMixin, ModelNameMixin, PermissionMixin,
                    AjaxFormViewMixin, ModelFormView, UpdateView):
     '''Base class for views for editing an instance of a model'''
     template_name = 'authentic2/manager/form.html'

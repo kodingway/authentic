@@ -4,7 +4,7 @@
 
 {% block breadcrumb %}
   {{ block.super }}
-  <a href="{% url 'a2-manager-users' %}{% if object.ou %}?search-ou={{ object.ou.pk }}{% endif %}">{% trans 'Users' %}{% if object.ou %}&nbsp;: {{ object.ou }}{% endif %}</a>
+  <a href="{% url 'a2-manager-users' %}{% if multiple_ou and object.ou %}?search-ou={{ object.ou.pk }}{% endif %}">{% trans 'Users' %}{% if multiple_ou and object.ou %}&nbsp;: {{ object.ou }}{% endif %}</a>
   <a href="{% url 'a2-manager-user-detail' pk=object.pk %}">{{ object.get_full_name }}</a>
   <a href="#">{% trans "Edit" %}</a>
 {% endblock %}
