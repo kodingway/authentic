@@ -9,6 +9,8 @@ from jwcrypto.jwt import JWT
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
 
+from authentic2 import hooks
+
 from . import app_settings
 
 
@@ -113,4 +115,5 @@ def create_user_info(client, user, scope_set, id_token=False):
     if 'email' in scope_set:
         user_info['email'] = user.email
         user_info['email_verified'] = True
+    hooks.call_hooks('idp_oidc_modify_user_info', client, user, scope_set, user_info)
     return user_info
