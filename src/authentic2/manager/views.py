@@ -303,13 +303,17 @@ class OtherActionsMixin(object):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        for action in self.get_other_actions():
+        for action in self.get_displayed_other_actions():
             if action.name in request.POST:
-                method = getattr(self, 'action_' + action.name, None)
-                if method:
-                    response = method(request, *args, **kwargs)
-                    if response:
-                        return response
+                response = None
+                if hasattr(action, 'do'):
+                    response = action.do(self, request, self.object)
+                else:
+                    method = getattr(self, 'action_' + action.name, None)
+                    if method:
+                        response = method(request, *args, **kwargs)
+                if response:
+                    return response
                 self.request.method = 'GET'
                 return self.get(request, *args, **kwargs)
         parent = super(OtherActionsMixin, self)
