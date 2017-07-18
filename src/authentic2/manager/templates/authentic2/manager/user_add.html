@@ -1,0 +1,12 @@
+{% extends "authentic2/manager/form.html" %}
+{% load i18n %}
+
+{% block page-title %}
+  {% trans "Add an user" %}
+{% endblock %}
+
+{% block breadcrumb %}
+  {{ block.super }}
+  <a href="{% url 'a2-manager-users' %}{% if multiple_ou and ou %}?search-ou={{ ou.pk }}{% endif %}">{% trans 'Users' %}{% if multiple_ou and ou %}&nbsp;: {{ ou }}{% endif %}</a>
+  <a href="#">{% trans "Add an user" %}</a>
+{% endblock %}

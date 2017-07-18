@@ -59,7 +59,7 @@
       {% endblock %}
       {% block buttons %}
       <div class="buttons">
-        <a class="cancel" href="..">{% trans "Cancel" %}</a>
+        <a class="cancel" href="{% if cancel_url %}{{ cancel_url }}{% else %}..{% endif %}">{% trans "Cancel" %}</a>
         <button>{% if action %}{{ action }}{% else %}{% trans "Save" %}{% endif %}</button>
       </div>
       {% endblock %}

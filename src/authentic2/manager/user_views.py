@@ -85,11 +85,13 @@ class UserAddView(BaseAddView):
         'send_mail']
     form_class = UserAddForm
     permissions = ['custom_user.add_user']
+    template_name = 'authentic2/manager/user_add.html'
 
     def get_form_kwargs(self):
         kwargs = super(UserAddView, self).get_form_kwargs()
         qs = self.request.user.ous_with_perm('custom_user.add_user')
-        kwargs['ou'] = qs.get(pk=self.kwargs['ou_pk'])
+        self.ou = qs.get(pk=self.kwargs['ou_pk'])
+        kwargs['ou'] = self.ou
         return kwargs
 
     def get_fields(self):
@@ -106,6 +108,11 @@ class UserAddView(BaseAddView):
 
     def get_success_url(self):
         return reverse('a2-manager-user-detail', kwargs={'pk': self.object.pk})
+
+    def get_context_data(self, **kwargs):
+        kwargs['cancel_url'] = '../..'
+        kwargs['ou'] = self.ou
+        return super(UserAddView, self).get_context_data(**kwargs)
 
 user_add = UserAddView.as_view()
 
