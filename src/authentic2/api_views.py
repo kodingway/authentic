@@ -362,10 +362,6 @@ class BaseUserSerializer(serializers.ModelSerializer):
         if 'password' in validated_data:
             instance.set_password(validated_data['password'])
             instance.save()
-        elif send_registration_email:
-            # set random password so that the password reset form will work
-            instance.set_password(utils.get_hex_uuid())
-            instance.save()
         if force_password_reset:
             PasswordReset.objects.get_or_create(user=instance)
         if send_registration_email and validated_data.get('email'):
@@ -528,11 +524,6 @@ class UsersAPI(HookMixin, ExceptionHandlerMixin, ModelViewSet):
         # An user without email cannot receive the token
         if not user.email:
             return Response({'result': 0, 'reason': 'User has no mail'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-        # An user without a password cannot reset it
-        if not user.has_usable_password():
-            user.set_password(uuid.uuid4().hex)
-            user.save()
 
         utils.send_password_reset_mail(user, request=request)
         return Response(status=status.HTTP_204_NO_CONTENT)

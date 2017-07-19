@@ -683,10 +683,13 @@ def send_registration_mail(request, email, template_names, next_url=None,
     send_templated_mail(email, template_names, ctx, **legacy_template_names)
 
 
-def build_reset_password_url(user, request=None, next_url=None):
+def build_reset_password_url(user, request=None, next_url=None, set_random_password=True):
     '''Build a reset password URL'''
     from .compat import default_token_generator
 
+    if set_random_password:
+        user.set_password(uuid.uuid4().hex)
+        user.save()
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     token = default_token_generator.make_token(user)
     reset_url = reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token})
@@ -702,6 +705,7 @@ def send_password_reset_mail(user, template_names=None, request=None,
                              next_url=None, context=None,
                              legacy_subject_templates=['registration/password_reset_subject.txt'],
                              legacy_body_templates=['registration/password_reset_email.html'],
+                             set_random_password=True,
                              **kwargs):
     from . import middleware
 
@@ -722,7 +726,8 @@ def send_password_reset_mail(user, template_names=None, request=None,
     })
 
     # Build reset URL
-    ctx['reset_url'], token = build_reset_password_url(user, request=request, next_url=next_url)
+    ctx['reset_url'], token = build_reset_password_url(user, request=request, next_url=next_url,
+                                                       set_random_password=set_random_password)
 
     send_templated_mail(user.email, template_names, ctx, request=request,
                         legacy_subject_templates=legacy_subject_templates,

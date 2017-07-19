@@ -20,4 +20,6 @@ class PasswordResetForm(forms.Form):
         active_users = UserModel._default_manager.filter(
             email__iexact=email, is_active=True)
         for user in active_users:
-            send_password_reset_mail(user)
+            # we don't set the password to a random string, as some users should not have
+            # a password
+            send_password_reset_mail(user, set_random_password=user.has_usable_password())
