@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.utils.timezone import now
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 
 from authentic2.models import Service
 
@@ -59,6 +60,13 @@ class OIDCClient(Service):
         (FLOW_IMPLICIT, _('implicit/native')),
     ]
 
+    AUTHORIZATION_MODE_BY_SERVICE = 1
+    AUTHORIZATION_MODE_BY_OU = 2
+    AUTHORIZATION_MODES = [
+        (AUTHORIZATION_MODE_BY_SERVICE, _('authorization by service')),
+        (AUTHORIZATION_MODE_BY_OU, _('authorization by ou')),
+    ]
+
     client_id = models.CharField(
         max_length=255,
         verbose_name=_('client id'),
@@ -68,6 +76,10 @@ class OIDCClient(Service):
         max_length=255,
         verbose_name=_('client secret'),
         default=generate_uuid)
+    authorization_mode = models.PositiveIntegerField(
+        default=AUTHORIZATION_MODE_BY_SERVICE,
+        choices=AUTHORIZATION_MODES,
+        verbose_name=_('authorization mode'))
     authorization_flow = models.PositiveIntegerField(
         verbose_name=_('authorization flow'),
         default=FLOW_AUTHORIZATION_CODE,
@@ -91,6 +103,9 @@ class OIDCClient(Service):
         default=ALGO_RSA,
         choices=ALGO_CHOICES,
         verbose_name=_('IDToken signature algorithm'))
+    authorizations = GenericRelation('OIDCAuthorization',
+                                     content_type_field='client_ct',
+                                     object_id_field='client_id')
 
     # metadata
     created = models.DateTimeField(
@@ -110,9 +125,12 @@ class OIDCClient(Service):
 
 
 class OIDCAuthorization(models.Model):
-    client = models.ForeignKey(
-        to=OIDCClient,
-        verbose_name=_('client'))
+    client_ct = models.ForeignKey(
+        'contenttypes.ContentType',
+        verbose_name=_('client ct'))
+    client_id = models.PositiveIntegerField(
+        verbose_name=_('client id'))
+    client = GenericForeignKey('client_ct', 'client_id')
     user = models.ForeignKey(
         to=settings.AUTH_USER_MODEL,
         verbose_name=_('user'))
@@ -248,3 +266,10 @@ class OIDCAccessToken(models.Model):
             self.user_id and unicode(self.user),
             self.expired,
             self.scopes)
+
+# Add generic field to a2_rbac.OrganizationalUnit
+from authentic2.a2_rbac.models import OrganizationalUnit
+GenericRelation('authentic2_idp_oidc.OIDCAuthorization',
+                content_type_field='client_ct',
+                object_id_field='client_id').contribute_to_class(
+                    OrganizationalUnit, 'oidc_authorizations')

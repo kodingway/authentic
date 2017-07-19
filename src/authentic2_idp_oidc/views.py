@@ -180,12 +180,18 @@ def authorize(request, *args, **kwargs):
             params['nonce'] = nonce
         return login_require(request, params=params)
 
-    qs = models.OIDCAuthorization.objects.filter(client=client, user=request.user)
+    if client.authorization_mode == client.AUTHORIZATION_MODE_BY_SERVICE:
+        auth_manager = client.authorizations
+    elif client.authorization_mode == client.AUTHORIZATION_MODE_BY_OU:
+        auth_manager = client.ou.oidc_authorizations
+
+    qs = auth_manager.filter(user=request.user)
+
     if 'consent' in prompt:
         # if consent is asked we delete existing authorizations
         # it seems to be the safer option
         qs.delete()
-        qs = models.OIDCAuthorization.objects.none()
+        qs = auth_manager.none()
     else:
         qs = qs.filter(expired__gte=start)
     authorized_scopes = set()
@@ -204,11 +210,11 @@ def authorize(request, *args, **kwargs):
                     # clean obsolete authorizations
                     if authorization.scope_set() <= scopes:
                         pk_to_deletes.append(authorization.pk)
-                models.OIDCAuthorization.objects.create(
+                auth_manager.create(
                     client=client, user=request.user, scopes=u' '.join(sorted(scopes)),
                     expired=start + datetime.timedelta(days=365))
                 if pk_to_deletes:
-                    models.OIDCAuthorization.objects.filter(pk__in=pk_to_deletes).delete()
+                    auth_manager.filter(pk__in=pk_to_deletes).delete()
                 logger.info(u'authorized scopes %s for service %s', ' '.join(scopes),
                             client.name)
             else:

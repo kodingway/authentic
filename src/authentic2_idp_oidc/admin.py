@@ -12,11 +12,30 @@ class OIDCClientAdmin(admin.ModelAdmin):
 
 class OIDCAuthorizationAdmin(admin.ModelAdmin):
     list_display = ['client', 'user', 'created', 'expired']
-    list_filter = ['client']
-    search_fields = ['user__first_name', 'user__last_name', 'user__email', 'user__username',
-                     'client__name']
+    search_fields = ['user__first_name', 'user__last_name', 'user__email', 'user__username']
     date_hierarchy = 'created'
     readonly_fields = ['created', 'expired']
+
+    def get_queryset(self, request):
+        qs = super(OIDCAuthorizationAdmin, self).get_queryset(request)
+        qs = qs.prefetch_related('client')
+        return qs
+
+    def get_search_results(self, request, queryset, search_term):
+            from django.contrib.contenttypes.models import ContentType
+            from authentic2.a2_rbac.models import OrganizationalUnit as OU
+
+            queryset, use_distinct = super(OIDCAuthorizationAdmin, self).get_search_results(
+                request, queryset, search_term)
+            clients = models.OIDCClient.objects.filter(name__contains=search_term).values_list('pk')
+            ous = OU.objects.filter(name__contains=search_term).values_list('pk')
+            queryset |= self.model.objects.filter(
+                client_ct=ContentType.objects.get_for_model(models.OIDCClient),
+                client_id=clients)
+            queryset |= self.model.objects.filter(
+                client_ct=ContentType.objects.get_for_model(OU),
+                client_id=ous)
+            return queryset, use_distinct
 
 
 class OIDCCodeAdmin(admin.ModelAdmin):
