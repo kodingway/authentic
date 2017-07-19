@@ -447,6 +447,9 @@ class UsersFilter(FilterSet):
                 'exact',
                 'iexact',
             ],
+            'ou__slug': [
+                'exact',
+            ],
         }
 
 
