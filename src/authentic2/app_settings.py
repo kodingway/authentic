@@ -167,6 +167,9 @@ default_settings = dict(
     A2_REDIRECT_WHITELIST=Setting(
         default=(),
         definition='List of origins which are authorized to ask for redirection.'),
+    A2_API_USERS_REQUIRED_FIELDS=Setting(
+        default=(),
+        definition='List of fields to require on user\'s API, override other settings'),
 )
 
 app_settings = AppSettings(default_settings)

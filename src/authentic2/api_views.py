@@ -320,6 +320,11 @@ class BaseUserSerializer(serializers.ModelSerializer):
             if key in app_settings.A2_REQUIRED_FIELDS:
                 self.fields[key].required = True
 
+        # A2_API_USERS_REQUIRED_FIELDS override all other sources of requiredness
+        if app_settings.A2_API_USERS_REQUIRED_FIELDS:
+            for key in self.fields:
+                self.fields[key].required = key in app_settings.A2_API_USERS_REQUIRED_FIELDS
+
     def check_perm(self, perm, ou):
         self.context['view'].check_perm(perm, ou)
 

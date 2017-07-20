@@ -142,7 +142,7 @@ def test_api_users_list(app, user):
     assert resp.json['next'] is None
 
 
-def test_api_users_create(app, api_user):
+def test_api_users_create(settings, app, api_user):
     from django.contrib.auth import get_user_model
     from authentic2.models import Attribute, AttributeValue
 
@@ -159,6 +159,15 @@ def test_api_users_create(app, api_user):
     resp = app.post_json('/api/users/', params=payload, status=400)
     assert resp.json['result'] == 0
     assert set(['first_name', 'last_name']) == set(resp.json['errors'])
+    settings.A2_API_USERS_REQUIRED_FIELDS = ['email']
+    if api_user.is_superuser or hasattr(api_user, 'oidc_client') or api_user.roles.exists():
+        status = 201
+    else:
+        status = 403
+    resp = app.post_json('/api/users/', params=payload, status=status)
+    if status == 201:
+        assert resp.json
+    del settings.A2_API_USERS_REQUIRED_FIELDS
 
     payload = {
         'ou': None,
