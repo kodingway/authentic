@@ -41,6 +41,10 @@ class HookMixin(object):
             hooks.call_hooks('api_modify_serializer', self, serializer)
         return serializer
 
+    def get_object(self):
+        hooks.call_hooks('api_modify_view_before_get_object', self)
+        return super(HookMixin, self).get_object()
+
 
 class DjangoPermission(permissions.BasePermission):
     def __init__(self, perm):
