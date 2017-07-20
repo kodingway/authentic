@@ -513,6 +513,7 @@ class UsersAPI(HookMixin, ExceptionHandlerMixin, ModelViewSet):
                 'errors': serializer.errors
             }
             return Response(response, status.HTTP_400_BAD_REQUEST)
+        hooks.call_hooks('api_modify_serializer_after_validation', self, serializer)
         unknown_uuids = self.check_uuids(serializer.validated_data.get('known_uuids', []))
         return Response({
             'result': 1,
