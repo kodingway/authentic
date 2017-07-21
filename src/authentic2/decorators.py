@@ -142,6 +142,7 @@ class CacheDecoratorBase(object):
                 return value
             except CacheUnusable: # fallback when cache cannot be used
                 return func(*args, **kwargs)
+        f.cache = self
         return f
 
     def key(self, *args, **kwargs):
