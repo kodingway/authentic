@@ -29,7 +29,7 @@ def test_padding():
     for i in range(1, 100):
         for j in range(2, 32):
             msg = Random.get_random_bytes(i)
-            assert crypto.remove_padding(crypto.add_padding(msg, j)) == msg
+            assert crypto.remove_padding(crypto.add_padding(msg, j), j) == msg
 
 
 def test_deterministic_encryption():

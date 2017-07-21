@@ -69,15 +69,20 @@ def add_padding(msg, block_size):
     return padded
 
 
-def remove_padding(msg):
+def remove_padding(msg, block_size):
     '''Ignore padded zero bytes'''
     try:
         msg_length, = struct.unpack('<h', msg[:2])
     except struct.error:
         raise DecryptionError('wrong padding')
+    if len(msg) % block_size != 0:
+        raise DecryptionError('message length is not a multiple of block size', len(msg),
+                              block_size)
     unpadded = msg[2:2 + msg_length]
     if msg_length > len(msg) - 2:
         raise DecryptionError('wrong padding')
+    if not all(c == '\0' for c in msg[2 + msg_length]):
+        raise DecryptionError('padding is not all zero')
     if len(unpadded) != msg_length:
         raise DecryptionError('wrong padding')
     return unpadded
@@ -146,7 +151,7 @@ def aes_base64url_deterministic_decrypt(key, urlencoded, salt, raise_on_error=Tr
 
         aes = AES.new(aes_key, AES.MODE_CBC, iv[:key_size])
 
-        data = remove_padding(aes.decrypt(crypted))
+        data = remove_padding(aes.decrypt(crypted), key_size)
 
         return data
     except DecryptionError:
