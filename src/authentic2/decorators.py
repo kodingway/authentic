@@ -124,6 +124,9 @@ class CacheDecoratorBase(object):
     def get(self, key):
         raise NotImplementedError
 
+    def clear(self):
+        raise NotImplementedError
+
     def __call__(self, func):
         @wraps(func)
         def f(*args, **kwargs):
@@ -167,6 +170,7 @@ class CacheDecoratorBase(object):
             parts.append(u'%s-%s' % (unicode(kw), unicode(arg)))
         return u'|'.join(parts)
 
+
 class SimpleDictionnaryCacheMixin(object):
     '''Default implementations of set, get and delete for a cache implemented
        using a dictionary. The dictionnary must be returned by a property named
@@ -181,6 +185,9 @@ class SimpleDictionnaryCacheMixin(object):
     def delete(self, key, value):
         if key in self.cache and self.cache[key] == value:
             del self.cache[key]
+
+    def clear(self):
+        self.cache.clear()
 
 
 class GlobalCache(SimpleDictionnaryCacheMixin, CacheDecoratorBase):
@@ -197,6 +204,7 @@ class RequestCache(SimpleDictionnaryCacheMixin, CacheDecoratorBase):
             return {}
         # create a cache dictionary on the request
         return request.__dict__.setdefault(self.__class__.__name__, {})
+
 
 class DjangoCache(SimpleDictionnaryCacheMixin, CacheDecoratorBase):
     @property
