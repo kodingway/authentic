@@ -242,6 +242,18 @@ class SessionCache(PickleCacheMixin, SimpleDictionnaryCacheMixin,
         # create a cache dictionary on the request
         return request.session.setdefault(self.__class__.__name__, {})
 
+    def set(self, key, value):
+        request = middleware.StoreRequestMiddleware.get_request()
+        if request:
+            request.session.modified = True
+        return super(SessionCache, self).set(key, value)
+
+    def clear(self):
+        request = middleware.StoreRequestMiddleware.get_request()
+        if request:
+            request.session.modified = True
+        return super(SessionCache, self).clear()
+
 
 @contextmanager
 def errorcollector(error_dict):
