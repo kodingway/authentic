@@ -160,38 +160,42 @@ class EmailChangeView(cbv.TemplateNamesMixin, FormView):
             return utils.redirect(request, 'account_management')
         return super(EmailChangeView, self).post(request, *args, **kwargs)
 
-    def form_valid(self, form):
-        email = form.cleaned_data['email']
+    @classmethod
+    def send_email_change_email(cls, request, user, email):
         token = signing.dumps({
             'email': email,
-            'user_pk': self.request.user.pk,
+            'user_pk': user.pk,
         })
         link = '{0}?token={1}'.format(
-                reverse('email-change-verify'),
-                token)
-        link = self.request.build_absolute_uri(link)
-        ctx = {'email': email,
-               'old_email': self.request.user.email,
-               'user': self.request.user,
-               'link': link,
-               'domain': self.request.get_host(),
-               'token_lifetime': utils.human_duration(app_settings.A2_EMAIL_CHANGE_TOKEN_LIFETIME),
+            reverse('email-change-verify'),
+            token)
+        link = request.build_absolute_uri(link)
+        ctx = {
+            'email': email,
+            'old_email': user.email,
+            'user': user,
+            'link': link,
+            'domain': request.get_host(),
+            'token_lifetime': utils.human_duration(app_settings.A2_EMAIL_CHANGE_TOKEN_LIFETIME),
         }
 
         utils.send_templated_mail(
-                email,
-                ['authentic2/change_email_notification'],
-                context=ctx,
-                legacy_subject_templates=['profiles/email_change_subject.txt'],
-                legacy_body_templates=['profiles/email_change_body.txt'])
+            email,
+            ['authentic2/change_email_notification'],
+            context=ctx,
+            legacy_subject_templates=['profiles/email_change_subject.txt'],
+            legacy_body_templates=['profiles/email_change_body.txt'])
 
-        messages.info(self.request,
-                _('Your request for changing your email '
-                  'is received. An email of validation '
-                  'was sent to you. Please click on the '
-                  'link contained inside.'))
-        logging.getLogger(__name__).info('email change request by %s',
-                                         self.request.user)
+    def form_valid(self, form):
+        email = form.cleaned_data['email']
+        self.send_email_change_email(self.request, self.request.user, email)
+        messages.info(
+            self.request,
+            _('Your request for changing your email '
+              'is received. An email of validation '
+              'was sent to you. Please click on the '
+              'link contained inside.'))
+        logging.getLogger(__name__).info('email change request')
         return super(EmailChangeView, self).form_valid(form)
 
 email_change = decorators.setting_enabled('A2_PROFILE_CAN_CHANGE_EMAIL')(
