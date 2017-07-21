@@ -489,9 +489,16 @@ def test_api_drf_authentication_class(app, admin, user_ou1, oidc_client):
     # test oidc client
     app.authorization = ('Basic', (oidc_client.username, oidc_client.username))
     app.get(url, status=200)
+    # test oidc client without has API access
+    oidc_client.oidc_client.has_api_access = False
+    oidc_client.oidc_client.save()
+    app.authorization = ('Basic', (oidc_client.username, oidc_client.username))
+    response = app.get(url, status=401)
+    assert response.json['result'] == 0
+    assert response.json['errors']
 
 
-def test_api_check_password(app, superuser, user_ou1):
+def test_api_check_password(app, superuser, oidc_client, user_ou1):
     app.authorization = ('Basic', (superuser.username, superuser.username))
     # test with invalid paylaod
     payload = {'username': 'whatever'}
@@ -508,11 +515,10 @@ def test_api_check_password(app, superuser, user_ou1):
     resp = app.post_json(reverse('a2-api-check-password'), params=payload, status=200)
     assert resp.json['result'] == 1
     # test valid oidc credentials
-    client, created = OIDCClient.objects.get_or_create(
-        client_id='clientid', client_secret='clientpassword', authorization_flow=1,
-        post_logout_redirect_uris='http://example.net/redirect/',
-    )
-    payload = {'username': client.client_id, 'password': client.client_secret}
+    payload = {
+        'username': oidc_client.oidc_client.client_id,
+        'password': oidc_client.oidc_client.client_secret,
+    }
     resp = app.post_json(reverse('a2-api-check-password'), params=payload, status=200)
     assert resp.json['result'] == 1
     assert resp.json['oidc_client'] is True

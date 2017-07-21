@@ -1,5 +1,6 @@
 from authentic2_idp_oidc.models import OIDCClient
 
+from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.authentication import BasicAuthentication
 
 
@@ -33,6 +34,12 @@ class Authentic2Authentication(BasicAuthentication):
         # try Simple OIDC Authentication
         try:
             client = OIDCClient.objects.get(client_id=userid, client_secret=password)
+            if not client.has_api_access:
+                raise AuthenticationFailed('OIDC client does not have access to the API')
+            if client.identifier_policy not in (client.POLICY_UUID,
+                                                client.POLICY_PAIRWISE_REVERSIBLE):
+                raise AuthenticationFailed('OIDC Client identifier policy does not allow access to '
+                                           'the API')
             user = OIDCUser(client)
             user.authenticated = True
             return (user, True)

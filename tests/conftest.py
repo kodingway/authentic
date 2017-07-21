@@ -174,7 +174,9 @@ def oidc_client(db, ou1):
     client = OIDCClient.objects.create(
         name='example', slug='example', client_id='example',
         client_secret='example', authorization_flow=1,
-        post_logout_redirect_uris='https://example.net/redirect/'
+        post_logout_redirect_uris='https://example.net/redirect/',
+        identifier_policy=OIDCClient.POLICY_UUID,
+        has_api_access=True,
     )
 
     class TestOIDCUser(OIDCUser):
