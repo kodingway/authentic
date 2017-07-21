@@ -1,5 +1,7 @@
 from django.utils.translation import ugettext_lazy as _
 
+default_app_config = 'authentic2_idp_oidc.apps.AppConfig'
+
 
 class Plugin(object):
     def get_before_urls(self):

@@ -515,10 +515,12 @@ class UsersAPI(HookMixin, ExceptionHandlerMixin, ModelViewSet):
             return Response(response, status.HTTP_400_BAD_REQUEST)
         hooks.call_hooks('api_modify_serializer_after_validation', self, serializer)
         unknown_uuids = self.check_uuids(serializer.validated_data.get('known_uuids', []))
-        return Response({
+        data = {
             'result': 1,
             'unknown_uuids': unknown_uuids,
-        })
+        }
+        hooks.call_hooks('api_modify_response', self, 'synchronization', data)
+        return Response(data)
 
     @detail_route(methods=['post'], url_path='password-reset', permission_classes=(DjangoPermission('custom_user.reset_password_user'),))
     def password_reset(self, request, uuid):

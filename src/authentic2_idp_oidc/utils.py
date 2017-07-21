@@ -2,6 +2,7 @@ import json
 import hashlib
 import urlparse
 import base64
+import uuid
 
 from jwcrypto.jwk import JWK, JWKSet, InvalidJWKValue
 from jwcrypto.jwt import JWT
@@ -9,7 +10,7 @@ from jwcrypto.jwt import JWT
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
 
-from authentic2 import hooks
+from authentic2 import hooks, crypto
 
 from . import app_settings
 
@@ -75,7 +76,7 @@ def url_domain(url):
 
 
 def make_sub(client, user):
-    if client.identifier_policy == client.POLICY_PAIRWISE:
+    if client.identifier_policy in (client.POLICY_PAIRWISE, client.POLICY_PAIRWISE_REVERSIBLE):
         return make_pairwise_sub(client, user)
     elif client.identifier_policy == client.POLICY_UUID:
         return unicode(user.uuid)
@@ -87,19 +88,63 @@ def make_sub(client, user):
 
 def make_pairwise_sub(client, user):
     '''Make a pairwise sub'''
-    sector_identifier = None
-    if client.sector_identifier_uri:
-        sector_identifier = url_domain(client.sector_identifier_uri)
+    if client.identifier_policy == client.POLICY_PAIRWISE:
+        return make_pairwise_unreversible_sub(client, user)
+    elif client.identifier_policy == client.POLICY_PAIRWISE_REVERSIBLE:
+        return make_pairwise_reversible_sub(client, user)
     else:
-        for redirect_uri in client.redirect_uris.split():
-            hostname = urlparse.urlparse(redirect_uri).netloc.split(':')[0]
-            if sector_identifier is None:
-                sector_identifier = hostname
-            elif sector_identifier != hostname:
-                raise ImproperlyConfigured('all redirect_uri do not have the same hostname')
+        raise NotImplementedError(
+            'unknown pairwise client.identifier_policy %s' % client.identifier_policy)
+
+
+def get_sector_identifier(client):
+    if client.authorization_mode == client.AUTHORIZATION_MODE_BY_SERVICE:
+        sector_identifier = None
+        if client.sector_identifier_uri:
+            sector_identifier = url_domain(client.sector_identifier_uri)
+        else:
+            for redirect_uri in client.redirect_uris.split():
+                hostname = url_domain(redirect_uri)
+                if sector_identifier is None:
+                    sector_identifier = hostname
+                elif sector_identifier != hostname:
+                    raise ImproperlyConfigured('all redirect_uri do not have the same hostname')
+    elif client.authorization_mode == client.AUTHORIZATION_MODE_BY_OU:
+        sector_identifier = client.ou.slug
+    else:
+        raise NotImplementedError(
+            'unknown client.authorization_mode %s' % client.authorization_mode)
+    return sector_identifier
+
+
+def make_pairwise_unreversible_sub(client, user):
+    sector_identifier = get_sector_identifier(client)
     sub = sector_identifier + str(user.uuid) + settings.SECRET_KEY
     sub = base64.b64encode(hashlib.sha256(sub).digest())
     return sub
+
+
+def make_pairwise_reversible_sub(client, user):
+    return make_pairwise_reversible_sub_from_uuid(client, user.uuid)
+
+
+def make_pairwise_reversible_sub_from_uuid(client, user_uuid):
+    try:
+        identifier = uuid.UUID(user_uuid).bytes
+    except ValueError:
+        return None
+    sector_identifier = get_sector_identifier(client)
+    return crypto.aes_base64url_deterministic_encrypt(
+        settings.SECRET_KEY, identifier, sector_identifier)
+
+
+def reverse_pairwise_sub(client, sub):
+    sector_identifier = get_sector_identifier(client)
+    try:
+        return crypto.aes_base64url_deterministic_decrypt(
+            settings.SECRET_KEY, sub, sector_identifier)
+    except crypto.DecryptionError:
+        return None
 
 
 def create_user_info(client, user, scope_set, id_token=False):

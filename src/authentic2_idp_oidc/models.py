@@ -40,10 +40,12 @@ class OIDCClient(Service):
     POLICY_UUID = 1
     POLICY_PAIRWISE = 2
     POLICY_EMAIL = 3
+    POLICY_PAIRWISE_REVERSIBLE = 4 
 
     IDENTIFIER_POLICIES = [
         (POLICY_UUID, _('uuid')),
-        (POLICY_PAIRWISE, _('pairwise')),
+        (POLICY_PAIRWISE, _('pairwise unreversible')),
+        (POLICY_PAIRWISE_REVERSIBLE, _('pairwise reversible')),
         (POLICY_EMAIL, _('email')),
     ]
 

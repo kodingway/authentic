@@ -211,7 +211,7 @@ def authorize(request, *args, **kwargs):
                     if authorization.scope_set() <= scopes:
                         pk_to_deletes.append(authorization.pk)
                 auth_manager.create(
-                    client=client, user=request.user, scopes=u' '.join(sorted(scopes)),
+                    user=request.user, scopes=u' '.join(sorted(scopes)),
                     expired=start + datetime.timedelta(days=365))
                 if pk_to_deletes:
                     auth_manager.filter(pk__in=pk_to_deletes).delete()
