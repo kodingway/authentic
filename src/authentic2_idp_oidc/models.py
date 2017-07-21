@@ -105,6 +105,10 @@ class OIDCClient(Service):
         default=ALGO_RSA,
         choices=ALGO_CHOICES,
         verbose_name=_('IDToken signature algorithm'))
+    has_api_access = models.BooleanField(
+        verbose_name=_('has API access'),
+        default=False)
+
     authorizations = GenericRelation('OIDCAuthorization',
                                      content_type_field='client_ct',
                                      object_id_field='client_id')
