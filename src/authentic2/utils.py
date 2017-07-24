@@ -883,6 +883,17 @@ def netloc_to_host_port(netloc):
     return splitted[0], None
 
 
+def same_domain(domain1, domain2):
+    if domain1 == domain2:
+        return True
+
+    if domain2.startswith('.'):
+        # p1 is a sub-domain or the base domain
+        if domain1.endswith(domain2) or domain1 == domain2[1:]:
+            return True
+    return False
+
+
 def same_origin(url1, url2):
     '''Checks if both URL use the same domain. It understands domain patterns on url2, i.e. .example.com
     matches www.example.com.
@@ -898,13 +909,8 @@ def same_origin(url1, url2):
     if p2.scheme and p1.scheme != p2.scheme:
         return False
 
-    if p1_host != p2_host:
-        if p2_host.startswith('.'):
-            # p1 is a sub-domain or the base domain
-            if not p1_host.endswith(p2_host) and not p1_host == p2_host[1:]:
-                return False
-        else:
-            return False
+    if not same_domain(p1_host, p2_host):
+        return False
 
     try:
         if (p2_port or (p1_port and p2.scheme)) and (
