@@ -11,6 +11,8 @@ from django_rbac.utils import get_ou_model
 from authentic2.backends import ldap_backend
 from authentic2 import crypto
 
+from pytest_django.migrations import DisableMigrations
+
 import utils
 
 pytestmark = pytest.mark.skipunless(has_slapd(), reason='slapd is not installed')
@@ -308,6 +310,7 @@ def test_get_users(slapd, settings):
     import django.db.models.base
     from types import MethodType
 
+    no_migrations = isinstance(settings.MIGRATION_MODULES, DisableMigrations)
     User = get_user_model()
     settings.LDAP_AUTH_SETTINGS = [{
         'url': [slapd.ldap_url],
@@ -331,7 +334,7 @@ def test_get_users(slapd, settings):
     assert len(users) == 101
     assert User.objects.count() == 101
     assert bulk_create.call_count == 101
-    assert save.call_count == 303
+    assert save.call_count == 101 if no_migrations else 303
 
     # Check that if nothing changed no save() is made
     save.reset_mock()
@@ -348,7 +351,7 @@ def test_get_users(slapd, settings):
     users = list(ldap_backend.LDAPBackend.get_users())
     assert len(users) == 101
     assert User.objects.count() == 101
-    assert save.call_count == 3
+    assert save.call_count == 1 if no_migrations else 3 
     assert bulk_create.call_count == 1
 
 
