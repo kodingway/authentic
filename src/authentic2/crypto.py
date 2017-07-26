@@ -81,7 +81,7 @@ def remove_padding(msg, block_size):
     unpadded = msg[2:2 + msg_length]
     if msg_length > len(msg) - 2:
         raise DecryptionError('wrong padding')
-    if not all(c == '\0' for c in msg[2 + msg_length]):
+    if not all(c == '\0' for c in msg[2 + msg_length:]):
         raise DecryptionError('padding is not all zero')
     if len(unpadded) != msg_length:
         raise DecryptionError('wrong padding')
