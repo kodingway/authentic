@@ -314,8 +314,12 @@ class BaseUserSerializer(serializers.ModelSerializer):
             else:
                 kind = attribute_kinds.get_kind(at.kind)
                 field_class = kind['rest_framework_field_class']
-                self.fields[at.name] = field_class(source='attributes.%s' % at.name,
-                                                   required=at.required)
+                kwargs = {
+                    'source': 'attributes.%s' % at.name,
+                    'required': at.required,
+                }
+                kwargs.update(kind.get('rest_framework_field_kwargs', {}))
+                self.fields[at.name] = field_class(**kwargs)
         for key in self.fields:
             if key in app_settings.A2_REQUIRED_FIELDS:
                 self.fields[key].required = True

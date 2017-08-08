@@ -123,5 +123,9 @@ def get_kind(kind):
     d.setdefault('default', None)
     d.setdefault('serialize', lambda x: x)
     d.setdefault('deserialize', lambda x: x)
-    d.setdefault('rest_framework_field_class', serializers.CharField)
+    rest_field_kwargs = d.setdefault('rest_framework_field_kwargs', {})
+    if 'rest_framework_field_class' not in d:
+        d['rest_framework_field_class'] = serializers.CharField
+        rest_field_kwargs.setdefault('allow_blank', True)
+        rest_field_kwargs.setdefault('max_length', 128)
     return d
