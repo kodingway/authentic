@@ -117,6 +117,9 @@ def get_form_field(kind, **kwargs):
         kwargs.update(defn['kwargs'])
     return defn['field_class'](**kwargs)
 
+DEFAULT_ALLOW_BLANK = True
+DEFAULT_MAX_LENGTH = 256
+
 
 def get_kind(kind):
     d = get_attribute_kinds()[kind]
@@ -126,6 +129,6 @@ def get_kind(kind):
     rest_field_kwargs = d.setdefault('rest_framework_field_kwargs', {})
     if 'rest_framework_field_class' not in d:
         d['rest_framework_field_class'] = serializers.CharField
-        rest_field_kwargs.setdefault('allow_blank', True)
-        rest_field_kwargs.setdefault('max_length', 128)
+        rest_field_kwargs.setdefault('allow_blank', DEFAULT_ALLOW_BLANK)
+        rest_field_kwargs.setdefault('max_length', DEFAULT_MAX_LENGTH)
     return d
