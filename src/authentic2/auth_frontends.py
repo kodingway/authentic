@@ -55,7 +55,7 @@ class LoginPasswordBackend(object):
                 seconds_to_wait = exponential_backoff.seconds_to_wait(request)
         if seconds_to_wait:
             # during a post reset form data to prevent validation
-            if reset:
+            if is_post and reset:
                 form = forms.AuthenticationForm(initial={'username': data.get('username', '')})
             msg = _('You made too many login errors recently, you must wait <span class="js-seconds-until">%s</span> seconds to try again.')
             msg = msg % int(seconds_to_wait)
