@@ -310,7 +310,6 @@ def test_get_users(slapd, settings):
     import django.db.models.base
     from types import MethodType
 
-    no_migrations = isinstance(settings.MIGRATION_MODULES, DisableMigrations)
     User = get_user_model()
     settings.LDAP_AUTH_SETTINGS = [{
         'url': [slapd.ldap_url],
