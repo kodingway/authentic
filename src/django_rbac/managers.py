@@ -96,6 +96,11 @@ class PermissionQueryset(query.QuerySet):
 PermissionManager = PermissionManagerBase.from_queryset(PermissionQueryset)
 
 
+class IntCast(models.Func):
+    function = 'int'
+    template = 'CAST((%(expressions)s) AS %(function)s)'
+
+
 class RoleQuerySet(query.QuerySet):
     def for_user(self, user):
         return self.filter(members=user).parents().distinct()
@@ -106,7 +111,7 @@ class RoleQuerySet(query.QuerySet):
             qs = self | qs
         qs = qs.distinct()
         if annotate:
-            qs = qs.annotate(direct=models.Max('child_relation__direct'))
+            qs = qs.annotate(direct=models.Max(IntCast('child_relation__direct')))
         return qs
 
     def children(self, include_self=True, annotate=False):
@@ -115,7 +120,7 @@ class RoleQuerySet(query.QuerySet):
             qs = self | qs
         qs = qs.distinct()
         if annotate:
-            qs = qs.annotate(direct=models.Max('parent_relation__direct'))
+            qs = qs.annotate(direct=models.Max(IntCast('parent_relation__direct')))
         return qs
 
     def all_members(self):
