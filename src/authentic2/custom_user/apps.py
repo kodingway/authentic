@@ -1,3 +1,4 @@
+from django.db import DEFAULT_DB_ALIAS, router
 from django.apps import AppConfig
 
 
@@ -12,7 +13,8 @@ class CustomUserConfig(AppConfig):
             self.create_first_name_last_name_attributes,
             sender=self)
 
-    def create_first_name_last_name_attributes(self, app_config, **kwargs):
+    def create_first_name_last_name_attributes(self, app_config, verbosity=2, interactive=True,
+                                               using=DEFAULT_DB_ALIAS, **kwargs):
         from django.utils import translation
         from django.utils.translation import ugettext_lazy as _
         from django.conf import settings
@@ -20,6 +22,9 @@ class CustomUserConfig(AppConfig):
         from authentic2.models import Attribute, AttributeValue
         from django.contrib.auth import get_user_model
         from django.contrib.contenttypes.models import ContentType
+
+        if not router.allow_migrate(using, Attribute):
+            return
 
         if Attribute.objects.filter(name__in=['first_name', 'last_name']).count() == 2:
             return
