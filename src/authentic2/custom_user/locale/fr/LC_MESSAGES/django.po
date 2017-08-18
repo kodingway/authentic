@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: authentic2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-26 18:16+0200\n"
-"PO-Revision-Date: 2017-06-26 22:16+0200\n"
+"POT-Creation-Date: 2017-08-18 09:45+0200\n"
+"PO-Revision-Date: 2017-08-18 09:47+0200\n"
 "Last-Translator: Benjamin Dauvergn <bdauvergne@entrouvert.com>\n"
 "Language-Team: French <fr@li.org>\n"
 "Language: French\n"
@@ -16,6 +16,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: apps.py:40
+msgid "First name"
+msgstr "Prénom"
+
+#: apps.py:48
+msgid "Last name"
+msgstr "Nom"
 
 #: base_user.py:18
 msgid "password"
@@ -25,47 +33,43 @@ msgstr "mot de passe"
 msgid "last login"
 msgstr "dernière connexion"
 
-#: migrations/0011_manual_attribute_values_for_name_fields.py:32
-msgid "First name"
-msgstr "prénom"
-
-#: migrations/0011_manual_attribute_values_for_name_fields.py:43
-msgid "Last name"
-msgstr "nom"
-
-#: models.py:55
+#: models.py:81
 msgid "uuid"
 msgstr "identifiant unique"
 
-#: models.py:57
+#: models.py:83
 msgid "username"
 msgstr "identifiant"
 
-#: models.py:58
+#: models.py:84
 msgid "first name"
 msgstr "prénom"
 
-#: models.py:59
+#: models.py:85
 msgid "last name"
 msgstr "nom"
 
-#: models.py:60
+#: models.py:86
 msgid "email address"
 msgstr "courriel"
 
-#: models.py:62
+#: models.py:90
+msgid "email verified"
+msgstr "courriel vérifié"
+
+#: models.py:91
 msgid "staff status"
 msgstr "statut équipe"
 
-#: models.py:63
+#: models.py:92
 msgid "Designates whether the user can log into this admin site."
 msgstr "Précise si l'utilisateur peut se connecter à ce site d'administration."
 
-#: models.py:65
+#: models.py:94
 msgid "active"
 msgstr "actif"
 
-#: models.py:66
+#: models.py:95
 msgid ""
 "Designates whether this user should be treated as active. Unselect this "
 "instead of deleting accounts."
@@ -73,31 +77,31 @@ msgstr ""
 "Précise si l'utilisateur doit être considéré comme actif. Décochez ceci "
 "plutôt que de supprimer le compte."
 
-#: models.py:68
+#: models.py:97
 msgid "date joined"
 msgstr "date d'inscription"
 
-#: models.py:70
+#: models.py:99
 msgid "organizational unit"
 msgstr "collectivité"
 
-#: models.py:76
+#: models.py:105
 msgid "Last modification time"
 msgstr "Dernière modification"
 
-#: models.py:91
+#: models.py:120
 msgid "user"
 msgstr "utilisateur"
 
-#: models.py:92
+#: models.py:121
 msgid "users"
 msgstr "utilisateurs"
 
-#: models.py:166
+#: models.py:195
 msgid "This username is already in use. Please supply a different username."
 msgstr "Cet identifiant est déjà utilisé. Veuillez en choisir un autre."
 
-#: models.py:177
+#: models.py:206
 msgid ""
 "This email address is already in use. Please supply a different email "
 "address."

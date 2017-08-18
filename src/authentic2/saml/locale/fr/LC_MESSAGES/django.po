@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-26 18:15+0200\n"
-"PO-Revision-Date: 2017-06-26 22:12+0200\n"
+"POT-Creation-Date: 2017-08-18 09:45+0200\n"
+"PO-Revision-Date: 2017-08-18 09:45+0200\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
 "Language: fr\n"
@@ -398,19 +398,19 @@ msgstr "fédérations SAML"
 
 #: saml/models.py:528
 msgid "Qualifier"
-msgstr ""
+msgstr "Qualifier"
 
 #: saml/models.py:530
 msgid "NameIDFormat"
-msgstr ""
+msgstr "NameIDFormat"
 
 #: saml/models.py:532
 msgid "NameID"
-msgstr ""
+msgstr "NameID"
 
 #: saml/models.py:534
 msgid "SPNameQualifier"
-msgstr ""
+msgstr "SPNameQualifier"
 
 #: saml/models.py:570
 msgid "SAML session"
