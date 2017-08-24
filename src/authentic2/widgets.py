@@ -12,8 +12,9 @@ import re
 import uuid
 
 from django.forms.widgets import DateTimeInput, DateInput, TimeInput
-from django.utils.formats import get_language
+from django.utils.formats import get_language, get_format
 from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext_lazy as _
 
 from gadjo.templatetags.gadjo import xstatic
 
@@ -51,6 +52,7 @@ BOOTSTRAP_INPUT_TEMPLATE = """
       %(rendered_widget)s
       %(clear_button)s
       <span class="add-on"><i class="icon-th"></i></span>
+      <span class="helptext">%(format_label)s %(format)s</span>
        <script type="text/javascript">
            $("#%(id)s").datetimepicker({%(options)s});
        </script>
@@ -77,7 +79,7 @@ class PickerWidgetMixin(object):
     def __init__(self, attrs=None, options=None, usel10n=None):
 
         if attrs is None:
-            attrs = {'readonly': ''}
+            attrs = {}
 
         self.options = options
         self.options['language'] = get_language().split('-')[0]
@@ -91,6 +93,12 @@ class PickerWidgetMixin(object):
             )
 
         super(PickerWidgetMixin, self).__init__(attrs, format=self.format)
+
+    def get_format(self):
+        format = get_format(self.format_name)[0]
+        for py, js in DATE_FORMAT_PY_JS_MAPPING.iteritems():
+            format = format.replace(py, js)
+        return format
 
     def render(self, name, value, attrs=None):
         final_attrs = self.build_attrs(attrs)
@@ -115,7 +123,9 @@ class PickerWidgetMixin(object):
                     rendered_widget=rendered_widget,
                     clear_button=CLEAR_BTN_TEMPLATE if self.options.get('clearBtn') else '',
                     glyphicon=self.glyphicon,
-                    options=js_options
+                    options=js_options,
+                    format_label=_('Format:'),
+                    format=self.options['format']
                     )
         )
 
@@ -135,7 +145,7 @@ class DateTimeWidget(PickerWidgetMixin, DateTimeInput):
             options = {}
 
         # Set the default options to show only the datepicker object
-        options['format'] = options.get('format', 'dd/mm/yyyy hh:ii')
+        options['format'] = options.get('format', self.get_format())
 
         super(DateTimeWidget, self).__init__(attrs, options, usel10n)
 
@@ -157,7 +167,7 @@ class DateWidget(PickerWidgetMixin, DateInput):
         # Set the default options to show only the datepicker object
         options['startView'] = options.get('startView', 2)
         options['minView'] = options.get('minView', 2)
-        options['format'] = options.get('format', 'dd/mm/yyyy')
+        options['format'] = options.get('format', self.get_format())
 
         super(DateWidget, self).__init__(attrs, options, usel10n)
 
@@ -180,6 +190,6 @@ class TimeWidget(PickerWidgetMixin, TimeInput):
         options['startView'] = options.get('startView', 1)
         options['minView'] = options.get('minView', 0)
         options['maxView'] = options.get('maxView', 1)
-        options['format'] = options.get('format', 'hh:ii')
+        options['format'] = options.get('format', self.get_format())
 
         super(TimeWidget, self).__init__(attrs, options, usel10n)
