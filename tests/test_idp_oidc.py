@@ -196,9 +196,9 @@ def test_authorization_code_sso(login_first, oidc_settings, oidc_client, simple_
     assert parse_timestamp(claims['auth_time']) <= now()
     assert parse_timestamp(claims['exp']) >= now()
     if login_first:
-        assert claims['acr'] == 0
+        assert claims['acr'] == '0'
     else:
-        assert claims['acr'] == 1
+        assert claims['acr'] == '1'
     assert claims['sub'] == make_sub(oidc_client, simple_user)
     assert claims['preferred_username'] == simple_user.username
     assert claims['given_name'] == simple_user.first_name
@@ -740,6 +740,6 @@ def test_role_control_access(login_first, oidc_settings, oidc_client, simple_use
     jwt = JWT(jwt=id_token, key=key)
     claims = json.loads(jwt.claims)
     if login_first:
-        assert claims['acr'] == 0
+        assert claims['acr'] == '0'
     else:
-        assert claims['acr'] == 1
+        assert claims['acr'] == '1'

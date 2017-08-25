@@ -251,9 +251,9 @@ def authorize(request, *args, **kwargs):
                 scopes=u' '.join(scopes),
                 session_key=request.session.session_key,
                 expired=start + datetime.timedelta(seconds=expires_in))
-        acr = 0
+        acr = '0'
         if nonce is not None and last_auth.get('nonce') == nonce:
-            acr = 1
+            acr = '1'
         id_token = utils.create_user_info(client, request.user, scopes, id_token=True)
         id_token.update({
             'iss': request.build_absolute_uri('/'),
