@@ -702,9 +702,7 @@ def send_password_reset_mail(user, template_names=None, request=None,
                              legacy_body_templates=['registration/password_reset_email.html'],
                              **kwargs):
     from . import middleware
-    from .compat import default_token_generator
 
-    token_generator = token_generator or default_token_generator
     if not user.email:
         raise ValueError('user must have an email')
     logger = logging.getLogger(__name__)
@@ -722,14 +720,7 @@ def send_password_reset_mail(user, template_names=None, request=None,
     })
 
     # Build reset URL
-    uid = urlsafe_base64_encode(force_bytes(user.pk))
-    token = token_generator.make_token(user)
-    reset_url = reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token})
-    if request:
-        reset_url = request.build_absolute_uri(reset_url)
-    if next_url:
-        reset_url += '?' + urllib.urlencode({'next': next_url})
-    ctx['reset_url'] = reset_url
+    ctx['reset_url'], token = build_reset_password_url(user, request=request, next_url=next_url)
 
     send_templated_mail(user.email, template_names, ctx, request=request,
                         legacy_subject_templates=legacy_subject_templates,
