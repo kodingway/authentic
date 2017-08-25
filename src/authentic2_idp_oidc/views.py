@@ -354,10 +354,10 @@ def token(request, *args, **kwargs):
         session_key=oidc_code.session_key,
         expired=oidc_code.created + datetime.timedelta(seconds=expires_in))
     start = now()
-    acr = 0
+    acr = '0'
     if (oidc_code.nonce is not None and last_authentication_event(oidc_code.session).get('nonce') ==
             oidc_code.nonce):
-        acr = 1
+        acr = '1'
     # prefill id_token with user info
     id_token = utils.create_user_info(client, oidc_code.user, oidc_code.scope_set(), id_token=True)
     id_token.update({
