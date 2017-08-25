@@ -681,6 +681,20 @@ def send_registration_mail(request, email, template_names, next_url=None,
     send_templated_mail(email, template_names, ctx, **legacy_template_names)
 
 
+def build_reset_password_url(user, request=None, next_url=None):
+    '''Build a reset password URL'''
+    from .compat import default_token_generator
+
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    token = default_token_generator.make_token(user)
+    reset_url = reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token})
+    if request:
+        reset_url = request.build_absolute_uri(reset_url)
+    if next_url:
+        reset_url += '?' + urllib.urlencode({'next': next_url})
+    return reset_url, token
+
+
 def send_password_reset_mail(user, template_names=None, request=None,
                              token_generator=None, from_email=None,
                              next_url=None, context=None,
