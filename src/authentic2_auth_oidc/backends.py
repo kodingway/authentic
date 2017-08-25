@@ -40,13 +40,13 @@ class OIDCBackend(ModelBackend):
             if len(key['keys']) == 1:
                 key = list(key['keys'])[0]
             algs = ['RS256', 'RS384', 'RS512']
-        elif provider.id_token == models.OIDCProvider.ALGO_HMAC:
+        elif provider.idtoken_algo == models.OIDCProvider.ALGO_HMAC:
             key = JWK(kty='oct', k=provider.client_secret)
             if not provider.client_secret:
                 logger.warning('auth_oidc: idtoken signature algorithm is HMAC but '
                                'no client_secret is defined on provider %s', id_token.iss)
                 return None
-            alg = ['HS256', 'HS384', 'HS512']
+            algs = ['HS256', 'HS384', 'HS512']
         else:
             key = None
 
