@@ -10,6 +10,8 @@ from django.utils.timezone import now
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
 
+from authentic2.crypto import base64url_encode
+
 from . import models, utils
 
 
@@ -41,7 +43,7 @@ class OIDCBackend(ModelBackend):
                 key = list(key['keys'])[0]
             algs = ['RS256', 'RS384', 'RS512']
         elif provider.idtoken_algo == models.OIDCProvider.ALGO_HMAC:
-            key = JWK(kty='oct', k=provider.client_secret)
+            key = JWK(kty='oct', k=base64url_encode(provider.client_secret.encode('utf-8')))
             if not provider.client_secret:
                 logger.warning('auth_oidc: idtoken signature algorithm is HMAC but '
                                'no client_secret is defined on provider %s', id_token.iss)

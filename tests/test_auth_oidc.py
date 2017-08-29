@@ -83,9 +83,13 @@ def oidc_provider_jwkset():
     return jwkset
 
 
-@pytest.fixture
-def oidc_provider(db, oidc_provider_jwkset):
+@pytest.fixture(params=[OIDCProvider.ALGO_RSA, OIDCProvider.ALGO_HMAC])
+def oidc_provider(request, db, oidc_provider_jwkset):
+    idtoken_algo = request.param
+    from authentic2_auth_oidc.utils import get_provider
+    get_provider.cache.cache = {}
     provider = OIDCProvider.objects.create(
+        id=1,
         ou=get_default_ou(),
         name='OIDIDP',
         issuer='https://idp.example.com/',
@@ -97,6 +101,7 @@ def oidc_provider(db, oidc_provider_jwkset):
         max_auth_age=10,
         strategy=OIDCProvider.STRATEGY_CREATE,
         jwkset_json=json.loads(oidc_provider_jwkset.export()),
+        idtoken_algo=idtoken_algo,
     )
     provider.full_clean()
     OIDCClaimMapping.objects.create(
