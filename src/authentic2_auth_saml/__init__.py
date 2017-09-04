@@ -16,5 +16,6 @@ class Plugin(object):
         from mellon.views import logout
         if 'mellon_session' in request.session:
             response = logout(request)
-            return [response['Location']]
+            if 'Location' in response:
+                return [response['Location']]
         return []
