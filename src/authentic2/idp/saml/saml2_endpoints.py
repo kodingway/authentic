@@ -443,6 +443,9 @@ def sso(request):
     while True:
         try:
             login.processAuthnRequestMsg(message)
+            # keep a copy of authnRequest in the session, it may later be used
+            # in hooks or plugins to look into Extensions, for example.
+            request.session['saml:authnRequest'] = login.request.getOriginalXmlnode()
             break
         except (lasso.ProfileInvalidMsgError,
             lasso.ProfileMissingIssuerError,), e:
