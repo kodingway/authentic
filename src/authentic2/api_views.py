@@ -401,6 +401,30 @@ class BaseUserSerializer(serializers.ModelSerializer):
             PasswordReset.objects.get_or_create(user=instance)
         return instance
 
+    def validate(self, data):
+        User = get_user_model()
+        qs = User.objects.all()
+
+        ou = None
+
+        if self.instance:
+            ou = self.instance.ou
+        if 'ou' in data and not ou:
+            ou = data['ou']
+
+        already_used = False
+        if data.get('email'):
+            if app_settings.A2_EMAIL_IS_UNIQUE and qs.filter(email=data['email']).exists():
+                already_used = True
+            if ou and ou.email_is_unique and qs.filter(ou=ou, email=data['email']).exists():
+                already_used = True
+
+        if already_used:
+            raise serializers.ValidationError({
+                'email': 'email already used',
+            })
+        return data
+
     class Meta:
         model = get_user_model()
         extra_kwargs = {

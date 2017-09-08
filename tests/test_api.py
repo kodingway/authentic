@@ -11,7 +11,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from authentic2.a2_rbac.utils import get_default_ou
-from django_rbac.utils import get_role_model
+from django_rbac.utils import get_role_model, get_ou_model
 from django_rbac.models import SEARCH_OP
 from authentic2.models import Service
 from django.core import mail
@@ -223,6 +223,72 @@ def test_api_users_create(settings, app, api_user):
         at.save()
         resp = app.get('/api/users/1234567890/')
         assert 'title' not in resp.json
+
+
+def test_api_users_create_email_is_unique(settings, app, superuser):
+    from django.contrib.auth import get_user_model
+
+    User = get_user_model()
+    OU = get_ou_model()
+    ou1 = OU.objects.create(name='OU1', slug='ou1')
+    ou2 = OU.objects.create(name='OU2', slug='ou2', email_is_unique=True)
+
+    app.authorization = ('Basic', (superuser.username, superuser.username))
+    # test missing first_name
+    payload = {
+        'ou': 'ou1',
+        'first_name': 'John',
+        'last_name': 'Doe',
+        'email': 'john.doe@example.net',
+    }
+
+    assert User.objects.filter(ou=ou1).count() == 0
+    assert User.objects.filter(ou=ou2).count() == 0
+
+    app.post_json('/api/users/', params=payload)
+    assert User.objects.filter(ou=ou1).count() == 1
+
+    app.post_json('/api/users/', params=payload)
+    assert User.objects.filter(ou=ou1).count() == 2
+
+    payload['ou'] = 'ou2'
+    app.post_json('/api/users/', params=payload)
+    assert User.objects.filter(ou=ou2).count() == 1
+
+    resp = app.post_json('/api/users/', params=payload, status=400)
+    assert User.objects.filter(ou=ou2).count() == 1
+    assert resp.json['result'] == 0
+    assert resp.json['errors']['email']
+
+    settings.A2_EMAIL_IS_UNIQUE = True
+    User.objects.filter(ou=ou1).delete()
+    assert User.objects.filter(ou=ou1).count() == 0
+    payload['ou'] = 'ou1'
+    app.post_json('/api/users/', params=payload, status=400)
+    assert User.objects.filter(ou=ou1).count() == 0
+    assert resp.json['result'] == 0
+    assert resp.json['errors']['email']
+
+    payload['email'] = 'john.doe2@example.net'
+    resp = app.post_json('/api/users/', params=payload)
+    uuid = resp.json['uuid']
+
+    app.patch_json('/api/users/%s/' % uuid, params={'email': 'john.doe3@example.net'})
+    resp = app.patch_json('/api/users/%s/' % uuid, params={'email': 'john.doe@example.net'},
+                          status=400)
+    assert resp.json['result'] == 0
+    assert resp.json['errors']['email']
+    settings.A2_EMAIL_IS_UNIQUE = False
+
+    payload['ou'] = 'ou2'
+    payload['email'] = 'john.doe2@example.net'
+    resp = app.post_json('/api/users/', params=payload)
+    assert User.objects.filter(ou=ou2).count() == 2
+    uuid = resp.json['uuid']
+    resp = app.patch_json('/api/users/%s/' % uuid, params={'email': 'john.doe@example.net'},
+                          status=400)
+    assert resp.json['result'] == 0
+    assert resp.json['errors']['email']
 
 
 def test_api_users_create_send_mail(app, settings, superuser):
