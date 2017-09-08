@@ -42,7 +42,7 @@
             <span class="helptext">{{ field.help_text }}</span>
           {% endif %}
           {% if field.errors %}
-            <span class="errorlist">
+            <ul class="errorlist">
               {% for error in  field.errors %}
                   <span>{{ error }}</span>
               {% endfor %}
