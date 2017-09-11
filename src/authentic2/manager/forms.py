@@ -22,6 +22,7 @@ from authentic2.models import PasswordReset
 from authentic2.utils import import_module_or_class
 from authentic2.a2_rbac.utils import get_default_ou
 from authentic2.utils import send_password_reset_mail
+from authentic2 import app_settings as a2_app_settings
 
 from . import fields, app_settings, utils
 
@@ -160,6 +161,7 @@ class UserEditForm(LimitQuerysetFormMixin, CssClass, BaseUserForm):
 
     def __init__(self, *args, **kwargs):
         request = kwargs.get('request')
+
         super(UserEditForm, self).__init__(*args, **kwargs)
         if 'ou' in self.fields and not request.user.is_superuser:
             field = self.fields['ou']
@@ -188,6 +190,29 @@ class UserEditForm(LimitQuerysetFormMixin, CssClass, BaseUserForm):
                 raise forms.ValidationError(
                     _('You must set a username or an email.'))
 
+        User = get_user_model()
+        if self.cleaned_data.get('email'):
+            qs = User.objects.all()
+            ou = getattr(self, 'ou', None)
+
+            if self.instance and self.instance.pk:
+                qs = qs.exclude(pk=self.instance.pk)
+                ou = self.instance.ou
+
+            email = self.cleaned_data['email']
+            already_used = False
+
+            if a2_app_settings.A2_EMAIL_IS_UNIQUE and qs.filter(email=email).exists():
+                already_used = True
+
+            if ou and ou.email_is_unique and qs.filter(ou=ou, email=email).exists():
+                already_used = True
+
+            if already_used:
+                raise forms.ValidationError({
+                    'email': _('Email already used.')
+                })
+
     class Meta:
         model = get_user_model()
         exclude = ('ou', 'is_staff', 'groups', 'user_permissions', 'last_login',
@@ -212,6 +237,7 @@ class UserChangePasswordForm(CssClass, forms.ModelForm):
         return password2
 
     def clean(self):
+        super(UserChangePasswordForm, self).clean()
         if not self.cleaned_data.get('generate_password') \
                 and not self.cleaned_data.get('password1') \
                 and not self.cleaned_data.get('send_password_reset'):
@@ -295,6 +321,8 @@ class UserAddForm(UserChangePasswordForm, UserEditForm):
 
     def clean(self):
         super(UserAddForm, self).clean()
+        User = get_user_model()
+
         if not self.cleaned_data.get('username') and \
            not self.cleaned_data.get('email'):
             raise forms.ValidationError(

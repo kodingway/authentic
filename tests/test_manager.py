@@ -145,3 +145,109 @@ def test_role_members_from_ou(app, superuser, settings):
     settings.A2_MANAGER_ROLE_MEMBERS_FROM_OU = True
     response = app.get(url)
     assert response.context['form'].fields['user'].queryset.query.where
+
+
+def test_manager_create_user(superuser_or_admin, app, settings):
+    # clear cache from previous runs
+    from authentic2.manager.utils import get_ou_count
+    get_ou_count.cache.clear()
+
+    User = get_user_model()
+    OU = get_ou_model()
+    ou1 = OU.objects.create(name='OU1', slug='ou1')
+    ou2 = OU.objects.create(name='OU2', slug='ou2', email_is_unique=True)
+
+    assert User.objects.filter(ou=ou1).count() == 0
+    assert User.objects.filter(ou=ou2).count() == 0
+
+    # create first user with john.doe@gmail.com ou OU1 : OK
+    url = reverse('a2-manager-user-add', kwargs={'ou_pk': ou1.pk})
+    ou_add = login(app, superuser_or_admin, url)
+    form = ou_add.form
+    form.set('first_name', 'John')
+    form.set('last_name', 'Doe')
+    form.set('email', 'john.doe@gmail.com')
+    form.set('password1', 'password')
+    form.set('password2', 'password')
+    response = form.submit().follow()
+    assert User.objects.filter(ou=ou1).count() == 1
+
+    # create second user with john.doe@gmail.com ou OU1 : OK
+    ou_add = app.get(url)
+    form = ou_add.form
+    form.set('first_name', 'John')
+    form.set('last_name', 'Doe')
+    form.set('email', 'john.doe@gmail.com')
+    form.set('password1', 'password')
+    form.set('password2', 'password')
+    response = form.submit().follow()
+    assert User.objects.filter(ou=ou1).count() == 2
+
+    # create first user with john.doe@gmail.com ou OU2 : OK
+    url = reverse('a2-manager-user-add', kwargs={'ou_pk': ou2.pk})
+    ou_add = app.get(url)
+    form = ou_add.form
+    form.set('first_name', 'John')
+    form.set('last_name', 'Doe')
+    form.set('email', 'john.doe@gmail.com')
+    form.set('password1', 'password')
+    form.set('password2', 'password')
+    response = form.submit().follow()
+    assert User.objects.filter(ou=ou2).count() == 1
+
+    # create second user with john.doe@gmail.com ou OU2 : NOK
+    ou_add = app.get(url)
+    form = ou_add.form
+    form.set('first_name', 'John')
+    form.set('last_name', 'Doe')
+    form.set('email', 'john.doe@gmail.com')
+    form.set('password1', 'password')
+    form.set('password2', 'password')
+    response = form.submit()
+    assert User.objects.filter(ou=ou2).count() == 1
+    assert 'Email already used' in response
+
+    # create first user with john.doe2@gmail.com ou OU2 : OK
+    ou_add = app.get(url)
+    form = ou_add.form
+    form.set('first_name', 'Jane')
+    form.set('last_name', 'Doe')
+    form.set('email', 'john.doe2@gmail.com')
+    form.set('password1', 'password')
+    form.set('password2', 'password')
+    response = form.submit().follow()
+    assert User.objects.filter(ou=ou2).count() == 2
+
+    # try to change user email from john.doe2@gmail.com to
+    # john.doe@gmail.com in OU2 : NOK
+    response.form.set('email', 'john.doe@gmail.com')
+    response = form.submit()
+    assert 'Email already used' in response
+
+    # create first user with email john.doe@gmail.com in OU1: NOK
+    settings.A2_EMAIL_IS_UNIQUE = True
+    url = reverse('a2-manager-user-add', kwargs={'ou_pk': ou1.pk})
+    User.objects.filter(ou=ou1).delete()
+    assert User.objects.filter(ou=ou1).count() == 0
+    ou_add = app.get(url)
+    form = ou_add.form
+    form.set('first_name', 'John')
+    form.set('last_name', 'Doe')
+    form.set('email', 'john.doe@gmail.com')
+    form.set('password1', 'password')
+    form.set('password2', 'password')
+    response = form.submit()
+    assert User.objects.filter(ou=ou1).count() == 0
+    assert 'Email already used' in response
+    form = response.form
+    form.set('email', 'john.doe3@gmail.com')
+    form.set('password1', 'password')
+    form.set('password2', 'password')
+    response = form.submit().follow()
+    assert User.objects.filter(ou=ou1).count() == 1
+
+    # try to change user email from john.doe3@gmail.com to
+    # john.doe@gmail.com in OU2 : NOK
+    response.form.set('email', 'john.doe@gmail.com')
+    response = form.submit()
+    assert 'Email already used' in response
