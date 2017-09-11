@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.core import mail
 
 from django_rbac.utils import get_ou_model, get_role_model
+from django.contrib.auth import get_user_model
 from utils import login
 
 pytestmark = pytest.mark.django_db
@@ -102,3 +103,28 @@ def test_manager_user_edit_by_uuid(app, superuser, simple_user):
     url = reverse('a2-manager-user-by-uuid-edit', kwargs={'slug': simple_user.uuid})
     resp = login(app, superuser, url)
     assert simple_user.first_name.encode('utf-8') in resp.content
+
+
+def test_manager_stress_create_user(superuser_or_admin, app, mailoutbox):
+    User = get_user_model()
+    OU = get_ou_model()
+    url = reverse('a2-manager-user-add')
+
+    new_ou = OU.objects.create(name='new ou', slug='new-ou')
+    # create first user with john.doe@gmail.com ou OU1 : OK
+
+    assert len(mailoutbox) == 0
+    assert User.objects.filter(ou_id=new_ou.id).count() == 0
+    for i in range(100):
+        ou_add = login(app, superuser_or_admin, url)
+        form = ou_add.form
+        form.set('ou', str(new_ou.id))
+        form.set('first_name', 'John')
+        form.set('last_name', 'Doe')
+        form.set('email', 'john.doe@gmail.com')
+        form.set('password1', 'password')
+        form.set('password2', 'password')
+        form.submit().follow()
+        app.get('/logout/').form.submit()
+    assert User.objects.filter(ou_id=new_ou.id).count() == 100
+    assert len(mailoutbox) == 100

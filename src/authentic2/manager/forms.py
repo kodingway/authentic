@@ -184,27 +184,25 @@ class UserChangePasswordForm(CssClass, forms.ModelForm):
 
     def save(self, commit=True):
         user = super(UserChangePasswordForm, self).save(commit=False)
+
         if self.cleaned_data['generate_password']:
             new_password = generate_password()
         else:
             new_password = self.cleaned_data["password1"]
-        user.set_password(new_password)
-        if self.cleaned_data['generate_password'] \
-                or self.cleaned_data['send_mail']:
-            old_save = user.save
 
-            def save(*args, **kwargs):
-                ret = old_save(*args, **kwargs)
-                send_templated_mail(
-                    user,
-                    self.notification_template_prefix,
-                    context={'new_password': new_password, 'user': user})
-                return ret
-            user.save = save
+        user.set_password(new_password)
+
         if commit:
             user.save()
             if hasattr(self, 'save_m2m'):
                 self.save_m2m()
+
+        if self.cleaned_data['generate_password'] \
+                or self.cleaned_data['send_mail']:
+            send_templated_mail(
+                user,
+                self.notification_template_prefix,
+                context={'new_password': new_password, 'user': user})
         return user
 
     generate_password = forms.BooleanField(
