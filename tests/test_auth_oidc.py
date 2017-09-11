@@ -18,6 +18,7 @@ from authentic2_auth_oidc.models import OIDCProvider, OIDCClaimMapping
 from authentic2.models import AttributeValue
 from authentic2.utils import timestamp_from_datetime
 from authentic2.a2_rbac.utils import get_default_ou
+from authentic2.crypto import base64url_encode
 
 import utils
 
@@ -86,8 +87,13 @@ def oidc_provider_jwkset():
 @pytest.fixture(params=[OIDCProvider.ALGO_RSA, OIDCProvider.ALGO_HMAC])
 def oidc_provider(request, db, oidc_provider_jwkset):
     idtoken_algo = request.param
-    from authentic2_auth_oidc.utils import get_provider
-    get_provider.cache.cache = {}
+    from authentic2_auth_oidc.utils import get_provider, get_provider_by_issuer
+    get_provider.cache.clear()
+    get_provider_by_issuer.cache.clear()
+    if idtoken_algo == OIDCProvider.ALGO_RSA:
+        jwkset = json.loads(oidc_provider_jwkset.export())
+    else:
+        jwkset = None
     provider = OIDCProvider.objects.create(
         id=1,
         ou=get_default_ou(),
@@ -100,7 +106,7 @@ def oidc_provider(request, db, oidc_provider_jwkset):
         token_revocation_endpoint='https://idp.example.com/revoke',
         max_auth_age=10,
         strategy=OIDCProvider.STRATEGY_CREATE,
-        jwkset_json=json.loads(oidc_provider_jwkset.export()),
+        jwkset_json=jwkset,
         idtoken_algo=idtoken_algo,
     )
     provider.full_clean()
@@ -138,14 +144,12 @@ def code():
     return 'xxxx'
 
 
-def oidc_provider_mock(oidc_provider, code, extra_id_token=None,
+def oidc_provider_mock(oidc_provider, oidc_provider_jwkset, code, extra_id_token=None,
                        extra_user_info=None):
     token_endpoint = urlparse.urlparse(oidc_provider.token_endpoint)
     userinfo_endpoint = urlparse.urlparse(oidc_provider.userinfo_endpoint)
     token_revocation_endpoint = urlparse.urlparse(oidc_provider.token_revocation_endpoint)
     sub = 'john.doe'
-
-    jwkset = oidc_provider.jwkset
 
     @urlmatch(netloc=token_endpoint.netloc, path=token_endpoint.path)
     def token_endpoint_mock(url, request):
@@ -160,10 +164,16 @@ def oidc_provider_mock(oidc_provider, code, extra_id_token=None,
             if extra_id_token:
                 id_token.update(extra_id_token)
 
-            jwt = JWT(header={'alg': 'RS256'},
-                      claims=id_token)
-            if jwkset:
-                jwt.make_signed_token(list(jwkset['keys'])[0])
+            if oidc_provider.idtoken_algo == OIDCProvider.ALGO_RSA:
+                jwt = JWT(header={'alg': 'RS256'},
+                          claims=id_token)
+                jwt.make_signed_token(list(oidc_provider_jwkset['keys'])[0])
+            else:
+                jwt = JWT(header={'alg': 'HS256'},
+                          claims=id_token)
+                jwt.make_signed_token(
+                    JWK(kty='oct',
+                        k=base64url_encode(oidc_provider.client_secret.encode('utf-8'))))
 
             content = {
                 'access_token': '1234',
@@ -228,7 +238,7 @@ def check_simple_qs(qs):
     return qs
 
 
-def test_sso(app, caplog, code, oidc_provider, login_url, login_callback_url):
+def test_sso(app, caplog, code, oidc_provider, oidc_provider_jwkset, login_url, login_callback_url):
     response = app.get('/admin/').maybe_follow()
     assert oidc_provider.name in response.content
     response = response.click(oidc_provider.name)
@@ -248,25 +258,30 @@ def test_sso(app, caplog, code, oidc_provider, login_url, login_callback_url):
     assert User.objects.count() == 0
 
     with utils.check_log(caplog, 'invalid token endpoint response'):
-        with oidc_provider_mock(oidc_provider, code):
+        with oidc_provider_mock(oidc_provider, oidc_provider_jwkset, code):
             response = app.get(login_callback_url, params={'code': 'yyyy', 'state': query['state']})
     with utils.check_log(caplog, 'invalid id_token %r'):
-        with oidc_provider_mock(oidc_provider, code, extra_id_token={'iss': None}):
+        with oidc_provider_mock(oidc_provider, oidc_provider_jwkset, code,
+                                extra_id_token={'iss': None}):
             response = app.get(login_callback_url, params={'code': code, 'state': query['state']})
     with utils.check_log(caplog, 'invalid id_token %r'):
-        with oidc_provider_mock(oidc_provider, code, extra_id_token={'sub': None}):
+        with oidc_provider_mock(oidc_provider, oidc_provider_jwkset, code,
+                                extra_id_token={'sub': None}):
             response = app.get(login_callback_url, params={'code': code, 'state': query['state']})
     with utils.check_log(caplog, 'authentication is too old'):
-        with oidc_provider_mock(oidc_provider, code, extra_id_token={'iat': 1}):
+        with oidc_provider_mock(oidc_provider, oidc_provider_jwkset, code,
+                                extra_id_token={'iat': 1}):
             response = app.get(login_callback_url, params={'code': code, 'state': query['state']})
     with utils.check_log(caplog, 'id_token expired'):
-        with oidc_provider_mock(oidc_provider, code, extra_id_token={'exp': 1}):
+        with oidc_provider_mock(oidc_provider, oidc_provider_jwkset, code,
+                                extra_id_token={'exp': 1}):
             response = app.get(login_callback_url, params={'code': code, 'state': query['state']})
     with utils.check_log(caplog, 'invalid id_token audience'):
-        with oidc_provider_mock(oidc_provider, code, extra_id_token={'aud': 'zz'}):
+        with oidc_provider_mock(oidc_provider, oidc_provider_jwkset, code,
+                                extra_id_token={'aud': 'zz'}):
             response = app.get(login_callback_url, params={'code': code, 'state': query['state']})
     with utils.check_log(caplog, 'created user'):
-        with oidc_provider_mock(oidc_provider, code):
+        with oidc_provider_mock(oidc_provider, oidc_provider_jwkset, code):
             response = app.get(login_callback_url, params={'code': code, 'state': query['state']})
     assert urlparse.urlparse(response['Location']).path == '/admin/'
     assert User.objects.count() == 1
@@ -280,13 +295,14 @@ def test_sso(app, caplog, code, oidc_provider, login_url, login_callback_url):
     assert AttributeValue.objects.filter(content='John', verified=True).count() == 1
     assert AttributeValue.objects.filter(content='Doe', verified=False).count() == 1
 
-    with oidc_provider_mock(oidc_provider, code, extra_user_info={'family_name_verified': True}):
+    with oidc_provider_mock(oidc_provider, oidc_provider_jwkset, code,
+                            extra_user_info={'family_name_verified': True}):
         response = app.get(login_callback_url, params={'code': code, 'state': query['state']})
     assert AttributeValue.objects.filter(content='Doe', verified=False).count() == 0
     assert AttributeValue.objects.filter(content='Doe', verified=True).count() == 1
 
     response = app.get(reverse('account_management'))
     with utils.check_log(caplog, 'revoked token from OIDC'):
-        with oidc_provider_mock(oidc_provider, code):
+        with oidc_provider_mock(oidc_provider, oidc_provider_jwkset, code):
             response = response.click(href='logout')
     assert 'https://idp.example.com/logout' in response.content

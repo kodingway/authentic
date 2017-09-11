@@ -8,7 +8,7 @@ from django.core.exceptions import ValidationError
 
 from jsonfield import JSONField
 
-from jwcrypto.jwk import JWKSet, InvalidJWKValue
+from jwcrypto.jwk import JWKSet, InvalidJWKValue, JWK
 
 from django_rbac.utils import get_ou_model_name
 
@@ -118,8 +118,11 @@ class OIDCProvider(models.Model):
 
     @property
     def jwkset(self):
-        if self.jwkset_json:
-            return JWKSet.from_json(json.dumps(self.jwkset_json))
+        if self.idtoken_algo == self.ALGO_RSA:
+            if self.jwkset_json:
+                return JWKSet.from_json(json.dumps(self.jwkset_json))
+        if self.idtoken_algo == self.ALGO_HMAC:
+            return JWK(kty='oct', k=base64url_encode(self.client_secret.encode('utf-8')))
         return None
 
     def __unicode__(self):
