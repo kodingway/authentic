@@ -935,10 +935,10 @@ def same_origin(url1, url2):
     return True
 
 
-def simulate_login(request, user, method,
-                   backend='authentic2.backends.models_backend.ModelBackend'):
+def simulate_authentication(request, user, method,
+                            backend='authentic2.backends.models_backend.ModelBackend', **kwargs):
     '''Simulate a normal login by forcing a backend attribute on the user instance'''
     # do not modify the passed user
     user = copy.deepcopy(user)
     user.backend = backend
-    login(request, user, method)
+    return login(request, user, method, **kwargs)
