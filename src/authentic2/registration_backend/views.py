@@ -222,7 +222,7 @@ class RegistrationCompletionView(CreateView):
             form = form_class(**form_kwargs)
             if form.is_valid():
                 user = form.save()
-                email_login(request, user)
+                simulate_authentication(request, user, method='email')
                 return redirect(request, self.get_success_url())
             self.get_form = lambda *args, **kwargs: form
         return super(RegistrationCompletionView, self).get(request, *args,
@@ -237,7 +237,7 @@ class RegistrationCompletionView(CreateView):
             uid = request.POST['uid']
             for user in self.users:
                 if str(user.id) == uid:
-                    email_login(request, user)
+                    simulate_authentication(request, user, method='email')
                     return redirect(request, self.get_success_url())
         return super(RegistrationCompletionView, self).post(request, *args, **kwargs)
 
@@ -263,7 +263,7 @@ class RegistrationCompletionView(CreateView):
                                    **data)
             return redirect(self.request, 'registration_complete')
         ret = super(RegistrationCompletionView, self).form_valid(form)
-        email_login(self.request, self.object)
+        simulate_authentication(self.request, self.object, method='email')
         return ret
 
 class DeleteView(FormView):
