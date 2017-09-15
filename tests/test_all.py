@@ -460,10 +460,9 @@ class RegistrationTests(TestCase):
         self.assertRedirects(response, reverse('auth_homepage'))
         response = self.client.post(reverse('registration_register'),
                                     {'email': 'testbot@entrouvert.com'})
-        self.assertFormError(
-            response, 'form', 'email',
-            ['This email address is already in use. Please supply a different '
-             'email address.'])
+        # make sure authentic doesn't advertise the existence of such an email
+        # in an error message.
+        assert not 'This email address is already in use.' in response.content
 
     def test_attribute_model(self):
         # disable existing attributes
