@@ -219,29 +219,27 @@ def can_resolve_dns():
         return False
 
 
-@override_settings(A2_VALIDATE_EMAIL_DOMAIN=can_resolve_dns(),
-                   LANGUAGE_CODE='en-us')
+def test_registration_bad_email(app, db, settings):
+    settings.A2_VALIDATE_EMAIL_DOMAIN = can_resolve_dns()
+    settings.LANGUAGE_CODE = 'en-us'
+
+    response = app.post(reverse('registration_register'), params={'email': 'fred@0d..be'},
+                        status=200)
+    assert 'Enter a valid email address.' in response.context['form'].errors['email']
+
+    response = app.post(reverse('registration_register'), params={'email': u'ééééé'}, status=200)
+    assert 'Enter a valid email address.' in response.context['form'].errors['email']
+
+    response = app.post(reverse('registration_register'), params={'email': u''}, status=200)
+    assert 'This field is required.' in response.context['form'].errors['email']
+
+
+@override_settings(A2_VALIDATE_EMAIL_DOMAIN=can_resolve_dns(), LANGUAGE_CODE='en-us')
 class RegistrationTests(TestCase):
     def setUp(self):
         self.client = Client()
 
-    def test_registration_bad_email(self):
-        response = self.client.post(reverse('registration_register'),
-                                    {'email': 'fred@0d..be'})
-        self.assertEqual(response.status_code, 200)
-        self.assertFormError(response, 'form', 'email',
-                             ['Enter a valid email address.'])
-        response = self.client.post(reverse('registration_register'),
-                                    {'email': u'ééééé'})
-        self.assertEqual(response.status_code, 200)
-        self.assertFormError(response, 'form', 'email',
-                             ['Enter a valid email address.'])
-        response = self.client.post(reverse('registration_register'),
-                                    {'email': u''})
-        self.assertEqual(response.status_code, 200)
-        self.assertFormError(response, 'form', 'email',
-                             ['This field is required.'])
-
+    @override_settings(A2_REDIRECT_WHITELIST=['http://relying-party.org/'])
     def test_registration(self):
         # disable existing attributes
         models.Attribute.objects.update(disabled=True)
@@ -266,6 +264,7 @@ class RegistrationTests(TestCase):
 
         response = self.client.post(link, {'password1': 'T0==toto',
                                            'password2': 'T0==toto'})
+        assert User.objects.count() == 1
         new_user = User.objects.get()
         self.assertRedirects(response, next_url)
         self.assertEqual(new_user.email, 'testbot@entrouvert.com')
@@ -285,6 +284,7 @@ class RegistrationTests(TestCase):
         self.assertRedirects(response, '/')
 
     @override_settings(A2_REGISTRATION_REALM='realm',
+                       A2_REDIRECT_WHITELIST=['http://relying-party.org/'],
                        A2_REQUIRED_FIELDS=['username'])
     def test_registration_realm(self):
         # disable existing attributes
@@ -463,6 +463,7 @@ class RegistrationTests(TestCase):
         # make sure authentic doesn't advertise the existence of such an email
         # in an error message.
         assert not 'This email address is already in use.' in response.content
+        assert 'You already have' in mail.outbox[1].body
 
     def test_attribute_model(self):
         # disable existing attributes

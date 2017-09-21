@@ -23,43 +23,12 @@ from authentic2.a2_rbac.models import OrganizationalUnit
 
 User = compat.get_user_model()
 
+
 class RegistrationForm(Form):
     error_css_class = 'form-field-error'
     required_css_class = 'form-field-required'
 
     email = EmailField(label=_('Email'))
-
-    def save(self, request):
-        data = self.cleaned_data
-        token = request.GET.get('token', None)
-        if token:
-            token = signing.loads(token, max_age=settings.ACCOUNT_ACTIVATION_DAYS*3600*24)
-            for name, value in token.items():
-                data[name] = value
-        if REDIRECT_FIELD_NAME in request.GET and REDIRECT_FIELD_NAME not in data:
-            data[REDIRECT_FIELD_NAME] = request.GET[REDIRECT_FIELD_NAME]
-        registration_token = signing.dumps(data)
-        ctx_dict = RequestContext(request)
-        ctx_dict.update({'registration_url': request.build_absolute_uri(
-            reverse('registration_activate',
-            kwargs={'registration_token': registration_token})),
-                    'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
-                    'email': data['email'],
-                    'site': request.get_host()})
-        ctx_dict.update(self.cleaned_data)
-
-        subject = render_to_string('registration/activation_email_subject.txt',
-                                   ctx_dict)
-
-        subject = ''.join(subject.splitlines())
-        message = render_to_string('registration/activation_email.txt',
-                                   ctx_dict)
-
-        html_message = render_to_string('registration/activation_email.html',
-                                        ctx_dict)
-        send_mail(subject, message, settings.DEFAULT_FROM_EMAIL,
-                  [data['email']], fail_silently=True,
-                  html_message=html_message)
 
 
 class RegistrationCompletionFormNoPassword(forms.BaseUserForm):

@@ -1,6 +1,13 @@
-{% load i18n %}
-{% trans "Activate account" %}:
+{% load i18n %}{% autoescape off %}{% if not existing_accounts %}{% blocktrans %}You requested registration on {{ site }}.
+To finish your registration, please go to:
 
-{{ registration_url }}
+  {{ registration_url }}
 
-{% blocktrans %}Link is valid for {{ expiration_days }} days.{% endblocktrans %}
+{% endblocktrans %}{% else %}{% blocktrans %}You requested registration on {{ site }}.
+You already have an account. To login please go to:
+
+  {{ registration_url }}
+
+{% endblocktrans %}{% endif %}{% blocktrans %}Link is valid for {{ expiration_days }} days.{% endblocktrans %}
+
+{% blocktrans %}If you did not register on {{ site }}, ignore this email.{% endblocktrans %}{% endautoescape %}

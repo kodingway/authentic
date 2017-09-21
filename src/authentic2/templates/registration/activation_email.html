@@ -1,8 +1,18 @@
 {% load i18n %}
 <html>
   <body style="width: 90ex">
-    <p>{% blocktrans %}You created a new account on {{ site }}. To activate your account, please <a href="{{ registration_url }}">click here</a>{% endblocktrans %}
-    </p>
-    <p>{% blocktrans %}This link link is valid for {{ expiration_days }} days.{% endblocktrans %}</>
+    {% if not existing_accounts %}
+      <p>{% blocktrans %}You requested registration on {{ site }}. To finish your registration, please
+        <a href="{{ registration_url }}">click here</a>{% endblocktrans %}
+      </p>
+    {% else %}
+      <p>{% blocktrans %}You requested registration on {{ site }}. You already have an
+        account to login, <a href="{{ registration_url }}">click here</a>{% endblocktrans %}
+      </p>
+    {% endif %}
+
+    <p>{% blocktrans %}This link is valid for {{ expiration_days }} days.{% endblocktrans %}</>
+
+    <p>{% blocktrans %}If you did not register on {{ site }}, ignore this email.{% endblocktrans %}</p>
   </body>
 </html>

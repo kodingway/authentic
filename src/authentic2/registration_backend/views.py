@@ -15,6 +15,8 @@ from django.contrib.auth import get_user_model
 from django.forms import CharField, Form
 from django.core.urlresolvers import reverse_lazy
 from django.template import RequestContext
+from django.core import signing
+from django.http import HttpResponseBadRequest
 
 from authentic2.utils import (import_module_or_class, redirect, make_url, get_fields_and_labels,
                               login, simulate_authentication)
@@ -26,16 +28,12 @@ from .. import models, app_settings, compat, cbv, views, forms, validators, util
 from .forms import RegistrationCompletionForm, DeleteAccountForm
 from .forms import RegistrationCompletionFormNoPassword
 from authentic2.a2_rbac.models import OrganizationalUnit
+from authentic2.a2_rbac.utils import get_default_ou
 
 logger = logging.getLogger(__name__)
 
 User = compat.get_user_model()
 
-legacy_template_names = {
-    'legacy_subject_templates': ['registration/activation_email_subject.txt'],
-    'legacy_body_templates': ['registration/activation_email.txt'],
-    'legacy_html_body_templates': ['registration/activation_email.html']
-}
 
 def valid_token(method):
     def f(request, *args, **kwargs):
@@ -52,16 +50,39 @@ def valid_token(method):
     return f
 
 
-class RegistrationView(cbv.ValidateCSRFMixin, FormView):
+class BaseRegistrationView(FormView):
     form_class = import_module_or_class(app_settings.A2_REGISTRATION_FORM_CLASS)
     template_name = 'registration/registration_form.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        self.token = {}
+        self.ou = get_default_ou()
+        # load pre-filled values
+        if request.GET.get('token'):
+            try:
+                self.token = signing.loads(
+                    request.GET.get('token'),
+                    max_age=settings.ACCOUNT_ACTIVATION_DAYS * 3600 * 24)
+            except (TypeError, ValueError, signing.BadSignature) as e:
+                logger.warning(u'registration_view: invalid token: %s', e)
+                return HttpResponseBadRequest('invalid token')
+            if 'ou' in self.token:
+                self.ou = OrganizationalUnit.objects.get(pk=self.token['ou'])
+        self.next_url = self.token.pop(REDIRECT_FIELD_NAME, utils.select_next_url(request, None))
+        return super(BaseRegistrationView, self).dispatch(request, *args, **kwargs)
+
     def form_valid(self, form):
-        form.save(self.request)
+        email = form.cleaned_data['email']
+
+        self.token.pop(REDIRECT_FIELD_NAME, None)
+        self.token.pop('email', None)
+
+        utils.send_registration_mail(self.request, email, next_url=self.next_url,
+                                     ou=self.ou, **self.token)
         return redirect(self.request, 'registration_complete')
 
     def get_context_data(self, **kwargs):
-        ctx = super(RegistrationView, self).get_context_data(**kwargs)
+        ctx = super(BaseRegistrationView, self).get_context_data(**kwargs)
         request_context = RequestContext(self.request)
         request_context.push(ctx)
         if django.VERSION >= (1, 8, 0):
@@ -73,6 +94,10 @@ class RegistrationView(cbv.ValidateCSRFMixin, FormView):
         request_context['frontends'] = collections.OrderedDict((block['id'], block)
                                                                for block in blocks if block)
         return request_context
+
+
+class RegistrationView(cbv.ValidateCSRFMixin, BaseRegistrationView):
+    pass
 
 
 class RegistrationCompletionView(CreateView):

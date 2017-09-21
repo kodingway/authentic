@@ -20,7 +20,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.http.request import QueryDict
 from django.contrib.auth import (REDIRECT_FIELD_NAME, login as auth_login, SESSION_KEY,
-                                 HASH_SESSION_KEY, BACKEND_SESSION_KEY, authenticate)
+                                 HASH_SESSION_KEY, BACKEND_SESSION_KEY, authenticate,
+                                 get_user_model)
 from django import forms
 from django.forms.util import ErrorList
 from django.forms.utils import to_current_timezone
@@ -548,6 +549,7 @@ def csrf_token_check(request, form):
     '''Check a request for CSRF cookie validation, and add an error to the form
        if check fails.
     '''
+    # allow tests to disable csrf check
     if form.is_valid() and not getattr(request, 'csrf_processing_done', False):
         msg = _('The form was out of date, please try again.')
         form._errors[forms.forms.NON_FIELD_ERRORS] = ErrorList([msg])
@@ -659,28 +661,50 @@ def build_activation_url(request, email, next_url=None, **kwargs):
     return activate_url
 
 
-def send_registration_mail(request, email, template_names, next_url=None,
-                           ctx=None, legacy_template_names={}, **kwargs):
+def send_registration_mail(request, email, ou, template_names=None, next_url=None, context=None,
+                           **kwargs):
     '''Send a registration mail to an user. All given kwargs will be used
        to completed the user model.
 
        Can raise an smtplib.SMTPException
     '''
-    if isinstance(template_names, basestring):
-        template_names = [template_names]
+    logger = logging.getLogger(__name__)
+    User = get_user_model()
 
-    # signed token
-    activate_url = build_activation_url(request, email=email, next_url=next_url, **kwargs)
+    if not template_names:
+        template_names = ['authentic2/activation_email']
+
+    # registration_url
+    registration_url = build_activation_url(request, email=email, next_url=next_url, ou=ou.pk,
+                                            **kwargs)
+
+    # existing accounts
+    existing_accounts = User.objects.filter(email=email)
+    if not app_settings.A2_EMAIL_IS_UNIQUE:
+        existing_accounts = existing_accounts.filter(ou=ou, email=email)
+
     # ctx for rendering the templates
-    ctx = (ctx or {}).copy()
-    ctx.update({
-        'registration_url': activate_url,
+    context = context or {}
+    context.update({
+        'registration_url': registration_url,
         'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
         'email': email,
-        'request': request,
-        'site': request.get_host()
+        'site': request.get_host(),
+        'existing_accounts': existing_accounts,
     })
-    send_templated_mail(email, template_names, ctx, **legacy_template_names)
+
+    send_templated_mail(email, template_names,
+                        request=request,
+                        context=context,
+                        # legacy templates, for new templates use
+                        # authentic2/activation_email_body.txt
+                        # authentic2/activation_email_body.html
+                        # authentic2/activation_email_subject.txt
+                        legacy_subject_templates=['registration/activation_email_subject.txt'],
+                        legacy_body_templates=['registration/activation_email.txt'],
+                        legacy_html_body_templates=['registration/activation_email.html'])
+    logger.info(u'registration mail sent to  %s with registration URL %s...', email,
+                registration_url)
 
 
 def build_reset_password_url(user, request=None, next_url=None, set_random_password=True):

@@ -166,7 +166,7 @@ class Register(BaseRpcView):
                                    validated_data['ou'].slug)
         email = validated_data.get('email')
         registration_data = {}
-        for field in ('first_name', 'last_name', 'password', 'username', 'ou'):
+        for field in ('first_name', 'last_name', 'password', 'username'):
             if field in validated_data:
                 if isinstance(validated_data[field], models.Model):
                     registration_data[field] = validated_data[field].pk
@@ -191,9 +191,10 @@ class Register(BaseRpcView):
 
             try:
                 utils.send_registration_mail(self.request, email,
-                                             registration_template,
+                                             template_names=registration_template,
                                              next_url=final_return_url,
-                                             ctx=ctx,
+                                             ou=validated_data['ou'],
+                                             context=ctx,
                                              **registration_data)
             except smtplib.SMTPException, e:
                 response = {
