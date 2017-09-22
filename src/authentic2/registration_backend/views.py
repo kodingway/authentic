@@ -81,6 +81,7 @@ class BaseRegistrationView(FormView):
 
         utils.send_registration_mail(self.request, email, next_url=self.next_url,
                                      ou=self.ou, **self.token)
+        self.request.session['registered_email'] = email
         return redirect(self.request, 'registration_complete')
 
     def get_context_data(self, **kwargs):

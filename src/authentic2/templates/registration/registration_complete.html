@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block content %}
-<p>{% trans "Thank you for registering. Activation email sent." %}</p>
+<p>{% blocktrans with email=request.session.registered_email %}A links was sent to email adress {{ email }}.{% endblocktrans %}</p>
+<p>{% trans "Please click on this link to continue your registration." %}</p>
 <p><a href="/">{% trans "Back" %}</a></p>
 {% endblock %}
