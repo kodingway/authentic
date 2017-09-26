@@ -29,6 +29,24 @@ DEFAULT_TITLE_CHOICES = (
 def get_title_choices():
     return app_settings.A2_ATTRIBUTE_KIND_TITLE_CHOICES or DEFAULT_TITLE_CHOICES
 
+validate_fr_postcode = RegexValidator('^\d{5}$', message=_('The value must be a number'))
+
+
+class FrPostcodeField(forms.CharField):
+    def clean(self, value):
+        value = super(FrPostcodeField, self).clean(value)
+        value = value.strip()
+        validate_fr_postcode(value)
+        return value
+
+
+class FrPostcodeDRFField(serializers.CharField):
+    default_validators = [validate_fr_postcode]
+
+    def __init__(self, *args, **kwargs):
+        super(FrPostcodeDRFField, self).__init__(*args, **kwargs)
+
+
 DEFAULT_ATTRIBUTE_KINDS = [
     {
         'label': _('string'),
@@ -61,6 +79,12 @@ DEFAULT_ATTRIBUTE_KINDS = [
         'serialize': lambda x: x.isoformat(),
         'deserialize': lambda x: x and datetime.datetime.strptime(x, '%Y-%m-%d').date(),
         'rest_framework_field_class': serializers.DateField,
+    },
+    {
+        'label': _('french postcode'),
+        'name': 'fr_postcode',
+        'field_class': FrPostcodeField,
+        'rest_framework_field_class': FrPostcodeDRFField,
     },
 ]
 
