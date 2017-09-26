@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-26 18:15+0200\n"
+"POT-Creation-Date: 2017-09-25 11:23+0200\n"
 "PO-Revision-Date: 2017-06-26 22:21+0200\n"
 "Last-Translator: Benjamin Dauvergne <bdauvergne@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -17,139 +17,168 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: __init__.py:18
+#: authentic2_idp_oidc/__init__.py:20
 msgid "OpenID Connect authentication"
 msgstr "Authentification OpenID Connect"
 
-#: models.py:44 models.py:145 models.py:206
+#: authentic2_idp_oidc/models.py:46 authentic2_idp_oidc/models.py:169
+#: authentic2_idp_oidc/models.py:230
 msgid "uuid"
-msgstr ""
+msgstr "identifiant unique interne"
 
-#: models.py:45
-msgid "pairwise"
-msgstr "par paire"
+#: authentic2_idp_oidc/models.py:47
+msgid "pairwise unreversible"
+msgstr "pseudonyme irréversible"
 
-#: models.py:46
+#: authentic2_idp_oidc/models.py:48
+msgid "pairwise reversible"
+msgstr "pseudonyme réversible"
+
+#: authentic2_idp_oidc/models.py:49
 msgid "email"
-msgstr ""
+msgstr "courriel"
 
-#: models.py:52
+#: authentic2_idp_oidc/models.py:55
 msgid "RSA"
 msgstr "RSA"
 
-#: models.py:53
+#: authentic2_idp_oidc/models.py:56
 msgid "HMAC"
 msgstr "HMAC"
 
-#: models.py:58
+#: authentic2_idp_oidc/models.py:61
 msgid "authorization code"
-msgstr ""
+msgstr "code d'autorisation"
 
-#: models.py:59
+#: authentic2_idp_oidc/models.py:62
 msgid "implicit/native"
 msgstr ""
 
-#: models.py:64
+#: authentic2_idp_oidc/models.py:68
+msgid "authorization by service"
+msgstr "authoriser par service"
+
+#: authentic2_idp_oidc/models.py:69
+msgid "authorization by ou"
+msgstr "autoriser par collectivité"
+
+#: authentic2_idp_oidc/models.py:74 authentic2_idp_oidc/models.py:138
 msgid "client id"
 msgstr ""
 
-#: models.py:69
+#: authentic2_idp_oidc/models.py:79
 msgid "client secret"
 msgstr ""
 
-#: models.py:72
-msgid "authorization flow"
-msgstr ""
+#: authentic2_idp_oidc/models.py:84
+msgid "authorization mode"
+msgstr "mode d'autorisation"
 
-#: models.py:76
+#: authentic2_idp_oidc/models.py:86
+msgid "authorization flow"
+msgstr "processus d'autorisation"
+
+#: authentic2_idp_oidc/models.py:90
 msgid "redirect URIs"
 msgstr "URIs de redirection"
 
-#: models.py:79
+#: authentic2_idp_oidc/models.py:93
 msgid "post logout redirect URIs"
 msgstr "URIs de redirection après déconnexion"
 
-#: models.py:84
+#: authentic2_idp_oidc/models.py:98
 msgid "sector identifier URI"
 msgstr "URI d'identifiant de secteur"
 
-#: models.py:87
+#: authentic2_idp_oidc/models.py:101
 msgid "identifier policy"
 msgstr "politique des identifiants"
 
-#: models.py:93
+#: authentic2_idp_oidc/models.py:107
 msgid "IDToken signature algorithm"
 msgstr "algorithme de signature de l'IDToken"
 
-#: models.py:97 models.py:125 models.py:171 models.py:222
+#: authentic2_idp_oidc/models.py:109
+msgid "has API access"
+msgstr "doit accéder à l'API"
+
+#: authentic2_idp_oidc/models.py:118 authentic2_idp_oidc/models.py:149
+#: authentic2_idp_oidc/models.py:195 authentic2_idp_oidc/models.py:246
 msgid "created"
 msgstr "créé"
 
-#: models.py:100
+#: authentic2_idp_oidc/models.py:121
 msgid "modified"
 msgstr "modifié"
 
-#: models.py:115 models.py:149 models.py:210
-msgid "client"
+#: authentic2_idp_oidc/models.py:136
+msgid "client ct"
 msgstr ""
 
-#: models.py:118 models.py:152 models.py:213
+#: authentic2_idp_oidc/models.py:142 authentic2_idp_oidc/models.py:176
+#: authentic2_idp_oidc/models.py:237
 msgid "user"
-msgstr ""
+msgstr "utilisateur"
 
-#: models.py:121 models.py:154 models.py:215
+#: authentic2_idp_oidc/models.py:145 authentic2_idp_oidc/models.py:178
+#: authentic2_idp_oidc/models.py:239
 msgid "scopes"
 msgstr ""
 
-#: models.py:128 models.py:174 models.py:225
+#: authentic2_idp_oidc/models.py:152 authentic2_idp_oidc/models.py:198
+#: authentic2_idp_oidc/models.py:249
 msgid "expire"
 msgstr "expiration"
 
-#: models.py:157
-msgid "state"
+#: authentic2_idp_oidc/models.py:173 authentic2_idp_oidc/models.py:234
+msgid "client"
 msgstr ""
 
-#: models.py:160
+#: authentic2_idp_oidc/models.py:181
+msgid "state"
+msgstr "statut"
+
+#: authentic2_idp_oidc/models.py:184
 msgid "nonce"
 msgstr ""
 
-#: models.py:162
+#: authentic2_idp_oidc/models.py:186
 msgid "redirect URI"
-msgstr ""
+msgstr "URI de redirection"
 
-#: models.py:164 models.py:217
+#: authentic2_idp_oidc/models.py:188 authentic2_idp_oidc/models.py:241
 msgid "session key"
-msgstr ""
+msgstr "clé de session"
 
-#: models.py:167
+#: authentic2_idp_oidc/models.py:191
 msgid "auth time"
-msgstr ""
+msgstr "date d'autorisation"
 
-#: templates/authentic2_idp_oidc/authorization.html:5
+#: authentic2_idp_oidc/templates/authentic2_idp_oidc/authorization.html:5
 #, python-format
 msgid "Do you want to be authenticated on service %(client_name)s ?"
 msgstr "Souhaitez vous être authentifié sur le service %(client_name)s&nbsp;?"
 
-#: templates/authentic2_idp_oidc/authorization.html:7
+#: authentic2_idp_oidc/templates/authentic2_idp_oidc/authorization.html:7
 msgid "The following informations will be sent to the service:"
 msgstr "Les informations suivantes seront envoyées au service&nbsp;:"
 
-#: templates/authentic2_idp_oidc/authorization.html:11
+#: authentic2_idp_oidc/templates/authentic2_idp_oidc/authorization.html:11
 msgid "Your first and last name, your username,"
 msgstr "Vos prénom, nom et identifiants."
 
-#: templates/authentic2_idp_oidc/authorization.html:13
+#: authentic2_idp_oidc/templates/authentic2_idp_oidc/authorization.html:13
 msgid "Your email"
 msgstr "Votre email."
 
-#: templates/authentic2_idp_oidc/authorization.html:19
+#: authentic2_idp_oidc/templates/authentic2_idp_oidc/authorization.html:19
 msgid "Accept"
 msgstr "Accepter"
 
-#: templates/authentic2_idp_oidc/authorization.html:20
+#: authentic2_idp_oidc/templates/authentic2_idp_oidc/authorization.html:20
 msgid "Refuse"
 msgstr "Refuser"
 
-#: views.py:423
+#: authentic2_idp_oidc/views.py:429
 msgid "Invalid post logout URI"
 msgstr "URI de retour après déconnexion invalide"
