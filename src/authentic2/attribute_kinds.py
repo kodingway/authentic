@@ -35,8 +35,9 @@ validate_phone_number = RegexValidator('^\+?\d+$', message=_('Phone number can s
 
 class PhoneNumberField(forms.CharField):
     def clean(self, value):
-        value = re.sub('[-.\s]', '', value)
-        validate_phone_number(value)
+        if value not in self.empty_values:
+            value = re.sub('[-.\s]', '', value)
+            validate_phone_number(value)
         return value
 
 
@@ -50,8 +51,9 @@ validate_fr_postcode = RegexValidator('^\d{5}$', message=_('The value must be a 
 class FrPostcodeField(forms.CharField):
     def clean(self, value):
         value = super(FrPostcodeField, self).clean(value)
-        value = value.strip()
-        validate_fr_postcode(value)
+        if value not in self.empty_values:
+            value = value.strip()
+            validate_fr_postcode(value)
         return value
 
 

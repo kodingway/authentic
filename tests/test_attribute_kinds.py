@@ -52,6 +52,17 @@ def test_fr_postcode(db, app, admin, mailoutbox):
     assert qs.get().attributes.postcode == '12345'
     qs.delete()
 
+    response = app.get(url)
+    form = response.form
+    form.set('first_name', 'John')
+    form.set('last_name', 'Doe')
+    form.set('postcode', '')
+    form.set('password1', '12345abcd#')
+    form.set('password2', '12345abcd#')
+    response = form.submit().follow()
+    assert qs.get().attributes.postcode == ''
+    qs.delete()
+
     app.authorization = ('Basic', (admin.username, admin.username))
 
     payload = {
@@ -74,6 +85,26 @@ def test_fr_postcode(db, app, admin, mailoutbox):
         'postcode': '12345',
     }
     app.post_json('/api/users/', params=payload)
+    assert qs.get().attributes.postcode == '12345'
+    qs.delete()
+
+    payload = {
+        'first_name': 'John',
+        'last_name': 'Doe',
+        'postcode': None,
+    }
+    app.post_json('/api/users/', params=payload)
+    assert qs.get().attributes.postcode is None
+    qs.delete()
+
+    payload = {
+        'first_name': 'John',
+        'last_name': 'Doe',
+        'postcode': '',
+    }
+    app.post_json('/api/users/', params=payload)
+    assert qs.get().attributes.postcode == ''
+    qs.delete()
 
 
 def test_phone_number(db, app, admin, mailoutbox):
@@ -121,6 +152,17 @@ def test_phone_number(db, app, admin, mailoutbox):
     form = response.form
     form.set('first_name', 'John')
     form.set('last_name', 'Doe')
+    form.set('phone_number', '')
+    form.set('password1', '12345abcd#')
+    form.set('password2', '12345abcd#')
+    response = form.submit().follow()
+    assert qs.get().attributes.phone_number == ''
+    qs.delete()
+
+    response = app.get(url)
+    form = response.form
+    form.set('first_name', 'John')
+    form.set('last_name', 'Doe')
     form.set('phone_number', ' +  1.2-3  4 5 ')
     form.set('password1', '12345abcd#')
     form.set('password2', '12345abcd#')
@@ -160,4 +202,22 @@ def test_phone_number(db, app, admin, mailoutbox):
     }
     app.post_json('/api/users/', params=payload)
     assert qs.get().attributes.phone_number == '+12345'
+    qs.delete()
+
+    payload = {
+        'first_name': 'John',
+        'last_name': 'Doe',
+        'phone_number': None,
+    }
+    app.post_json('/api/users/', params=payload)
+    assert qs.get().attributes.phone_number is None
+    qs.delete()
+
+    payload = {
+        'first_name': 'John',
+        'last_name': 'Doe',
+        'phone_number': '',
+    }
+    app.post_json('/api/users/', params=payload)
+    assert qs.get().attributes.phone_number == ''
     qs.delete()
