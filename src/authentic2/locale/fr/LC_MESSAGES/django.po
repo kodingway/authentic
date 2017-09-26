@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-25 11:23+0200\n"
+"POT-Creation-Date: 2017-09-26 11:04+0200\n"
 "PO-Revision-Date: 2017-06-26 22:14+0200\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -151,27 +151,35 @@ msgctxt "title"
 msgid "Mr"
 msgstr "Monsieur"
 
-#: authentic2/attribute_kinds.py:34
+#: authentic2/attribute_kinds.py:32
+msgid "The value must be a number"
+msgstr "Vous devez entrer un code postal"
+
+#: authentic2/attribute_kinds.py:52
 msgid "string"
 msgstr "chaîne de caractère"
 
-#: authentic2/attribute_kinds.py:39
+#: authentic2/attribute_kinds.py:57
 msgid "title"
 msgstr "civilité"
 
-#: authentic2/attribute_kinds.py:48
+#: authentic2/attribute_kinds.py:66
 msgid "boolean"
 msgstr "booléen"
 
-#: authentic2/attribute_kinds.py:55
+#: authentic2/attribute_kinds.py:73
 msgid "date"
 msgstr "date"
 
-#: authentic2/attribute_kinds.py:94
+#: authentic2/attribute_kinds.py:84
+msgid "french postcode"
+msgstr ""
+
+#: authentic2/attribute_kinds.py:118
 msgid "SIRET number must contain 14 digits"
 msgstr "Le SIRET doit contenir 14 chiffres"
 
-#: authentic2/attribute_kinds.py:97
+#: authentic2/attribute_kinds.py:121
 msgid "SIRET validation code does not match"
 msgstr "Les clé de validation de votre SIRET sont inexactes"
 
@@ -1009,8 +1017,8 @@ msgid ""
 "You requested registration on %(site)s. To finish your registration, please\n"
 "        <a href=\"%(registration_url)s\">click here</a>"
 msgstr ""
-"Vous demandez la création d'un compte sur %(site)s. "
-"<a href=\"%(registration_url)s\">Continuez votre enregistrement !</a>."
+"Vous demandez la création d'un compte sur %(site)s. <a href="
+"\"%(registration_url)s\">Continuez votre enregistrement !</a>."
 
 #: authentic2/templates/registration/activation_email.html:9
 #, python-format
@@ -1018,8 +1026,8 @@ msgid ""
 "You requested registration on %(site)s. You already have an\n"
 "        account to login, <a href=\"%(registration_url)s\">click here</a>"
 msgstr ""
-"Vous demandez la création d'un compte sur %(site)s. Vous disposez déjà d'un compte, "
-"<a href=\"%(registration_url)s\">connectez vous !</a>."
+"Vous demandez la création d'un compte sur %(site)s. Vous disposez déjà d'un "
+"compte, <a href=\"%(registration_url)s\">connectez vous !</a>."
 
 #: authentic2/templates/registration/activation_email.html:14
 #, python-format
@@ -1030,7 +1038,9 @@ msgstr "Ce lien est valide pendant %(expiration_days)s jours."
 #: authentic2/templates/registration/activation_email.txt:13
 #, python-format
 msgid "If you did not register on %(site)s, ignore this email."
-msgstr "Si vous n'avez pas demander à vous enregistrer sur %(site)s, veuillez ignorer ce courriel."
+msgstr ""
+"Si vous n'avez pas demander à vous enregistrer sur %(site)s, veuillez "
+"ignorer ce courriel."
 
 #: authentic2/templates/registration/activation_email.txt:1
 #, python-format
