@@ -1,5 +1,5 @@
+import re
 import string
-import json
 import datetime
 
 from itertools import chain
@@ -29,6 +29,21 @@ DEFAULT_TITLE_CHOICES = (
 def get_title_choices():
     return app_settings.A2_ATTRIBUTE_KIND_TITLE_CHOICES or DEFAULT_TITLE_CHOICES
 
+validate_phone_number = RegexValidator('^\+?\d+$', message=_('Phone number can start with a + and'
+                                                             ' must contain only digits.'))
+
+
+class PhoneNumberField(forms.CharField):
+    def clean(self, value):
+        value = re.sub('[-.\s]', '', value)
+        validate_phone_number(value)
+        return value
+
+
+class PhoneNumberDRFField(serializers.CharField):
+    default_validators = [validate_phone_number]
+
+
 validate_fr_postcode = RegexValidator('^\d{5}$', message=_('The value must be a number'))
 
 
@@ -42,9 +57,6 @@ class FrPostcodeField(forms.CharField):
 
 class FrPostcodeDRFField(serializers.CharField):
     default_validators = [validate_fr_postcode]
-
-    def __init__(self, *args, **kwargs):
-        super(FrPostcodeDRFField, self).__init__(*args, **kwargs)
 
 
 DEFAULT_ATTRIBUTE_KINDS = [
@@ -85,6 +97,12 @@ DEFAULT_ATTRIBUTE_KINDS = [
         'name': 'fr_postcode',
         'field_class': FrPostcodeField,
         'rest_framework_field_class': FrPostcodeDRFField,
+    },
+    {
+        'label': _('phone number'),
+        'name': 'phone_number',
+        'field_class': PhoneNumberField,
+        'rest_framework_field_class': PhoneNumberDRFField,
     },
 ]
 

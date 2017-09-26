@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-26 11:04+0200\n"
+"POT-Creation-Date: 2017-09-26 11:21+0200\n"
 "PO-Revision-Date: 2017-06-26 22:14+0200\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -152,34 +152,44 @@ msgid "Mr"
 msgstr "Monsieur"
 
 #: authentic2/attribute_kinds.py:32
+msgid "Phone number can start with a + and must contain only digits."
+msgstr ""
+"Un numéro de téléphone peut commencer par un + et ne doit contenir que des "
+"chiffres."
+
+#: authentic2/attribute_kinds.py:47
 msgid "The value must be a number"
 msgstr "Vous devez entrer un code postal"
 
-#: authentic2/attribute_kinds.py:52
+#: authentic2/attribute_kinds.py:64
 msgid "string"
 msgstr "chaîne de caractère"
 
-#: authentic2/attribute_kinds.py:57
+#: authentic2/attribute_kinds.py:69
 msgid "title"
 msgstr "civilité"
 
-#: authentic2/attribute_kinds.py:66
+#: authentic2/attribute_kinds.py:78
 msgid "boolean"
 msgstr "booléen"
 
-#: authentic2/attribute_kinds.py:73
+#: authentic2/attribute_kinds.py:85
 msgid "date"
 msgstr "date"
 
-#: authentic2/attribute_kinds.py:84
+#: authentic2/attribute_kinds.py:96
 msgid "french postcode"
 msgstr "code postal"
 
-#: authentic2/attribute_kinds.py:118
+#: authentic2/attribute_kinds.py:102
+msgid "phone number"
+msgstr "numéro de téléphone"
+
+#: authentic2/attribute_kinds.py:136
 msgid "SIRET number must contain 14 digits"
 msgstr "Le SIRET doit contenir 14 chiffres"
 
-#: authentic2/attribute_kinds.py:121
+#: authentic2/attribute_kinds.py:139
 msgid "SIRET validation code does not match"
 msgstr "Les clé de validation de votre SIRET sont inexactes"
 
