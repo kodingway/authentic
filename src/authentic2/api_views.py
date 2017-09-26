@@ -330,11 +330,19 @@ class BaseUserSerializer(serializers.ModelSerializer):
             else:
                 kind = attribute_kinds.get_kind(at.kind)
                 field_class = kind['rest_framework_field_class']
-                kwargs = {
+                kwargs = kind.get('rest_framework_field_kwargs') or {}
+                kwargs.update({
                     'source': 'attributes.%s' % at.name,
                     'required': at.required,
-                }
-                kwargs.update(kind.get('rest_framework_field_kwargs', {}))
+                })
+                if not at.required:
+                    # setting an attribute to null will delete it
+                    kwargs['allow_null'] = True
+                    # if not stated otherwise by the definition of the kind, string alike fields
+                    # accept blank values when not required
+                    if (issubclass(field_class, serializers.CharField) and 'allow_blank' not in
+                            kwargs):
+                        kwargs['allow_blank'] = True
                 self.fields[at.name] = field_class(**kwargs)
         for key in self.fields:
             if key in app_settings.A2_REQUIRED_FIELDS:
