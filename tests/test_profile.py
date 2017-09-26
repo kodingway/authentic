@@ -32,23 +32,28 @@ def test_send_password_reset_email(app, simple_user):
     resp = resp.form.submit().follow()
     assert str(app.session['_auth_user_id']) == str(simple_user.pk)
 
+
 def test_password_reset_view(app, simple_user):
-    url = reverse('password_reset') + '?next=/'
+    url = reverse('password_reset') + '?next=/moncul/'
     resp = app.get(url, status=200)
     resp.form.set('email', simple_user.email)
     assert len(mail.outbox) == 0
-    resp = resp.form.submit().follow().follow()
+    resp = resp.form.submit()
+    assert resp['Location'].endswith('/moncul/')
     assert len(mail.outbox) == 1
-    assert 'a2-login-forms' in resp
     body = mail.outbox[0].body
-    assert re.findall('http://[^ ]*/', body)
-    url = re.findall('http://[^ ]*/', body)[0]
+    assert re.findall('http://[^\s"]+', body)
+    url = re.findall('http://[^\s"]+', body)[0]
     relative_url = url.split('testserver')[1]
     resp = app.get(relative_url, status=200)
     resp.form.set('new_password1', '1234==aA')
     resp.form.set('new_password2', '1234==aA')
-    resp = resp.form.submit().follow()
+    resp = resp.form.submit()
+    # verify user is logged
     assert str(app.session['_auth_user_id']) == str(simple_user.pk)
+    # verify next_url was kept
+    assert resp['Location'].endswith('/moncul/')
+
 
 def test_account_edit_view(app, simple_user):
     utils.login(app, simple_user)

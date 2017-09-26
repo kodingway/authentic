@@ -2,7 +2,7 @@ import logging
 
 from django.views.generic import FormView
 from django.contrib import messages
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, REDIRECT_FIELD_NAME
 from django.utils.translation import ugettext as _
 from django.utils.http import urlsafe_base64_decode
 
@@ -20,6 +20,12 @@ class PasswordResetView(cbv.NextURLViewMixin, FormView):
             'authentic2/password_reset_form.html',
             'registration/password_reset_form.html',
         ]
+
+    def get_form_kwargs(self, **kwargs):
+        kwargs = super(PasswordResetView, self).get_form_kwargs(**kwargs)
+        initial = kwargs.setdefault('initial', {})
+        initial['next_url'] = self.request.GET.get(REDIRECT_FIELD_NAME, '')
+        return kwargs
 
     def get_context_data(self, **kwargs):
         ctx = super(PasswordResetView, self).get_context_data(**kwargs)

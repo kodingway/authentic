@@ -7,6 +7,8 @@ from .utils import send_password_reset_mail
 
 
 class PasswordResetForm(forms.Form):
+    next_url = forms.CharField(widget=forms.HiddenInput, required=False)
+
     email = forms.EmailField(
         label=_("Email"), max_length=254)
 
@@ -22,4 +24,5 @@ class PasswordResetForm(forms.Form):
         for user in active_users:
             # we don't set the password to a random string, as some users should not have
             # a password
-            send_password_reset_mail(user, set_random_password=user.has_usable_password())
+            send_password_reset_mail(user, set_random_password=user.has_usable_password(),
+                                     next_url=self.cleaned_data.get('next_url'))
