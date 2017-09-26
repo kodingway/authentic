@@ -173,7 +173,7 @@ msgstr "date"
 
 #: authentic2/attribute_kinds.py:84
 msgid "french postcode"
-msgstr ""
+msgstr "code postal"
 
 #: authentic2/attribute_kinds.py:118
 msgid "SIRET number must contain 14 digits"
