@@ -65,11 +65,17 @@ class FrPostcodeDRFField(serializers.CharField):
     default_validators = [validate_fr_postcode]
 
 
+DEFAULT_ALLOW_BLANK = True
+DEFAULT_MAX_LENGTH = 256
+
 DEFAULT_ATTRIBUTE_KINDS = [
     {
         'label': _('string'),
         'name': 'string',
         'field_class': forms.CharField,
+        'kwargs': {
+            'max_length': DEFAULT_MAX_LENGTH,
+        },
     },
     {
         'label': _('title'),
@@ -164,9 +170,6 @@ def get_form_field(kind, **kwargs):
     if 'kwargs' in defn:
         kwargs.update(defn['kwargs'])
     return defn['field_class'](**kwargs)
-
-DEFAULT_ALLOW_BLANK = True
-DEFAULT_MAX_LENGTH = 256
 
 
 def get_kind(kind):
