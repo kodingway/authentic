@@ -2,6 +2,8 @@
 {% load firstof from future %}
 {% load i18n %}
 
+{% block bodyclasses %}{{ block.super }} with-actions{% endblock %}
+
 {% block page-title %}
   {{ block.super }} - {% trans "User" %} - {{ object.get_full_name }}
 {% endblock %}

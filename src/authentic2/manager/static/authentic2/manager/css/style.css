@@ -92,7 +92,7 @@ table.users tbody tr td:nth-child(2):hover {
   width: 100%;
 }
 
-.form-inner-container.with-actions {
+.with-actions .form-inner-container {
   width: 70%;
   float: left;
 }

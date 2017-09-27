@@ -16,7 +16,7 @@
     {% if form.is_multipart %}enctype="multipart/form-data"{% endif %}
     {% if form.form_id %}id="{{ form.form_id }}"{% endif %}
     class="{{ form.css_class }}" method="post">
-    <div class="form-inner-container{% if other_actions %} with-actions{% endif %}">
+    <div class="form-inner-container">
       {% if messages %}
         {% if request.is_ajax %}
           <ul class="messages">
