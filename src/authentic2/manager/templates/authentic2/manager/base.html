@@ -2,6 +2,8 @@
 {% load i18n staticfiles %}
 {% load firstof from future %}
 
+{% block bodyargs %} class="{% block bodyclasses %}{% endblock %}"{% endblock %}
+
 {% block page-title %}{% firstof site_title "Authentic2" %}{% endblock %}
 {% block site-title %}{% firstof site_title "Authentic2" %}{% endblock %}
 
