@@ -49,7 +49,8 @@ class PhoneNumberDRFField(serializers.CharField):
     default_validators = [validate_phone_number]
 
 
-validate_fr_postcode = RegexValidator('^\d{5}$', message=_('The value must be a number'))
+validate_fr_postcode = RegexValidator(
+    '^\d{5}$', message=_('The value must be a valid french postcode'))
 
 
 class FrPostcodeField(forms.CharField):
