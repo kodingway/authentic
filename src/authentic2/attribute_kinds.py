@@ -29,11 +29,15 @@ DEFAULT_TITLE_CHOICES = (
 def get_title_choices():
     return app_settings.A2_ATTRIBUTE_KIND_TITLE_CHOICES or DEFAULT_TITLE_CHOICES
 
-validate_phone_number = RegexValidator('^\+?\d+$', message=_('Phone number can start with a + and'
-                                                             ' must contain only digits.'))
+validate_phone_number = RegexValidator('^\+?\d{,20}$', message=_('Phone number can start with a + '
+                                                                 'an must contain only digits.'))
 
 
 class PhoneNumberField(forms.CharField):
+    def __init__(self, *args, **kwargs):
+        kwargs['max_length'] = 30
+        super(PhoneNumberField, self).__init__(*args, **kwargs)
+
     def clean(self, value):
         if value not in self.empty_values:
             value = re.sub('[-.\s]', '', value)

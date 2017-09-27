@@ -130,6 +130,14 @@ def test_phone_number(db, app, admin, mailoutbox):
     assert response.pyquery.find('.form-field-error #id_phone_number')
 
     form = response.form
+    assert response.pyquery('#id_phone_number').attr('maxlength') == '30'
+    form.set('phone_number', '1234512345' * 10)
+    form.set('password1', '12345abcd#')
+    form.set('password2', '12345abcd#')
+    response = form.submit()
+    assert response.pyquery.find('.form-field-error #id_phone_number')
+
+    form = response.form
     form.set('phone_number', '12345')
     form.set('password1', '12345abcd#')
     form.set('password2', '12345abcd#')
