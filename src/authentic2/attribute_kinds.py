@@ -36,6 +36,7 @@ validate_phone_number = RegexValidator('^\+?\d{,20}$', message=_('Phone number c
 class PhoneNumberField(forms.CharField):
     def __init__(self, *args, **kwargs):
         kwargs['max_length'] = 30
+        kwargs.setdefault('help_text', _('ex.: 0699999999, +33 6 99 99 99 99'))
         super(PhoneNumberField, self).__init__(*args, **kwargs)
 
     def clean(self, value):
