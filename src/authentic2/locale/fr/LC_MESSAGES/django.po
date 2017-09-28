@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-26 11:21+0200\n"
+"POT-Creation-Date: 2017-09-28 12:03+0200\n"
 "PO-Revision-Date: 2017-06-26 22:14+0200\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -122,11 +122,11 @@ msgstr "Vous avez déjà un compte."
 msgid "Username is required in this ou"
 msgstr "L'identifiant est requis dans cette collectivité."
 
-#: authentic2/api_views.py:589
+#: authentic2/api_views.py:597
 msgid "User successfully added to role"
 msgstr "Utilisateur ajouté du rôle"
 
-#: authentic2/api_views.py:594
+#: authentic2/api_views.py:602
 msgid "User successfully removed from role"
 msgstr "Utilisateur retiré du rôle"
 
@@ -152,44 +152,52 @@ msgid "Mr"
 msgstr "Monsieur"
 
 #: authentic2/attribute_kinds.py:32
-msgid "Phone number can start with a + and must contain only digits."
+msgid "Phone number can start with a + an must contain only digits."
 msgstr ""
 "Un numéro de téléphone peut commencer par un + et ne doit contenir que des "
 "chiffres."
 
-#: authentic2/attribute_kinds.py:47
-msgid "The value must be a number"
+#: authentic2/attribute_kinds.py:39
+msgid "ex.: 0699999999, +33 6 99 99 99 99"
+msgstr ""
+
+#: authentic2/attribute_kinds.py:54
+msgid "The value must be a valid french postcode"
 msgstr "Vous devez entrer un code postal"
 
-#: authentic2/attribute_kinds.py:64
+#: authentic2/attribute_kinds.py:59
+msgid "ex.: 13260"
+msgstr ""
+
+#: authentic2/attribute_kinds.py:79
 msgid "string"
 msgstr "chaîne de caractère"
 
-#: authentic2/attribute_kinds.py:69
+#: authentic2/attribute_kinds.py:87
 msgid "title"
 msgstr "civilité"
 
-#: authentic2/attribute_kinds.py:78
+#: authentic2/attribute_kinds.py:96
 msgid "boolean"
 msgstr "booléen"
 
-#: authentic2/attribute_kinds.py:85
+#: authentic2/attribute_kinds.py:103
 msgid "date"
 msgstr "date"
 
-#: authentic2/attribute_kinds.py:96
+#: authentic2/attribute_kinds.py:114
 msgid "french postcode"
 msgstr "code postal"
 
-#: authentic2/attribute_kinds.py:102
+#: authentic2/attribute_kinds.py:120
 msgid "phone number"
 msgstr "numéro de téléphone"
 
-#: authentic2/attribute_kinds.py:136
+#: authentic2/attribute_kinds.py:154
 msgid "SIRET number must contain 14 digits"
 msgstr "Le SIRET doit contenir 14 chiffres"
 
-#: authentic2/attribute_kinds.py:139
+#: authentic2/attribute_kinds.py:157
 msgid "SIRET validation code does not match"
 msgstr "Les clé de validation de votre SIRET sont inexactes"
 
@@ -540,7 +548,7 @@ msgstr "application"
 msgid "base service models"
 msgstr "applications"
 
-#: authentic2/profile_forms.py:11 authentic2/registration_backend/forms.py:31
+#: authentic2/profile_forms.py:13 authentic2/registration_backend/forms.py:31
 #: authentic2/templates/authentic2/api_user_create_registration_email_body.txt:4
 msgid "Email"
 msgstr "Courriel"
@@ -550,31 +558,31 @@ msgstr "Courriel"
 msgid "Password changed"
 msgstr "Mot de passe modifié"
 
-#: authentic2/profile_views.py:26
+#: authentic2/profile_views.py:32
 msgid "Password reset"
 msgstr "obligation de changement de mot de passe"
 
-#: authentic2/profile_views.py:32
+#: authentic2/profile_views.py:38
 msgid "A mail was sent to you with instructions to reset your password"
 msgstr ""
 "Un courriel vous a été envoyé avec des instructions pour ré-initialiser "
 "votre mot de passe."
 
-#: authentic2/profile_views.py:65
+#: authentic2/profile_views.py:71
 msgid "User not found"
 msgstr "Utilisateur introuvable"
 
-#: authentic2/profile_views.py:69
+#: authentic2/profile_views.py:75
 msgid "You reset password link is invalid or has expired"
 msgstr ""
 "Votre lien de ré-initialisation de mot de passe est invalide ou expiré."
 
-#: authentic2/profile_views.py:74
+#: authentic2/profile_views.py:80
 msgid "Account has no password, you cannot reset it."
 msgstr ""
 "Le compte n'a pas de mot de passe, vous ne pouvez donc pas le ré-initialiser."
 
-#: authentic2/profile_views.py:82
+#: authentic2/profile_views.py:88
 msgid "Enter new password"
 msgstr "Entrez un nouveau mot de passe"
 
