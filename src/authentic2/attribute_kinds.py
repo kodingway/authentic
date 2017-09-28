@@ -55,6 +55,10 @@ validate_fr_postcode = RegexValidator(
 
 
 class FrPostcodeField(forms.CharField):
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('help_text', _('ex.: 13260'))
+        super(FrPostcodeField, self).__init__(*args, **kwargs)
+
     def clean(self, value):
         value = super(FrPostcodeField, self).clean(value)
         if value not in self.empty_values:
