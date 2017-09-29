@@ -21,6 +21,7 @@ from django.http import HttpResponseBadRequest
 from authentic2.utils import (import_module_or_class, redirect, make_url, get_fields_and_labels,
                               login, simulate_authentication)
 from authentic2.a2_rbac.utils import get_default_ou
+from authentic2 import hooks
 
 from django_rbac.utils import get_ou_model
 
@@ -228,6 +229,11 @@ class RegistrationCompletionView(CreateView):
             kwargs['instance'] = get_user_model()(**init_kwargs)
 
         return kwargs
+
+    def get_form(self, form_class=None):
+        form = super(RegistrationCompletionView, self).get_form(form_class=form_class)
+        hooks.call_hooks('front_modify_form', self, form)
+        return form
 
     def get_context_data(self, **kwargs):
         ctx = super(RegistrationCompletionView, self).get_context_data(**kwargs)
