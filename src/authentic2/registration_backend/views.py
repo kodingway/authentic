@@ -311,7 +311,9 @@ class RegistrationCompletionView(CreateView):
             return redirect(self.request, 'registration_complete')
         ret = super(RegistrationCompletionView, self).form_valid(form)
         simulate_authentication(self.request, self.object, method='email')
+        messages.info(self.request, _('You have just created an account.'))
         return ret
+
 
 class DeleteView(FormView):
     template_name = 'authentic2/accounts_delete.html'

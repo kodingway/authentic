@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-28 12:03+0200\n"
+"POT-Creation-Date: 2017-10-04 11:11+0200\n"
 "PO-Revision-Date: 2017-06-26 22:14+0200\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -618,15 +618,19 @@ msgstr "Le nouveau mot de passe doit être différent de l'ancien."
 msgid "Password is invalid"
 msgstr "Le mot de passe est invalide"
 
-#: authentic2/registration_backend/views.py:44
+#: authentic2/registration_backend/views.py:45
 msgid "Your activation key is expired"
 msgstr "Votre clé d'activation a expiré"
 
-#: authentic2/registration_backend/views.py:47
+#: authentic2/registration_backend/views.py:48
 msgid "Activation failed"
 msgstr "Échec à l'activation du compte"
 
-#: authentic2/registration_backend/views.py:341
+#: authentic2/registration_backend/views.py:314
+msgid "You have just created an account."
+msgstr "Vous venez de créer un compte."
+
+#: authentic2/registration_backend/views.py:349
 msgid ""
 "Your account has been scheduled for deletion. You cannot use it anymore."
 msgstr ""

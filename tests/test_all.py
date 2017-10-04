@@ -266,9 +266,10 @@ class RegistrationTests(TestCase):
 
         response = self.client.post(link, {'password1': 'T0==toto',
                                            'password2': 'T0==toto'})
+        assert 'You have just created an account.' in response.content
+        assert next_url in response.content
         assert User.objects.count() == 1
         new_user = User.objects.get()
-        self.assertRedirects(response, next_url)
         self.assertEqual(new_user.email, 'testbot@entrouvert.com')
         self.assertIsNone(new_user.username)
         self.assertTrue(new_user.check_password('T0==toto'))
@@ -305,8 +306,9 @@ class RegistrationTests(TestCase):
         response = self.client.post(link, {'username': 'toto',
                                            'password1': 'T0==toto',
                                            'password2': 'T0==toto'})
+        assert 'You have just created an account.' in response.content
+        assert next_url in response.content
         new_user = User.objects.get()
-        self.assertRedirects(response, next_url)
         self.assertEqual(new_user.username, 'toto@realm')
         self.assertEqual(new_user.email, 'testbot@entrouvert.com')
         self.assertTrue(new_user.check_password('T0==toto'))
