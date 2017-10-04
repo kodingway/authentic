@@ -262,7 +262,10 @@ class TitleMixin(object):
 
     def get_context_data(self, **kwargs):
         ctx = super(TitleMixin, self).get_context_data(**kwargs)
-        ctx['title'] = self.get_title() or self.title
+        if hasattr(self, 'get_title'):
+            ctx['title'] = self.get_title() or self.title
+        else:
+            ctx['title'] = self.title
         return ctx
 
 
