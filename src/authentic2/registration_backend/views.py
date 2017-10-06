@@ -270,6 +270,7 @@ class RegistrationCompletionView(CreateView):
             if form.is_valid():
                 user = form.save()
                 simulate_authentication(request, user, method='email')
+                messages.info(self.request, _('You have just created an account.'))
                 return redirect(request, self.get_success_url())
             self.get_form = lambda *args, **kwargs: form
         return super(RegistrationCompletionView, self).get(request, *args,
