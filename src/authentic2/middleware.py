@@ -192,6 +192,8 @@ class DisplayMessageBeforeRedirectMiddleware(object):
         url = response['Location']
         if not url:
             return response
+        if not getattr(response, 'display_message', True):
+            return response
         parsed_url = urlparse.urlparse(url)
         if not parsed_url.scheme and not parsed_url.netloc:
             return response
