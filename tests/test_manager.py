@@ -15,9 +15,19 @@ pytestmark = pytest.mark.django_db
 
 def test_manager_login(superuser_or_admin, app):
     manager_home_page = login(app, superuser_or_admin, reverse('a2-manager-homepage'))
-    for section in ('users', 'roles', 'ous', 'services'):
+
+    sections = ['users', 'roles', 'ous']
+    no_sections = ['services']
+    if superuser_or_admin.is_superuser:
+        sections += no_sections
+        no_sections = []
+
+    for section in sections:
         path = reverse('a2-manager-%s' % section)
         assert manager_home_page.pyquery.remove_namespaces()('.apps a[href=\'%s\']' % path)
+    for section in no_sections:
+        path = reverse('a2-manager-%s' % section)
+        assert not manager_home_page.pyquery.remove_namespaces()('.apps a[href=\'%s\']' % path)
 
 
 def test_manager_create_ou(superuser_or_admin, app):
@@ -137,6 +147,17 @@ def test_manager_stress_create_user(superuser_or_admin, app, mailoutbox):
 
 
 def test_role_members_from_ou(app, superuser, settings):
+    Role = get_role_model()
+    r = Role.objects.create(name='role', slug='role', ou=get_default_ou())
+    url = reverse('a2-manager-role-members', kwargs={'pk': r.pk})
+    response = login(app, superuser, url)
+    assert not response.context['form'].fields['user'].queryset.query.where
+    settings.A2_MANAGER_ROLE_MEMBERS_FROM_OU = True
+    response = app.get(url)
+    assert response.context['form'].fields['user'].queryset.query.where
+
+
+def test_role_members_show_all_ou(app, superuser, settings):
     Role = get_role_model()
     r = Role.objects.create(name='role', slug='role', ou=get_default_ou())
     url = reverse('a2-manager-role-members', kwargs={'pk': r.pk})

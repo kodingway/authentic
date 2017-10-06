@@ -54,10 +54,12 @@ def create_user(**kwargs):
         user.save()
     return user
 
+
 @pytest.fixture
 def simple_user(db, ou1):
     return create_user(username='user', first_name=u'Jôhn', last_name=u'Dôe',
                        email='user@example.net', ou=get_default_ou())
+
 
 @pytest.fixture
 def superuser(db):
@@ -69,11 +71,11 @@ def superuser(db):
 @pytest.fixture
 def admin(db):
     user = create_user(username='admin', first_name='global', last_name='admin',
-                       email='admin@example.net', is_superuser=True, is_staff=True,
-                       is_active=True)
+                       email='admin@example.net', is_active=True)
     Role = get_role_model()
     user.roles.add(Role.objects.get(slug='_a2-manager'))
     return user
+
 
 @pytest.fixture
 def user_ou1(db, ou1):
