@@ -844,7 +844,7 @@ class APITest(TestCase):
         self.assertEqual(response.data['result'], 1)
         self.assertIn('token', response.data)
         token = response.data['token']
-        self.assertEqual(len(mail.outbox), outbox_level+1)
+        self.assertEqual(len(mail.outbox), outbox_level + 1)
 
         # User side
         client = Client()
@@ -853,10 +853,9 @@ class APITest(TestCase):
         self.assertNotEqual(m, None)
         activation_url = m.group()
         response = client.get(activation_url)
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
-        self.assertEqual(response['Location'],
-                         utils.make_url(return_url, params={'token': token}))
-        self.assertEqual(User.objects.count(), user_count+1)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        assert utils.make_url(return_url, params={'token': token}) in response.content
+        self.assertEqual(User.objects.count(), user_count + 1)
         response = client.get(reverse('auth_homepage'))
         self.assertContains(response, username)
         last_user = User.objects.order_by('id').last()
@@ -870,7 +869,7 @@ class APITest(TestCase):
         client.credentials(HTTP_AUTHORIZATION='Basic %s' % cred)
         payload = {
             'email': email.upper(),
-            'username': username+'1',
+            'username': username + '1',
             'ou': self.ou.slug,
             'password': password,
             'return_url': return_url,
@@ -961,19 +960,19 @@ class APITest(TestCase):
         self.assertEqual(response.data['result'], 1)
         self.assertIn('token', response.data)
         token = response.data['token']
-        self.assertEqual(len(mail.outbox), outbox_level+1)
+        self.assertEqual(len(mail.outbox), outbox_level + 1)
         outbox_level = len(mail.outbox)
 
         # Second registration
         response2 = client.post(reverse('a2-api-register'),
-                               content_type='application/json',
-                               data=json.dumps(payload))
+                                content_type='application/json',
+                                data=json.dumps(payload))
         self.assertEqual(response2.status_code, status.HTTP_202_ACCEPTED)
         self.assertIn('result', response2.data)
         self.assertEqual(response2.data['result'], 1)
         self.assertIn('token', response2.data)
         token2 = response2.data['token']
-        self.assertEqual(len(mail.outbox), outbox_level+1)
+        self.assertEqual(len(mail.outbox), outbox_level + 1)
 
         # User side - user click on first email
         client = Client()
@@ -982,10 +981,9 @@ class APITest(TestCase):
         self.assertNotEqual(m, None)
         activation_url = m.group()
         response = client.get(activation_url)
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
-        self.assertEqual(response['Location'],
-                         utils.make_url(return_url, params={'token': token}))
-        self.assertEqual(User.objects.count(), user_count+1)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        assert utils.make_url(return_url, params={'token': token}) in response.content
+        self.assertEqual(User.objects.count(), user_count + 1)
         response = client.get(reverse('auth_homepage'))
         self.assertContains(response, username)
         last_user = User.objects.order_by('id').last()
@@ -1004,7 +1002,7 @@ class APITest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
         self.assertEqual(response['Location'],
                          utils.make_url(return_url, params={'token': token2}))
-        self.assertEqual(User.objects.count(), user_count+1)
+        self.assertEqual(User.objects.count(), user_count + 1)
         response = client.get(reverse('auth_homepage'))
         self.assertContains(response, username)
         last_user2 = User.objects.order_by('id').last()
@@ -1020,7 +1018,7 @@ class APITest(TestCase):
         client.credentials(HTTP_AUTHORIZATION='Basic %s' % cred)
         payload = {
             'email': email.upper(),
-            'username': username+'1',
+            'username': username + '1',
             'ou': self.ou.slug,
             'password': password,
             'return_url': return_url,
@@ -1065,7 +1063,6 @@ class APITest(TestCase):
         # disable existing attributes
         models.Attribute.objects.update(disabled=True)
 
-        user = self.reguser3
         cred = self.reguser3_cred
         User = get_user_model()
         user_count = User.objects.count()
@@ -1091,20 +1088,19 @@ class APITest(TestCase):
         self.assertEqual(response.data['result'], 1)
         self.assertIn('token', response.data)
         token = response.data['token']
-        self.assertEqual(len(mail.outbox), outbox_level+1)
+        self.assertEqual(len(mail.outbox), outbox_level + 1)
         outbox_level = len(mail.outbox)
 
         # Second registration
         payload['email'] = 'john.doe2@example.com'
         response2 = client.post(reverse('a2-api-register'),
-                               content_type='application/json',
-                               data=json.dumps(payload))
+                                content_type='application/json',
+                                data=json.dumps(payload))
         self.assertEqual(response2.status_code, status.HTTP_202_ACCEPTED)
         self.assertIn('result', response2.data)
         self.assertEqual(response2.data['result'], 1)
         self.assertIn('token', response2.data)
-        token2 = response2.data['token']
-        self.assertEqual(len(mail.outbox), outbox_level+1)
+        self.assertEqual(len(mail.outbox), outbox_level + 1)
 
         # User side - user click on first email
         client = Client()
@@ -1113,10 +1109,9 @@ class APITest(TestCase):
         self.assertNotEqual(m, None)
         activation_url = m.group()
         response = client.get(activation_url)
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
-        self.assertEqual(response['Location'],
-                         utils.make_url(return_url, params={'token': token}))
-        self.assertEqual(User.objects.count(), user_count+1)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        assert utils.make_url(return_url, params={'token': token}) in response.content
+        self.assertEqual(User.objects.count(), user_count + 1)
         response = client.get(reverse('auth_homepage'))
         self.assertContains(response, username)
         last_user = User.objects.order_by('id').last()
@@ -1136,5 +1131,4 @@ class APITest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertFormError(
             response, 'form', 'username',
-            _('This username is already in use. Please supply a different '
-             'username.'))
+            _('This username is already in use. Please supply a different username.'))
