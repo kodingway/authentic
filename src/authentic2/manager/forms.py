@@ -83,7 +83,7 @@ class LimitQuerysetFormMixin(FormWithRequest):
                 else:
                     app_label = qs.model._meta.app_label
                     model_name = qs.model._meta.model_name
-                    perm = '%s.view_%s' % (app_label, model_name)
+                    perm = '%s.search_%s' % (app_label, model_name)
                 qs = self.request.user.filter_by_perm(perm, qs)
                 field.queryset = qs
                 assert qs.exists(), 'user has no view permissions on model %s' % qs.model
