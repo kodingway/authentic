@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-04 11:11+0200\n"
+"POT-Creation-Date: 2017-10-10 15:49+0200\n"
 "PO-Revision-Date: 2017-06-26 22:14+0200\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -65,8 +65,8 @@ msgstr "Un utilisateur doit au minimum posséder un email ou un identifiant."
 
 #: authentic2/admin.py:167 authentic2/admin.py:204
 #: authentic2/auth_frontends.py:16 authentic2/forms.py:20
-#: authentic2/registration_backend/forms.py:95
-#: authentic2/registration_backend/forms.py:181
+#: authentic2/registration_backend/forms.py:107
+#: authentic2/registration_backend/forms.py:193
 #: authentic2/templates/authentic2/login_password_profile.html:4
 msgid "Password"
 msgstr "Mot de passe"
@@ -82,7 +82,7 @@ msgstr ""
 "modifier le mot de passe de l'usager en utilisant <a href=\"password/\">ce "
 "formulaire</a>."
 
-#: authentic2/admin.py:201 authentic2/registration_backend/forms.py:109
+#: authentic2/admin.py:201 authentic2/registration_backend/forms.py:121
 msgid "The two password fields didn't match."
 msgstr "Les deux champs mot de passe ne correspondent pas."
 
@@ -130,13 +130,13 @@ msgstr "Utilisateur ajouté du rôle"
 msgid "User successfully removed from role"
 msgstr "Utilisateur retiré du rôle"
 
-#: authentic2/app_settings.py:117
+#: authentic2/app_settings.py:119
 msgid "Required. At most 30 characters. Letters, digits, and @/./+/-/_ only."
 msgstr ""
 "Requis. 30 caractères maximum. Uniquement des lettres, nombres et les "
 "caractères « @ », « . », « + », « - » et « _ »."
 
-#: authentic2/app_settings.py:119
+#: authentic2/app_settings.py:121
 #: authentic2/templates/authentic2/api_user_create_registration_email_body.txt:3
 msgid "Username"
 msgstr "Identifiant"
@@ -548,7 +548,7 @@ msgstr "application"
 msgid "base service models"
 msgstr "applications"
 
-#: authentic2/profile_forms.py:13 authentic2/registration_backend/forms.py:31
+#: authentic2/profile_forms.py:13 authentic2/registration_backend/forms.py:32
 #: authentic2/templates/authentic2/api_user_create_registration_email_body.txt:4
 msgid "Email"
 msgstr "Courriel"
@@ -586,13 +586,17 @@ msgstr ""
 msgid "Enter new password"
 msgstr "Entrez un nouveau mot de passe"
 
-#: authentic2/registration_backend/forms.py:64
+#: authentic2/registration_backend/forms.py:52
+msgid "You cannot register with this email."
+msgstr "Vous ne pouvez pas vous inscrire avec cette adresse de courriel."
+
+#: authentic2/registration_backend/forms.py:76
 msgid "This username is already in use. Please supply a different username."
 msgstr ""
 "Cet identifiant est déjà utilisé. Utilisez s'il vous plait un autre "
 "identifiant."
 
-#: authentic2/registration_backend/forms.py:78
+#: authentic2/registration_backend/forms.py:90
 msgid ""
 "This email address is already in use. Please supply a different email "
 "address."
@@ -600,21 +604,21 @@ msgstr ""
 "Cette adresse de courriel est déjà utilisée. Utilisez s'il vous plait une "
 "autre adresse de courriel."
 
-#: authentic2/registration_backend/forms.py:98
+#: authentic2/registration_backend/forms.py:110
 msgid "Password (again)"
 msgstr "Mot de passe (encore une fois)"
 
-#: authentic2/registration_backend/forms.py:145
-#: authentic2/registration_backend/forms.py:159
+#: authentic2/registration_backend/forms.py:157
+#: authentic2/registration_backend/forms.py:171
 msgid "New password"
 msgstr "Nouveau mot de passe"
 
-#: authentic2/registration_backend/forms.py:153
-#: authentic2/registration_backend/forms.py:168
+#: authentic2/registration_backend/forms.py:165
+#: authentic2/registration_backend/forms.py:180
 msgid "New password must differ from old password"
 msgstr "Le nouveau mot de passe doit être différent de l'ancien."
 
-#: authentic2/registration_backend/forms.py:190
+#: authentic2/registration_backend/forms.py:202
 msgid "Password is invalid"
 msgstr "Le mot de passe est invalide"
 

@@ -1,3 +1,4 @@
+import re
 import copy
 from collections import OrderedDict
 
@@ -39,6 +40,17 @@ class RegistrationForm(Form):
             elif field in attributes:
                 self.fields[field] = attributes[field].get_form_field()
             self.fields[field].required = True
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        for email_pattern in app_settings.A2_REGISTRATION_EMAIL_BLACKLIST:
+            if not email_pattern.startswith('^'):
+                email_pattern = '^' + email_pattern
+            if not email_pattern.endswith('$'):
+                email_pattern += '$'
+            if re.match(email_pattern, email):
+                raise ValidationError(ugettext('You cannot register with this email.'))
+        return email
 
 
 class RegistrationCompletionFormNoPassword(forms.BaseUserForm):
