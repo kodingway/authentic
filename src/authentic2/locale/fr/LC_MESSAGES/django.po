@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-10 15:49+0200\n"
+"POT-Creation-Date: 2017-10-12 18:06+0200\n"
 "PO-Revision-Date: 2017-06-26 22:14+0200\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -61,7 +61,7 @@ msgstr "domaine"
 
 #: authentic2/admin.py:164 authentic2/admin.py:202
 msgid "You must at least give a username or an email to your user"
-msgstr "Un utilisateur doit au minimum posséder un email ou un identifiant."
+msgstr "Un utilisateur doit au minimum posséder un courriel ou un identifiant."
 
 #: authentic2/admin.py:167 authentic2/admin.py:204
 #: authentic2/auth_frontends.py:16 authentic2/forms.py:20
@@ -458,7 +458,7 @@ msgstr "requis"
 
 #: authentic2/models.py:135
 msgid "asked on registration"
-msgstr "demandé à l'enregistrement"
+msgstr "demandé à la création du compte"
 
 #: authentic2/models.py:138
 msgid "user editable"
@@ -630,11 +630,12 @@ msgstr "Votre clé d'activation a expiré"
 msgid "Activation failed"
 msgstr "Échec à l'activation du compte"
 
-#: authentic2/registration_backend/views.py:314
+#: authentic2/registration_backend/views.py:273
+#: authentic2/registration_backend/views.py:315
 msgid "You have just created an account."
 msgstr "Vous venez de créer un compte."
 
-#: authentic2/registration_backend/views.py:349
+#: authentic2/registration_backend/views.py:350
 msgid ""
 "Your account has been scheduled for deletion. You cannot use it anymore."
 msgstr ""
@@ -926,7 +927,6 @@ msgstr ""
 #: authentic2/templates/authentic2/unauthorized.html:9
 #: authentic2/templates/error.html:18
 #: authentic2/templates/registration/logout.html:10
-#: authentic2/templates/registration/registration_complete.html:11
 msgid "Back"
 msgstr "Retour"
 
@@ -1043,8 +1043,8 @@ msgid ""
 "You requested registration on %(site)s. To finish your registration, please\n"
 "        <a href=\"%(registration_url)s\">click here</a>"
 msgstr ""
-"Vous demandez la création d'un compte sur %(site)s. <a href="
-"\"%(registration_url)s\">Continuez votre enregistrement !</a>."
+"Vous avez demandé la création d'un compte sur %(site)s. <a href="
+"\"%(registration_url)s\">Continuez la création de votre compte!</a>."
 
 #: authentic2/templates/registration/activation_email.html:9
 #, python-format
@@ -1065,7 +1065,7 @@ msgstr "Ce lien est valide pendant %(expiration_days)s jours."
 #, python-format
 msgid "If you did not register on %(site)s, ignore this email."
 msgstr ""
-"Si vous n'avez pas demander à vous enregistrer sur %(site)s, veuillez "
+"Si vous n'avez pas demander la création d'un compte sur %(site)s, veuillez "
 "ignorer ce courriel."
 
 #: authentic2/templates/registration/activation_email.txt:1
@@ -1078,7 +1078,7 @@ msgid ""
 "\n"
 msgstr ""
 "Vous avez demandé la création d'un compte sur %(site)s.\n"
-"Pour finir votre enregistrement veuillez vous rendre à l'adresse :\n"
+"Pour finir la création de votre compte veuillez vous rendre à l'adresse :\n"
 "\n"
 "  %(registration_url)s\n"
 "\n"
@@ -1164,20 +1164,27 @@ msgstr "Ré-initialiser le mot de passe sur %(hostname)s"
 #: authentic2/templates/registration/registration_closed.html:5
 #: authentic2/templates/registration/registration_closed.html:9
 msgid "Registration closed"
-msgstr "Les inscriptions sont fermées"
+msgstr "La création de compte est actuellement interdite."
 
 #: authentic2/templates/registration/registration_complete.html:5
-msgid "Successful registration"
-msgstr "Enregistrement réussi"
-
-#: authentic2/templates/registration/registration_complete.html:9
-#, python-format
-msgid "A links was sent to email adress %(email)s."
-msgstr ""
+msgid "Registration in progress"
+msgstr "Création du compte en cours"
 
 #: authentic2/templates/registration/registration_complete.html:10
-msgid "Please click on this link to continue your registration."
-msgstr "Veuillez cliquer sur ce lien pour finir votre enregitrement."
+#, python-format
+msgid ""
+"\n"
+"    <p>An email was sent to %(email)s.</p>\n"
+"    <p>Follow instruction in this email to continue your registration.</p>\n"
+"    <p><a href=\"%(homepage_url)s\">Back</a></p>\n"
+"  "
+msgstr ""
+"\n"
+"  <p>Un courriel a été envoyé à %(email)s.</p>\n"
+"  <p>Suivez les instruction dans ce courriel pour continuer la création de "
+"votre compte.</p>\n"
+"  <p><a href=\"%(homepage_url)s\">Retour</a></p>\n"
+"  "
 
 #: authentic2/templates/registration/registration_completion_choose.html:6
 #: authentic2/templates/registration/registration_completion_form.html:6
@@ -1185,7 +1192,7 @@ msgstr "Veuillez cliquer sur ce lien pour finir votre enregitrement."
 #: authentic2/templates/registration/registration_form.html:5
 #: authentic2/templates/registration/registration_form.html:16
 msgid "Registration"
-msgstr "Enregistrement"
+msgstr "Création d'un compte"
 
 #: authentic2/templates/registration/registration_completion_choose.html:17
 msgid ""
@@ -1228,7 +1235,8 @@ msgstr "créez un nouveau compte"
 
 #: authentic2/templates/registration/registration_completion_form.html:16
 msgid "Please fill the form to complete your registration"
-msgstr "Veuillez remplir le formulaire afin de finir l'enregistrement"
+msgstr ""
+"Veuillez remplir le formulaire afin de finir la création de votre compte"
 
 #: authentic2/utils.py:554
 msgid "The form was out of date, please try again."
