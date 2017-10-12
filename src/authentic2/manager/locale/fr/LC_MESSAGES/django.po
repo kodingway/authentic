@@ -223,8 +223,8 @@ msgid "Direct member"
 msgstr "Membre direct"
 
 #: authentic2/manager/tables.py:64
-msgid "Member count"
-msgstr "Nombre de membres"
+msgid "Direct member count"
+msgstr "Nombre de membres directs"
 
 #: authentic2/manager/tables.py:99 authentic2/manager/tables.py:159
 msgid "name"
