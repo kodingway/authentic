@@ -64,9 +64,11 @@ class OIDCClient(Service):
 
     AUTHORIZATION_MODE_BY_SERVICE = 1
     AUTHORIZATION_MODE_BY_OU = 2
+    AUTHORIZATION_MODE_NONE = 3
     AUTHORIZATION_MODES = [
         (AUTHORIZATION_MODE_BY_SERVICE, _('authorization by service')),
         (AUTHORIZATION_MODE_BY_OU, _('authorization by ou')),
+        (AUTHORIZATION_MODE_NONE, _('none')),
     ]
 
     client_id = models.CharField(

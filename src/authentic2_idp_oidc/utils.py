@@ -98,7 +98,8 @@ def make_pairwise_sub(client, user):
 
 
 def get_sector_identifier(client):
-    if client.authorization_mode == client.AUTHORIZATION_MODE_BY_SERVICE:
+    if client.authorization_mode in (client.AUTHORIZATION_MODE_BY_SERVICE,
+                                     client.AUTHORIZATION_MODE_NONE):
         sector_identifier = None
         if client.sector_identifier_uri:
             sector_identifier = url_domain(client.sector_identifier_uri)

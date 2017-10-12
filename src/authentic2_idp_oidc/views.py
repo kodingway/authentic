@@ -180,56 +180,61 @@ def authorize(request, *args, **kwargs):
             params['nonce'] = nonce
         return login_require(request, params=params)
 
-    if client.authorization_mode == client.AUTHORIZATION_MODE_BY_SERVICE:
-        auth_manager = client.authorizations
-    elif client.authorization_mode == client.AUTHORIZATION_MODE_BY_OU:
-        auth_manager = client.ou.oidc_authorizations
+    if client.authorization_mode != client.AUTHORIZATION_MODE_NONE or 'consent' in prompt:
+        # authorization by user is mandatory, as per local configuration or per explicit request by
+        # the RP
+        if client.authorization_mode in (client.AUTHORIZATION_MODE_NONE,
+                                         client.AUTHORIZATION_MODE_BY_SERVICE):
+            auth_manager = client.authorizations
+        elif client.authorization_mode == client.AUTHORIZATION_MODE_BY_OU:
+            auth_manager = client.ou.oidc_authorizations
 
-    qs = auth_manager.filter(user=request.user)
+        qs = auth_manager.filter(user=request.user)
 
-    if 'consent' in prompt:
-        # if consent is asked we delete existing authorizations
-        # it seems to be the safer option
-        qs.delete()
-        qs = auth_manager.none()
-    else:
-        qs = qs.filter(expired__gte=start)
-    authorized_scopes = set()
-    for authorization in qs:
-        authorized_scopes |= authorization.scope_set()
-    if (authorized_scopes & scopes) < scopes:
-        if 'none' in prompt:
-            return authorization_error(request, redirect_uri, 'consent_required',
-                                       error_description='consent is required but prompt is none',
-                                       state=state,
-                                       fragment=fragment)
-        if request.method == 'POST':
-            if 'accept' in request.POST:
-                pk_to_deletes = []
-                for authorization in qs:
-                    # clean obsolete authorizations
-                    if authorization.scope_set() <= scopes:
-                        pk_to_deletes.append(authorization.pk)
-                auth_manager.create(
-                    user=request.user, scopes=u' '.join(sorted(scopes)),
-                    expired=start + datetime.timedelta(days=365))
-                if pk_to_deletes:
-                    auth_manager.filter(pk__in=pk_to_deletes).delete()
-                logger.info(u'authorized scopes %s for service %s', ' '.join(scopes),
-                            client.name)
-            else:
-                logger.info(u'refused scopes %s for service %s', ' '.join(scopes),
-                            client.name)
-                return authorization_error(request, redirect_uri, 'access_denied',
-                                           error_description='user denied access',
-                                           state=state,
-                                           fragment=fragment)
+        if 'consent' in prompt:
+            # if consent is asked we delete existing authorizations
+            # it seems to be the safer option
+            qs.delete()
+            qs = auth_manager.none()
         else:
-            return render(request, 'authentic2_idp_oidc/authorization.html',
-                          {
-                              'client': client,
-                              'scopes': scopes - set(['openid']),
-                          })
+            qs = qs.filter(expired__gte=start)
+        authorized_scopes = set()
+        for authorization in qs:
+            authorized_scopes |= authorization.scope_set()
+        if (authorized_scopes & scopes) < scopes:
+            if 'none' in prompt:
+                return authorization_error(
+                    request, redirect_uri, 'consent_required',
+                    error_description='consent is required but prompt is none',
+                    state=state,
+                    fragment=fragment)
+            if request.method == 'POST':
+                if 'accept' in request.POST:
+                    pk_to_deletes = []
+                    for authorization in qs:
+                        # clean obsolete authorizations
+                        if authorization.scope_set() <= scopes:
+                            pk_to_deletes.append(authorization.pk)
+                    auth_manager.create(
+                        user=request.user, scopes=u' '.join(sorted(scopes)),
+                        expired=start + datetime.timedelta(days=365))
+                    if pk_to_deletes:
+                        auth_manager.filter(pk__in=pk_to_deletes).delete()
+                    logger.info(u'authorized scopes %s for service %s', ' '.join(scopes),
+                                client.name)
+                else:
+                    logger.info(u'refused scopes %s for service %s', ' '.join(scopes),
+                                client.name)
+                    return authorization_error(request, redirect_uri, 'access_denied',
+                                               error_description='user denied access',
+                                               state=state,
+                                               fragment=fragment)
+            else:
+                return render(request, 'authentic2_idp_oidc/authorization.html',
+                              {
+                                  'client': client,
+                                  'scopes': scopes - set(['openid']),
+                              })
     if response_type == 'code':
         code = models.OIDCCode.objects.create(
             client=client, user=request.user, scopes=u' '.join(scopes),

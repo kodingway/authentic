@@ -62,6 +62,9 @@ OIDC_CLIENT_PARAMS = [
     {
         'idtoken_algo': OIDCClient.ALGO_HMAC,
     },
+    {
+        'authorization_mode': OIDCClient.AUTHORIZATION_MODE_NONE,
+    }
 ]
 
 
@@ -122,17 +125,18 @@ def test_authorization_code_sso(login_first, oidc_settings, oidc_client, simple_
         response = response.form.submit(name='login-password-submit')
         response = response.follow()
         assert response.request.path == reverse('oidc-authorize')
-    assert 'a2-oidc-authorization-form' in response.content
-    assert OIDCAuthorization.objects.count() == 0
-    assert OIDCCode.objects.count() == 0
-    assert OIDCAccessToken.objects.count() == 0
-    response = response.form.submit('accept')
-    assert OIDCAuthorization.objects.count() == 1
-    authz = OIDCAuthorization.objects.get()
-    assert authz.client == oidc_client
-    assert authz.user == simple_user
-    assert authz.scope_set() == set('openid profile email'.split())
-    assert authz.expired >= now()
+    if oidc_client.authorization_mode != OIDCClient.AUTHORIZATION_MODE_NONE:
+        assert 'a2-oidc-authorization-form' in response.content
+        assert OIDCAuthorization.objects.count() == 0
+        assert OIDCCode.objects.count() == 0
+        assert OIDCAccessToken.objects.count() == 0
+        response = response.form.submit('accept')
+        assert OIDCAuthorization.objects.count() == 1
+        authz = OIDCAuthorization.objects.get()
+        assert authz.client == oidc_client
+        assert authz.user == simple_user
+        assert authz.scope_set() == set('openid profile email'.split())
+        assert authz.expired >= now()
     if oidc_client.authorization_flow == oidc_client.FLOW_AUTHORIZATION_CODE:
         assert OIDCCode.objects.count() == 1
         code = OIDCCode.objects.get()
@@ -464,8 +468,9 @@ def test_invalid_request(oidc_settings, oidc_client, simple_user, app):
         'prompt': 'none',
     })
     response = app.get(authorize_url)
-    assert_oidc_error(response, 'consent_required', error_description='prompt is none',
-                      fragment=fragment)
+    if oidc_client.authorization_mode != oidc_client.AUTHORIZATION_MODE_NONE:
+        assert_oidc_error(response, 'consent_required', error_description='prompt is none',
+                          fragment=fragment)
 
     # user refuse authorization
     authorize_url = make_url('oidc-authorize', params={
@@ -475,9 +480,10 @@ def test_invalid_request(oidc_settings, oidc_client, simple_user, app):
         'scope': 'openid email profile',
     })
     response = app.get(authorize_url)
-    response = response.form.submit('refuse')
-    assert_oidc_error(response, 'access_denied', error_description='user denied access',
-                      fragment=fragment)
+    if oidc_client.authorization_mode != oidc_client.AUTHORIZATION_MODE_NONE:
+        response = response.form.submit('refuse')
+        assert_oidc_error(response, 'access_denied', error_description='user denied access',
+                          fragment=fragment)
 
     # authorization exists
     authorize = OIDCAuthorization.objects.create(
@@ -502,6 +508,9 @@ def test_invalid_request(oidc_settings, oidc_client, simple_user, app):
     assert 'a2-oidc-authorization-form' in response.content
     # check all authorization have been deleted, it's our policy
     assert OIDCAuthorization.objects.count() == 0
+    if oidc_client.authorization_mode == oidc_client.AUTHORIZATION_MODE_NONE:
+        # authorization mode is none, but explicit consent is asked, we validate it
+        response = response.form.submit('accept')
 
     # authorization has expired
     OIDCCode.objects.all().delete()
@@ -712,8 +721,9 @@ def test_role_control_access(login_first, oidc_settings, oidc_client, simple_use
         response.form.set('password', simple_user.username)
         response = response.form.submit(name='login-password-submit')
         response = response.follow()
-    response = response.form.submit('accept')
-    authz = OIDCAuthorization.objects.get()
+    if oidc_client.authorization_mode != oidc_client.AUTHORIZATION_MODE_NONE:
+        response = response.form.submit('accept')
+        assert OIDCAuthorization.objects.get()
     if oidc_client.authorization_flow == oidc_client.FLOW_AUTHORIZATION_CODE:
         code = OIDCCode.objects.get()
     location = urlparse.urlparse(response['Location'])
