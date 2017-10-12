@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Authentic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-12 18:06+0200\n"
+"POT-Creation-Date: 2017-10-12 18:32+0200\n"
 "PO-Revision-Date: 2017-06-26 22:14+0200\n"
 "Last-Translator: Mikaël Ates <mates@entrouvert.com>\n"
 "Language-Team: None\n"
@@ -606,7 +606,7 @@ msgstr ""
 
 #: authentic2/registration_backend/forms.py:110
 msgid "Password (again)"
-msgstr "Mot de passe (encore une fois)"
+msgstr "Confirmation du mot de passe"
 
 #: authentic2/registration_backend/forms.py:157
 #: authentic2/registration_backend/forms.py:171
