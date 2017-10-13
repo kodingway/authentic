@@ -320,7 +320,7 @@ admin.site.register(models.Attribute, AttributeAdmin)
 
 @never_cache
 def login(request, extra_context=None):
-    return utils.redirect_to_login(request)
+    return utils.redirect_to_login(request, login_url=utils.get_manager_login_url())
 
 admin.site.login = login
 

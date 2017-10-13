@@ -1,12 +1,19 @@
-from django.conf.urls import patterns, url, include
+from django.conf.urls import patterns, url
 
 from django.views.i18n import javascript_catalog
 from django.contrib.auth.decorators import login_required
+from django.utils.functional import lazy
 from . import views, role_views, ou_views, user_views, service_views
 from ..decorators import required
+from authentic2 import utils
+
+
+def manager_login_required(func):
+    return login_required(func, login_url=lazy(utils.get_manager_login_url, str)())
+
 
 urlpatterns = required(
-    login_required, patterns(
+    manager_login_required, patterns(
         'authentic2.views',
         # homepage
         url(r'^$', views.homepage, name='a2-manager-homepage'),

@@ -1,5 +1,6 @@
 import re
 import pytest
+from urlparse import urlparse
 
 from django.core.urlresolvers import reverse
 from django.core import mail
@@ -9,6 +10,7 @@ from authentic2.a2_rbac.utils import get_default_ou
 from django_rbac.utils import get_ou_model, get_role_model
 from django.contrib.auth import get_user_model
 from utils import login
+
 
 pytestmark = pytest.mark.django_db
 
@@ -272,3 +274,10 @@ def test_manager_create_user(superuser_or_admin, app, settings):
     response.form.set('email', 'john.doe@gmail.com')
     response = form.submit()
     assert 'Email already used' in response
+
+
+def test_app_setting_login_url(app, settings):
+    settings.A2_MANAGER_LOGIN_URL = '/other_login/'
+    response = app.get('/manage/')
+    assert urlparse(response['Location']).path == settings.A2_MANAGER_LOGIN_URL
+    assert urlparse(response['Location']).query == 'next=/manage/'

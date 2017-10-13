@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from urlparse import urlparse
+
 from authentic2.custom_user.models import User
 from authentic2.models import Attribute
 
@@ -29,3 +31,12 @@ def test_user_admin(db, app, superuser):
     assert modified_admin.last_name == 'Doe'
     assert modified_admin.attributes.civilite == 'Mr'
     assert modified_admin.attributes.siret == '1234'
+
+
+def test_app_setting_login_url(app, db, settings):
+    settings.A2_MANAGER_LOGIN_URL = '/other-login/'
+    response = app.get('/admin/')
+    assert urlparse(response['Location']).path == '/admin/login/'
+    response = response.follow()
+    assert urlparse(response['Location']).path == settings.A2_MANAGER_LOGIN_URL
+    assert urlparse(response['Location']).query == 'next=/admin/'

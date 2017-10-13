@@ -966,3 +966,8 @@ def simulate_authentication(request, user, method,
     user = copy.deepcopy(user)
     user.backend = backend
     return login(request, user, method, **kwargs)
+
+
+def get_manager_login_url():
+    from authentic2.manager import app_settings
+    return app_settings.LOGIN_URL or settings.LOGIN_URL
