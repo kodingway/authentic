@@ -128,3 +128,11 @@ def check_log(caplog, msg):
     yield
     assert any(msg in record.msg for record in caplog.records[idx:]), \
         '%r not found in log records' % msg
+
+def can_resolve_dns():
+    '''Verify that DNS resolving is available'''
+    import socket
+    try:
+        return isinstance(socket.gethostbyname('entrouvert.com'), str)
+    except:
+        return False
