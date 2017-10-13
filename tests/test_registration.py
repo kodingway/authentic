@@ -414,3 +414,29 @@ def test_registration_confirm_data(app, settings, db, rf):
         no_password=True,
         confirm_data='required')
     response = app.get(activation_url, status=302)
+
+
+def test_revalidate_email(app, rf, db, settings, mailoutbox):
+    settings.LANGUAGE_CODE = 'en-us'
+    settings.A2_VALIDATE_EMAIL_DOMAIN = can_resolve_dns()
+
+    # disable existing attributes
+    models.Attribute.objects.update(disabled=True)
+    url = utils.build_activation_url(
+        rf.get('/'),
+        'testbot@entrouvert.com',
+        next_url=None,
+        valid_email=False,
+        franceconnect=True)
+
+    assert len(mailoutbox) == 0
+    # register
+    response = app.get(url)
+    response.form.set('email', 'johndoe@example.com')
+    response.form.set('password1', 'T0==toto')
+    response.form.set('password2', 'T0==toto')
+    response = response.form.submit()
+    assert urlparse(response['Location']).path == reverse('registration_complete')
+    response = response.follow()
+    assert 'johndoe@example.com' in response.content
+    assert len(mailoutbox) == 1

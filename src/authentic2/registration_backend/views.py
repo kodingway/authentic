@@ -304,11 +304,12 @@ class RegistrationCompletionView(CreateView):
             # If an email is submitted it must be validated or be the same as in the token
             data = form.cleaned_data
             data['no_password'] = self.token.get('no_password', False)
-            utils.send_registration_mail(self.request,
-                                   template_names=[],
-                                   legacy_template_names=legacy_template_names,
-                                   next_url=self.get_success_url(),
-                                   **data)
+            utils.send_registration_mail(
+                self.request,
+                ou=self.ou,
+                next_url=self.get_success_url(),
+                **data)
+            self.request.session['registered_email'] = form.cleaned_data['email']
             return redirect(self.request, 'registration_complete')
         ret = super(RegistrationCompletionView, self).form_valid(form)
         simulate_authentication(self.request, self.object, method='email')
