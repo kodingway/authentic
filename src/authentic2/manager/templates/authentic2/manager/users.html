@@ -22,7 +22,10 @@
 {% endblock %}
 
 {% block sidebar %}
-   {% include "authentic2/manager/search_form.html" %}
+  <form id="search-form" method="get">
+    {{ search_form.as_p }}
+    <button>{% trans "Search" %}</button>
+  </form>
 {% endblock %}
 
 {% block main %}
