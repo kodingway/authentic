@@ -5,7 +5,7 @@ set -e
 ./getlasso.sh
 # SNI support for Debian
 pip install --upgrade pyOpenSSL ndg-httpsclient pyasn1
-pip install --upgrade pip
+pip install --upgrade pip\>9
 pip install --upgrade pylint pylint-django
 pip install --upgrade tox
 pip install -U 'virtualenv<14'
