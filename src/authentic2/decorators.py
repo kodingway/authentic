@@ -165,7 +165,7 @@ class CacheDecoratorBase(object):
             parts.append(unicode(arg))
 
         for kw, arg in sorted(kwargs.iteritems(), key=lambda x: x[0]):
-            if self.kwargs in kw not in self.kwargs:
+            if kw not in self.kwargs:
                 continue
             parts.append(u'%s-%s' % (unicode(kw), unicode(arg)))
         return u'|'.join(parts)
