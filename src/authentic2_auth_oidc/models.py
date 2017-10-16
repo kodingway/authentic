@@ -106,6 +106,12 @@ class OIDCProvider(models.Model):
         blank=True,
         null=True)
 
+    # hide OP from login page
+    show = models.BooleanField(
+        verbose_name=_('show on login page'),
+        blank=True,
+        default=True)
+
     # metadata
     created = models.DateTimeField(
         verbose_name=_('created'),

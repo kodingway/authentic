@@ -306,3 +306,20 @@ def test_sso(app, caplog, code, oidc_provider, oidc_provider_jwkset, login_url, 
         with oidc_provider_mock(oidc_provider, oidc_provider_jwkset, code):
             response = response.click(href='logout')
     assert 'https://idp.example.com/logout' in response.content
+
+
+def test_show_on_login_page(app, oidc_provider):
+    from authentic2_auth_oidc.auth_frontends import get_providers
+    # we have a 5 seconds cache on list of providers, we have to work around it
+    get_providers.cache.clear()
+    response = app.get('/login/')
+    assert 'oidc-a-oididp' in response.content
+
+    # do not show this provider on login page anymore
+    oidc_provider.show = False
+    oidc_provider.save()
+
+    # we have a 5 seconds cache on list of providers, we have to work around it
+    get_providers.cache.clear()
+    response = app.get('/login/')
+    assert 'oidc-a-oididp' not in response.content
