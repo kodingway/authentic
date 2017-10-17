@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import datetime
 import pytest
 import urlparse
@@ -15,6 +16,7 @@ from django.utils.timezone import now
 
 from authentic2_auth_oidc.utils import base64url_decode, parse_id_token, IDToken
 from authentic2_auth_oidc.models import OIDCProvider, OIDCClaimMapping
+from authentic2_auth_oidc.auth_frontends import get_providers
 from authentic2.models import AttributeValue
 from authentic2.utils import timestamp_from_datetime
 from authentic2.a2_rbac.utils import get_default_ou
@@ -145,11 +147,10 @@ def code():
 
 
 def oidc_provider_mock(oidc_provider, oidc_provider_jwkset, code, extra_id_token=None,
-                       extra_user_info=None):
+                       extra_user_info=None, sub='john.doe'):
     token_endpoint = urlparse.urlparse(oidc_provider.token_endpoint)
     userinfo_endpoint = urlparse.urlparse(oidc_provider.userinfo_endpoint)
     token_revocation_endpoint = urlparse.urlparse(oidc_provider.token_revocation_endpoint)
-    sub = 'john.doe'
 
     @urlmatch(netloc=token_endpoint.netloc, path=token_endpoint.path)
     def token_endpoint_mock(url, request):
@@ -309,7 +310,6 @@ def test_sso(app, caplog, code, oidc_provider, oidc_provider_jwkset, login_url, 
 
 
 def test_show_on_login_page(app, oidc_provider):
-    from authentic2_auth_oidc.auth_frontends import get_providers
     # we have a 5 seconds cache on list of providers, we have to work around it
     get_providers.cache.clear()
     response = app.get('/login/')
@@ -323,3 +323,49 @@ def test_show_on_login_page(app, oidc_provider):
     get_providers.cache.clear()
     response = app.get('/login/')
     assert 'oidc-a-oididp' not in response.content
+
+
+def test_strategy_find_uuid(app, caplog, code, oidc_provider, oidc_provider_jwkset, login_url,
+                            login_callback_url, simple_user):
+
+    get_providers.cache.clear()
+    # no mapping please
+    OIDCClaimMapping.objects.all().delete()
+    oidc_provider.strategy = oidc_provider.STRATEGY_FIND_UUID
+    oidc_provider.save()
+
+    User = get_user_model()
+    assert User.objects.count() == 1
+
+    response = app.get('/').maybe_follow()
+    assert oidc_provider.name in response.content
+    response = response.click(oidc_provider.name)
+    location = urlparse.urlparse(response.location)
+    query = check_simple_qs(urlparse.parse_qs(location.query))
+
+    # sub=john.doe, MUST not work
+    with utils.check_log(caplog, 'cannot create user'):
+        with oidc_provider_mock(oidc_provider, oidc_provider_jwkset, code):
+            response = app.get(login_callback_url, params={'code': code, 'state': query['state']})
+
+    # sub=simple_user.uuid MUST work
+    with utils.check_log(caplog, 'found user using UUID'):
+        with oidc_provider_mock(oidc_provider, oidc_provider_jwkset, code, sub=simple_user.uuid):
+            response = app.get(login_callback_url, params={'code': code, 'state': query['state']})
+
+    assert urlparse.urlparse(response['Location']).path == '/'
+    assert User.objects.count() == 1
+    user = User.objects.get()
+    # verify user was not modified
+    assert user.username == 'user'
+    assert user.first_name == u'Jôhn'
+    assert user.last_name == u'Dôe'
+    assert user.email == 'user@example.net'
+    assert user.attributes.first_name == u'Jôhn'
+    assert user.attributes.last_name == u'Dôe'
+
+    response = app.get(reverse('account_management'))
+    with utils.check_log(caplog, 'revoked token from OIDC'):
+        with oidc_provider_mock(oidc_provider, oidc_provider_jwkset, code):
+            response = response.click(href='logout')
+    assert 'https://idp.example.com/logout' in response.content

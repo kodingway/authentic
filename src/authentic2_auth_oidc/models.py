@@ -25,10 +25,12 @@ def validate_jwkset(data):
 
 class OIDCProvider(models.Model):
     STRATEGY_CREATE = 'create'
+    STRATEGY_FIND_UUID = 'find-uuid'
     STRATEGY_NONE = 'none'
 
     STRATEGIES = [
         (STRATEGY_CREATE, _('create')),
+        (STRATEGY_FIND_UUID, _('use sub to find existing user through UUID')),
         (STRATEGY_NONE, _('none')),
     ]
     ALGO_NONE = 0

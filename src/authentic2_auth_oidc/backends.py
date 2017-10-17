@@ -94,12 +94,26 @@ class OIDCBackend(ModelBackend):
 
         User = get_user_model()
         user = None
-        try:
-            user = User.objects.get(oidc_account__provider=provider,
-                                    oidc_account__sub=id_token.sub,
-                                    is_active=True)
-        except User.DoesNotExist:
-            pass
+        if provider.strategy == models.OIDCProvider.STRATEGY_FIND_UUID:
+            # use the OP sub to find an user by UUUID
+            # it means OP and RP share the same account base and OP is passing its UUID as sub
+            try:
+                user = User.objects.get(uuid=id_token.sub, is_active=True)
+            except User.DoesNotExist:
+                pass
+            else:
+                logger.info(u'auth_oidc: found user using UUID (=sub) "%s": %s', id_token.sub,
+                            user)
+
+        else:
+            try:
+                user = User.objects.get(oidc_account__provider=provider,
+                                        oidc_account__sub=id_token.sub,
+                                        is_active=True)
+            except User.DoesNotExist:
+                pass
+            else:
+                logger.info(u'auth_oidc: found user using with sub "%s": %s', id_token.sub, user)
         need_user_info = False
         for claim_mapping in provider.claim_mappings.all():
             need_user_info = need_user_info or not claim_mapping.idtoken_claim
