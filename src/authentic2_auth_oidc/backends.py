@@ -181,7 +181,7 @@ class OIDCBackend(ModelBackend):
             if attribute in ('username', 'first_name', 'last_name', 'email'):
                 setattr(user, attribute, value)
                 save_user = True
-	if user.ou != provider.ou:
+        if user.ou != provider.ou:
             user.ou = provider.ou
             save_user = True
         if save_user:
