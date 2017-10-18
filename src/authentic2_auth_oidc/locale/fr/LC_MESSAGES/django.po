@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: authentic2-auth-fc 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-06-26 18:16+0200\n"
-"PO-Revision-Date: 2017-06-26 22:16+0200\n"
+"PO-Revision-Date: 2017-10-18 09:33+0200\n"
 "Last-Translator: Benjamin Dauvergne <bdauvergne@entrouvert.com>\n"
 "Language-Team: french <fr@li.org>\n"
 "Language: \n"
@@ -230,15 +230,15 @@ msgstr "Fournisseur OpenID Connect inconnu"
 #, python-format
 msgid "Login with %(name)s failed, report %(request_id)s to an administrator."
 msgstr ""
-"La connexion depuis %(name)s a échouée, signaler l'erreur %(request_id)s à "
-"un administrateur."
+"La connexion depuis %(name)s a échoué, vous pouvez signaler le numéro d'erreur "
+"%(request_id)s à un administrateur."
 
 #: views.py:120
 #, python-format
 msgid "Login with OpenIDConnect failed, report %s to an administrator"
 msgstr ""
-"La connexion OpenID Connect a échouée, signaler l'erreur %s à un "
-"administrateur."
+"La connexion OpenID Connect a échoué, vous pouvez signaler le numéro d'erreur "
+"%s à un administrateur."
 
 #: views.py:124
 #, python-format
