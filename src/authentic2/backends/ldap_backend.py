@@ -459,8 +459,12 @@ class LDAPBackend(object):
     def create_username(self, block, attributes):
         '''Build a username using the configured template'''
         username_template = unicode(block['username_template'])
-        return username_template.format(realm=block['realm'],
-                                        **attributes)
+        try:
+            return username_template.format(realm=block['realm'], **attributes)
+        except KeyError as e:
+            log.warning('missing attribute %s to build the username', e.args[0])
+            # attributes are missing to build the username
+            return None
 
     def populate_user_attributes(self, user, block, attributes):
         for legacy_attribute, legacy_field in (('email', 'email_field'),
@@ -801,6 +805,8 @@ class LDAPBackend(object):
             return
         log.debug('retrieved attributes for %r: %r', dn, attributes)
         username = self.create_username(block, attributes)
+        if not username:
+            return
         return self._return_django_user(dn, username, password, conn, block, attributes)
 
     def _return_django_user(self, dn, username, password, conn, block, attributes):
