@@ -193,7 +193,7 @@ class LDAPUser(get_user_model()):
 
     def get_attributes(self):
         conn = self.get_connection()
-        return self.ldap_backend.get_ldap_attributes(self.block, conn, self.dn)
+        return self.ldap_backend.get_ldap_attributes(self.block, conn, self.dn) or {}
 
     def save(self, *args, **kwargs):
         if hasattr(self, 'keep_pk'):
@@ -676,7 +676,7 @@ class LDAPBackend(object):
             results = conn.search_s(dn, ldap.SCOPE_BASE, '(objectclass=*)', attributes)
         except ldap.LDAPError:
             log.exception('unable to retrieve attributes of dn %r', dn)
-            return {}
+            return None
         attribute_map = cls.normalize_ldap_results(results[0][1])
         # add mandatory attributes
         for key, mandatory_values in mandatory_attributes_values.iteritems():
