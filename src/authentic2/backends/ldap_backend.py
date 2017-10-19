@@ -294,6 +294,8 @@ class LDAPBackend(object):
         'use_password_modify': True,
         # Target OU
         'ou_slug': '',
+        # use user credentials when we have them to connect to the LDAP
+        'connect_with_user_credentials': True,
     }
     _REQUIRED = ('url', 'basedn')
     _TO_ITERABLE = ('url', 'groupsu', 'groupstaff', 'groupactive')
@@ -400,10 +402,19 @@ class LDAPBackend(object):
                     continue
 
                 try:
+                    failed = False
                     for authz_id in authz_ids:
+                        if failed:
+                            continue
                         try:
                             conn.simple_bind_s(authz_id, utf8_password)
                             user_login_success(authz_id)
+                            if not block['connect_with_user_credentials']:
+                                try:
+                                    self.bind(block, conn)
+                                except Exception as e:
+                                    log.exception(u'rebind failure after login bind')
+                                    raise ldap.SERVER_DOWN
                             break
                         except ldap.INVALID_CREDENTIALS:
                             user_login_failure(authz_id)
@@ -947,37 +958,48 @@ class LDAPBackend(object):
                 else:
                     log.error('ldap %r is down', url)
                 continue
-            try:
-                if credentials:
-                    conn.bind_s(*credentials)
-                elif block['bindsasl']:
-                    sasl_mech, who, sasl_params = block['bindsasl']
-                    handler_class = getattr(ldap.sasl, sasl_mech)
-                    auth = handler_class(*sasl_params)
-                    conn.sasl_interactive_bind_s(who, auth)
-                elif block['binddn'] and block['bindpw']:
-                    conn.bind_s(block['binddn'], block['bindpw'])
+            user_credentials = block['connect_with_user_credentials'] and credentials
+            success, error = cls.bind(block, conn, credentials=user_credentials)
+            if success:
                 yield conn
-            except ldap.INVALID_CREDENTIALS:
-                log.error('admin bind failed on %s: invalid credentials', url)
+            else:
                 if block['replicas']:
-                    break
-            except ldap.INVALID_DN_SYNTAX:
-                log.error('admin bind failed on %s: invalid dn syntax %r', url, who)
-                if block['replicas']:
-                    break
-            except (ldap.TIMEOUT, ldap.CONNECT_ERROR, ldap.SERVER_DOWN):
-                if block['replicas']:
-                    log.warning('ldap %r is down', url)
+                    log.warning(u'admin bind failed on %s: %s', url, error)
                 else:
-                    log.error('ldap %r is down', url)
-                continue
+                    log.error(u'admin bind failed on %s: %s', url, error)
+
+    @classmethod
+    def bind(cls, block, conn, credentials=()):
+        '''Bind to the LDAP server'''
+        try:
+            if credentials:
+                who = credentials[0]
+                conn.bind_s(*credentials)
+            elif block['bindsasl']:
+                sasl_mech, who, sasl_params = block['bindsasl']
+                handler_class = getattr(ldap.sasl, sasl_mech)
+                auth = handler_class(*sasl_params)
+                conn.sasl_interactive_bind_s(who, auth)
+            elif block['binddn'] and block['bindpw']:
+                who = block['binddn']
+                conn.bind_s(block['binddn'], block['bindpw'])
+            else:
+                who = 'anonymous'
+                conn.simple_bind_s()
+            return True, None
+        except ldap.INVALID_CREDENTIALS:
+            return False, 'invalid credentials'
+        except ldap.INVALID_DN_SYNTAX:
+            return False, 'invalid dn syntax %r' % who
+        except (ldap.TIMEOUT, ldap.CONNECT_ERROR, ldap.SERVER_DOWN):
+            return False, 'ldap is down'
 
     @classmethod
     def get_connection(cls, block, credentials=()):
         '''Try to get at least one connection'''
         for conn in cls.get_connections(block, credentials=credentials):
             return conn
+        log.error('could not get a connection')
 
     @classmethod
     def update_default(cls, block):

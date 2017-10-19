@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import pytest
 import mock
+
+import ldap
 from ldap.dn import escape_dn_chars
 
 from ldaptools.slapd import Slapd, has_slapd
@@ -10,8 +12,6 @@ from authentic2.a2_rbac.utils import get_default_ou
 from django_rbac.utils import get_ou_model
 from authentic2.backends import ldap_backend
 from authentic2 import crypto
-
-from pytest_django.migrations import DisableMigrations
 
 import utils
 
@@ -390,5 +390,48 @@ def test_nocreate_mandatory_roles(slapd, settings):
         'create_role': False,
     }]
 
-    users = list(ldap_backend.LDAPBackend.get_users())
+    list(ldap_backend.LDAPBackend.get_users())
     assert User.objects.first().roles.count() == 0
+
+
+@pytest.fixture
+def slapd_strict_acl(slapd):
+    # forbid modifications by user themselves
+    conn = slapd.get_connection_external()
+    conn.modify_s(
+        'olcDatabase={1}mdb,cn=config',
+        [
+            (ldap.MOD_REPLACE, 'olcAccess', [
+                '{0}to * by dn.subtree="o=orga" none by * manage'
+            ])
+        ])
+    return slapd
+
+
+def test_no_connect_with_user_credentials(slapd_strict_acl, db, settings, app):
+    slapd = slapd_strict_acl
+    settings.LDAP_AUTH_SETTINGS = [{
+        'url': [slapd.ldap_url],
+        'basedn': 'o=orga',
+        'use_tls': False,
+        'create_group': True,
+        'group_mapping': [
+            ('cn=group2,o=orga', ['Group2']),
+        ],
+        'group_filter': '(&(memberUid={uid})(objectClass=posixGroup))',
+        'set_mandatory_roles': ['tech', 'admin'],
+        'create_role': False,
+    }]
+    response = app.get('/login/')
+    response.form.set('username', USERNAME)
+    response.form.set('password', PASS)
+    response = response.form.submit('login-password-submit')
+    assert response.status_code == 200
+    assert 'Étienne Michu' not in response.body
+
+    settings.LDAP_AUTH_SETTINGS[0]['connect_with_user_credentials'] = False
+    response = app.get('/login/')
+    response.form.set('username', USERNAME)
+    response.form.set('password', PASS)
+    response = response.form.submit('login-password-submit').follow()
+    assert 'Étienne Michu' in response.body
