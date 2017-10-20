@@ -1,6 +1,6 @@
 {% load i18n %}
 <html>
-  <body style="width: 90ex">
+  <body style="max-width: 90ex">
     {% if not existing_accounts %}
       <p>{% blocktrans %}You requested registration on {{ site }}. To finish your registration, please
         <a href="{{ registration_url }}">click here</a>{% endblocktrans %}
