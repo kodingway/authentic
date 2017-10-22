@@ -10,6 +10,8 @@ from django.utils.timezone import now
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
 
+from django_rbac.utils import get_ou_model
+
 from authentic2.crypto import base64url_encode
 
 from . import models, utils
@@ -170,6 +172,8 @@ class OIDCBackend(ModelBackend):
         # map claims to attributes or user fields
         attributes = utils.get_attributes()
         attributes_map = {attribute.name: attribute for attribute in attributes}
+        ou_map = {ou.slug: ou for ou in get_ou_model().cached()}
+        user_ou = provider.ou
         save_user = False
         mappings = []
         for claim_mapping in provider.claim_mappings.all():
@@ -182,6 +186,9 @@ class OIDCBackend(ModelBackend):
                 continue
             value = source.get(claim)
             attribute = claim_mapping.attribute
+            if attribute == 'ou__slug' and value in ou_map:
+                user_ou = ou_map[value]
+                continue
             if claim_mapping.verified == models.OIDCClaimMapping.VERIFIED_CLAIM:
                 verified = bool(source.get(claim + '_verified', False))
             elif claim_mapping.verified == models.OIDCClaimMapping.ALWAYS_VERIFIED:
@@ -195,9 +202,10 @@ class OIDCBackend(ModelBackend):
             if attribute in ('username', 'first_name', 'last_name', 'email'):
                 setattr(user, attribute, value)
                 save_user = True
-        if user.ou != provider.ou:
-            user.ou = provider.ou
+        if user.ou != user_ou:
+            user.ou = user_ou
             save_user = True
+
         if save_user:
             user.save()
 

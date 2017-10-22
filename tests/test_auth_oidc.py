@@ -14,6 +14,8 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth import get_user_model
 from django.utils.timezone import now
 
+from django_rbac.utils import get_ou_model
+
 from authentic2_auth_oidc.utils import base64url_decode, parse_id_token, IDToken
 from authentic2_auth_oidc.models import OIDCProvider, OIDCClaimMapping
 from authentic2_auth_oidc.auth_frontends import get_providers
@@ -138,6 +140,10 @@ def oidc_provider(request, db, oidc_provider_jwkset):
         required=True,
         verified=OIDCClaimMapping.VERIFIED_CLAIM,
         attribute='last_name')
+    OIDCClaimMapping.objects.create(
+        provider=provider,
+        claim='ou',
+        attribute='ou__slug')
     return provider
 
 
@@ -240,6 +246,9 @@ def check_simple_qs(qs):
 
 
 def test_sso(app, caplog, code, oidc_provider, oidc_provider_jwkset, login_url, login_callback_url):
+    OU = get_ou_model()
+    cassis = OU.objects.create(name='Cassis', slug='cassis')
+
     response = app.get('/admin/').maybe_follow()
     assert oidc_provider.name in response.content
     response = response.click(oidc_provider.name)
@@ -287,6 +296,7 @@ def test_sso(app, caplog, code, oidc_provider, oidc_provider_jwkset, login_url, 
     assert urlparse.urlparse(response['Location']).path == '/admin/'
     assert User.objects.count() == 1
     user = User.objects.get()
+    assert user.ou == get_default_ou()
     assert user.username == 'john.doe'
     assert user.first_name == 'John'
     assert user.last_name == 'Doe'
@@ -301,6 +311,19 @@ def test_sso(app, caplog, code, oidc_provider, oidc_provider_jwkset, login_url, 
         response = app.get(login_callback_url, params={'code': code, 'state': query['state']})
     assert AttributeValue.objects.filter(content='Doe', verified=False).count() == 0
     assert AttributeValue.objects.filter(content='Doe', verified=True).count() == 1
+
+    with oidc_provider_mock(oidc_provider, oidc_provider_jwkset, code,
+                            extra_user_info={'ou': 'cassis'}):
+        response = app.get(login_callback_url, params={'code': code, 'state': query['state']})
+    assert User.objects.count() == 1
+    user = User.objects.get()
+    assert user.ou == cassis
+
+    with oidc_provider_mock(oidc_provider, oidc_provider_jwkset, code):
+        response = app.get(login_callback_url, params={'code': code, 'state': query['state']})
+    assert User.objects.count() == 1
+    user = User.objects.get()
+    assert user.ou == get_default_ou()
 
     response = app.get(reverse('account_management'))
     with utils.check_log(caplog, 'revoked token from OIDC'):
