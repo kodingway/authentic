@@ -18,6 +18,8 @@ except ImportError:
     from django.contrib.contenttypes.generic import GenericForeignKey, \
         GenericRelation
 
+from authentic2.decorators import GlobalCache
+
 from . import managers, fields
 
 
@@ -79,6 +81,11 @@ class OrganizationalUnit(OrganizationalUnitAbstractBase):
 
     def natural_key(self):
         return [self.slug]
+
+    @classmethod
+    @GlobalCache(timeout=5)
+    def cached(cls):
+        return cls.objects.all()
 
 
 class Permission(PermissionAbstractBase):
