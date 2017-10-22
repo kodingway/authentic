@@ -248,6 +248,7 @@ def check_simple_qs(qs):
 def test_sso(app, caplog, code, oidc_provider, oidc_provider_jwkset, login_url, login_callback_url):
     OU = get_ou_model()
     cassis = OU.objects.create(name='Cassis', slug='cassis')
+    OU.cached.cache.clear()
 
     response = app.get('/admin/').maybe_follow()
     assert oidc_provider.name in response.content
