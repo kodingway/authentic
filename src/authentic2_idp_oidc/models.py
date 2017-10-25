@@ -128,7 +128,7 @@ class OIDCClient(Service):
         self.post_logout_redirect_uris = strip_words(self.post_logout_redirect_uris)
 
     def __repr__(self):
-        return ('<OIDCClient name:%r client_id:%s identifier_policy:%s>' %
+        return ('<OIDCClient name:%r client_id:%r identifier_policy:%r>' %
                 (self.name, self.client_id, self.get_identifier_policy_display()))
 
 
